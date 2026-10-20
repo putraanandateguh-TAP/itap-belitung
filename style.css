@@ -53,3 +53,13 @@ footer{background:var(--navy);color:#cfe0f5;padding:36px 0 90px;margin-top:40px}
 .feat{max-width:100%}
 .pt a b{white-space:nowrap}.pt{gap:10px;align-items:center}
 .ag{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff}.ag span{font-size:2.6rem;position:static}.ag small{font-size:.72rem;opacity:.9}.ag-Masjid{background:linear-gradient(135deg,#0b6e4f,#14996f)}.ag-Katolik{background:linear-gradient(135deg,#1749b5,#5b8def)}.ag-Protestan{background:linear-gradient(135deg,#4a3f8f,#8a7fd6)}.ag-Klenteng{background:linear-gradient(135deg,#b3261e,#e8a317)}
+/* kiblat */
+.qwrap{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.qdial{position:relative;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,#fff 55%,#e6f2ef);border:6px solid #0f766e;box-shadow:0 4px 16px rgba(0,0,0,.15);transition:transform .15s linear,border-color .2s;flex:none;margin:auto}
+.qdial span.qn,.qdial span.qe,.qdial span.qs,.qdial span.qw{position:absolute;font-weight:800;color:#334}
+.qn{top:6px;left:50%;transform:translateX(-50%);color:#c0392b!important}.qs{bottom:6px;left:50%;transform:translateX(-50%)}.qe{right:10px;top:50%;transform:translateY(-50%)}.qw{left:10px;top:50%;transform:translateY(-50%)}
+.qneedle{position:absolute;left:50%;top:50%;width:4px;height:84px;margin-left:-2px;background:#16a34a;transform-origin:50% 0;border-radius:2px}
+.qneedle span{position:absolute;bottom:-26px;left:50%;transform:translateX(-50%);font-size:24px}
+.qdial.ok{border-color:#16a34a;box-shadow:0 0 0 8px rgba(22,163,74,.25)}
+.qinfo{flex:1;min-width:200px}.qdeg{font-size:1.4rem}
+.qinfo button{background:#0f766e;color:#fff;border:0;border-radius:999px;padding:8px 14px;font-weight:700;margin:4px 4px 4px 0;cursor:pointer}

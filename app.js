@@ -80,3 +80,29 @@ if(ls('itap_music','on')!=='off'){a.preload='auto';play();const ev=['pointerdown
 $('ib-chips').innerHTML=['',...Object.keys(AG)].map(a=>`<button class="chip" data-a="${a}">${a?AG[a]+' '+a:'Semua'}</button>`).join('');
 $('ib-chips').onclick=e=>{const b=e.target.closest('.chip');if(b){ag=b.dataset.a;draw()}};draw();
 const ra=renderAll;renderAll=function(){ra();draw()}})();
+/* Kompas arah Kiblat */
+(function(){
+ var K=[21.4225,39.8262],lat=-2.74,lon=107.65,q=0,last=0;
+ function brg(a,b){var r=Math.PI/180,f=a*r,d=(K[1]-b)*r,y=Math.sin(d),x=Math.cos(f)*Math.tan(K[0]*r)-Math.sin(f)*Math.cos(d);return (Math.atan2(y,x)/r+360)%360}
+ var dial=document.getElementById('qdial');if(!dial)return;
+ var nd=document.getElementById('qneedle'),dg=document.getElementById('qdeg'),msg=document.getElementById('qmsg');
+ // needle points down from center by default (transform-origin top) -> rotate 180 to point up (north)
+ function setQ(){q=brg(lat,lon);dg.textContent=q.toFixed(1);nd.style.transform='rotate('+(180+q)+'deg)'}
+ setQ();
+ function onHead(h){if(h==null||isNaN(h))return;dial.style.transform='rotate('+(-h)+'deg)';
+  var diff=Math.abs(((q-h)%360+540)%360-180),ok=diff<=3;dial.classList.toggle('ok',ok);
+  msg.textContent=ok?'✅ Sudah menghadap kiblat!':'Putar HP sampai jarum hijau di atas ('+diff.toFixed(0)+'° lagi)';
+  if(ok&&Date.now()-last>1500&&navigator.vibrate){navigator.vibrate(120);last=Date.now()}}
+ function abs(e){if(e.absolute&&e.alpha!=null)onHead(360-e.alpha)}
+ function ios(e){if(e.webkitCompassHeading!=null)onHead(e.webkitCompassHeading)}
+ document.getElementById('qbtn').onclick=function(){
+  var D=window.DeviceOrientationEvent;
+  if(!D){msg.textContent='Perangkat ini tidak punya sensor kompas. Gunakan derajat di atas dari arah utara.';return}
+  if(typeof D.requestPermission==='function'){D.requestPermission().then(function(r){if(r==='granted'){addEventListener('deviceorientation',ios,true);msg.textContent='Putar HP sampai jarum hijau di atas'}else msg.textContent='Izin kompas ditolak.'}).catch(function(){msg.textContent='Izin kompas gagal.'})}
+  else{if('ondeviceorientationabsolute' in window)addEventListener('deviceorientationabsolute',abs,true);else addEventListener('deviceorientation',function(e){e.webkitCompassHeading!=null?ios(e):abs(e)},true);msg.textContent='Putar HP sampai jarum hijau di atas'}
+ };
+ document.getElementById('qgeo').onclick=function(){
+  if(!navigator.geolocation){msg.textContent='Lokasi tidak didukung.';return}
+  navigator.geolocation.getCurrentPosition(function(p){lat=p.coords.latitude;lon=p.coords.longitude;setQ();document.getElementById('qloc').textContent='Lokasi Anda ('+lat.toFixed(3)+', '+lon.toFixed(3)+')'},function(){msg.textContent='Izin lokasi ditolak — memakai Tanjung Pandan.'},{timeout:10000})
+ };
+})();

@@ -59,7 +59,7 @@ KB.push(
 {c:"Ibadah",a:"Protestan",t:"GPIB Karunia Manggar",d:"Jemaat GPIB di Jl. Kantor Pajak, Manggar, Belitung Timur.",k:"gereja protestan gpib kristen manggar",img:"img/ib-karunia.webp",ai:1},
 {c:"Ibadah",a:"Klenteng",t:"Klenteng Hok Tek Che Tanjung Pandan",d:"Klenteng di Jl. Siburik Timur, Tanjung Pandan (dibangun 1868), cagar budaya; sembahyang tiap tgl 1 & 15 Imlek.",k:"klenteng kelenteng tionghoa konghucu cagar budaya",img:"img/ib-hoktekche.webp",ai:1},
 {c:"Ibadah",a:"Klenteng",t:"Kelenteng Sijuk",d:"Kelenteng tua di Sijuk (1815), cagar budaya, ±300 m dari Masjid Al-Ikhlas — simbol kerukunan.",k:"klenteng kelenteng sijuk tionghoa cagar budaya",img:"img/ib-sijukklenteng.webp",ai:1},
-{c:"Ibadah",a:"Klenteng",t:"Klenteng Than San Suhu Ahin",d:"Klenteng di Desa Padang, Manggar, berdiri sejak 1906; diresmikan ulang Bupati Beltim 2025.",k:"klenteng manggar konghucu tionghoa"},
-{c:"Ibadah",a:"Klenteng",t:"Kelenteng Fuk Tet Tje (Dharma Suci) Manggar",d:"Kelenteng di Jl. Pelabuhan Ujung, Desa Baru, Manggar.",k:"klenteng kelenteng manggar tionghoa"},
-{c:"Ibadah",a:"Klenteng",t:"Kelenteng Sun Lie San Gantung",d:"Kelenteng di Jl. Batu Penyu, Kecamatan Gantung, Belitung Timur.",k:"klenteng kelenteng gantung gantong tionghoa"}
+{c:"Ibadah",a:"Klenteng",t:"Klenteng Than San Suhu Ahin",d:"Klenteng di Desa Padang, Manggar, berdiri sejak 1906; diresmikan ulang Bupati Beltim 2025.",k:"klenteng manggar konghucu tionghoa",img:"img/ib-thansan.webp",ai:1},
+{c:"Ibadah",a:"Klenteng",t:"Kelenteng Fuk Tet Tje (Dharma Suci) Manggar",d:"Kelenteng di Jl. Pelabuhan Ujung, Desa Baru, Manggar.",k:"klenteng kelenteng manggar tionghoa",img:"img/ib-fuktet.webp",ai:1},
+{c:"Ibadah",a:"Klenteng",t:"Kelenteng Sun Lie San Gantung",d:"Kelenteng di Jl. Batu Penyu, Kecamatan Gantung, Belitung Timur.",k:"klenteng kelenteng gantung gantong tionghoa",img:"img/ib-sunliesan.webp",ai:1}
 );

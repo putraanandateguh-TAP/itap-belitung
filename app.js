@@ -37,7 +37,7 @@ renderAll();showRecent();
 const WC={0:'☀️ Cerah',1:'🌤️ Cerah berawan',2:'⛅ Berawan',3:'☁️ Mendung',45:'🌫️ Berkabut',48:'🌫️ Berkabut',51:'🌦️ Gerimis',53:'🌦️ Gerimis',55:'🌦️ Gerimis',61:'🌧️ Hujan ringan',63:'🌧️ Hujan',65:'🌧️ Hujan lebat',80:'🌦️ Hujan lokal',81:'🌧️ Hujan lokal',82:'⛈️ Hujan deras',95:'⛈️ Badai petir',96:'⛈️ Badai petir',99:'⛈️ Badai petir'};
 const wc=c=>WC[c]||'🌡️',hari=d=>new Date(d).toLocaleDateString('id-ID',{weekday:'short',day:'numeric'}),hm=s=>s.slice(11,16);
 const chip=(i,l,v)=>`<div class="ic">${i} <small>${l}</small><b>${v}</b></div>`;const INFO={};
-function drawInfo(){$('infochips').innerHTML=[INFO.wx&&chip('🌡️','Tanjung Pandan',INFO.wx),INFO.next&&chip('🕌','Sholat berikutnya',INFO.next),INFO.sun&&chip('🌅','Terbit · terbenam',INFO.sun),INFO.wave&&chip('🌊','Gelombang utara',INFO.wave),chip('🚨','Darurat','112'),chip('🛒','Promo ebook','Rp29rb')].filter(Boolean).join('')}
+function drawInfo(){$('infochips').innerHTML=[INFO.wx&&chip('🌡️','Tanjung Pandan',INFO.wx),INFO.next&&chip('🕌','Sholat berikutnya',INFO.next),INFO.sun&&chip('🌅','Terbit · terbenam',INFO.sun),INFO.wave&&chip('🌊','Gelombang utara',INFO.wave),`<a href="tel:+6281741191119">${chip('🚑','PSC 119 Belitung','0817-4119-119')}</a>`,chip('🛒','Promo ebook','Rp29rb')].filter(Boolean).join('')}
 const CITIES=[{n:'Tanjung Pandan',la:-2.7487,lo:107.6516},{n:'Manggar',la:-2.8833,lo:108.2667}];
 (async()=>{const box=$('wx');box.innerHTML='';
  for(const c of CITIES){const el=document.createElement('div');el.className='card wx';el.textContent='Memuat '+c.n+'…';box.appendChild(el);

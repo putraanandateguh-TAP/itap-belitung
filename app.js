@@ -80,3 +80,5 @@ if(ls('itap_music','on')!=='off'){a.preload='auto';play();const ev=['pointerdown
 $('ib-chips').innerHTML=['',...Object.keys(AG)].map(a=>`<button class="chip" data-a="${a}">${a?AG[a]+' '+a:'Semua'}</button>`).join('');
 $('ib-chips').onclick=e=>{const b=e.target.closest('.chip');if(b){ag=b.dataset.a;draw()}};draw();
 const ra=renderAll;renderAll=function(){ra();draw()}})();
+
+(()=>{const t=document.getElementById('wc-time'),d=document.getElementById('wc-date');if(!t)return;const ft=new Intl.DateTimeFormat('id-ID',{timeZone:'Asia/Jakarta',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}),fd=new Intl.DateTimeFormat('id-ID',{timeZone:'Asia/Jakarta',weekday:'long',day:'numeric',month:'long',year:'numeric'});const u=()=>{const n=new Date();t.textContent=ft.format(n).replace(/\./g,':');d.textContent=fd.format(n)};u();setInterval(u,1000)})();

@@ -46,3 +46,20 @@ const KB=[
 {c:"Praktis",t:"Rumah sakit di Tanjung Pandan",d:"Tersedia RSUD dr. H. Marsidi Judono dan beberapa RS swasta. Cari lokasi via tombol peta.",k:"rs rumah sakit kesehatan",cek:true},
 {c:"Praktis",t:"Kabupaten & ibu kota",d:"Pulau Belitung terdiri dari Kabupaten Belitung (ibu kota Tanjung Pandan) dan Belitung Timur (ibu kota Manggar), Provinsi Kepulauan Bangka Belitung.",k:"wilayah provinsi"}
 ];
+// Tempat ibadah (dicek 20 Okt 2026; sumber di credits.html)
+KB.push(
+{c:"Ibadah",a:"Masjid",t:"Masjid Agung Al-Mabrur",d:"Masjid agung Kab. Belitung di pusat Tanjung Pandan (Jl. Sekolah, seberang Tugu Pendidikan); cikal bakalnya Masjid Depati Saleh, dibangun 1870-an.",k:"masjid agung tanjung pandan islam sholat"},
+{c:"Ibadah",a:"Masjid",t:"Masjid Al-Ikhlas Sijuk",d:"Masjid tua di Desa Sijuk (dibangun 1817), cagar budaya; tiang kayu teruntum asli dan atap limasan tumpang khas Belitung.",k:"masjid tua sijuk cagar budaya islam",img:"img/ib-sijuk.webp"},
+{c:"Ibadah",a:"Masjid",t:"Masjid Agung Darussalam Manggar",d:"Masjid agung di Desa Baru, Manggar (Belitung Timur), didirikan PT Timah sekitar 1970-an.",k:"masjid agung manggar belitung timur islam"},
+{c:"Ibadah",a:"Katolik",t:"Gereja Katolik Regina Pacis",d:"Gereja paroki Katolik di Tanjung Pandan (Keuskupan Pangkalpinang); gedung selesai 1953, paroki sejak 1961.",k:"gereja katolik misa tanjung pandan paroki"},
+{c:"Ibadah",a:"Katolik",t:"Gereja Katolik Santo Yoseph Manggar",d:"Gereja Katolik di Jl. Pegadaian, Manggar, Belitung Timur.",k:"gereja katolik misa manggar"},
+{c:"Ibadah",a:"Katolik",t:"Gereja Katolik Santo Paulus Gantung",d:"Gereja Katolik di Kecamatan Gantung, Belitung Timur.",k:"gereja katolik misa gantong gantung"},
+{c:"Ibadah",a:"Katolik",t:"Situs Gereja Katolik Pertama, Bukit Samak",d:"Bekas kapel Katolik pertama di Pulau Belitung (1896) di Bukit Samak, Manggar; kini tinggal pondasi.",k:"sejarah gereja katolik bukit samak manggar situs"},
+{c:"Ibadah",a:"Protestan",t:"GPIB Immanuel Tanjung Pandan",d:"Jemaat GPIB di Jl. Melati, Tanjung Pandan, dekat Pantai Tanjung Pendam.",k:"gereja protestan gpib kristen tanjung pandan"},
+{c:"Ibadah",a:"Protestan",t:"GPIB Karunia Manggar",d:"Jemaat GPIB di Jl. Kantor Pajak, Manggar, Belitung Timur.",k:"gereja protestan gpib kristen manggar"},
+{c:"Ibadah",a:"Klenteng",t:"Klenteng Hok Tek Che Tanjung Pandan",d:"Klenteng di Jl. Siburik Timur, Tanjung Pandan (dibangun 1868), cagar budaya; sembahyang tiap tgl 1 & 15 Imlek.",k:"klenteng kelenteng tionghoa konghucu cagar budaya"},
+{c:"Ibadah",a:"Klenteng",t:"Kelenteng Sijuk",d:"Kelenteng tua di Sijuk (1815), cagar budaya, ±300 m dari Masjid Al-Ikhlas — simbol kerukunan.",k:"klenteng kelenteng sijuk tionghoa cagar budaya"},
+{c:"Ibadah",a:"Klenteng",t:"Klenteng Than San Suhu Ahin",d:"Klenteng di Desa Padang, Manggar, berdiri sejak 1906; diresmikan ulang Bupati Beltim 2025.",k:"klenteng manggar konghucu tionghoa"},
+{c:"Ibadah",a:"Klenteng",t:"Kelenteng Fuk Tet Tje (Dharma Suci) Manggar",d:"Kelenteng di Jl. Pelabuhan Ujung, Desa Baru, Manggar.",k:"klenteng kelenteng manggar tionghoa"},
+{c:"Ibadah",a:"Klenteng",t:"Kelenteng Sun Lie San Gantung",d:"Kelenteng di Jl. Batu Penyu, Kecamatan Gantung, Belitung Timur.",k:"klenteng kelenteng gantung gantong tionghoa"}
+);

@@ -1,11 +1,12 @@
 const $=id=>document.getElementById(id);const now=new Date();
 $('yr').textContent=now.getFullYear();$('today').textContent=now.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 function go(id){$(id).scrollIntoView({behavior:'smooth'});if(id==='cari')setTimeout(()=>$('q').focus(),400)}
-const EMO={Wisata:'🏝️',Kuliner:'🍜',Sejarah:'⛏️',Legenda:'📜',Budaya:'🥁',Praktis:'🧭'};
+const EMO={Wisata:'🏝️',Kuliner:'🍜',Sejarah:'⛏️',Legenda:'📜',Budaya:'🥁',Praktis:'🧭',Ibadah:'🛐'};
 KB.forEach((e,i)=>e.id=i);
 const REAL=[0,1,2,5,6,8,9,10,13,14,15,16,17,18,20,21,22,23,24,26,28,29,33,34,39,42,44],GEN=[30,31,32,3,4,7,11,12,25,27,35,36,37,38,40,41,43];
-const imgOf=e=>e.id===19?'img/kedai.webp':(REAL.includes(e.id)||GEN.includes(e.id))?`img/e${e.id}.webp`:null;
-const thumb=e=>{const u=imgOf(e);return u?`<div class="thumb ph"><img src="${u}" alt="${e.t}" loading="lazy">${GEN.includes(e.id)?'<span class="ai">Ilustrasi AI</span>':''}</div>`:`<div class="thumb c-${e.c} fb"><img src="logo-sm.png" alt="" loading="lazy"><span>Foto menyusul</span></div>`};
+const AG={Masjid:'🕌',Katolik:'⛪',Protestan:'✝️',Klenteng:'🏮'};
+const imgOf=e=>e.img?e.img:e.id===19?'img/kedai.webp':(REAL.includes(e.id)||GEN.includes(e.id))?`img/e${e.id}.webp`:null;
+const thumb=e=>{const u=imgOf(e);if(!u&&e.a)return `<div class="thumb ag ag-${e.a}"><span>${AG[e.a]}</span><small>${e.a}</small></div>`;return u?`<div class="thumb ph"><img src="${u}" alt="${e.t}" loading="lazy">${GEN.includes(e.id)?'<span class="ai">Ilustrasi AI</span>':''}</div>`:`<div class="thumb c-${e.c} fb"><img src="logo-sm.png" alt="" loading="lazy"><span>Foto menyusul</span></div>`};
 const ls=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(_){return d}};const ss=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(_){}};
 let saved=ls('itap_saved',[]);
 const maps=t=>'https://www.google.com/maps/search/'+encodeURIComponent(t+' Belitung');
@@ -72,3 +73,9 @@ const play=()=>a.play().then(()=>{on=true;ui();fade(.35)}).catch(()=>{});
 const stop=()=>{on=false;ui();fade(0,()=>a.pause())};
 b.onclick=e=>{e.stopPropagation();if(on){stop();ss('itap_music','off')}else{ss('itap_music','on');play()}};ui();
 if(ls('itap_music','on')!=='off'){a.preload='auto';play();const ev=['pointerdown','keydown','scroll','touchstart'];const once=()=>{ev.forEach(x=>removeEventListener(x,once,true));if(!on&&ls('itap_music','on')!=='off')play()};ev.forEach(x=>addEventListener(x,once,{capture:true,passive:true}))}})();
+
+// Tempat ibadah
+(()=>{let ag='';const draw=()=>{$('ib-res').innerHTML=KB.filter(e=>e.c==='Ibadah'&&(!ag||e.a===ag)).map(card).join('');document.querySelectorAll('#ib-chips .chip').forEach(b=>b.classList.toggle('on',b.dataset.a===ag))};
+$('ib-chips').innerHTML=['',...Object.keys(AG)].map(a=>`<button class="chip" data-a="${a}">${a?AG[a]+' '+a:'Semua'}</button>`).join('');
+$('ib-chips').onclick=e=>{const b=e.target.closest('.chip');if(b){ag=b.dataset.a;draw()}};draw();
+const ra=renderAll;renderAll=function(){ra();draw()}})();

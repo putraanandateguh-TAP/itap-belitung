@@ -52,3 +52,4 @@ footer{background:var(--navy);color:#cfe0f5;padding:36px 0 90px;margin-top:40px}
 .row{max-width:100%}.row .it{flex:0 0 240px}
 .feat{max-width:100%}
 .pt a b{white-space:nowrap}.pt{gap:10px;align-items:center}
+.ag{display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff}.ag span{font-size:2.6rem;position:static}.ag small{font-size:.72rem;opacity:.9}.ag-Masjid{background:linear-gradient(135deg,#0b6e4f,#14996f)}.ag-Katolik{background:linear-gradient(135deg,#1749b5,#5b8def)}.ag-Protestan{background:linear-gradient(135deg,#4a3f8f,#8a7fd6)}.ag-Klenteng{background:linear-gradient(135deg,#b3261e,#e8a317)}

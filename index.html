@@ -3,12 +3,12 @@
 <meta name="description" content="iTAP Belitung: cuaca & gelombang live, jadwal sholat, matahari terbit/terbenam, pencarian serba Belitung, rencana trip, cerita video AI, ebook & jasa video AI, Kedai Bakso Aci iTAP.">
 <meta property="og:title" content="iTAP Belitung · Cerita pulau dihidupkan dengan AI"><meta property="og:description" content="Cuaca, gelombang, wisata, kuliner, legenda & produk AI dari kreator Belitung."><meta property="og:image" content="logo-sm.png"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="favicon.png"><meta name="theme-color" content="#082c50">
-<link rel="stylesheet" href="style.css?v=17"></head><body>
+<link rel="stylesheet" href="style.css?v=18"></head><body>
 <div class="top"><div class="w"><span>📍 Belitung, Kepulauan Bangka Belitung</span><span id="today"></span></div></div>
 <header class="hd"><div class="w"><a href="#" class="brand"><img src="logo-sm.png" alt="iTAP"><span><b>iTAP</b><small>BELITUNG · AI STORY</small></span></a>
 <button class="sbtn" onclick="go('cari')">🔍 Cari</button><a class="cta" href="https://lynk.id/itap025" target="_blank" rel="noopener">Toko AI</a></div>
 <nav class="tabs"><div class="w">
-<a href="#beranda" class="on">🏠 Beranda</a><a href="#cuaca">🌤️ Cuaca & Laut</a><a href="#cari">🔍 Cari</a><a href="#jelajah">🏝️ Wisata</a><a href="#rasa">🍜 Kuliner</a><a href="#cerita">🎬 Cerita</a><a href="#ibadah">🛐 Ibadah</a><a href="#trip">🗺️ Rencana Trip</a><a href="#produk">🛒 Produk AI</a><a href="#kedai">🥣 Kedai</a><a href="#tersimpan">🔖 Tersimpan</a></div></nav></header>
+<a href="#beranda" class="on">🏠 Beranda</a><a href="#cuaca">🌤️ Cuaca & Laut</a><a href="#cari">🔍 Cari</a><a href="#jelajah">🏝️ Wisata</a><a href="#rasa">🍜 Kuliner</a><a href="#cerita">🎬 Cerita</a><a href="#ibadah">🛐 Ibadah</a><a href="#trip">🗺️ Rencana Trip</a><a href="#data">📊 Data Belitung</a><a href="#produk">🛒 Produk AI</a><a href="#kedai">🥣 Kedai</a><a href="#tersimpan">🔖 Tersimpan</a></div></nav></header>
 <main class="w">
 <section id="beranda" class="hero"><div class="eyebrow">KABAR · RASA · PERJALANAN · AI</div><h1>Cerita Belitung, <span>dihidupkan dengan AI.</span></h1>
 <div class="chips-info" id="infochips"><div class="ic">⏳ Memuat info hari ini…</div></div></section>
@@ -56,6 +56,22 @@
 <div class="chips" id="tripbtn"><button class="chip on" data-d="1">1 hari</button><button class="chip" data-d="2">2 hari</button><button class="chip" data-d="3">3 hari</button></div>
 <div class="card" id="tripout"></div></section>
 
+<section id="data"><div class="sh"><div><div class="eyebrow">KENALI PULAU KITA LEWAT ANGKA</div><h2>Data Belitung</h2></div></div>
+<div class="card db"><h3>📚 Pengetahuan Belitung</h3><ul class="kv">
+<li><b>Wilayah</b> Pulau Belitung terdiri dari 2 kabupaten: Belitung (ibu kota Tanjung Pandan) dan Belitung Timur (ibu kota Manggar), bagian dari Provinsi Kepulauan Bangka Belitung.</li>
+<li><b>Luas</b> Kab. Belitung 2.271 km², Kab. Belitung Timur 2.588 km² (total ±4.859 km²).</li>
+<li><b>Penduduk</b> Kab. Belitung 192.405 jiwa, Kab. Belitung Timur 132.495 jiwa (total 324.900 jiwa).</li>
+<li><b>Pemekaran</b> Kab. Belitung Timur dibentuk lewat UU No. 5 Tahun 2003, bupati pertamanya (Pj.) dilantik 24 Mei 2003.</li>
+<li><b>Sejarah</b> Belitung dikenal sebagai daerah tambang timah sejak masa Hindia Belanda; hingga kini timah dan pariwisata jadi penggerak ekonomi.</li>
+<li><b>Geopark</b> Belitong ditetapkan sebagai UNESCO Global Geopark pada 2021, dengan lanskap batu granit dan pantai yang khas.</li></ul>
+<p class="src">Sumber: Data Kependudukan Semester II 2024, Dinas P3ACSKB Prov. Kep. Babel (luas & penduduk); UU No. 5/2003; <a href="https://www.unesco.org/en/iggp/geoparks/belitong" target="_blank" rel="noopener">UNESCO Global Geoparks</a>. · data per 2024</p></div>
+<div class="card db"><h3>🛒 Harga pangan harian</h3><p class="mu sm" id="hp-upd">Memuat…</p><div class="hpg" id="hp"></div>
+<p class="src">Sumber: <a href="https://adat.belitung.go.id/komoditas" target="_blank" rel="noopener">ADAT Belitung</a>, Diskominfo Kab. Belitung (data Dinas Ketahanan Pangan dan Pertanian Kab. Belitung), Pasar Tanjung Pandan. Diperbarui otomatis tiap hari. · data per hari ini</p></div>
+<div class="card db"><h3>🗺️ Wilayah: kecamatan & desa</h3><input id="wq" class="wq" placeholder="Cari desa / kecamatan…" aria-label="Cari desa"><div id="wil"></div>
+<p class="src">Sumber: Kepmendagri No. 300.2.2-2138 Tahun 2025 (kode wilayah); jumlah penduduk per kecamatan: Data Kependudukan Semester II 2024 (Dukcapil, via Dinas P3ACSKB Prov. Babel). · data per 2025 (wilayah), 2024 (penduduk)</p></div>
+<div class="g2db"><div class="card db"><h3>🏛️ Bupati Belitung</h3><ol class="bup" id="bup-bel"></ol></div><div class="card db"><h3>🏛️ Bupati Belitung Timur</h3><ol class="bup" id="bup-beltim"></ol></div></div>
+<p class="src"><span class="pjk">Pj./Plt./Plh./Pjs.</span> = pejabat sementara, bukan bupati definitif. Sumber: <a href="https://setda.belitung.go.id/" target="_blank" rel="noopener">Setda Kab. Belitung</a>, <a href="https://kominfo.belitung.go.id/2024/08/11/mikron-antariksa-gantikan-yuspian-jadi-pj-bupati-belitung/" target="_blank" rel="noopener">Diskominfo Belitung</a>, ANTARA Babel; dicek silang dengan Wikipedia (Daftar Bupati Belitung / Belitung Timur). Tahun jabatan bupati 1950–1999 hanya tercatat per tahun. · data per Okt 2026</p></section>
+
 <section id="produk"><div class="sh"><div><div class="eyebrow">DARI KREATOR, UNTUK KREATOR</div><h2>Produk digital & jasa video AI</h2></div><a class="more" href="https://lynk.id/itap025" target="_blank" rel="noopener">Toko Lynk.id →</a></div>
 <div class="g3"><div class="card prod"><div class="thumb ph cov"><img src="img/p-ebook.webp" alt="Sampul ebook" loading="lazy"></div><span class="tag">Ebook</span><h3>Bikin Video Sinematik AI dari HP</h3><p class="price"><s class="was">Rp99.000</s> Rp29.700 <span class="off">-70%</span></p><a class="cta" href="https://lynk.id/itap025/zx9v358qogmm" target="_blank" rel="noopener">Beli Ebook</a></div>
 <div class="card prod"><div class="thumb ph cov"><img src="img/p-prompt.webp" alt="Sampul 100 prompt" loading="lazy"></div><span class="tag">Prompt</span><h3>100 Prompt Sinematik AI (Siap Copas)</h3><p class="price"><s class="was">Rp120.000</s> Rp36.000 <span class="off">-70%</span></p><a class="cta" href="https://lynk.id/itap025/w6xr3v14l65m" target="_blank" rel="noopener">Beli Prompt</a></div>
@@ -68,11 +84,11 @@
 <section id="tersimpan"><div class="sh"><div><div class="eyebrow">DISIMPAN DI PERANGKATMU</div><h2>🔖 Tersimpan</h2></div></div><div class="g4" id="saved"></div></section>
 </main>
 <footer><div class="w g4f"><div><div class="brand"><img src="logo-sm.png" alt="iTAP"><span><b>iTAP</b><small>BELITUNG · AI STORY</small></span></div><p class="sm">Cerita, rasa, dan perjalanan Belitung dihidupkan dengan AI oleh kreator Belitung.</p></div>
-<div><b>Jelajahi</b><a href="#cuaca">Cuaca & Laut</a><a href="#cari">Cari</a><a href="#trip">Rencana Trip</a><a href="#cerita">Cerita</a></div>
+<div><b>Jelajahi</b><a href="#cuaca">Cuaca & Laut</a><a href="#cari">Cari</a><a href="#trip">Rencana Trip</a><a href="#data">Data Belitung</a><a href="#cerita">Cerita</a></div>
 <div><b>iTAP</b><a href="https://lynk.id/itap025" target="_blank" rel="noopener">Toko Lynk.id</a><a href="#produk">Jasa Video AI</a><a href="#kedai">Kedai Bakso Aci</a><a href="https://linktr.ee/putraanandateguh" target="_blank" rel="noopener">Linktree</a></div>
 <div><b>Ikuti</b><a href="https://www.instagram.com/itapbelitung" target="_blank" rel="noopener">Instagram</a><a href="https://www.tiktok.com/@itap025" target="_blank" rel="noopener">TikTok</a><a href="https://www.youtube.com/@irmaindriani" target="_blank" rel="noopener">YouTube</a><a href="https://www.facebook.com/share/14tSNvhH7vK/" target="_blank" rel="noopener">Facebook</a><a href="https://wa.me/6285141121283" target="_blank" rel="noopener">WhatsApp (endorse)</a></div></div>
 <p class="w sm copy">© <span id="yr"></span> iTAP Belitung · Cuaca & laut: Open-Meteo · Sholat: Aladhan (Kemenag) · <a href="credits.html" style="display:inline;text-decoration:underline">Kredit foto & lisensi</a> · Musik orisinal dibuat dengan ElevenLabs</p></footer>
 <button id="music" class="music" aria-label="Musik latar">🔇 Putar musik</button>
 <a class="fab" href="https://wa.me/6285141121283?text=Halo%20iTAP" target="_blank" rel="noopener">💬 Tanya iTAP</a>
 <nav class="bnav"><a href="#beranda">🏠<span>Beranda</span></a><a href="#cuaca">🌤️<span>Cuaca</span></a><a href="#cari">🔍<span>Cari</span></a><a href="#produk">🛒<span>Produk</span></a><a href="#tersimpan">🔖<span>Simpan</span></a></nav>
-<script src="data.js?v=17"></script><script src="app.js?v=17"></script></body></html>
+<script src="data.js?v=18"></script><script src="app.js?v=18"></script><script src="data-belitung.js?v=18"></script></body></html>

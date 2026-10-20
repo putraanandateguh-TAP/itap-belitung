@@ -1,0 +1,100 @@
+{
+ "tanggal_sumber": "20-10-2026",
+ "lokasi": "Pasar Tanjung Pandan, Belitung",
+ "diambil": "2026-10-20 23:14 WIB",
+ "sumber": "ADAT Belitung, Diskominfo Kab. Belitung (data: Dinas Ketahanan Pangan dan Pertanian Kab. Belitung)",
+ "url": "https://adat.belitung.go.id/komoditas",
+ "items": [
+  {
+   "komoditas": "Beras Premium",
+   "harga": 18000,
+   "satuan": "kg",
+   "status": "stabil",
+   "perubahan": "Harga tetap / baru"
+  },
+  {
+   "komoditas": "Beras Medium",
+   "harga": 15000,
+   "satuan": "kg",
+   "status": "stabil",
+   "perubahan": "Harga tetap / baru"
+  },
+  {
+   "komoditas": "Kedelai Biji Kering",
+   "harga": 14000,
+   "satuan": "kg",
+   "status": "stabil",
+   "perubahan": "Harga tetap / baru"
+  },
+  {
+   "komoditas": "Bawang Merah",
+   "harga": 42000,
+   "satuan": "kg",
+   "status": "stabil",
+   "perubahan": "Harga tetap / baru"
+  },
+  {
+   "komoditas": "Bawang Putih",
+   "harga": 35000,
+   "satuan": "kg",
+   "status": "stabil",
+   "perubahan": "Harga tetap / baru"
+  },
+  {
+   "komoditas": "Cabe Merah Keriting",
+   "harga": 85000,
+   "satuan": "kg",
+   "status": "stabil",
+   "perubahan": "Harga tetap / baru"
+  },
+  {
+   "komoditas": "Cabe Rawit Merah",
+   "harga": 90000,
+   "satuan": "kg",
+   "status": "stabil",
+   "perubahan": "Harga tetap / baru"
+  },
+  {
+   "komoditas": "Daging Sapi",
+   "harga": 160000,
+   "satuan": "kg",
+   "status": "stabil",
+   "perubahan": "Harga tetap / baru"
+  },
+  {
+   "komoditas": "Daging Ayam Ras",
+   "harga": 40000,
+   "satuan": "kg",
+   "status": "stabil",
+   "perubahan": "Harga tetap / baru"
+  },
+  {
+   "komoditas": "Telur Ayam Ras",
+   "harga": 32000,
+   "satuan": "kg",
+   "status": "stabil",
+   "perubahan": "Harga tetap / baru"
+  },
+  {
+   "komoditas": "Gula Pasir Lokal/Curah",
+   "harga": 19000,
+   "satuan": "kg",
+   "status": "stabil",
+   "perubahan": "Harga tetap / baru"
+  },
+  {
+   "komoditas": "Minyak Goreng Kemasan",
+   "harga": 21000,
+   "satuan": "liter",
+   "status": "stabil",
+   "perubahan": "Harga tetap / baru"
+  },
+  {
+   "komoditas": "Tepung Terigu",
+   "harga": 10000,
+   "satuan": "kg",
+   "status": "stabil",
+   "perubahan": "Harga tetap / baru"
+  }
+ ]
+}

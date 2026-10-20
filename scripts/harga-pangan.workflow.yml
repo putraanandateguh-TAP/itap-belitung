@@ -1,0 +1,15 @@
+# Template GitHub Actions. Pindahkan ke .github/workflows/harga-pangan.yml (butuh token dengan scope "workflow").
+name: Update harga pangan
+on:
+  schedule: [{cron: "0 0 * * *"}]   # 07:00 WIB
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install beautifulsoup4 && python3 scripts/update_harga.py
+      - run: |
+          git config user.name "Teguh Ananda Putra"; git config user.email putraanandateguh@gmail.com
+          git add data/harga-pangan.json; git diff --cached --quiet || (git commit -m "harga pangan $(date -u +%F)" && git push)

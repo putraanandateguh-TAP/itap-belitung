@@ -9,7 +9,8 @@ const imgOf=e=>e.img?e.img:e.id===19?'img/kedai.webp':(REAL.includes(e.id)||GEN.
 const thumb=e=>{const u=imgOf(e);if(!u&&e.a)return `<div class="thumb ag ag-${e.a}"><span>${AG[e.a]}</span><small>${e.a}</small></div>`;return u?`<div class="thumb ph"><img src="${u}" alt="${e.t}" loading="lazy">${GEN.includes(e.id)?'<span class="ai">Ilustrasi AI</span>':''}</div>`:`<div class="thumb c-${e.c} fb"><img src="logo-sm.png" alt="" loading="lazy"><span>Foto menyusul</span></div>`};
 const ls=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(_){return d}};const ss=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(_){}};
 let saved=ls('itap_saved',[]);
-const maps=t=>'https://www.google.com/maps/search/'+encodeURIComponent(t+' Belitung');
+const maps0=t=>'https://www.google.com/maps/search/'+encodeURIComponent(t+' Belitung');
+const maps=t=>t==='Bakso Aci iTAP'?'https://www.google.com/maps/dir/?api=1&destination=-2.719012,107.677769':maps0(t);
 function card(e){const s=saved.includes(e.id);return `<div class="it">${thumb(e)}<div class="bd"><button class="save" data-s="${e.id}" title="Simpan">${s?'🔖':'📑'}</button><span class="tag">${e.c}</span>${e.cek?'<span class="tag cek">perlu dicek</span>':''}<h3>${e.t}</h3><p>${e.d}</p><a class="sm" style="color:var(--blue)" target="_blank" rel="noopener" href="${maps(e.t)}">📍 Lihat di peta</a></div></div>`}
 document.addEventListener('click',ev=>{const b=ev.target.closest('[data-s]');if(!b)return;const id=+b.dataset.s;saved=saved.includes(id)?saved.filter(x=>x!==id):[...saved,id];ss('itap_saved',saved);renderAll()});
 // Featured + sorotan

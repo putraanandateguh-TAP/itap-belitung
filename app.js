@@ -3,7 +3,7 @@ $('yr').textContent=now.getFullYear();$('today').textContent=now.toLocaleDateStr
 function go(id){$(id).scrollIntoView({behavior:'smooth'});if(id==='cari')setTimeout(()=>$('q').focus(),400)}
 const EMO={Wisata:'🏝️',Kuliner:'🍜',Sejarah:'⛏️',Legenda:'📜',Budaya:'🥁',Praktis:'🧭'};
 KB.forEach((e,i)=>e.id=i);
-const REAL=[0,1,2,5,6,8,9,10,13,14,15,16,17,18,20,21,22,23,24,26,28,29,33,34,39,42,44],GEN=[30,31,32,3,4,7,11,12];
+const REAL=[0,1,2,5,6,8,9,10,13,14,15,16,17,18,20,21,22,23,24,26,28,29,33,34,39,42,44],GEN=[30,31,32,3,4,7,11,12,25,27,35,36,37,38,40,41,43];
 const imgOf=e=>e.id===19?'img/kedai.webp':(REAL.includes(e.id)||GEN.includes(e.id))?`img/e${e.id}.webp`:null;
 const thumb=e=>{const u=imgOf(e);return u?`<div class="thumb ph"><img src="${u}" alt="${e.t}" loading="lazy">${GEN.includes(e.id)?'<span class="ai">Ilustrasi AI</span>':''}</div>`:`<div class="thumb c-${e.c} fb"><img src="logo-sm.png" alt="" loading="lazy"><span>Foto menyusul</span></div>`};
 const ls=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(_){return d}};const ss=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(_){}};

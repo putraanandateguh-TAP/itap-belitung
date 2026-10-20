@@ -1,5 +1,5 @@
 :root{--navy:#082c50;--blue:#2163df;--cyan:#00b8da;--ink:#0f2a44;--mu:#66798c;--paper:#f3f6fb;--line:#e2e9f3;--gold:#e8a317;--r:18px;--sh:0 2px 8px rgba(15,42,68,.07)}
-*{box-sizing:border-box;margin:0}body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--paper);color:var(--ink);line-height:1.5}a{color:inherit;text-decoration:none}
+*{box-sizing:border-box;margin:0}html,body{overflow-x:hidden;max-width:100%}img{max-width:100%;height:auto}body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--paper);color:var(--ink);line-height:1.5}a{color:inherit;text-decoration:none}
 .w{max-width:1200px;margin:auto;padding:0 16px}section{margin:34px 0}h1{font-size:clamp(1.7rem,4.5vw,2.6rem);line-height:1.15}h1 span{color:var(--blue)}h2{font-size:1.45rem}h3{font-size:1.05rem;margin:4px 0}
 .top{background:var(--navy);color:#cfe0f5;font-size:.8rem}.top .w{display:flex;justify-content:space-between;padding:6px 16px}
 .hd{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}.hd>.w{display:flex;align-items:center;gap:10px;height:62px}
@@ -42,3 +42,12 @@ footer{background:var(--navy);color:#cfe0f5;padding:36px 0 90px;margin-top:40px}
 .feat .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}.feat::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 30%,#000b);z-index:1}.feat>*:not(.bg){position:relative;z-index:2}
 .music{position:fixed;left:16px;bottom:78px;z-index:30;border:0;background:#fff;color:var(--navy);padding:10px 14px;border-radius:99px;font-weight:700;box-shadow:0 8px 20px #0003;cursor:pointer;font-size:.85rem}.music.on{background:var(--navy);color:#fff}
 @media(min-width:900px){.music{bottom:20px}}
+
+/* v4 thumbnail hardening */
+.thumb{position:relative;overflow:hidden;aspect-ratio:16/10;height:auto!important;width:100%;max-width:100%}
+.thumb>img{position:absolute;inset:0;width:100%!important;height:100%!important;max-width:100%;object-fit:cover;display:block}
+.fb>img{position:static;width:auto!important;height:54px!important;object-fit:contain}
+.cov>img{object-fit:contain}
+.vid,.prod,.it,.card{min-width:0;overflow:hidden}
+.row{max-width:100%}.row .it{flex:0 0 240px}
+.feat{max-width:100%}

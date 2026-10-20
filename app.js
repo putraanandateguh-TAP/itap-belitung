@@ -11,12 +11,12 @@ const ls=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(_){retu
 let saved=ls('itap_saved',[]);
 const maps0=t=>'https://www.google.com/maps/search/'+encodeURIComponent(t+' Belitung');
 const maps=t=>t==='Bakso Aci iTAP'?'https://www.google.com/maps/dir/?api=1&destination=-2.719012,107.677769':maps0(t);
-function card(e){const s=saved.includes(e.id);return `<div class="it">${thumb(e)}<div class="bd"><button class="save" data-s="${e.id}" title="Simpan">${s?'🔖':'📑'}</button><span class="tag">${e.c}</span>${e.cek?'<span class="tag cek">perlu dicek</span>':''}<h3>${e.t}</h3><p>${e.d}</p><a class="sm" style="color:var(--blue)" target="_blank" rel="noopener" href="${maps(e.t)}">📍 Lihat di peta</a></div></div>`}
+function card(e){const s=saved.includes(e.id);return `<div class="it" data-vid="${e.id}">${thumb(e)}<div class="bd"><button class="save" data-s="${e.id}" title="Simpan">${s?'🔖':'📑'}</button><span class="tag">${e.c}</span>${e.cek?'<span class="tag cek">perlu dicek</span>':''}<h3>${e.t}</h3><p>${e.d}</p>${window.viewTag?viewTag(e.id):""}<a class="sm" style="color:var(--blue)" target="_blank" rel="noopener" href="${maps(e.t)}">📍 Lihat di peta</a></div></div>`}
 document.addEventListener('click',ev=>{const b=ev.target.closest('[data-s]');if(!b)return;const id=+b.dataset.s;saved=saved.includes(id)?saved.filter(x=>x!==id):[...saved,id];ss('itap_saved',saved);renderAll()});
 // Featured + sorotan
 const FEAT=[0,16,2,34,6,9];const f=KB[FEAT[now.getDate()%FEAT.length]];
 $('feat').innerHTML=`<img class="bg" src="${imgOf(f)}" alt="${f.t}"><span class="tag" style="background:#fff3;color:#fff">${f.c} · Sorotan hari ini</span><h2>${f.t}</h2><p>${f.d}</p><a class="cta" style="width:max-content" target="_blank" rel="noopener" href="${maps(f.t)}">📍 Buka peta</a>`;
-$('sorotan').innerHTML=[1,9,33,19,40].map((i,n)=>`<div class="li" onclick="q.value='${KB[i].t.split(' ').slice(0,2).join(' ')}';render();go('cari')"><span class="n">0${n+1}</span><div><span class="tag">${KB[i].c}</span><div><b>${KB[i].t}</b></div></div></div>`).join('');
+$('sorotan').innerHTML=[1,9,33,19,40].map((i,n)=>`<div class="li" data-vid="${i}" onclick="q.value='${KB[i].t.split(' ').slice(0,2).join(' ')}';render();go('cari')"><span class="n">0${n+1}</span><div><span class="tag">${KB[i].c}</span><div><b>${KB[i].t}</b></div></div></div>`).join('');
 // Rows
 const row=(id,cs)=>$(id).innerHTML=KB.filter(e=>cs.includes(e.c)).map(card).join('');
 // Search

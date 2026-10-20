@@ -3,14 +3,17 @@ $('yr').textContent=now.getFullYear();$('today').textContent=now.toLocaleDateStr
 function go(id){$(id).scrollIntoView({behavior:'smooth'});if(id==='cari')setTimeout(()=>$('q').focus(),400)}
 const EMO={Wisata:'🏝️',Kuliner:'🍜',Sejarah:'⛏️',Legenda:'📜',Budaya:'🥁',Praktis:'🧭'};
 KB.forEach((e,i)=>e.id=i);
+const REAL=[0,1,2,5,6,8,9,10,13,14,15,16,17,18,20,21,22,23,24,26,28,29,33,34,39,42,44],GEN=[30,31,32];
+const imgOf=e=>e.id===19?'img/kedai.webp':(REAL.includes(e.id)||GEN.includes(e.id))?`img/e${e.id}.webp`:null;
+const thumb=e=>{const u=imgOf(e);return u?`<div class="thumb ph"><img src="${u}" alt="${e.t}" loading="lazy">${GEN.includes(e.id)?'<span class="ai">Ilustrasi AI</span>':''}</div>`:`<div class="thumb c-${e.c} fb"><img src="logo-sm.png" alt="" loading="lazy"><span>Foto menyusul</span></div>`};
 const ls=(k,d)=>{try{return JSON.parse(localStorage.getItem(k))??d}catch(_){return d}};const ss=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(_){}};
 let saved=ls('itap_saved',[]);
 const maps=t=>'https://www.google.com/maps/search/'+encodeURIComponent(t+' Belitung');
-function card(e){const s=saved.includes(e.id);return `<div class="it"><div class="thumb c-${e.c}">${EMO[e.c]}</div><div class="bd"><button class="save" data-s="${e.id}" title="Simpan">${s?'🔖':'📑'}</button><span class="tag">${e.c}</span>${e.cek?'<span class="tag cek">perlu dicek</span>':''}<h3>${e.t}</h3><p>${e.d}</p><a class="sm" style="color:var(--blue)" target="_blank" rel="noopener" href="${maps(e.t)}">📍 Lihat di peta</a></div></div>`}
+function card(e){const s=saved.includes(e.id);return `<div class="it">${thumb(e)}<div class="bd"><button class="save" data-s="${e.id}" title="Simpan">${s?'🔖':'📑'}</button><span class="tag">${e.c}</span>${e.cek?'<span class="tag cek">perlu dicek</span>':''}<h3>${e.t}</h3><p>${e.d}</p><a class="sm" style="color:var(--blue)" target="_blank" rel="noopener" href="${maps(e.t)}">📍 Lihat di peta</a></div></div>`}
 document.addEventListener('click',ev=>{const b=ev.target.closest('[data-s]');if(!b)return;const id=+b.dataset.s;saved=saved.includes(id)?saved.filter(x=>x!==id):[...saved,id];ss('itap_saved',saved);renderAll()});
 // Featured + sorotan
-const FEAT=[0,16,28,34,6,18];const f=KB[FEAT[now.getDate()%FEAT.length]];
-$('feat').innerHTML=`<div class="emo">${EMO[f.c]}</div><span class="tag" style="background:#fff3;color:#fff">${f.c} · Sorotan hari ini</span><h2>${f.t}</h2><p>${f.d}</p><a class="cta" style="width:max-content" target="_blank" rel="noopener" href="${maps(f.t)}">📍 Buka peta</a>`;
+const FEAT=[0,16,2,34,6,9];const f=KB[FEAT[now.getDate()%FEAT.length]];
+$('feat').innerHTML=`<img class="bg" src="${imgOf(f)}" alt="${f.t}"><span class="tag" style="background:#fff3;color:#fff">${f.c} · Sorotan hari ini</span><h2>${f.t}</h2><p>${f.d}</p><a class="cta" style="width:max-content" target="_blank" rel="noopener" href="${maps(f.t)}">📍 Buka peta</a>`;
 $('sorotan').innerHTML=[1,9,33,19,40].map((i,n)=>`<div class="li" onclick="q.value='${KB[i].t.split(' ').slice(0,2).join(' ')}';render();go('cari')"><span class="n">0${n+1}</span><div><span class="tag">${KB[i].c}</span><div><b>${KB[i].t}</b></div></div></div>`).join('');
 // Rows
 const row=(id,cs)=>$(id).innerHTML=KB.filter(e=>cs.includes(e.c)).map(card).join('');
@@ -60,3 +63,12 @@ function trip(d){$('tripout').innerHTML=TRIP[d].map(([h,l])=>`<div class="day"><
 $('tripbtn').onclick=e=>{const b=e.target.closest('.chip');if(b)trip(b.dataset.d)};trip(1);
 // active tab on scroll
 const tabs=[...document.querySelectorAll('.tabs a')];addEventListener('scroll',()=>{let a=tabs[0];tabs.forEach(t=>{const s=document.querySelector(t.getAttribute('href'));if(s&&s.getBoundingClientRect().top<160)a=t});tabs.forEach(t=>t.classList.toggle('on',t===a))},{passive:true});
+
+// Music
+(()=>{const a=new Audio('audio/belitung-bg.mp3');a.loop=true;a.preload='none';a.volume=0;const b=$('music');let on=false;
+const ui=()=>{b.textContent=on?'🎵 Musik: on':'🔇 Putar musik';b.classList.toggle('on',on)};
+const fade=(to,cb)=>{const st=a.volume,t0=performance.now();const f=()=>{const k=Math.min(1,(performance.now()-t0)/1500);a.volume=st+(to-st)*k;k<1?requestAnimationFrame(f):cb&&cb()};f()};
+const play=()=>a.play().then(()=>{on=true;ui();fade(.35)}).catch(()=>{});
+const stop=()=>{on=false;ui();fade(0,()=>a.pause())};
+b.onclick=e=>{e.stopPropagation();if(on){stop();ss('itap_music','off')}else{ss('itap_music','on');play()}};ui();
+if(ls('itap_music','on')!=='off'){a.preload='auto';play();const ev=['pointerdown','keydown','scroll','touchstart'];const once=()=>{ev.forEach(x=>removeEventListener(x,once,true));if(!on&&ls('itap_music','on')!=='off')play()};ev.forEach(x=>addEventListener(x,once,{capture:true,passive:true}))}})();

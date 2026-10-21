@@ -1,6 +1,6 @@
 // iTAP Belitung service worker. Naikkan VER tiap rilis aset.
-const VER='itap-v24',STATIC=VER+'-static';
-self.addEventListener('install',e=>{e.waitUntil(caches.open(STATIC).then(c=>c.addAll(['/','/style.css?v=24','/app.js?v=24','/data.js?v=24','/views.js?v=24','/data-belitung.js?v=24','/ppob.js?v=24','/logo-sm.png','/favicon.png']).catch(()=>{})));self.skipWaiting()});
+const VER='itap-v25',STATIC=VER+'-static';
+self.addEventListener('install',e=>{e.waitUntil(caches.open(STATIC).then(c=>c.addAll(['/','/style.css?v=25','/app.js?v=25','/data.js?v=25','/views.js?v=25','/data-belitung.js?v=25','/ppob.js?v=25','/logo-sm.png','/favicon.png']).catch(()=>{})));self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('itap-')&&!k.startsWith(VER)).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{const r=e.request,u=new URL(r.url);
  if(r.method!=='GET'||u.origin!==location.origin||u.pathname.startsWith('/admin/')||u.pathname.startsWith('/api/')||u.pathname.startsWith('/audio/'))return; // tidak di-cache

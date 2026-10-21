@@ -49,7 +49,7 @@ function init(){if(!$('#ppob'))return;
  $('#pp-cats').onclick=e=>{const b=e.target.closest('[data-c]');if(b&&b.dataset.c!==cat){cat=b.dataset.c;render()}};
  $('#pp-list').onclick=e=>{const b=e.target.closest('[data-n]');if(b){sel=+b.dataset.n;$('#pp-err').textContent='';upd()}};
  $('#pp-id').oninput=upd;$('#pp-form').onsubmit=send;
- render();fetch('data/ppob-harga.json?v=27').then(r=>r.ok?r.json():{}).then(j=>{H=j||{};upd()}).catch(()=>{});
+ render();fetch('data/ppob-harga.json?v=28').then(r=>r.ok?r.json():{}).then(j=>{H=j||{};upd()}).catch(()=>{});
 }
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();
 })();

@@ -68,3 +68,4 @@ footer{background:var(--navy);color:#cfe0f5;padding:36px 0 90px;margin-top:40px}
 .vw{display:inline-flex;align-items:center;gap:4px;font-size:.75rem;color:var(--mu);margin:4px 0}.vw[hidden]{display:none}.li .vw{margin-top:2px}.top .li .tag{font-variant:small-caps;letter-spacing:.04em}
 
 @media(max-width:440px){.hd .sbtn{padding:6px 9px;font-size:.82rem}.hd .cta{padding:7px 11px;font-size:.82rem}.hd .brand small{display:none}.tabs a{padding:6px 10px;font-size:.82rem}}
+.kgt{width:100%;border-collapse:collapse;font-size:.82rem;white-space:nowrap}.kgt th,.kgt td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right}.kgt th:first-child,.kgt td:first-child{text-align:left}.kgt th{color:var(--mu);font-weight:600}

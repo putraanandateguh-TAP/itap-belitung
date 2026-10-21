@@ -9,3 +9,14 @@ const bupRow=b=>`<li class="${PJ(b[2])?'pj':''}"><b>${b[0]}</b><span class="mu s
 function drawData(){document.getElementById('bup-bel').innerHTML=BUP_BEL.map(bupRow).join('');document.getElementById('bup-beltim').innerHTML=BUP_BELTIM.map(bupRow).join('');drawWil();document.getElementById('wq').oninput=drawWil;
 fetch('data/harga-pangan.json?t='+Date.now()).then(r=>r.json()).then(h=>{document.getElementById('hp-upd').textContent='Terakhir update: '+(h.tanggal_sumber||'-')+' (sumber) · diambil '+h.diambil+' · '+h.lokasi;document.getElementById('hp').innerHTML=h.items.map(i=>`<div class="hp"><span>${i.komoditas}</span><b>Rp${fmt(i.harga)}<small>/${i.satuan}</small></b><small class="st ${i.status}">${i.status||''}</small></div>`).join('')}).catch(()=>{document.getElementById('hp-upd').textContent='Data harga belum bisa dimuat. Cek langsung di sumber.'})}
 drawData();
+
+// Info keuangan (data/keuangan.json, diperbarui skrip; tanpa angka karangan)
+(()=>{const $k=id=>document.getElementById(id),NA='data belum tersedia',f=(n,d=2)=>n==null?'-':Number(n).toLocaleString('id-ID',{minimumFractionDigits:d,maximumFractionDigits:d});
+const NM={USD:'🇺🇸 USD',SGD:'🇸🇬 SGD',MYR:'🇲🇾 MYR',EUR:'🇪🇺 EUR',SAR:'🇸🇦 SAR',CNH:'🇨🇳 CNY (CNH)',JPY:'🇯🇵 JPY',AUD:'🇦🇺 AUD'};
+const box=(t,v,s)=>`<div class="hp"><span>${t}</span><b>${v}</b><small>${s}</small></div>`;
+fetch('data/keuangan.json?t='+Date.now()).then(r=>r.json()).then(d=>{const h=d.ihsg,e=d.emas,k=d.kurs;
+ $k('kg-top').innerHTML=(h?box('📈 IHSG (tertunda)',f(h.nilai),`<span style="color:${h.perubahan<0?'#c0392b':'#1e8449'}">${h.perubahan>0?'+':''}${f(h.perubahan)} (${h.persen>0?'+':''}${f(h.persen)}%)</span> · ${h.waktu_pasar}`):box('📈 IHSG',NA,''))
+  +(e?box('🥇 Emas Antam 1 gr','Rp'+f(e.harga,0),`${e.harga-e.sebelumnya>0?'+':''}${f(e.harga-e.sebelumnya,0)} vs kemarin · ${e.tanggal}`):box('🥇 Emas Antam',NA,''));
+ $k('kg-kurs').innerHTML=k?Object.keys(NM).map(c=>{const x=k.data[c];return x?`<tr><td>${NM[c]}</td><td>${f(x.erate[0])}</td><td>${f(x.erate[1])}</td><td>${f(x.bn[0])}</td><td>${f(x.bn[1])}</td></tr>`:`<tr><td>${NM[c]}</td><td colspan="4" class="mu">${NA}</td></tr>`}).join(''):`<tr><td colspan="5" class="mu">${NA}</td></tr>`;
+ $k('kg-src').textContent='Sumber: '+[h&&h.sumber+' · diambil '+h.diambil,k&&k.sumber+' · diambil '+k.diambil,e&&e.sumber+' · diambil '+e.diambil].filter(Boolean).join(' | ');
+}).catch(()=>{$k('kg-top').innerHTML='<p class="mu sm">'+NA+'</p>';$k('kg-kurs').innerHTML=`<tr><td colspan="5" class="mu">${NA}</td></tr>`})})();

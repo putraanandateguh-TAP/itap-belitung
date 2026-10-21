@@ -35,6 +35,7 @@ footer{text-align:center;padding:20px 16px 110px;color:var(--mut);font-size:12px
 .bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:flex;gap:10px;z-index:30;box-shadow:0 -4px 18px #0f172a12}
 .bar>div{max-width:640px;margin:auto;display:flex;gap:10px;width:100%}.bar .back{background:var(--soft);color:var(--txt);flex:0 0 96px}.bar .go{flex:1}
 #theme{background:var(--soft);color:var(--txt);min-height:36px;padding:6px 10px;font-size:14px}
+.imgbox img{width:100%;border-radius:12px;margin-top:8px;display:block}.imgbox .err{margin-top:8px;padding:10px;border-radius:10px;background:#fef2f2;color:#b91c1c;font-size:13px}body.dark .imgbox .err{background:#3b1d1d;color:#fca5a5}
 </style></head><body>
 <header><div class="logo"><svg width="40" height="40" viewBox="0 0 40 40" style="flex:none"><defs><linearGradient id="g"><stop stop-color="#4f46e5"/><stop offset="1" stop-color="#7c3aed"/></linearGradient></defs><rect rx="11" width="40" height="40" fill="url(#g)"/><path d="M15 11l15 9-15 9z" fill="#fff"/></svg>
 <div><b>iTAP Epic Video Generator</b><div class="badge">By Teguh Ananda Putra · iTAP Belitung</div></div></div>
@@ -107,13 +108,51 @@ async function ai(c,key){const sys=`Kamu sutradara iklan & content creator spesi
  const parts=[{text:u}];if(mode=='photo'&&img)parts.push({inlineData:{mimeType:mime,data:img}});
  const body={contents:[{role:"user",parts}],systemInstruction:{parts:[{text:sys}]},generationConfig:{responseMimeType:"application/json",responseSchema:{type:"OBJECT",properties:{judul:S,thumbnail_prompt:S,konsep:S,musik:S,scenes:{type:"ARRAY",items:sc},caption:S,hashtags:{type:"ARRAY",items:S}},required:["judul","scenes","caption","hashtags","musik"]}}};
  for(let i=0;i<3;i++){try{const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${$('model').value}:generateContent?key=${encodeURIComponent(key)}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!r.ok)throw Error('HTTP '+r.status);const j=await r.json();const d=JSON.parse(j.candidates[0].content.parts[0].text);d.scenes.forEach((s,k)=>s.no=k+1);return d}catch(e){if(i==2)throw e;await new Promise(r=>setTimeout(r,1000*2**i))}}}
-function render(d){data=d;if(!FULL){d.caption=(d.caption||'')+' — '+WM}$('tools').style.display='flex';$('out').innerHTML=`<h2>🎬 ${esc(d.judul)}</h2><div class="kv">${esc(d.konsep||'')}</div><div class="kv"><b>🎵 Musik:</b> ${esc(d.musik)}</div><div class="kv"><b>🖼️ Thumbnail:</b></div><div class="prompt">${esc(d.thumbnail_prompt||'')}</div><br>`+
+function render(d){data=d;if(!FULL){d.caption=(d.caption||'')+' — '+WM}$('tools').style.display='flex';$('out').innerHTML=`<h2>🎬 ${esc(d.judul)}</h2><div class="kv">${esc(d.konsep||'')}</div><div class="kv"><b>🎵 Musik:</b> ${esc(d.musik)}</div><div class="kv"><b>🖼️ Thumbnail:</b></div><div class="prompt">${esc(d.thumbnail_prompt||'')}</div><button class="sm gimg" style="margin-top:6px" onclick="genImg('th')">🖼️ Generate thumbnail${FULL?"":" 🔒"}</button><div class="imgbox" id="imgth"></div>
+<div class="scene" style="margin-top:10px"><b>🎨 Gambar AI (FULL)</b><div class="hint">Pakai Gemini API key kamu / mode Canvas. Gambar dibuat dari prompt EN + aspect ratio. Gambar AI di API Gemini umumnya <b>berbayar</b> (bukan free tier).</div>
+<div class="row"><div><label>Model gambar</label><select id="imodel"><option value="gemini-nano-banana-2.1">Nano Banana 2.1 (bisa referensi karakter)</option><option value="gemini-3.1-flash-lite-image">Nano Banana 2 Lite (termurah)</option><option value="gemini-3.1-flash-image">Nano Banana 2</option></select></div>
+<div><label><input type="checkbox" id="useref" style="width:auto;min-height:0"> Jadikan gambar scene 1 referensi karakter</label></div></div>
+<button class="go" style="margin-top:8px" onclick="genAll()">✨ Generate semua gambar${FULL?"":" 🔒"}</button></div><br>`+
  d.scenes.map(s=>`<div class="scene"><h3>Scene ${s.no} · ${esc(s.peran||'')}<span class="t">${esc(s.waktu)}</span></h3>
  <div class="kv"><b>5W1H:</b> What: ${esc(s.what)} · Who: ${esc(s.who)} · Where: ${esc(s.where)} · When: ${esc(s.when)} · Why: ${esc(s.why)} · How: ${esc(s.how)}</div>
  <div class="kv"><b>🎥 Kamera:</b> ${esc(s.kamera)} &nbsp; <b>🔊 SFX/ASMR:</b> ${esc(s.sfx)} &nbsp; <b>🔤 Teks:</b> ${esc(s.teks_layar)}</div>
  <div class="kv"><b>🎙️ Narasi:</b> "${esc(s.narasi)}"</div><div class="prompt">${esc(s.visual_prompt)}</div>
- <button class="sm" style="margin-top:6px" onclick="cp(data.scenes[${s.no-1}].visual_prompt)">Salin prompt scene ${s.no}</button></div>`).join('')+
+ <button class="sm" style="margin-top:6px" onclick="cp(data.scenes[${s.no-1}].visual_prompt)">Salin prompt scene ${s.no}</button> <button class="sm gimg" onclick="genImg(${s.no-1})">🖼️ Generate gambar${FULL?"":" 🔒"}</button><div class="imgbox" id="img${s.no-1}"></div></div>`).join('')+
  (FULL?'':`<div class="kv" style="color:var(--gold)">⚠️ ${WM} (versi demo)</div>`)+`<div class="scene"><div class="kv"><b>Caption:</b> ${esc(d.caption)}</div><div class="kv"><b>Hashtag:</b> ${esc(d.hashtags.join(' '))}</div></div>`}
+
+const IMGS={};
+function aspect(){const a=(data&&$('ar').value)||'9:16';return ['1:1','3:2','2:3','3:4','4:3','4:5','5:4','9:16','16:9','21:9'].includes(a)?a:'9:16'}
+function findImg(o){let r=null;(function w(x){if(!x||typeof x!=='object')return;if(Array.isArray(x)){x.forEach(w);return}
+ if(x.inlineData&&x.inlineData.data)r={data:x.inlineData.data,mime:x.inlineData.mimeType||'image/png'};
+ else if(x.type==='image'&&x.data)r={data:x.data,mime:x.mime_type||'image/png'};
+ if(x.output_image&&x.output_image.data){r={data:x.output_image.data,mime:x.output_image.mime_type||'image/png'};return}
+ for(const k in x)if(k!=='output_image')w(x[k])})(o);return r}
+function errMsg(st,t){if(st==429||/RESOURCE_EXHAUSTED|quota/i.test(t))return '⏳ Kuota Gemini habis / terlalu cepat (429). Model gambar umumnya tidak gratis: aktifkan billing di Google AI Studio atau coba lagi nanti. Prompt tetap bisa kamu salin ke Grok Imagine / Gemini app.';
+ if(st==400&&/API key|API_KEY/i.test(t))return '🔑 API key tidak valid. Cek lagi key dari aistudio.google.com.';
+ if(st==403)return '🚫 Akses ditolak (403). Key belum punya akses model gambar / billing belum aktif.';
+ if(st==404)return '❓ Model gambar tidak ditemukan (404). Ganti pilihan model gambar.';
+ if(/SAFETY|blocked/i.test(t))return '🛡️ Prompt diblokir filter keamanan. Ubah prompt sedikit lalu coba lagi.';
+ return '⚠️ Gagal membuat gambar ('+(st||'jaringan')+'). Prompt tetap bisa disalin manual.'}
+async function callImg(prompt,ref){const key=$('key').value.trim(),m=$('imodel').value,ar=aspect();
+ const inp=[{type:'text',text:prompt+(ref?' Keep the same main character as the reference image.':'')}];if(ref)inp.push({type:'image',mime_type:ref.mime,data:ref.data});
+ const h={'Content-Type':'application/json'};if(key)h['x-goog-api-key']=key;
+ let r=await fetch('https://generativelanguage.googleapis.com/v1beta/interactions',{method:'POST',headers:h,body:JSON.stringify({model:m,input:inp,response_format:{type:'image',aspect_ratio:ar}})});
+ if(r.status==404||r.status==405){// fallback: generateContent (mis. Gemini Canvas)
+  const parts=[{text:prompt}];if(ref)parts.push({inlineData:{mimeType:ref.mime,data:ref.data}});
+  r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(key)}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts}],generationConfig:{responseModalities:['IMAGE'],imageConfig:{aspectRatio:ar}}})})}
+ const t=await r.text();if(!r.ok){const e=new Error(errMsg(r.status,t));throw e}
+ const im=findImg(JSON.parse(t));if(!im)throw new Error(errMsg(0,t.includes('SAFETY')?'SAFETY':''));return im}
+async function genImg(i){if(!FULL){alert('🔒 Fitur FULL. Klik "Beli akses FULL" untuk membuka generate gambar.');return false}
+ if(!data)return;const key=$('key').value.trim();if(!key&&!$('canvas').checked){alert('Isi Gemini API key kamu dulu di langkah 3 (atau centang Mode Gemini Canvas).');go(3);return false}
+ const box=$('img'+i),p=i==='th'?data.thumbnail_prompt:data.scenes[i].visual_prompt;box.innerHTML='<div class="hint">🎨 Membuat gambar...</div>';
+ const ref=($('useref').checked&&i!==0&&IMGS[0])?IMGS[0]:null;
+ try{const im=await callImg(p,ref);IMGS[i]=im;const url=`data:${im.mime};base64,${im.data}`;
+  box.innerHTML=`<img src="${url}" alt="scene ${i}"><button class="sm" style="margin-top:6px" onclick="dlImg('${i}')">⬇️ Download PNG</button>`;return true}
+ catch(e){box.innerHTML=`<div class="err">${esc(e.message)}</div>`;return !/429|Kuota|key|403/.test(e.message)}}
+async function dlImg(i){const im=IMGS[i],img=new Image();img.src=`data:${im.mime};base64,${im.data}`;await img.decode();const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;c.getContext('2d').drawImage(img,0,0);
+ c.toBlob(b=>{const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`itap-${i==='th'?'thumbnail':'scene-'+(+i+1)}.png`;a.click()},'image/png')}
+async function genAll(){if(!FULL){alert('🔒 Fitur FULL. Klik "Beli akses FULL" untuk membuka generate gambar.');return}
+ for(let i=0;i<data.scenes.length;i++){const ok=await genImg(i);if(ok===false)return}await genImg('th')}
 function txt(){const d=data;return `${d.judul}\n${d.konsep||''}\nMusik: ${d.musik}\n\n`+d.scenes.map(s=>`[SCENE ${s.no} | ${s.waktu}] ${s.peran||''}\n5W1H: ${s.what} | ${s.who} | ${s.where} | ${s.when} | ${s.why} | ${s.how}\nKamera: ${s.kamera}\nVisual Prompt (EN): ${s.visual_prompt}\nNarasi: ${s.narasi}\nSFX/ASMR: ${s.sfx}\nTeks layar: ${s.teks_layar}\n`).join('\n')+`\nTHUMBNAIL: ${d.thumbnail_prompt||''}\n\nNARASI UTUH:\n${d.scenes.map(s=>s.narasi).join(' ')}\n\nCaption: ${d.caption}\n${d.hashtags.join(' ')}\n\n— iTAP Epic Video Generator · By Teguh Ananda Putra · iTAP Belitung${FULL?'':'\n'+WM}`}
 function srt(){const f=t=>`00:00:${String(t).padStart(2,'0')},000`.replace(/00:00:(\d\d)/,(m,x)=>x>=60?`00:01:${String(x-60).padStart(2,'0')}`:m);return data.scenes.map((s,i)=>`${i+1}\n${f(i*10)} --> ${f(i*10+10)}\n${s.narasi}\n`).join('\n')}
 function cp(t){navigator.clipboard.writeText(t).then(()=>alert('Tersalin!'))}

@@ -1,0 +1,65 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow"><title>Admin PPOB · iTAP Belitung</title><link rel="icon" href="../../favicon.png">
+<style>
+:root{--navy:#082c50;--blue:#2163df;--cyan:#00b8da;--ink:#0f2a44;--mu:#66798c;--paper:#f3f6fb;--line:#e2e9f3;--gold:#e8a317;--r:14px}
+*{box-sizing:border-box;margin:0}body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--paper);color:var(--ink);line-height:1.5}
+header{background:var(--navy);color:#fff;padding:14px 22px;display:flex;align-items:center;gap:12px}header img{height:34px}header h1{font-size:1.15rem}header small{margin-left:auto;opacity:.75}
+.wrap{display:flex;min-height:calc(100vh - 62px)}aside{width:220px;background:#fff;border-right:1px solid var(--line);padding:16px 10px}
+aside a{display:block;padding:10px 14px;border-radius:10px;color:var(--ink);text-decoration:none;font-weight:600;margin-bottom:4px}aside a.on,aside a:hover{background:#e8f0fe;color:var(--blue)}
+main{flex:1;padding:22px;max-width:1100px}section{display:none}section.on{display:block}h2{font-size:1.3rem;margin-bottom:14px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.card .l{color:var(--mu);font-size:.85rem}.card .v{font-size:1.5rem;font-weight:800;margin-top:4px}.badge{display:inline-block;background:#fff4d6;color:#8a5a00;border-radius:99px;padding:2px 10px;font-size:.8rem;font-weight:700}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:var(--r);overflow:hidden;border:1px solid var(--line)}th,td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left;font-size:.92rem}th{background:#f7f9fc;color:var(--mu)}
+.empty{text-align:center;color:var(--mu);padding:26px}input,select{padding:8px 10px;border:1px solid var(--line);border-radius:8px;font:inherit;width:100%}
+.btn{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:9px 16px;font-weight:700;cursor:pointer}.btn.g{background:#fff;color:var(--blue);border:1px solid var(--blue)}
+.row{display:flex;gap:10px;margin:12px 0;flex-wrap:wrap}.form{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:18px;max-width:560px}.form label{display:block;font-weight:600;margin:10px 0 4px}
+.note{color:var(--mu);font-size:.85rem;margin-top:8px}
+</style></head><body>
+<header><img src="../../logo-sm.png" alt=""><h1>iTAP Belitung - Admin PPOB</h1><small id="tgl"></small></header>
+<div class="wrap"><aside id="nav">
+<a href="#dashboard" class="on">📊 Dashboard</a><a href="#produk">🏷️ Produk &amp; Harga</a><a href="#transaksi">🧾 Transaksi</a><a href="#saldo">💰 Saldo Supplier</a><a href="#api">⚙️ Pengaturan API</a></aside>
+<main>
+<section id="dashboard" class="on"><h2>Dashboard</h2><div class="cards">
+<div class="card"><div class="l">Saldo Digiflazz</div><div class="v">Rp0</div></div>
+<div class="card"><div class="l">Transaksi hari ini</div><div class="v">0</div></div>
+<div class="card"><div class="l">Supplier</div><div class="v" style="font-size:1.1rem">Digiflazz (Buyer)</div><span class="badge">Menunggu verifikasi</span></div>
+<div class="card"><div class="l">Produk aktif</div><div class="v" id="nprod">0</div></div></div>
+<p class="note">Transaksi otomatis aktif setelah server backend & whitelist IP Digiflazz selesai. Sementara order masuk manual via WhatsApp.</p></section>
+
+<section id="produk"><h2>Produk &amp; Harga</h2>
+<div class="row"><button class="btn g" onclick="addRow()">+ Tambah produk</button><button class="btn" onclick="exportJSON()">⬇ Export JSON</button></div>
+<table><thead><tr><th>Kategori</th><th>Operator/Sub</th><th>Nominal</th><th>Harga modal</th><th>Markup (Rp)</th><th>Harga jual</th></tr></thead><tbody id="tb"></tbody></table>
+<p class="note">Data dimuat dari data/ppob-harga.json. Perubahan markup disimpan di browser ini (localStorage). Export JSON lalu upload ke repo untuk publish.</p></section>
+
+<section id="transaksi"><h2>Transaksi</h2><table><thead><tr><th>Waktu</th><th>ID</th><th>Produk</th><th>Tujuan</th><th>Harga</th><th>Status</th></tr></thead>
+<tbody><tr><td colspan="6" class="empty">Belum ada transaksi</td></tr></tbody></table></section>
+
+<section id="saldo"><h2>Saldo Supplier</h2><div class="cards"><div class="card"><div class="l">Digiflazz</div><div class="v">Rp0</div><span class="badge">Deposit menunggu verifikasi</span></div></div></section>
+
+<section id="api"><h2>Pengaturan API</h2><form class="form" onsubmit="return false">
+<label>Supplier</label><input value="Digiflazz" disabled>
+<label>Username</label><input placeholder="menunggu whitelist IP server" disabled>
+<label>API key</label><input placeholder="menunggu whitelist IP server" disabled>
+<label>IP server (whitelist)</label><input placeholder="menunggu VPS aktif" disabled>
+<label>Webhook URL</label><input placeholder="belum diatur" disabled>
+<p class="note">Kredensial API tidak disimpan di halaman ini; nanti disimpan di server backend.</p></form></section>
+</main></div>
+<script>
+const $=s=>document.querySelector(s),rp=n=>'Rp'+Number(n||0).toLocaleString('id-ID'),LS='itap-ppob-markup';
+$('#tgl').textContent=new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+function show(){const h=(location.hash||'#dashboard').slice(1);document.querySelectorAll('main section').forEach(s=>s.classList.toggle('on',s.id===h));document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.hash==='#'+h))}
+addEventListener('hashchange',show);show();
+let rows=[],M=JSON.parse(localStorage.getItem(LS)||'{}');
+const key=r=>[r.k,r.s,r.n].join('|');
+function flat(j){const o=[];for(const k in j){const v=j[k];for(const a in v){if(typeof v[a]==='object')for(const n in v[a])o.push({k,s:a,n,m:+v[a][n]});else o.push({k,s:'',n:a,m:+v[a]})}}return o}
+function render(){const tb=$('#tb');$('#nprod').textContent=rows.length;
+ if(!rows.length){tb.innerHTML='<tr><td colspan="6" class="empty">Belum ada produk. Daftar harga belum diisi.</td></tr>';return}
+ tb.innerHTML=rows.map((r,i)=>{const mk=M[key(r)]||0;return `<tr><td><input value="${r.k}" onchange="ed(${i},'k',this.value)"></td><td><input value="${r.s}" onchange="ed(${i},'s',this.value)"></td><td><input type="number" value="${r.n}" onchange="ed(${i},'n',this.value)"></td><td><input type="number" value="${r.m||''}" onchange="ed(${i},'m',+this.value)"></td><td><input type="number" value="${mk||''}" onchange="mk(${i},+this.value)"></td><td><b>${rp((r.m||0)+mk)}</b></td></tr>`}).join('')}
+function ed(i,f,v){rows[i][f]=v;save();render()}
+function mk(i,v){M[key(rows[i])]=v;save();render()}
+function save(){localStorage.setItem(LS,JSON.stringify(M));localStorage.setItem(LS+'-rows',JSON.stringify(rows))}
+function addRow(){rows.push({k:'pulsa',s:'',n:'',m:0});save();render()}
+function exportJSON(){const o={};rows.forEach(r=>{if(!r.k||!r.n)return;const p=(r.m||0)+(M[key(r)]||0);o[r.k]=o[r.k]||{};if(r.s){o[r.k][r.s]=o[r.k][r.s]||{};o[r.k][r.s][r.n]=p}else o[r.k][r.n]=p});
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(o,null,2)],{type:'application/json'}));a.download='ppob-harga.json';a.click()}
+fetch('../../data/ppob-harga.json?v='+Date.now()).then(r=>r.ok?r.json():{}).then(j=>{const saved=JSON.parse(localStorage.getItem(LS+'-rows')||'null');rows=saved&&saved.length?saved:flat(j||{});render()}).catch(()=>render());
+</script></body></html>

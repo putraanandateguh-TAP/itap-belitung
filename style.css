@@ -75,3 +75,5 @@ footer{background:var(--navy);color:#cfe0f5;padding:36px 0 90px;margin-top:40px}
 #ppob .pp-lbl{font-size:.85rem;font-weight:700;color:var(--navy);margin-bottom:6px}#ppob .pp-list{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}@media(min-width:700px){#ppob .pp-list{grid-template-columns:repeat(3,1fr)}}
 #ppob .pp-item{border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:11px 12px;text-align:left;cursor:pointer;font:inherit}#ppob .pp-item b{display:block;color:var(--navy);font-size:1rem}#ppob .pp-item small{color:var(--mu);font-size:.75rem}#ppob .pp-item.on{border-color:var(--blue);background:#eef4ff}
 #ppob .pp-sum{background:var(--paper);border-radius:12px;padding:10px 12px;font-size:.9rem;color:var(--navy)}#ppob .pp-soon{font-size:.78rem;color:var(--mu);text-align:center}
+
+.kl{margin:4px 0 8px;padding-left:18px;font-size:.85rem;line-height:1.5}.kl li{margin:2px 0}

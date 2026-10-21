@@ -19,7 +19,7 @@ const KB=[
 {c:"Kuliner",t:"Mie Belitung",d:"Mie kuning dengan kuah kental manis gurih dari kaldu udang, disajikan dengan udang, kentang, timun, emping. Warung legendaris: Mie Atep di Tanjung Pandan.",k:"mie atep makanan"},
 {c:"Kuliner",t:"Gangan",d:"Sup ikan kuah kuning (kunyit) asam pedas khas Belitung, sering pakai ikan ketarap atau kakap dan nanas.",k:"sup ikan kuning"},
 {c:"Kuliner",t:"Kopi Manggar & budaya warung kopi",d:"Manggar dijuluki 'Kota 1001 Warung Kopi'. Ngopi di warung kopi adalah tradisi sosial warga Belitung.",k:"kopi warkop manggar"},
-{c:"Kuliner",t:"Bakso Aci iTAP",d:"Kedai Bakso Aci iTAP, Jl. Permata VI Blok H25, Puri Kirana 3, Air Merbau, Tanjung Pandan. Buka setiap hari 11.00–22.00 WIB. Pesan via GrabFood/GoFood.",k:"bakso aci kedai itap"},
+{c:"Kuliner",t:"Bakso Aci iTAP",d:"Kedai Bakso Aci iTAP, Jl. Permata VI Blok H25, Puri Kirana 3, Air Merbau, Tanjung Pandan 33414. Buka setiap hari 11.00–22.00 WIB. Pesan via GrabFood/GoFood.",k:"bakso aci kedai itap"},
 {c:"Kuliner",t:"Martabak Bangka/Belitung (Hok Lo Pan)",d:"Martabak manis tebal khas Bangka Belitung, pengaruh kuliner Tionghoa.",k:"martabak manis"},
 {c:"Kuliner",t:"Kue Rintak & Kue Bingka",d:"Kue tradisional: rintak (kue sagu kering) dan bingka (kue basah manis).",k:"kue oleh oleh"},
 {c:"Kuliner",t:"Kerupuk/Kemplang & Terasi Belitung",d:"Oleh-oleh khas: kerupuk ikan/kemplang dan terasi.",k:"oleh oleh"},

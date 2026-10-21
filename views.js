@@ -18,7 +18,7 @@ async function hit(id){const d=new Date().toLocaleDateString('en-CA',{timeZone:'
 window.viewHit=hit;
 document.addEventListener('click',ev=>{if(ev.target.closest('[data-s]'))return;const c=ev.target.closest('[data-vid]');if(c)hit(+c.dataset.vid)},true);
 function hideTop(){const t=document.getElementById('top');if(t)t.hidden=true}
-function top(){const el=document.getElementById('toplist');if(!el)return;const l=Object.entries(V.v).filter(([,n])=>n>0).sort((a,b)=>b[1]-a[1]).slice(0,5);
+function top(){const el=document.getElementById('toplist');if(!el)return;{const t=document.getElementById('top');if(t)t.hidden=!Object.values(V.v).some(n=>n>0)}const l=Object.entries(V.v).filter(([,n])=>n>0).sort((a,b)=>b[1]-a[1]).slice(0,5);
  el.innerHTML=l.length?l.map(([i,n],k)=>{const e=KB[i];return `<div class="li" data-vid="${i}" onclick="q.value='${e.t.split(' ').slice(0,2).join(' ')}';render();go('cari')"><span class="n">0${k+1}</span><div><span class="tag">${e.c}</span><div><b>${e.t}</b></div><span class="vw">${eye}<span>${fmt(n)} dibaca</span></span></div></div>`}).join(''):'<p class="mu sm">Belum ada yang dibaca. Buka salah satu cerita, jadi pembaca pertama! 👀</p>'}
 new MutationObserver(()=>{clearTimeout(window._vt);window._vt=setTimeout(paint,50)}).observe(document.body,{childList:true,subtree:true});
 try{renderAll()}catch(_){}loadAll();

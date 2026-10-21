@@ -67,13 +67,13 @@ $('tripbtn').onclick=e=>{const b=e.target.closest('.chip');if(b)trip(b.dataset.d
 const tabs=[...document.querySelectorAll('.tabs a')];addEventListener('scroll',()=>{let a=tabs[0];tabs.forEach(t=>{const s=document.querySelector(t.getAttribute('href'));if(s&&s.getBoundingClientRect().top<160)a=t});tabs.forEach(t=>t.classList.toggle('on',t===a))},{passive:true});
 
 // Music
-(()=>{const a=new Audio('audio/belitung-bg.mp3');a.loop=true;a.preload='none';a.volume=0;const b=$('music');let on=false;
+(()=>{const a=new Audio('audio/belitung-bg-64k.mp3');a.loop=true;a.preload='none';a.volume=0;const b=$('music');let on=false;
 const ui=()=>{b.textContent=on?'🎵 Musik: on':'🔇 Putar musik';b.classList.toggle('on',on)};
 const fade=(to,cb)=>{const st=a.volume,t0=performance.now();const f=()=>{const k=Math.min(1,(performance.now()-t0)/1500);a.volume=st+(to-st)*k;k<1?requestAnimationFrame(f):cb&&cb()};f()};
 const play=()=>a.play().then(()=>{on=true;ui();fade(.35)}).catch(()=>{});
 const stop=()=>{on=false;ui();fade(0,()=>a.pause())};
 b.onclick=e=>{e.stopPropagation();if(on){stop();ss('itap_music','off')}else{ss('itap_music','on');play()}};ui();
-if(ls('itap_music','on')!=='off'){a.preload='auto';play();const ev=['pointerdown','keydown','scroll','touchstart'];const once=()=>{ev.forEach(x=>removeEventListener(x,once,true));if(!on&&ls('itap_music','on')!=='off')play()};ev.forEach(x=>addEventListener(x,once,{capture:true,passive:true}))}})();
+})();
 
 // Tempat ibadah
 (()=>{let ag='';const draw=()=>{$('ib-res').innerHTML=KB.filter(e=>e.c==='Ibadah'&&(!ag||e.a===ag)).map(card).join('');document.querySelectorAll('#ib-chips .chip').forEach(b=>b.classList.toggle('on',b.dataset.a===ag))};

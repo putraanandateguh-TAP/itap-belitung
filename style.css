@@ -69,3 +69,4 @@ footer{background:var(--navy);color:#cfe0f5;padding:36px 0 90px;margin-top:40px}
 
 @media(max-width:440px){.hd .sbtn{padding:6px 9px;font-size:.82rem}.hd .cta{padding:7px 11px;font-size:.82rem}.hd .brand small{display:none}.tabs a{padding:6px 10px;font-size:.82rem}}
 .kgt{width:100%;border-collapse:collapse;font-size:.82rem;white-space:nowrap}.kgt th,.kgt td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right}.kgt th:first-child,.kgt td:first-child{text-align:left}.kgt th{color:var(--mu);font-weight:600}
+.pwa{position:fixed;left:16px;bottom:126px;z-index:30;border:1px solid var(--line);background:var(--navy);color:#fff;padding:8px 12px;border-radius:99px;font-weight:700;font-size:.78rem;box-shadow:0 6px 16px #0003;cursor:pointer}.pwa[hidden]{display:none}@media(min-width:900px){.pwa{bottom:68px}}

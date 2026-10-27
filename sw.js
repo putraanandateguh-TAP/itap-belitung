@@ -1,5 +1,5 @@
 // iTAP Belitung service worker. Naikkan VER tiap rilis aset.
-const VER='itap-v29',STATIC=VER+'-static';
+const VER='itap-v30',STATIC=VER+'-static';
 self.addEventListener('install',e=>{e.waitUntil(caches.open(STATIC).then(c=>c.addAll(['/','/style.css?v=29','/app.js?v=29','/data.js?v=29','/views.js?v=29','/data-belitung.js?v=29','/ppob.js?v=29','/logo-sm.png','/favicon.png']).catch(()=>{})));self.skipWaiting()});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('itap-')&&!k.startsWith(VER)).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{const r=e.request,u=new URL(r.url);

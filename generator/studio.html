@@ -29,16 +29,22 @@ button,a.btn{cursor:pointer;border:0;border-radius:12px;padding:12px;font-weight
 <a class="btn go" style="margin-top:8px;text-align:center" href="./#lockbox">🔑 Masukkan kode / Beli FULL Rp49rb (QRIS)</a></div>
 
 <div class="card"><h2>1️⃣ Project Setup</h2>
-<button class="sm" id="presetBadau">⚡ Preset: Jejak Kerajaan Badau Part 5</button>
+<button class="sm" id="presetBadau">⚡ Preset: Jejak Kerajaan Badau Part 5</button> <button class="sm" id="presetAff">🛒 Preset: Affiliate Produk</button>
 <label>Judul</label><input id="title" placeholder="cth: Jejak Kerajaan Badau">
 <label>Ide cerita</label><textarea id="idea" placeholder="cth: Asal-usul Kerajaan Badau di Belitung dan peninggalannya"></textarea>
-<div class="row"><div><label>Kategori</label><select id="cat"><option>Sejarah</option><option>Legenda</option><option>Budaya & Tradisi</option><option>Wisata</option><option>Kuliner</option><option>Edukasi</option></select></div>
+<div class="row"><div><label>Kategori</label><select id="cat"><optgroup label="🛒 Affiliate & Jualan"><option>Affiliate / Review Produk</option><option>Affiliate Shopee/TikTok Shop (soft selling)</option><option>Unboxing & Tutorial Produk</option><option>Before-After / Problem-Solution</option><option>Promo UMKM/Kedai</option><option>Storytelling Brand</option></optgroup><optgroup label="📜 Cerita & Budaya"><option selected>Sejarah</option><option>Legenda</option><option>Budaya & Tradisi</option><option>Wisata</option><option>Kuliner</option></optgroup><optgroup label="💡 Edukasi & Lifestyle"><option>Tips & Edukasi</option><option>POV/Daily Life</option><option>Motivasi</option></optgroup></select></div>
 <div><label>Jumlah scene</label><select id="n"></select></div></div>
+<div id="affBox" style="display:none;border:1px dashed var(--pri);border-radius:12px;padding:10px;margin-top:8px"><b>🛒 Detail produk (Affiliate/Jualan)</b>
+<label>Nama produk</label><input id="pName" placeholder="cth: Blender Portable USB 380ml">
+<div class="row"><div><label>Harga / promo</label><input id="pPrice" placeholder="cth: Rp59rb, diskon 40% hari ini"></div><div><label>Platform target</label><select id="pPlat"><option>TikTok Shop</option><option>Shopee</option><option>Lynk.id</option><option>Tokopedia</option><option>WhatsApp / DM</option></select></div></div>
+<label>Keunggulan utama</label><textarea id="pBenefit" placeholder="cth: Bisa dicas USB, 6 mata pisau, gampang dicuci, muat di tas"></textarea>
+<label>Link / arahan beli</label><input id="pLink" placeholder="cth: keranjang kuning / link di bio">
+<div class="hint">Narasi persuasif tapi jujur. Jangan klaim kesehatan/medis palsu, jangan janji hasil pasti. Disclosure affiliate otomatis ditambahkan di caption.</div></div>
 <div class="row"><div><label>Durasi per scene</label><select id="dur"><option>5</option><option>6</option><option>8</option><option selected>10</option></select></div>
 <div><label>Rasio</label><select id="ar"><option>9:16</option></select></div></div>
 <label>Gaya visual</label><select id="vs"></select><div class="prompt" id="vsd"></div>
 <label>Character Lock (tokoh konsisten)</label><textarea id="char"></textarea><button class="sm" id="charReset">↺ Default PUTRA</button>
-<div class="chk"><input type="checkbox" id="fact" checked> Mode faktual (label bukti [FAKTA]/[TRADISI LOKAL]/[LEGENDA]/[VISUALISASI AI])</div>
+<div class="chk"><input type="checkbox" id="fact" checked> Mode label bukti (cerita: [FAKTA]/[TRADISI LOKAL]/[LEGENDA]/[VISUALISASI AI] · jualan: [PRODUK]/[DEMO]/[TESTIMONI]/[VISUALISASI AI])</div>
 <div class="chk"><input type="checkbox" id="addcta" checked> Tambah CTA di scene terakhir</div>
 </div>
 

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#0b0f1a"><link rel="icon" href="../icons/icon-192.png"><link rel="apple-touch-icon" href="../icons/apple-touch-icon.png"><title>iTAP Epic Video Generator — By Teguh Ananda Putra</title>
+<style>
+:root{--bg:#0b0f1a;--card:#141b2d;--line:#24304a;--gold:#f5b942;--teal:#19c3b1;--txt:#e8ecf5;--mut:#8b97b3}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,Segoe UI,Roboto,sans-serif;background:radial-gradient(circle at 20% 0,#1b2540,var(--bg) 60%);color:var(--txt);min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 22px;border-bottom:1px solid var(--line);background:#0b0f1acc;position:sticky;top:0;backdrop-filter:blur(8px);z-index:5}
+.logo{display:flex;gap:10px;align-items:center}.logo b{font-size:20px;background:linear-gradient(90deg,var(--gold),var(--teal));-webkit-background-clip:text;color:transparent}
+.badge{font-size:12px;color:var(--mut)}.credit{font-size:12px;text-align:right;color:var(--gold)}
+main{max-width:1100px;margin:auto;padding:22px;display:grid;grid-template-columns:380px 1fr;gap:20px}
+@media(max-width:900px){main{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+h2{font-size:15px;margin:0 0 10px;color:var(--gold)}label{display:block;font-size:12px;color:var(--mut);margin:10px 0 4px}
+input,select,textarea{width:100%;background:#0e1424;color:var(--txt);border:1px solid var(--line);border-radius:10px;padding:9px;font:inherit;font-size:14px}
+textarea{min-height:70px}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.presets{display:grid;grid-template-columns:1fr 1fr;gap:6px}.preset{padding:8px;border:1px solid var(--line);border-radius:10px;cursor:pointer;font-size:12px;background:#0e1424}
+.preset.on{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold) inset}
+.tabs{display:flex;gap:6px}.tab{flex:1;padding:8px;text-align:center;border-radius:10px;border:1px solid var(--line);cursor:pointer;font-size:13px}.tab.on{background:var(--gold);color:#111;font-weight:700}
+button{cursor:pointer;border:0;border-radius:12px;padding:12px;font-weight:700;font-size:14px}
+.go{width:100%;margin-top:14px;background:linear-gradient(90deg,var(--gold),#ff7a45);color:#111}
+.sm{padding:7px 10px;font-size:12px;background:#22304f;color:var(--txt)}
+.scene{border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;background:#0f1628}
+.scene h3{margin:0 0 6px;font-size:14px;display:flex;justify-content:space-between}.t{color:var(--teal);font-size:12px}
+.kv{font-size:13px;margin:4px 0}.kv b{color:var(--gold)}.prompt{font-family:ui-monospace,monospace;font-size:12px;background:#0a0f1c;border:1px dashed var(--line);padding:8px;border-radius:8px;white-space:pre-wrap}
+.empty{color:var(--mut);text-align:center;padding:60px 10px}.tools{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+footer{text-align:center;padding:20px;color:var(--mut);font-size:12px;border-top:1px solid var(--line)}footer b{color:var(--gold)}
+.hint{font-size:11px;color:var(--mut)}.spin{display:none;text-align:center;padding:30px;color:var(--gold)}
+</style></head><body>
+<header><div class="logo"><svg width="34" height="34" viewBox="0 0 40 40"><rect rx="9" width="40" height="40" fill="#f5b942"/><path d="M15 11l15 9-15 9z" fill="#111"/></svg>
+<div><b>iTAP Epic Video Generator</b><div class="badge">Prompt Sinematik 6 Scene · 9:16 · Narasi Indonesia</div></div></div>
+<div class="credit"><span id="plan" style="padding:3px 8px;border-radius:8px;background:#22304f;color:#fff">DEMO</span> <button class="sm" id="inst" style="display:none">📲 Pasang</button><br>By <b>Teguh Ananda Putra</b><br>iTAP Belitung</div></header>
+<main>
+<section class="card">
+<div id="lockbox" class="scene" style="border-color:#f5b942"><b style="color:#f5b942">🔓 Versi DEMO gratis</b><div class="hint">Demo: template offline, maks 3 scene, 3 gaya, ada watermark. FULL: 6 scene, 9 gaya epik, mode AI Gemini, export TXT/JSON/SRT, tanpa watermark.</div>
+<div class="row" style="margin-top:6px"><input id="code" placeholder="Masukkan kode akses"><button class="sm" id="unlock">Buka FULL</button></div>
+<a class="go" style="display:block;text-align:center;text-decoration:none;padding:10px;margin-top:8px" target="_blank" rel="noopener" href="https://wa.me/6285141121283?text=Halo%20iTAP%2C%20saya%20mau%20beli%20akses%20FULL%20iTAP%20Epic%20Video%20Generator%20(Rp49rb%20lifetime)">🛒 Beli akses FULL · Rp49rb</a></div>
+<h2>1. Sumber Ide</h2>
+<div class="tabs"><div class="tab on" data-m="idea">💡 Ide / Topik</div><div class="tab" data-m="photo">📷 Foto Produk</div></div>
+<div id="m-idea"><label>Ide / konsep video *</label><textarea id="idea" placeholder="cth: Kopi tubruk khas Belitung dari kebun ke cangkir"></textarea></div>
+<div id="m-photo" style="display:none"><label>Upload foto produk (maks 5MB)</label><input type="file" id="photo" accept="image/*"><img id="prev" style="max-width:100%;margin-top:6px;border-radius:10px;display:none"></div>
+<div class="row"><div><label>Nama produk/brand</label><input id="pname"></div><div><label>Lokasi syuting</label><input id="loc" value="Belitung"></div></div>
+<label>Deskripsi / keunggulan</label><input id="pdesc">
+<h2 style="margin-top:16px">2. Gaya Epik</h2><div class="presets" id="presets"></div>
+<div class="row"><div><label>Tujuan</label><select id="goal"><option>Soft Selling</option><option>Hard Selling</option><option>Storytelling</option><option>Edukasi</option><option>Branding</option></select></div>
+<div><label>Jumlah scene × durasi</label><select id="scn"><option value="6">6 × 10 dtk (60 dtk)</option><option value="3">3 × 10 dtk (30 dtk)</option><option value="4">4 × 10 dtk (40 dtk)</option><option value="5">5 × 10 dtk (50 dtk)</option></select></div></div>
+<div class="row"><div><label>Target audiens</label><select id="aud"><option>Audiens Umum</option><option>Gen Z 18-24</option><option>Milenial 25-34</option><option>Bapak & Ibu</option><option>Wisatawan</option><option>Pelaku UMKM</option></select></div>
+<div><label>Platform</label><select id="plat"><option>TikTok</option><option>Instagram Reels</option><option>YouTube Shorts</option><option>Facebook</option></select></div></div>
+<div class="row"><div><label>Talent / tokoh</label><input id="talent" placeholder="cth: pria Indonesia 30an, kaos hitam"></div><div><label>CTA</label><input id="cta" placeholder="cth: Order via WA sekarang!"></div></div>
+<div class="row"><div><label>Visual style</label><select id="vs"><option value="photorealistic live-action">Realistic</option><option value="2D anime style, cel shading">2D Anime</option><option value="3D Pixar-style animation, stylized characters">3D Pixar</option></select></div>
+<div><label>Aspect ratio</label><select id="ar"><option>9:16</option><option>16:9</option><option>1:1</option><option>4:5</option></select></div></div>
+<h2 style="margin-top:16px">3. Mesin AI (opsional)</h2>
+<label>Gemini API Key milik kamu</label><input id="key" type="password" placeholder="AIza... (disimpan di browser ini saja)">
+<div class="hint">Di Gemini Canvas: kosongkan saja (key otomatis). Standalone tanpa key:  pakai Mode Template Offline (tetap lengkap). Key gratis: aistudio.google.com</div>
+<label>Model</label><input id="model" value="gemini-2.5-flash">
+<label><input type="checkbox" id="canvas" style="width:auto"> Mode Gemini Canvas (panggil AI walau key kosong)</label><button class="go" id="gen">⚡ Buat Video Epik</button>
+</section>
+<section class="card"><div class="tools" id="tools" style="display:none">
+<button class="sm" id="cpAll">📋 Salin Semua</button><button class="sm" id="cpPr">🎬 Salin Prompt Visual (EN)</button><button class="sm" id="cpNar">🎙️ Salin Narasi Utuh</button>
+<button class="sm" id="dlTxt">⬇️ TXT</button><button class="sm" id="dlJson">⬇️ JSON</button><button class="sm" id="dlSrt">⬇️ SRT Subtitle</button><button class="sm" id="cpTh">🖼️ Salin Prompt Thumbnail</button></div>
+<div id="hist" class="hint" style="margin-bottom:8px"></div><div class="spin" id="spin">🎥 Meracik storyboard epik...</div><div id="out"><div class="empty">Isi ide di kiri, pilih gaya epik, lalu klik <b>Buat Video Epik</b>.<br><br>Hasil: storyboard per scene (5W1H, lokasi, aksi, gerakan kamera), prompt visual bahasa Inggris siap tempel ke Veo / Grok Imagine / Kling / Runway, narasi Indonesia satu kesatuan, musik, SFX/ASMR, teks layar, caption, hashtag, dan subtitle SRT.</div></div></section>
+</main>
+<footer>By <b>Teguh Ananda Putra</b> · <b>iTAP Belitung</b><br>© 2026 <b>iTAP Belitung</b> · Epic Video Generator · By <b>Teguh Ananda Putra</b> · itapbelitung.my.id</footer>
+<script>
+const HASH=["9a73d2ed0d71b89d6bde301a7aebbdd76a56f4497ea894beb05cc20bb53e48d6", "5460920d583552746ac176d26cfebe29278260f0d4e08f0bb9d79867f889c810", "ae994138899d7c766180a2210e7fca3c78348c357ff8d18cb2f817d2b5742748", "0d20b84588cc1afc00589d326509940982e807461c625b7db4fe3526097ad324", "8c8ea3555c0a5581a8abfe2adbf29070eaf7412529a386596febdef4de83df2f", "f1deb7fb181f5a13751208de869b5e799f9bb973cd679566fb4a146f413f2e1b", "350ffe71ac74405ffcc1000197e8dc723ad9f649a7683abb0f2dd5cb0c23ece7", "b234907c31ff697b6f9d1f8681a08c1359baa5ea27d2b1cfbd48dd0959798be5", "48e2a7fb1b115ed22cb1b326b80c01a0d56b6d8e05130fdec2dfb3751a863690", "f79691fdd10b1aaa481406d4f5c3a3dddef69e3b123fb332152666d1de235865", "6f2c6a7c2a25f181238144b03a62583ce47df95094dafcee66e4e73a6ef9a564", "fe53454ce2eb3fc902685dc8080f0c51b8a661d74913b7a2115a2646e5d6e432", "dffe3a941cfc4c71944cc6fc73090207f7c0d839b9dfe9a3289e04f36ec797f5", "490fbcfda89bcf7472bc3c7ac5c8674bcf0da56f888ac7efe47da3083f371b10", "8be876b0b47e74414643c6199cc2ccb45fc7b342b2c9bce78f7d29e8de3d3a10", "f33b4aafacc77a50b110e18af3bb3b4ccaea5218ba01889557aee340d121f9fe", "40ba6daf8018bfb19a0f8a606096b7721bccb638337bb48279c965dddbf83899", "0ad442205b6fd911cff7a7ff804941637bbf209aa70f6fb0a3dfd36aaef6187f", "ce0c1b4a5fad27952103cc09a85bd3f801a2626661b11415680bc879b938e890", "bad5ba0ac13e3d8eb4ff40201dba7dd27103c9f2db4986636c9fa6e98c66ba45"];
+const WM="Dibuat dengan iTAP Epic Video Generator · itapbelitung.my.id/generator";
+let FULL=localStorage.getItem("itap_full")==="1";
+const P={
+ epic:{n:"🔥 Epic Cinematic",look:"epic cinematic blockbuster, anamorphic lens, volumetric god rays, teal-orange grade, 35mm film grain",music:"orchestral hybrid trailer score, rising strings, deep braams, big drum hits",cam:["slow dolly-in","sweeping drone reveal","low-angle orbit","crane up","speed ramp push-in","epic pull-back wide"]},
+ doc:{n:"🌿 Dokumenter Alam",look:"nature documentary, natural golden light, shallow depth of field, ultra-detailed textures",music:"warm acoustic guitar, soft ambient pads",cam:["handheld follow","macro close-up","slow pan","aerial drone glide","rack focus","static wide"]},
+ asmr:{n:"🎧 ASMR Satisfying",look:"macro ASMR product cinematography, soft key light, crisp details, slow motion 120fps",music:"minimal lo-fi bed, very low volume",cam:["macro slide","top-down overhead","slow push-in","rack focus","360 turntable orbit","locked-off close-up"]},
+ hype:{n:"⚡ Hype Commercial",look:"high-energy commercial, punchy contrast, neon rim light, dynamic motion blur",music:"trap/phonk beat 140bpm with bass drops",cam:["whip pan","fast push-in","FPV drone dive","dutch angle","snap zoom","circular dolly"]},
+ heritage:{n:"🏝️ Heritage Belitung",look:"cultural heritage film, warm sunset light, granite rocks and turquoise sea, Malay coastal village",music:"Melayu gambus & ethnic percussion mixed with cinematic strings",cam:["drone over granite boulders","slow tracking shot","low-angle hero","silhouette sunset wide","gimbal walk-through","crane down"]},
+ folk:{n:"📜 Legenda/Folklore",look:"mythic folklore epic, misty ancient atmosphere, torchlight, legendary storytelling, painterly realism",music:"ethnic Malay flute, war drums, choir",cam:["slow push through mist","low-angle hero","sweeping crane","orbit around character","tracking chase","epic pull-back reveal"]},
+ trailer:{n:"🎞️ Movie Trailer",look:"Hollywood movie trailer, high contrast, lens flares, dramatic silhouettes",music:"trailer riser, silence beat, massive braam drop",cam:["black-to-light reveal","fast cuts push-in","drone fly-over","slow-motion hero walk","whip pan","title card pull-back"]},
+ prod:{n:"🛍️ Product Commercial",look:"premium TV commercial, studio softbox lighting, glossy hero product, clean background",music:"upbeat modern corporate pop",cam:["360 product orbit","macro slide","top-down flat lay","push-in hero","hand interaction close-up","logo end-card"]},
+ lux:{n:"💎 Luxury Premium",look:"luxury brand film, glossy reflections, black and gold palette, soft haze",music:"elegant piano and deep cinematic pulse",cam:["slow orbit","glide-in macro","silk-smooth dolly","reveal from shadow","top-down","slow tilt up"]}};
+let preset="epic",mode="idea",img=null,mime=null,data=null;
+const $=i=>document.getElementById(i);
+$('presets').innerHTML=Object.entries(P).map(([k,v])=>`<div class="preset ${k==preset?'on':''}" data-k="${k}">${v.n}</div>`).join('');
+document.querySelectorAll('.preset').forEach(e=>e.onclick=()=>{preset=e.dataset.k;document.querySelectorAll('.preset').forEach(x=>x.classList.toggle('on',x==e))});
+document.querySelectorAll('.tab').forEach(e=>e.onclick=()=>{mode=e.dataset.m;document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x==e));$('m-idea').style.display=mode=='idea'?'':'none';$('m-photo').style.display=mode=='photo'?'':'none'});
+$('photo').onchange=e=>{const f=e.target.files[0];if(!f)return;if(f.size>5e6)return alert('Maks 5MB');const r=new FileReader();r.onload=()=>{$('prev').src=r.result;$('prev').style.display='block';mime=f.type;img=r.result.split(',')[1]};r.readAsDataURL(f)};
+$('key').value=localStorage.getItem('itap_key')||'';
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function cfg(){return{idea:$('idea').value.trim()||($('pname').value||'produk lokal'),pname:$('pname').value,pdesc:$('pdesc').value,loc:$('loc').value||'Belitung',goal:$('goal').value,n:+$('scn').value,aud:$('aud').value,plat:$('plat').value,talent:$('talent').value||'a friendly Indonesian creator',cta:$('cta').value||'Kunjungi dan order sekarang!',vs:$('vs').value,ar:$('ar').value,p:P[preset]}}
+function offline(c){const roles=["HOOK — pattern interrupt","Masalah / rasa penasaran","Reveal produk / solusi","Proses & detail","Bukti / emosi / manfaat","CTA epik"];
+ const nar=[`Tunggu dulu! Kamu belum pernah lihat ${c.idea} seperti ini.`,`Di ${c.loc}, banyak yang belum tahu rahasia di balik ${c.pname||'ini'}.`,`Inilah ${c.pname||c.idea}, ${c.pdesc||'dibuat dengan sepenuh hati'}.`,`Setiap detail dikerjakan teliti, dari awal sampai siap dinikmati.`,`Hasilnya? Bikin bangga, bikin puas, dan pengen lagi.`,`${c.cta} Jangan sampai ketinggalan!`];
+ const idx=c.n==6?[0,1,2,3,4,5]:c.n==5?[0,1,2,4,5]:c.n==4?[0,2,4,5]:[0,2,5];
+ return{judul:`${c.p.n.replace(/^\S+ /,'')} — ${c.idea}`,konsep:`Video ${c.n*10} detik 9:16 bergaya ${c.p.n}, lokasi ${c.loc}, tujuan ${c.goal}.`,musik:c.p.music,
+ scenes:idx.map((r,i)=>({no:i+1,waktu:`${i*10}-${i*10+10}s`,peran:roles[r],what:roles[r],who:c.talent,where:`${c.loc}`,when:["golden hour sunrise","morning","midday bright","afternoon","sunset","blue hour night"][r],why:r==0?"menghentikan scroll dalam 3 detik":r==5?"mendorong aksi":"membangun keinginan",how:c.p.cam[r],kamera:c.p.cam[r],
+ visual_prompt:`${c.ar} aspect ratio, ${c.vs}, ${c.p.look}. ${c.talent} in ${c.loc}, Indonesia, ${["dramatic first-second reveal, sudden motion toward camera","curious expression exploring the location","presenting "+(c.pname||c.idea)+" as hero product, light flare","hands crafting details in extreme close-up","joyful authentic reaction, community vibe","hero shot facing camera with confident gesture, space for title text"][r]}. Camera: ${c.p.cam[r]}. ${["golden hour sunrise","morning","midday bright","afternoon","sunset","blue hour night"][r]} lighting, 10 seconds, no text, no watermark.`,
+ narasi:nar[r],sfx:["whoosh + deep boom impact","ambient waves & wind, footsteps","shimmer riser, soft click","ASMR close sounds: pouring, crunch, tapping","crowd laughter, warm swell","final braam hit + logo sting"][r],teks_layar:["STOP SCROLL!","Belum tahu?",c.pname||"Ini dia!","Detail premium","Bukti nyata",c.cta][r]})),
+ thumbnail_prompt:`${c.ar} thumbnail, ${c.vs}, ${c.p.look}, ${c.talent} with ${c.pname||c.idea} as hero, shocked/excited expression, bold empty space for big title text, ${c.loc} background, high contrast, eye-catching`,caption:`${c.idea} ✨ ${c.cta} #iTAPBelitung`,hashtags:["#iTAPBelitung","#Belitung","#"+(c.pname||'UMKM').replace(/\s/g,''),"#fyp","#"+c.plat.split(' ')[0]]}}
+async function ai(c,key){const sys=`Kamu sutradara iklan & content creator spesialis video pendek Indonesia. Buat storyboard VIDEO EPIK ${c.n} scene x 10 detik, rasio ${c.ar}, gaya ${c.vs} sinematik; sertakan thumbnail_prompt (EN). Aturan: hook kuat di 3 detik pertama scene 1; tiap scene isi 5W1H (what, who, where, when, why, how), lokasi spesifik di ${c.loc}, aksi, gerakan kamera; visual_prompt dalam BAHASA INGGRIS detail (subject, action, setting, lighting, camera move, lens, mood, "${c.ar}, ${c.vs}, no text"), konsisten tokoh antar scene; narasi BAHASA INDONESIA ~10 detik (18-25 kata) per scene yang bila disambung menjadi SATU narasi utuh mengalir; sfx/ASMR per scene; teks_layar singkat; scene terakhir CTA. Gaya visual: ${c.p.look}. Musik: ${c.p.music}.`;
+ const u=`Ide: ${c.idea}\nProduk: ${c.pname}\nDeskripsi: ${c.pdesc}\nTujuan: ${c.goal}\nAudiens: ${c.aud}\nPlatform: ${c.plat}\nTalent: ${c.talent}\nCTA: ${c.cta}${img?'\nAnalisis foto produk terlampir dan jadikan hero product.':''}`;
+ const S={type:"STRING"},sc={type:"OBJECT",properties:Object.fromEntries(["waktu","peran","what","who","where","when","why","how","kamera","visual_prompt","narasi","sfx","teks_layar"].map(k=>[k,S])),required:["waktu","visual_prompt","narasi","kamera"]};
+ const parts=[{text:u}];if(mode=='photo'&&img)parts.push({inlineData:{mimeType:mime,data:img}});
+ const body={contents:[{role:"user",parts}],systemInstruction:{parts:[{text:sys}]},generationConfig:{responseMimeType:"application/json",responseSchema:{type:"OBJECT",properties:{judul:S,thumbnail_prompt:S,konsep:S,musik:S,scenes:{type:"ARRAY",items:sc},caption:S,hashtags:{type:"ARRAY",items:S}},required:["judul","scenes","caption","hashtags","musik"]}}};
+ for(let i=0;i<3;i++){try{const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${$('model').value}:generateContent?key=${encodeURIComponent(key)}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});if(!r.ok)throw Error('HTTP '+r.status);const j=await r.json();const d=JSON.parse(j.candidates[0].content.parts[0].text);d.scenes.forEach((s,k)=>s.no=k+1);return d}catch(e){if(i==2)throw e;await new Promise(r=>setTimeout(r,1000*2**i))}}}
+function render(d){data=d;if(!FULL){d.caption=(d.caption||'')+' — '+WM}$('tools').style.display='flex';$('out').innerHTML=`<h2>🎬 ${esc(d.judul)}</h2><div class="kv">${esc(d.konsep||'')}</div><div class="kv"><b>🎵 Musik:</b> ${esc(d.musik)}</div><div class="kv"><b>🖼️ Thumbnail:</b></div><div class="prompt">${esc(d.thumbnail_prompt||'')}</div><br>`+
+ d.scenes.map(s=>`<div class="scene"><h3>Scene ${s.no} · ${esc(s.peran||'')}<span class="t">${esc(s.waktu)}</span></h3>
+ <div class="kv"><b>5W1H:</b> What: ${esc(s.what)} · Who: ${esc(s.who)} · Where: ${esc(s.where)} · When: ${esc(s.when)} · Why: ${esc(s.why)} · How: ${esc(s.how)}</div>
+ <div class="kv"><b>🎥 Kamera:</b> ${esc(s.kamera)} &nbsp; <b>🔊 SFX/ASMR:</b> ${esc(s.sfx)} &nbsp; <b>🔤 Teks:</b> ${esc(s.teks_layar)}</div>
+ <div class="kv"><b>🎙️ Narasi:</b> "${esc(s.narasi)}"</div><div class="prompt">${esc(s.visual_prompt)}</div>
+ <button class="sm" style="margin-top:6px" onclick="cp(data.scenes[${s.no-1}].visual_prompt)">Salin prompt scene ${s.no}</button></div>`).join('')+
+ (FULL?'':`<div class="kv" style="color:#f5b942">⚠️ ${WM} (versi demo)</div>`)+`<div class="scene"><div class="kv"><b>Caption:</b> ${esc(d.caption)}</div><div class="kv"><b>Hashtag:</b> ${esc(d.hashtags.join(' '))}</div></div>`}
+function txt(){const d=data;return `${d.judul}\n${d.konsep||''}\nMusik: ${d.musik}\n\n`+d.scenes.map(s=>`[SCENE ${s.no} | ${s.waktu}] ${s.peran||''}\n5W1H: ${s.what} | ${s.who} | ${s.where} | ${s.when} | ${s.why} | ${s.how}\nKamera: ${s.kamera}\nVisual Prompt (EN): ${s.visual_prompt}\nNarasi: ${s.narasi}\nSFX/ASMR: ${s.sfx}\nTeks layar: ${s.teks_layar}\n`).join('\n')+`\nTHUMBNAIL: ${d.thumbnail_prompt||''}\n\nNARASI UTUH:\n${d.scenes.map(s=>s.narasi).join(' ')}\n\nCaption: ${d.caption}\n${d.hashtags.join(' ')}\n\n— iTAP Epic Video Generator · By Teguh Ananda Putra · iTAP Belitung${FULL?'':'\n'+WM}`}
+function srt(){const f=t=>`00:00:${String(t).padStart(2,'0')},000`.replace(/00:00:(\d\d)/,(m,x)=>x>=60?`00:01:${String(x-60).padStart(2,'0')}`:m);return data.scenes.map((s,i)=>`${i+1}\n${f(i*10)} --> ${f(i*10+10)}\n${s.narasi}\n`).join('\n')}
+function cp(t){navigator.clipboard.writeText(t).then(()=>alert('Tersalin!'))}
+function dl(n,c,t){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:t}));a.download=n;a.click()}
+$('cpTh').onclick=()=>cp(data.thumbnail_prompt||'');
+function saveH(c){const h=JSON.parse(localStorage.getItem('itap_hist')||'[]');h.unshift({t:new Date().toLocaleString('id-ID'),j:data.judul,d:data});localStorage.setItem('itap_hist',JSON.stringify(h.slice(0,10)));showH()}
+function showH(){const h=JSON.parse(localStorage.getItem('itap_hist')||'[]');$('hist').innerHTML=h.length?'🕘 Riwayat: '+h.map((x,i)=>`<a href="#" style="color:#19c3b1" onclick="render(JSON.parse(localStorage.getItem('itap_hist'))[${i}].d);return false">${esc(x.j)}</a>`).join(' · '):''}
+showH();
+const DEMO_P=['epic','heritage','asmr'];const lockX=f=>()=>FULL?f():alert('Export khusus versi FULL. Klik Beli akses.');
+async function sha(t){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(t));return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+function applyPlan(){$('plan').textContent=FULL?'FULL':'DEMO';$('plan').style.background=FULL?'#19c3b1':'#22304f';$('lockbox').style.display=FULL?'none':'';['key','model','canvas'].forEach(i=>$(i).disabled=!FULL);document.querySelectorAll('.preset').forEach(e=>{if(!FULL&&!DEMO_P.includes(e.dataset.k)){e.style.opacity=.45;e.title='FULL'}else e.style.opacity=1});[...$('scn').options].forEach(o=>o.textContent=o.textContent.replace(' 🔒','')+(!FULL&&+o.value>3?' 🔒':''));if(!FULL)$('scn').value='3'}
+$('unlock').onclick=async()=>{const c=$('code').value.trim().toUpperCase();if(HASH.includes(await sha(c))){FULL=true;localStorage.setItem('itap_full','1');applyPlan();alert('Versi FULL aktif. Selamat berkarya!')}else alert('Kode tidak valid. Hubungi admin via WA.')};
+applyPlan();
+let dp;addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e;$('inst').style.display=''});$('inst').onclick=()=>{dp&&dp.prompt();dp=null;$('inst').style.display='none'};
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js',{scope:'./'});
+$('cpAll').onclick=()=>cp(txt());$('cpPr').onclick=()=>cp(data.scenes.map(s=>`Scene ${s.no}: ${s.visual_prompt}`).join('\n\n'));$('cpNar').onclick=()=>cp(data.scenes.map(s=>s.narasi).join(' '));
+$('dlTxt').onclick=()=>lockX(()=>dl('storyboard-itap.txt',txt(),'text/plain'))();$('dlJson').onclick=()=>lockX(()=>dl('storyboard-itap.json',JSON.stringify(data,null,2),'application/json'))();$('dlSrt').onclick=()=>lockX(()=>dl('subtitle-itap.srt',srt(),'text/plain'))();
+$('gen').onclick=async()=>{if(!FULL&&(+$('scn').value>3||!DEMO_P.includes(preset))){alert('Fitur ini khusus versi FULL. Demo: maks 3 scene & 3 gaya.');return}const c=cfg();if(mode=='photo'&&!img)return alert('Upload foto dulu');const key=$('key').value.trim(),useAI=FULL&&(key||$('canvas').checked);localStorage.setItem('itap_key',key);
+ $('spin').style.display='block';$('out').innerHTML='';try{render(useAI?await ai(c,key):offline(c));saveH(c)}catch(e){alert('AI gagal ('+e.message+'), pakai Mode Template Offline.');render(offline(c))}$('spin').style.display='none'};
+</script></body></html>

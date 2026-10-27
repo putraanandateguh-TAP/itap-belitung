@@ -1,0 +1,84 @@
+// iTAP Story Studio — vanilla JS, no build. FULL lock shared with index.html via localStorage itap_full.
+const $=i=>document.getElementById(i),esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const FULL=localStorage.getItem('itap_full')==='1';
+const STYLES={
+"3D Clay Documentary":"hyper-realistic colorful polymer clay world, realistic human proportions, premium clay texture, full-scale immersive environment, cinematic documentary composition, volumetric lighting, HDR, realistic materials, detailed environment, cinematic depth, 9:16 vertical, no miniature diorama appearance, no text, no logo, no watermark.",
+"Cinematic Realistic":"ultra-realistic, highly detailed, 8k resolution, cinematic lighting, photorealistic, anamorphic lens flare, deep depth of field, dramatic shadows, professional color grading, 9:16 vertical, no text, no watermark.",
+"Historical Documentary":"vintage documentary style, slightly grainy texture, historical color palette, realistic historical recreation, authentic atmosphere, dramatic documentary lighting, 9:16 vertical, no text.",
+"2D Western Animation":"classic 2D western animation style, clean lines, flat colors, dynamic action, expressive characters, hand-drawn look, 9:16 vertical, no text.",
+"Anime":"high quality anime style, Studio Ghibli inspired, beautiful backgrounds, cel-shaded characters, dramatic anime lighting, vibrant colors, 9:16 vertical, no text.",
+"Comic":"dynamic comic book style, bold outlines, vivid colors, halftone patterns, dramatic angles, stylized shading, 9:16 vertical, no speech bubbles, no text.",
+"Vintage Historical":"sepia tone or faded colors, scratched film effect, vintage lens distortion, 19th-century photographic style, historical authenticity, 9:16 vertical, no text."};
+const FREE_STYLES=["3D Clay Documentary","Cinematic Realistic","Historical Documentary"];
+const PUTRA="PUTRA: Indonesian male, approximately 30 years old, sawo matang skin, short slightly messy black hair, dark green short-sleeve shirt, brown pants, brown shoes, small brown sling bag.";
+const DICT={Belitong:'Belitung',belitong:'Belitung',KTP:'K T P'};
+const CTA='Jangan lupa like, share, dan follow iTAP Belitung.';
+const LABELS=['[FAKTA]','[TRADISI LOKAL]','[LEGENDA]','[VISUALISASI AI]'];
+let D=null,refImg=null;
+// --- init UI
+for(let i=6;i<=12;i++)$('n').add(new Option(i+' scene'+(!FULL&&i>6?' 🔒':''),i));
+Object.keys(STYLES).forEach(k=>$('vs').add(new Option(k+(!FULL&&!FREE_STYLES.includes(k)?' 🔒':''),k)));
+const showVs=()=>$('vsd').textContent=STYLES[$('vs').value];$('vs').onchange=showVs;showVs();
+$('char').value=localStorage.getItem('itap_char')||PUTRA;$('charReset').onclick=()=>$('char').value=PUTRA;
+$('key').value=localStorage.getItem('itap_key')||'';
+$('plan').textContent=FULL?'FULL':'DEMO';$('plan').style.background=FULL?'#19c3b1':'#22304f';$('lockbox').style.display=FULL?'none':'';
+['key','ref'].forEach(i=>$(i).disabled=!FULL);
+if(localStorage.getItem('itap_theme')=='dark')document.body.classList.add('dark');
+$('theme').onclick=()=>{const d=document.body.classList.toggle('dark');localStorage.setItem('itap_theme',d?'dark':'light')};
+$('presetBadau').onclick=()=>{$('title').value='Jejak Kerajaan Badau Part 5';$('idea').value='Menelusuri jejak Kerajaan Badau di Belitung: asal-usul, tokoh, peninggalan, dan kisah yang diwariskan turun-temurun.';$('cat').value='Sejarah';$('vs').value='3D Clay Documentary';showVs()};
+$('ref').onchange=e=>{const f=e.target.files[0];if(!f)return refImg=null;if(f.size>5e6){alert('Maks 5MB');return}const r=new FileReader();r.onload=()=>{refImg={mime:f.type,data:r.result.split(',')[1]}};r.readAsDataURL(f)};
+const lock=m=>{alert('🔒 '+(m||'Fitur FULL')+'. Buka FULL di halaman utama (kode akses / QRIS Rp49rb).');return false};
+function cfg(){return{title:$('title').value.trim()||'Kisah Belitung',idea:$('idea').value.trim()||'Sejarah dan budaya Belitung',cat:$('cat').value,n:+$('n').value,dur:+$('dur').value,ar:'9:16',vs:$('vs').value,vsd:STYLES[$('vs').value],char:$('char').value.trim()||PUTRA,fact:$('fact').checked,cta:$('addcta').checked}}
+// --- template builder (always works)
+const BEATS=[['Hook: misteri pembuka','wide establishing aerial shot','[VISUALISASI AI]'],['Latar tempat & zaman','slow dolly-in','[FAKTA]'],['Tokoh & asal-usul','medium tracking shot','[TRADISI LOKAL]'],['Peristiwa penting','low-angle push-in','[FAKTA]'],['Kisah yang diwariskan','handheld close-up','[LEGENDA]'],['Jejak/peninggalan hari ini','orbit shot','[FAKTA]'],['Konflik / tantangan','dramatic crane up','[VISUALISASI AI]'],['Makna bagi masyarakat','gentle pan','[TRADISI LOKAL]'],['Detail artefak','macro close-up','[FAKTA]'],['Refleksi PUTRA','over-the-shoulder shot','[VISUALISASI AI]'],['Pertanyaan terbuka','pull-back reveal','[LEGENDA]'],['Penutup & ajakan','slow aerial pull-out at golden hour','[VISUALISASI AI]']];
+function sceneTpl(c,i,v){const b=BEATS[(i+(v||0))%BEATS.length],last=i==c.n-1,lab=c.fact?b[2]:'';
+const sub=`${c.char.split(':')[0]} exploring ${c.idea} in Belitung, Indonesia`;
+const narr=last&&c.cta?`Itulah sepenggal kisah ${c.title}. Masih banyak jejak yang menunggu ditemukan di tanah Belitung. ${CTA}`:
+[`Di balik tenangnya Belitung, tersimpan kisah ${c.title} yang jarang diceritakan, dan hari ini kita akan menelusurinya bersama.`,`Semua berawal dari ${c.idea.toLowerCase()}, di sebuah masa ketika pulau ini menjadi saksi perubahan besar.`,`Masyarakat setempat menuturkan kisah ini turun-temurun, menjaga ingatan tentang para tokoh dan perjalanan mereka.`,`Peristiwa ini membentuk wajah Belitung, meninggalkan jejak yang masih bisa kita rasakan sampai sekarang.`,`Sebagian kisahnya hidup sebagai legenda, bercampur antara fakta sejarah dan cerita rakyat yang penuh makna.`,`Kini, sisa-sisa peninggalannya masih berdiri, diam-diam menunggu untuk dikenali oleh generasi baru.`][(i+(v||0))%6];
+return{no:i+1,beat:b[0],label:lab,visual:`${sub}; ${b[0].toLowerCase()}; ${b[1]}`,
+grok:`${c.dur}-second vertical 9:16 video. ${c.char} ${b[0]} — ${sub}. Camera: ${b[1]}, smooth cinematic motion. Natural ambient sound only. NO lip-sync, character does not speak; narrator voice-over is added separately in editing. Style: ${c.vsd}`,
+flow:`[Google Flow] Shot ${i+1}/${c.n}, ${c.dur}s, 9:16. Subject: ${c.char} Action: ${b[0]} in ${c.idea}, Belitung. Camera: ${b[1]}. Mood: documentary, emotional. Keep same character across shots. No dialogue, no text. Style: ${c.vsd}`,
+image:`Create a 9:16 vertical image. ${c.char} Scene: ${b[0]} — ${sub}. Composition: ${b[1]} framing, cinematic. ${c.vsd}`,narration:narr}}
+function tpl(c){return{title:c.title,scenes:[...Array(c.n)].map((_,i)=>sceneTpl(c,i)),
+caption:`${c.title}\n\n${c.idea}. Tonton sampai habis untuk tahu kisah lengkapnya!\n\nDisclaimer: Visual dibuat dengan AI dan dapat mengandung interpretasi artistik. Narasi disusun dari sumber sejarah & tutur lokal.`,
+hashtags:['#belitung','#sejarah','#dokumenter','#'+c.cat.toLowerCase().replace(/[^a-z]/g,''),'#itapbelitung'],
+thumbnail:`Cinematic vertical 9:16 thumbnail poster. Strong focal point in the lower third. Clear subject: ${c.char} Theme: ${c.title}. Space for large title text in the upper center. High contrast, vibrant colors. Style: ${c.vsd} No text, no watermark.`,cta:CTA,src:'template'}}
+// --- Gemini (customer's own key)
+const MODELS=['gemini-2.5-flash','gemini-2.0-flash'];
+async function gemini(prompt,key){let err;for(const m of MODELS){try{const parts=[{text:prompt}];if(refImg)parts.push({inline_data:{mime_type:refImg.mime,data:refImg.data}});
+const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(key)}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts}],generationConfig:{responseMimeType:'application/json',temperature:.9}})});
+const t=await r.text();if(!r.ok)throw Error(m+' '+r.status);const j=JSON.parse(t);return JSON.parse(j.candidates[0].content.parts.map(p=>p.text||'').join(''))}catch(e){err=e}}throw err}
+const RULES=c=>`Kamu sutradara video dokumenter pendek Indonesia (iTAP Belitung). Kategori ${c.cat}. Judul "${c.title}". Ide: ${c.idea}. Rasio 9:16, ${c.dur} detik per scene. Gaya visual (salin utuh di akhir prompt EN): ${c.vsd}. CHARACTER LOCK (salin persis di setiap prompt): ${c.char}. ${c.fact?'Beri label bukti tiap scene salah satu dari '+LABELS.join(' ')+'; jangan karang fakta, bila tidak pasti pakai [LEGENDA] atau [VISUALISASI AI].':''} Prompt dalam BAHASA INGGRIS. grok = prompt video Grok Imagine: gerak kamera, aksi, NO lip-sync, tokoh tidak berbicara, narator VO terpisah. flow = prompt Google Flow. image = prompt gambar Gemini. narration = BAHASA INDONESIA 20-30 kata, bila disambung jadi satu narasi utuh. Tulis "Belitung" bukan "Belitong".`;
+const SCHEMA='{"no":n,"beat":"..","label":"[FAKTA]","visual":"..","grok":"..","flow":"..","image":"..","narration":".."}';
+async function aiAll(c,key){const d=await gemini(RULES(c)+` Buat ${c.n} scene; scene 1 hook kuat${c.cta?', scene terakhir berisi CTA: "'+CTA+'"':''}. Balas JSON: {"title":"..","scenes":[${SCHEMA}],"caption":"caption + disclaimer visual AI","hashtags":["5 hashtag"],"thumbnail":"prompt EN 9:16","cta":".."}`,key);
+if(!Array.isArray(d.scenes)||!d.scenes.length)throw Error('format');d.scenes=d.scenes.slice(0,c.n).map((s,i)=>({...sceneTpl(c,i),...s,no:i+1}));d.hashtags=(d.hashtags||[]).slice(0,5);d.src='Gemini';return{...tpl(c),...d}}
+// --- render
+const wc=s=>(s||'').trim().split(/\s+/).filter(Boolean).length;
+function qc(s){const w=wc(s);return `<span class="${w>=20&&w<=30?'ok':'bad'}">${w} kata ${w>=20&&w<=30?'✓':'(ideal 20–30)'}</span>`}
+const item=(lbl,txt,full,id)=>`<div class="tag">${lbl} ${!FULL&&full?'🔒':`<button class="sm" onclick="cp(${id})">Salin</button>`}</div>`+(!FULL&&full?`<div class="prompt lk">Khusus FULL</div>`:`<div class="prompt">${esc(txt)}</div>`);
+function render(){const c=cfg(),d=D;let h=`<div class="card"><h2>🎬 ${esc(d.title)} <span class="hint">(${d.src})</span></h2><div class="tools">
+<button class="sm" onclick="cpAll()">📋 Salin semua${FULL?'':' 🔒'}</button><button class="sm" onclick="dlTxt()">⬇️ Download .txt${FULL?'':' 🔒'}</button><button class="sm" onclick="cp('N')">🗣️ Salin narasi utuh</button><button class="sm" onclick="cp('G')">🎥 Salin semua prompt Grok</button></div></div>`;
+d.scenes.forEach((s,i)=>{h+=`<div class="scene"><h3><span>Scene ${s.no} · ${esc(s.beat)}</span><span>${s.label?`<span class="lab">${esc(s.label)}</span> `:''}<span class="lab" style="background:var(--pri)">${c.dur}s</span></span></h3>
+${item('🎥 Grok video prompt',s.grok,0,`'g${i}'`)}${item('🌊 Google Flow prompt',s.flow,1,`'f${i}'`)}${item('🖼️ Gemini image prompt',s.image,1,`'i${i}'`)}
+<div class="tag">🗣️ Narasi (VO) · ${qc(s.narration)} <button class="sm" onclick="cp('n${i}')">Salin</button> <button class="sm" onclick="speak(${i})">▶️ Dengar${FULL?'':' 🔒'}</button></div><div class="prompt">${esc(s.narration)}</div>
+<button class="sm" style="margin-top:6px" onclick="regen(${i})">🔄 Regenerate scene ini${FULL?'':' 🔒'}</button></div>`});
+h+=`<div class="card"><h2>🔊 Voice-over preview (FULL)</h2><div class="row"><div><label>Kecepatan</label><select id="rate"><option>0.75</option><option>0.9</option><option selected>1</option><option>1.1</option><option>1.2</option></select></div><div><label>&nbsp;</label><button class="sm" style="width:100%" onclick="speak(-1)">▶️ Putar semua</button></div></div><button class="sm" style="margin-top:6px" onclick="speechSynthesis.cancel()">⏹️ Stop</button><div class="hint">Pakai suara id-ID di perangkat; kamus lafal: Belitong→Belitung. Estimasi durasi: ±${Math.round(wc(d.scenes.map(s=>s.narration).join(' '))/130*60)} dtk @130 kata/menit.</div></div>`;
+h+=`<div class="card"><h2>📣 Publish</h2>${item('Caption + disclaimer AI',d.caption+'\n\n'+d.hashtags.join(' '),1,"'cap'")}${item('Thumbnail prompt',d.thumbnail,1,"'th'")}${item('CTA',d.cta,1,"'cta'")}</div>`;
+$('out').innerHTML=h;$('out').scrollIntoView({behavior:'smooth'})}
+function get(k){const d=D,s=d.scenes,m=k.match(/^([gfin])(\d+)$/);if(m){const x=s[+m[2]];return{g:x.grok,f:x.flow,i:x.image,n:x.narration}[m[1]]}
+return{N:s.map(x=>x.narration).join(' '),G:s.map(x=>`Scene ${x.no}: ${x.grok}`).join('\n\n'),cap:d.caption+'\n\n'+d.hashtags.join(' '),th:d.thumbnail,cta:d.cta}[k]}
+function cp(k){const t=typeof k=='string'&&k.length<6?get(k):k;const ok=()=>alert('Tersalin!');if(navigator.clipboard&&isSecureContext)navigator.clipboard.writeText(t).then(ok);else{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();document.execCommand('copy');a.remove();ok()}}
+function pkg(){const d=D;return `${d.title}\n${'='.repeat(30)}\n\n`+d.scenes.map(s=>`SCENE ${s.no} ${s.label||''} — ${s.beat}\nGROK: ${s.grok}\nFLOW: ${s.flow}\nGEMINI IMAGE: ${s.image}\nNARASI (${wc(s.narration)} kata): ${s.narration}\n`).join('\n')+`\nNARASI UTUH:\n${get('N')}\n\nCAPTION:\n${get('cap')}\n\nTHUMBNAIL: ${d.thumbnail}\nCTA: ${d.cta}\n\n— iTAP Story Studio · By Teguh Ananda Putra · iTAP Belitung`}
+function cpAll(){FULL?cp(pkg()):lock()}
+function dlTxt(){if(!FULL)return lock();const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([pkg()],{type:'text/plain'}));a.download=(D.title||'paket').replace(/\W+/g,'-')+'-itap.txt';a.click()}
+const fixP=t=>Object.entries(DICT).reduce((s,[a,b])=>s.replace(new RegExp('\\b'+a+'\\b','g'),b),t);
+function speak(i){if(!FULL)return lock();if(!('speechSynthesis'in window))return alert('Browser tidak mendukung suara.');speechSynthesis.cancel();
+const u=new SpeechSynthesisUtterance(fixP(i<0?get('N'):D.scenes[i].narration));u.lang='id-ID';u.rate=+($('rate')?.value||1);const v=speechSynthesis.getVoices().find(v=>/^id/i.test(v.lang));if(v)u.voice=v;speechSynthesis.speak(u)}
+async function regen(i){if(!FULL)return lock();const c=cfg(),key=$('key').value.trim();let s=sceneTpl(c,i,1+Math.floor(Math.random()*5));
+if(key){try{$('st').textContent='🔄 Regenerate scene '+(i+1)+'…';const r=await gemini(RULES(c)+` Buat variasi BARU untuk scene ${i+1} dari ${c.n} (sebelumnya: ${D.scenes[i].beat}). Balas JSON satu objek: ${SCHEMA}`,key);s={...s,...(Array.isArray(r)?r[0]:r),no:i+1}}catch(e){$('st').textContent='AI gagal, pakai template.'}}
+D.scenes[i]=s;render();$('st').textContent=''}
+$('gen').onclick=async()=>{const c=cfg();if(!FULL&&(c.n>6||!FREE_STYLES.includes(c.vs)))return lock('DEMO: maks 6 scene & 3 gaya');
+localStorage.setItem('itap_char',c.char);const key=FULL?$('key').value.trim():'';localStorage.setItem('itap_key',key||localStorage.getItem('itap_key')||'');
+$('st').textContent=key?'✨ Gemini sedang menyusun…':'⚙️ Menyusun dari template…';
+try{D=key?await aiAll(c,key):tpl(c)}catch(e){D=tpl(c);$('st').textContent='AI gagal ('+e.message+'), dipakai template.';}render();if(key&&D.src=='Gemini')$('st').textContent=''};
+if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js',{scope:'./'});

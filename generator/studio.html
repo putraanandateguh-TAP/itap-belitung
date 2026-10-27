@@ -6,7 +6,7 @@
 body.dark{--bg:#0b0f1a;--card:#141b2d;--line:#24304a;--pri:#f5b942;--pri2:#ff7a45;--gold:#f5b942;--teal:#19c3b1;--txt:#e8ecf5;--mut:#8b97b3;--soft:#1c2540;--code:#0a0f1c}
 *{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--txt)}
 header{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--card);position:sticky;top:0;z-index:20}
-header b{font-size:16px}.badge{font-size:11px;color:var(--mut)}main{max-width:680px;margin:auto;padding:12px 16px 80px}
+header b{font-size:16px}a.btn.sm{display:inline-flex;align-items:center}[contenteditable]:focus{outline:2px solid var(--pri)}.badge{font-size:11px;color:var(--mut)}main{max-width:680px;margin:auto;padding:12px 16px 80px}
 .card,.scene{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
 h2{font-size:15px;margin:0 0 8px}h3{font-size:15px;margin:0 0 8px;display:flex;justify-content:space-between;gap:6px;flex-wrap:wrap}
 label{display:block;font-size:13px;font-weight:600;margin:10px 0 5px}
@@ -20,13 +20,16 @@ button,a.btn{cursor:pointer;border:0;border-radius:12px;padding:12px;font-weight
 .tag{font-size:12px;font-weight:700;color:var(--mut);margin-top:8px}.ok{color:#16a34a}.bad{color:#dc2626}.hint{font-size:12px;color:var(--mut)}
 .tools{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.chk{display:flex;gap:8px;align-items:center;font-size:14px;margin-top:8px}.chk input{width:auto}
 </style></head><body>
-<header><div><b>🎬 iTAP Story Studio</b><div class="badge">Dokumenter · Sejarah · Wisata — By Teguh Ananda Putra</div></div>
+<header><div><b>🎬 iTAP Story Studio</b><div class="badge">Dokumenter · Affiliate · Edukasi — By Teguh Ananda Putra</div></div>
 <div><button class="sm" id="theme">🌙</button> <span id="plan" class="lab" style="background:#22304f">DEMO</span></div></header>
 <main>
-<div class="card hint">Alur: Storyboard → Narasi → Voice → Visual (Gemini) → Animasi (Grok/Flow) → Editing → Caption → Publish. <a href="./" style="color:var(--teal)">← Kembali ke Epic Video Generator</a></div>
+<div class="card hint">Alur: Storyboard → Narasi → Voice → Visual (Gemini) → Animasi (Grok/Flow) → Editing → Caption → Publish. <br><a href="./" style="color:var(--teal);font-weight:700">⚡ Butuh iklan produk epik (foto produk, SFX, gambar AI)? → Epic Video Generator</a></div>
 <div class="card" id="lockbox" style="border-color:var(--gold)"><b style="color:var(--gold)">🔓 Versi DEMO</b>
 <div class="hint">DEMO: 6 scene, 3 gaya, prompt Grok + narasi. FULL: 6–12 scene, semua gaya, Google Flow & Gemini image prompt, mode AI Gemini, foto referensi, regenerate scene, caption/thumbnail/CTA, voice preview, copy-all & download .txt.</div>
-<a class="btn go" style="margin-top:8px;text-align:center" href="./#lockbox">🔑 Masukkan kode / Beli FULL Rp49rb (QRIS)</a></div>
+<div class="row" style="margin-top:8px;align-items:center"><input id="code" placeholder="Sudah bayar? Masukkan kode akses"><button class="go" id="unlock">🔑 Buka FULL</button></div>
+<div class="tools"><a class="btn sm" href="./?beli=1">💳 Bayar QRIS Rp49rb</a><a class="btn sm" style="background:#25d366;color:#fff" target="_blank" rel="noopener" href="https://wa.me/6285141121283?text=Halo%20iTAP%2C%20saya%20mau%20beli%20akses%20FULL%20iTAP%20Generator%20%2B%20Story%20Studio%20(Rp49rb%20lifetime)">🛒 Beli via WA 0851-4112-1283</a></div>
+<div class="hint">1 kode FULL berlaku untuk Epic Video Generator <b>dan</b> Story Studio, sekali bayar.</div></div>
+<div class="card"><b>📘 Cara pakai (3 langkah)</b><ol style="margin:6px 0 0 18px;padding:0;font-size:13px;line-height:1.6"><li>Klik preset atau isi judul, ide, kategori (pilih 🛒 Affiliate untuk jualan).</li><li>Atur jumlah scene, gaya visual & tokoh (Character Lock).</li><li>Klik <b>⚡ Buat Paket Video</b> → salin prompt ke Grok/Flow/Gemini, narasi ke voice over, caption ke platform.</li></ol><div class="hint">Narasi bisa diedit langsung (ketuk teksnya). Project otomatis tersimpan di 🕘 Riwayat.</div><div id="hist" class="hint" style="margin-top:6px"></div></div>
 
 <div class="card"><h2>1️⃣ Project Setup</h2>
 <button class="sm" id="presetBadau">⚡ Preset: Jejak Kerajaan Badau Part 5</button> <button class="sm" id="presetAff">🛒 Preset: Affiliate Produk</button>
@@ -43,6 +46,7 @@ button,a.btn{cursor:pointer;border:0;border-radius:12px;padding:12px;font-weight
 <div class="row"><div><label>Durasi per scene</label><select id="dur"><option>5</option><option>6</option><option>8</option><option selected>10</option></select></div>
 <div><label>Rasio</label><select id="ar"><option>9:16</option></select></div></div>
 <label>Gaya visual</label><select id="vs"></select><div class="prompt" id="vsd"></div>
+<label>Negative prompt (hal yang dihindari)</label><input id="neg" placeholder="cth: blurry, extra fingers, distorted face, text, watermark">
 <label>Character Lock (tokoh konsisten)</label><textarea id="char"></textarea><button class="sm" id="charReset">↺ Default PUTRA</button>
 <div class="chk"><input type="checkbox" id="fact" checked> Mode label bukti (cerita: [FAKTA]/[TRADISI LOKAL]/[LEGENDA]/[VISUALISASI AI] · jualan: [PRODUK]/[DEMO]/[TESTIMONI]/[VISUALISASI AI])</div>
 <div class="chk"><input type="checkbox" id="addcta" checked> Tambah CTA di scene terakhir</div>
@@ -57,4 +61,4 @@ button,a.btn{cursor:pointer;border:0;border-radius:12px;padding:12px;font-weight
 <div id="out"></div>
 <div style="text-align:center;font-size:12px;color:var(--mut);margin-top:20px">iTAP Story Studio · “Create. Copy. Generate.” · © 2026 <b>Teguh Ananda Putra</b> · iTAP Belitung</div>
 </main>
-<script src="studio.js"></script></body></html>
+<script src="lock.js"></script><script src="studio.js"></script></body></html>

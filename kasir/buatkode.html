@@ -10,7 +10,7 @@ if(localStorage.itap_kasir_owner==='1'){$('#locked').hidden=true;$('#maker').hid
 $('#start').value=new Date().toLocaleDateString('sv-SE');
 async function gen(){if(localStorage.itap_kasir_owner!=='1')return;const p=$('#plan').value,s=$('#start').value.replace(/-/g,'');const c=await kMake(p,s),e=kExp(p,s),n=$('#nama').value.trim();
 $('#code').textContent=c;$('#expi').textContent=`${KNAME[p]} · berlaku sampai ${e} (habis mulai tanggal ini)`;
-const m=`Halo${n?' Kak '+n:''}, terima kasih sudah beli iTAP Kasir paket ${KNAME[p]} 🙏\n\nKode akses FULL: ${c}\nBerlaku sampai: ${e}\n\nCara pakai:\n1. Buka https://itapbelitung.my.id/kasir/app.html\n2. Masuk ⚙️ Atur → Akses FULL, tempel kode, klik Buka\n(atau langsung buka: https://itapbelitung.my.id/kasir/app.html?kode=${c})\n\nRutin Backup JSON ya, data tersimpan di HP Kakak. Ada kendala chat aja di sini.`;
+const m=`Halo${n?' Kak '+n:''}, terima kasih sudah beli iTAP Kasir paket ${KNAME[p]} 🙏\n\nKode akses FULL: ${c}\nBerlaku sampai: ${e}\n\nCara pakai:\n1. Buka https://itapbelitung.my.id/kasir/app.html\n2. Masuk ⚙️ Atur → Akses FULL, tempel kode, klik Buka\n(atau langsung buka: https://itapbelitung.my.id/kasir/app.html?kode=${c})\n\n📘 Ebook panduan: https://itapbelitung.my.id/kasir/panduan-b1ab176cfd.pdf\n\nRutin Backup JSON ya, data tersimpan di HP Kakak. Ada kendala chat aja di sini.`;
 $('#msg').textContent=m;$('#wa').href='https://wa.me/?text='+encodeURIComponent(m);$('#out').hidden=false}
 function cp(){navigator.clipboard?.writeText($('#msg').textContent).then(()=>alert('Tersalin'),()=>{const t=document.createElement('textarea');t.value=$('#msg').textContent;document.body.append(t);t.select();document.execCommand('copy');t.remove();alert('Tersalin')})}
 </script></body></html>

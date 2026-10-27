@@ -14,7 +14,7 @@ const P=id=>DB.produk.find(p=>p.id===id);
 // ---- tabs
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>show(b.dataset.t));
 function show(t){document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==='t-'+t));({dash:renderDash,jual:renderPick,produk:renderProduk,kulakan:renderKulakan,opname:renderOpname,riwayat:renderRiwayat,set:renderSet})[t]?.();scrollTo(0,0)}
-function renderPlan(){const o=localStorage.itap_kasir_owner==='1',e=localStorage.itap_kasir_exp;$('#plan').textContent=FULL()?(o?'OWNER':'FULL s/d '+e):'FREE';$('#expBan').hidden=!kasirExpired();$('#ownLink').hidden=!o;$('#keyBtn').hidden=FULL();$('#keyCard').hidden=FULL()}
+function renderPlan(){const o=localStorage.itap_kasir_owner==='1',e=localStorage.itap_kasir_exp;$('#plan').textContent=FULL()?(o?'OWNER':'FULL s/d '+e):'FREE';$('#expBan').hidden=!kasirExpired();$('#ownLink').hidden=!o;$('#guideCard').hidden=!FULL();$('#keyBtn').hidden=FULL();$('#keyCard').hidden=FULL()}
 // ---- FULL
 function openKey(){show('set');$('#kode').focus()}
 async function tryCode(){const ok=await itapCheckCode($('#kode').value);$('#kodeMsg').textContent=ok===true?'✅ FULL aktif'+(localStorage.itap_kasir_exp&&localStorage.itap_kasir_owner!=='1'?' sampai '+localStorage.itap_kasir_exp:'')+'. Semua batas dibuka.':ok==='expired'?'⌛ Kode ini sudah habis masa berlakunya. Perpanjang via WA.':'❌ Kode tidak valid.';renderPlan();if(ok)toast('✅ iTAP Kasir FULL aktif')}

@@ -1,0 +1,32 @@
+name: Update data harian (harga pangan, kurs & IHSG)
+on:
+  schedule:
+    - cron: "0 0 * * *"            # 07:00 WIB tiap hari: harga pangan
+    - cron: "15 2,5,9 * * 1-5"     # 09:15, 12:15, 16:15 WIB Senin-Jumat: kurs, IHSG, emas
+  workflow_dispatch:
+    inputs:
+      target: {description: "pangan | keuangan | semua", default: semua}
+permissions: {contents: write}
+concurrency: {group: update-data, cancel-in-progress: false}
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install beautifulsoup4
+      - name: Harga pangan
+        if: github.event.schedule == '0 0 * * *' || (github.event_name == 'workflow_dispatch' && inputs.target != 'keuangan')
+        run: python3 scripts/update_harga.py || (echo "::warning::Harga pangan gagal, data lama dipertahankan"; git checkout -- data/harga-pangan.json)
+      - name: Kurs & IHSG
+        if: github.event.schedule == '15 2,5,9 * * 1-5' || (github.event_name == 'workflow_dispatch' && inputs.target != 'pangan')
+        run: python3 scripts/update_keuangan.py || (echo "::warning::Keuangan gagal, data lama dipertahankan"; git checkout -- data/keuangan.json)
+      - name: Commit kalau ada perubahan
+        run: |
+          python3 -c "import json;[json.load(open(f)) for f in ('data/harga-pangan.json','data/keuangan.json')]" || git checkout -- data/
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/harga-pangan.json data/keuangan.json
+          git diff --cached --quiet && echo "Tidak ada perubahan" && exit 0
+          git commit -m "data harian $(TZ=Asia/Jakarta date '+%F %H:%M') WIB"
+          git pull --rebase && git push

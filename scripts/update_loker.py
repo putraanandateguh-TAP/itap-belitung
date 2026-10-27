@@ -7,6 +7,16 @@ from email.utils import parsedate_to_datetime
 WIB = timezone(timedelta(hours=7)); OUT = "data/loker.json"; NOW = datetime.now(WIB)
 UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"}
 LOC = re.compile(r"belitu?ng|belitong|tanjung ?pandan|manggar|bangka|pangkal ?pinang|babel|sungailiat|muntok|toboali|koba", re.I)
+REG = [("Belitung Timur", r"belitung timur|beltim|manggar|gantung|kelapa kampit|dendang|damar|simpang renggiang|simpang pesak"),
+       ("Pangkal Pinang", r"pangkal ?pinang|girimaya|gerunggang|bukit ?intan|rangkui|taman sari|gabek|pangkalbalam|bukitintan"),
+       ("Belitung", r"belitung|belitong|tanjung ?pandan|sijuk|membalong|badau|selat nasik"),
+       ("Bangka", r"bangka|sungailiat|belinyu|muntok|mentok|toboali|koba|jebus|pemali|kelapan")]
+def region(x):
+    t = (x.get("location", "") + " | " + x.get("title", "")).lower()
+    t = re.sub(r"(provinsi |prov\.? |kep(ulauan|\.)? )?bangka[ -]belitung|babel", " ", t)
+    for name, rx in REG:
+        if re.search(rx, t): return name
+    return "Lainnya / Babel umum"
 def get(u, t=20): return urllib.request.urlopen(urllib.request.Request(u, headers=UA), timeout=t).read().decode("utf-8", "ignore")
 def clean(s): return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", s or ""))).strip()
 def glints():
@@ -63,7 +73,7 @@ for x in items:
     if not x.get("date"): x["date"] = (old.get(x["url"]) or {}).get("date") or NOW.isoformat(timespec="minutes")  # tanggal pertama terlihat
     dt = datetime.fromisoformat(x["date"].replace("Z", "+00:00")).astimezone(WIB)
     if NOW - dt > timedelta(days=30): continue
-    x["date"] = dt.isoformat(timespec="minutes"); res.append(x)
+    x["date"] = dt.isoformat(timespec="minutes"); x["region"] = region(x); res.append(x)
 res.sort(key=lambda x: x["date"], reverse=True); res = res[:80]
 print("sumber:", ", ".join(ok), "| total", len(res))
 if not res: raise SystemExit(1)

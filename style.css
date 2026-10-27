@@ -94,3 +94,7 @@ footer{background:var(--navy);color:#cfe0f5;padding:36px 0 90px;margin-top:40px}
 .lk-g{border:1px solid #e3e9f0;border-radius:14px;margin-bottom:10px;background:#fff;overflow:hidden}.lk-g .lk-list{padding:0 12px 12px}.lk-g .lk-more{margin:0 auto 12px}
 .lk-h{width:100%;display:flex;align-items:center;gap:8px;border:0;background:none;padding:12px 14px;font:inherit;font-weight:700;color:var(--navy);cursor:pointer;text-align:left}.lk-g.on .lk-h{background:#f3f7fc}
 .lk-n{background:var(--blue);color:#fff;border-radius:999px;padding:1px 9px;font-size:.78rem}.lk-ar{margin-left:auto;color:var(--mu)}
+/* audit 27/10: tombol melayang ringkas di HP biar tidak menutupi konten */
+@media(max-width:899px){.music,.pwa:not([hidden]),.fab{display:block;width:44px;height:44px;padding:0;overflow:hidden;white-space:nowrap;font-size:0;line-height:44px;text-align:center}
+.music::first-letter,.pwa::first-letter,.fab::first-letter{font-size:1.2rem}
+.pwa{bottom:130px}.fab{width:48px;height:48px;line-height:48px}}

@@ -1,6 +1,6 @@
 // Penghitung "dibaca" asli (abacus.jasoncameron.dev, tanpa akun). Mulai dari 0, tidak ada angka palsu.
 (function(){
-const API='https://abacus.jasoncameron.dev',NS='itapbelitung',TTL=6e5;
+const API='https://abacus.jasoncameron.dev',NS='itapbelitung',TTL=108e5;
 const V=ls('itap_views',{t:0,v:{}});let ok=true;
 const key=id=>'kb-'+id;
 const fmt=n=>n>=1000?(n/1000).toFixed(1).replace('.',',').replace(',0','')+' rb':String(n);

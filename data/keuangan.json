@@ -5,7 +5,7 @@
   "persen": -3.18,
   "waktu_pasar": "2026-10-27 16:00 WIB",
   "sumber": "Yahoo Finance (^JKSE, tertunda)",
-  "diambil": "2026-10-27 21:57 WIB"
+  "diambil": "2026-10-27 22:21 WIB"
  },
  "kurs": {
   "data": {
@@ -25,8 +25,8 @@
    },
    "SGD": {
     "erate": [
-     14059.35,
-     14287.86
+     14052.2,
+     14280.63
     ],
     "tt": [
      13946.53,
@@ -39,8 +39,8 @@
    },
    "EUR": {
     "erate": [
-     20063.19,
-     20391.42
+     20052.34,
+     20380.51
     ],
     "tt": [
      19935.1,
@@ -53,8 +53,8 @@
    },
    "AUD": {
     "erate": [
-     12654.96,
-     12887.57
+     12653.15,
+     12880.3
     ],
     "tt": [
      12539.97,
@@ -67,8 +67,8 @@
    },
    "JPY": {
     "erate": [
-     113.9,
-     116.15
+     113.87,
+     116.11
     ],
     "tt": [
      113.12,
@@ -95,8 +95,8 @@
    },
    "CNH": {
     "erate": [
-     2690.04,
-     2754.95
+     2689.96,
+     2754.91
     ],
     "tt": [
      2630.15,
@@ -123,13 +123,13 @@
    }
   },
   "sumber": "BCA (e-Rate, TT Counter, Bank Notes) · beli/jual",
-  "diambil": "2026-10-27 21:57 WIB"
+  "diambil": "2026-10-27 22:21 WIB"
  },
  "emas": {
   "harga": 2550000,
   "sebelumnya": 2540000,
   "tanggal": "27 Oktober 2026",
   "sumber": "emasantam.id (Antam 1 gram, situs non-resmi)",
-  "diambil": "2026-10-27 21:57 WIB"
+  "diambil": "2026-10-27 22:21 WIB"
  }
 }

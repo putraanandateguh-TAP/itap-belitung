@@ -169,6 +169,7 @@ async function tryCode(c){c=(c||'').trim().toUpperCase();if(!c)return;if(HASH.in
 $('unlock').onclick=()=>tryCode($('code').value);$('keyBtn').onclick=()=>tryCode(prompt('Masukkan kode akses FULL:'));
 const _ap=applyPlan;applyPlan=function(){_ap();$('keyBtn').style.display=FULL?'none':''};
 applyPlan();
+{const k=new URLSearchParams(location.search).get('kode');if(k&&!FULL){history.replaceState(null,'',location.pathname);tryCode(k)}}
 let cur=1;const NM=['','Sumber ide','Gaya & pengaturan','Mesin AI','Hasil'];
 function go(n){cur=n;document.querySelectorAll('.step').forEach(e=>e.classList.toggle('on',+e.dataset.s==n));$('progi').style.width=(n*25)+'%';$('pill').textContent=n<4?`Langkah ${n} dari 3`:'Selesai ✓';$('stname').textContent=NM[n];$('bk').style.visibility=n>1?'visible':'hidden';$('nx').style.display=n<3?'':'none';$('gen').style.display=n==3?'':'none';if(n==4){$('gen').style.display='';$('gen').textContent='🔄 Regenerate'}else $('gen').textContent='⚡ Buat Video Epik';scrollTo({top:0,behavior:'smooth'})}
 $('nx').onclick=()=>{if(cur==1){if(mode=='idea'&&!$('idea').value.trim()&&!$('pname').value.trim())return alert('Isi ide dulu ya');if(mode=='photo'&&!img)return alert('Upload foto dulu')}go(cur+1)};$('bk').onclick=()=>go(cur==4?2:cur-1);go(1);

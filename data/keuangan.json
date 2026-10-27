@@ -1,11 +1,11 @@
 {
  "ihsg": {
-  "nilai": 5208.1,
-  "perubahan": -231.16,
-  "persen": -4.25,
-  "waktu_pasar": "2026-10-27 15:34 WIB",
+  "nilai": 5241.32,
+  "perubahan": -197.94,
+  "persen": -3.64,
+  "waktu_pasar": "2026-10-27 15:48 WIB",
   "sumber": "Yahoo Finance (^JKSE, tertunda)",
-  "diambil": "2026-10-27 15:44 WIB"
+  "diambil": "2026-10-27 15:58 WIB"
  },
  "kurs": {
   "data": {
@@ -25,8 +25,8 @@
    },
    "SGD": {
     "erate": [
-     14040.76,
-     14269.05
+     14044.05,
+     14272.39
     ],
     "tt": [
      13946.53,
@@ -39,8 +39,8 @@
    },
    "EUR": {
     "erate": [
-     20073.63,
-     20403.74
+     20070.01,
+     20401.92
     ],
     "tt": [
      19935.1,
@@ -53,8 +53,8 @@
    },
    "AUD": {
     "erate": [
-     12620.98,
-     12853.42
+     12626.41,
+     12862.52
     ],
     "tt": [
      12539.97,
@@ -67,8 +67,8 @@
    },
    "JPY": {
     "erate": [
-     113.86,
-     116.09
+     113.9,
+     116.13
     ],
     "tt": [
      113.12,
@@ -95,8 +95,8 @@
    },
    "CNH": {
     "erate": [
-     2688.68,
-     2753.55
+     2688.52,
+     2753.59
     ],
     "tt": [
      2630.15,
@@ -123,13 +123,13 @@
    }
   },
   "sumber": "BCA (e-Rate, TT Counter, Bank Notes) · beli/jual",
-  "diambil": "2026-10-27 15:45 WIB"
+  "diambil": "2026-10-27 15:58 WIB"
  },
  "emas": {
   "harga": 2550000,
   "sebelumnya": 2540000,
   "tanggal": "27 Oktober 2026",
   "sumber": "emasantam.id (Antam 1 gram, situs non-resmi)",
-  "diambil": "2026-10-27 15:45 WIB"
+  "diambil": "2026-10-27 15:58 WIB"
  }
 }

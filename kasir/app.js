@@ -4,7 +4,7 @@ const rp=n=>'Rp'+Math.round(n||0).toLocaleString('id-ID');
 const today=(d=new Date())=>d.toLocaleDateString('sv-SE');
 let DB=JSON.parse(localStorage.getItem(LS)||'null')||{toko:{nama:'Toko Saya',alamat:''},produk:[],trx:[],kulakan:[],opname:[],scan:{}};
 let CART=[];
-const FULL=()=>localStorage.getItem('itap_kasir_full')==='1';
+const FULL=()=>kasirFull();
 const LIM={produk:20,trx:30,scan:5};
 function save(){try{localStorage.setItem(LS,JSON.stringify(DB))}catch(e){toast('⚠️ Memori penuh. Kurangi foto atau backup & hapus data lama.')}}
 function toast(t){const e=$('#toast');e.textContent=t;e.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.display='none',2600)}
@@ -14,14 +14,14 @@ const P=id=>DB.produk.find(p=>p.id===id);
 // ---- tabs
 document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>show(b.dataset.t));
 function show(t){document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===t));document.querySelectorAll('.tab').forEach(s=>s.classList.toggle('on',s.id==='t-'+t));({dash:renderDash,jual:renderPick,produk:renderProduk,kulakan:renderKulakan,opname:renderOpname,riwayat:renderRiwayat,set:renderSet})[t]?.();scrollTo(0,0)}
-function renderPlan(){$('#plan').textContent=FULL()?'FULL':'FREE';$('#keyBtn').hidden=FULL();$('#keyCard').hidden=FULL()}
+function renderPlan(){const o=localStorage.itap_kasir_owner==='1',e=localStorage.itap_kasir_exp;$('#plan').textContent=FULL()?(o?'OWNER':'FULL s/d '+e):'FREE';$('#expBan').hidden=!kasirExpired();$('#ownLink').hidden=!o;$('#keyBtn').hidden=FULL();$('#keyCard').hidden=FULL()}
 // ---- FULL
 function openKey(){show('set');$('#kode').focus()}
-async function tryCode(){const ok=await itapCheckCode($('#kode').value);$('#kodeMsg').textContent=ok?'✅ FULL aktif. Semua batas dibuka.':'❌ Kode tidak valid.';renderPlan();if(ok)toast('✅ iTAP Kasir FULL aktif')}
+async function tryCode(){const ok=await itapCheckCode($('#kode').value);$('#kodeMsg').textContent=ok===true?'✅ FULL aktif'+(localStorage.itap_kasir_exp&&localStorage.itap_kasir_owner!=='1'?' sampai '+localStorage.itap_kasir_exp:'')+'. Semua batas dibuka.':ok==='expired'?'⌛ Kode ini sudah habis masa berlakunya. Perpanjang via WA.':'❌ Kode tidak valid.';renderPlan();if(ok)toast('✅ iTAP Kasir FULL aktif')}
 // ---- image helpers
 function readImg(file,max=800){return new Promise(r=>{const fr=new FileReader();fr.onload=()=>{const im=new Image();im.onload=()=>{const s=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',.8))};im.src=fr.result};fr.readAsDataURL(file)})}
 // ---- Gemini
-const MODELS=['gemini-2.5-flash','gemini-2.0-flash'];
+const MODELS=['gemini-2.5-flash','gemini-flash-latest','gemini-2.0-flash'];
 function canScan(){const k=localStorage.getItem('itap_kasir_key')||localStorage.getItem('itap_key');if(!k){toast('Isi Gemini API key dulu di ⚙️ Atur');show('set');return null}if(!FULL()&&(DB.scan[today()]||0)>=LIM.scan){toast('Batas FREE 5 scan AI/hari. Pakai cari manual atau buka FULL.');return null}return k}
 async function gemini(key,prompt,dataUrl){const b64=dataUrl.split(',')[1];let err;for(const m of MODELS){try{const r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(key)}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:prompt},{inline_data:{mime_type:'image/jpeg',data:b64}}]}],generationConfig:{responseMimeType:'application/json',temperature:.1}})});const j=await r.json();if(!r.ok)throw new Error(j.error?.message||r.status);const t=j.candidates?.[0]?.content?.parts?.map(p=>p.text).join('')||'';DB.scan[today()]=(DB.scan[today()]||0)+1;save();return JSON.parse(t.replace(/```json|```/g,'').trim())}catch(e){err=e}}throw err}
 // ---- Produk

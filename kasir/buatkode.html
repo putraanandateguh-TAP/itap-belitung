@@ -1,0 +1,16 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>iTAP Kasir · Buat Kode (Owner)</title><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="kasir.css?v=2"></head><body>
+<header class="top"><b>🔐 Buat Kode Pembeli</b><a class="btn ghost" style="margin:0" href="app.html">← Aplikasi</a></header><main>
+<div id="locked" class="card warn">🔒 Halaman ini khusus owner. Buka dulu <a href="app.html">aplikasi</a> lalu masukkan kode owner di ⚙️ Atur.</div>
+<div id="maker" class="card" hidden><label>Paket</label><select id="plan"><option value="B">Bulanan · 30 hari · Rp49rb</option><option value="T3">3 Bulan · 90 hari · Rp129rb</option><option value="TH">Tahunan · 365 hari · Rp399rb</option></select>
+<label>Tanggal mulai</label><input type="date" id="start"><input id="nama" placeholder="Nama pembeli (opsional)"><button class="btn big" onclick="gen()">⚡ Buat kode</button>
+<div id="out" hidden><p>Kode: <b id="code" style="font-size:18px"></b><br><span class="mu sm" id="expi"></span></p><div class="pre" id="msg"></div><div class="row"><button class="btn ghost" onclick="cp()">📋 Salin pesan</button><a class="btn" id="wa" target="_blank" rel="noopener">📲 Buka WA</a></div></div></div>
+</main><script src="lock.js?v=2"></script><script>
+const $=s=>document.querySelector(s);
+if(localStorage.itap_kasir_owner==='1'){$('#locked').hidden=true;$('#maker').hidden=false}
+$('#start').value=new Date().toLocaleDateString('sv-SE');
+async function gen(){if(localStorage.itap_kasir_owner!=='1')return;const p=$('#plan').value,s=$('#start').value.replace(/-/g,'');const c=await kMake(p,s),e=kExp(p,s),n=$('#nama').value.trim();
+$('#code').textContent=c;$('#expi').textContent=`${KNAME[p]} · berlaku sampai ${e} (habis mulai tanggal ini)`;
+const m=`Halo${n?' Kak '+n:''}, terima kasih sudah beli iTAP Kasir paket ${KNAME[p]} 🙏\n\nKode akses FULL: ${c}\nBerlaku sampai: ${e}\n\nCara pakai:\n1. Buka https://itapbelitung.my.id/kasir/app.html\n2. Masuk ⚙️ Atur → Akses FULL, tempel kode, klik Buka\n(atau langsung buka: https://itapbelitung.my.id/kasir/app.html?kode=${c})\n\nRutin Backup JSON ya, data tersimpan di HP Kakak. Ada kendala chat aja di sini.`;
+$('#msg').textContent=m;$('#wa').href='https://wa.me/?text='+encodeURIComponent(m);$('#out').hidden=false}
+function cp(){navigator.clipboard?.writeText($('#msg').textContent).then(()=>alert('Tersalin'),()=>{const t=document.createElement('textarea');t.value=$('#msg').textContent;document.body.append(t);t.select();document.execCommand('copy');t.remove();alert('Tersalin')})}
+</script></body></html>

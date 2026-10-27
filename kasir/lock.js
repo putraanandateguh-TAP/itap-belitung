@@ -3,4 +3,15 @@
 const HASH=["999e1ee161bc13ba72150e76cf3800b5250fe977cca9f36da81a55a5e2c110df"];
 async function sha(t){const d=new TextEncoder().encode(t);if(window.crypto&&crypto.subtle){try{const b=await crypto.subtle.digest('SHA-256',d);return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}catch(e){}}return sha256js(d)}
 function sha256js(m){const K=[],H=[];let n=2,c=0;const f=x=>(x-(x|0))*4294967296|0;while(c<64){let p=1;for(let i=2;i*i<=n;i++)if(n%i==0){p=0;break}if(p){if(c<8)H[c]=f(Math.pow(n,1/2));K[c++]=f(Math.cbrt(n))}n++}const l=m.length,w=new Uint8Array(((l+9+63)>>6)<<6);w.set(m);w[l]=0x80;const bl=l*8;for(let i=0;i<4;i++)w[w.length-1-i]=(bl>>>(8*i))&255;w[w.length-5]=Math.floor(bl/4294967296)&255;const r=(x,y)=>(x>>>y)|(x<<(32-y));const W=new Array(64);for(let o=0;o<w.length;o+=64){for(let i=0;i<16;i++)W[i]=(w[o+4*i]<<24)|(w[o+4*i+1]<<16)|(w[o+4*i+2]<<8)|w[o+4*i+3];for(let i=16;i<64;i++){const a=W[i-15],b=W[i-2];W[i]=(W[i-16]+(r(a,7)^r(a,18)^(a>>>3))+W[i-7]+(r(b,17)^r(b,19)^(b>>>10)))|0}let[a,b,cc,d,e,g,h,k]=H;for(let i=0;i<64;i++){const t1=(k+(r(e,6)^r(e,11)^r(e,25))+((e&g)^(~e&h))+K[i]+W[i])|0,t2=((r(a,2)^r(a,13)^r(a,22))+((a&b)^(a&cc)^(b&cc)))|0;k=h;h=g;g=e;e=(d+t1)|0;d=cc;cc=b;b=a;a=(t1+t2)|0}H[0]=(H[0]+a)|0;H[1]=(H[1]+b)|0;H[2]=(H[2]+cc)|0;H[3]=(H[3]+d)|0;H[4]=(H[4]+e)|0;H[5]=(H[5]+g)|0;H[6]=(H[6]+h)|0;H[7]=(H[7]+k)|0}return H.map(x=>(x>>>0).toString(16).padStart(8,'0')).join('')}
-async function itapCheckCode(c){c=(c||'').trim().toUpperCase();if(!c)return null;if(HASH.includes(await sha(c))){localStorage.setItem('itap_kasir_full','1');return true}return false}
+const KSALT='iTAP-Kasir-2026|bkt#7Q',KPLAN={B:30,T3:90,TH:365},KNAME={B:'Bulanan',T3:'3 Bulan',TH:'Tahunan'};
+function kExp(plan,start){const d=new Date(+start.slice(0,4),+start.slice(4,6)-1,+start.slice(6,8));d.setDate(d.getDate()+KPLAN[plan]);return d.toLocaleDateString('sv-SE')}
+async function kSig(payload){return (await sha(KSALT+payload)).slice(0,8).toUpperCase()}
+async function kMake(plan,start){const p='KSR-'+plan+'-'+start;return p+'-'+await kSig(p)}
+async function itapCheckCode(c){c=(c||'').trim().toUpperCase();if(!c)return null;
+ if(HASH.includes(await sha(c))){localStorage.setItem('itap_kasir_full','1');localStorage.setItem('itap_kasir_owner','1');localStorage.removeItem('itap_kasir_exp');return true}
+ const m=c.match(/^KSR-(B|T3|TH)-(\d{8})-([0-9A-F]{8})$/);if(!m||await kSig(`KSR-${m[1]}-${m[2]}`)!==m[3])return false;
+ const exp=kExp(m[1],m[2]);if(exp<=new Date().toLocaleDateString('sv-SE'))return 'expired';
+ localStorage.setItem('itap_kasir_full','1');localStorage.setItem('itap_kasir_exp',exp);localStorage.setItem('itap_kasir_plan',KNAME[m[1]]);return true}
+// FULL aktif? Owner = seumur hidup; pembeli = sampai tanggal exp (eksklusif).
+function kasirFull(){if(localStorage.getItem('itap_kasir_full')!=='1')return false;if(localStorage.getItem('itap_kasir_owner')==='1')return true;const e=localStorage.getItem('itap_kasir_exp');return !!e&&new Date().toLocaleDateString('sv-SE')<e}
+function kasirExpired(){return localStorage.getItem('itap_kasir_full')==='1'&&!kasirFull()}

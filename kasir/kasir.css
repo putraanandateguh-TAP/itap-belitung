@@ -22,3 +22,4 @@ button.sm{padding:6px 10px;background:#f59e0b}.btn.ghost{background:#e2e8f0;colo
 .struk{display:none}@media print{body>*{display:none!important}.struk.show{display:block!important;font:13px monospace;width:58mm}}
 .ov{position:fixed;inset:0;background:#0008;z-index:8;display:flex;align-items:center;justify-content:center;padding:12px}.ov .card{max-width:380px;width:100%}
 .pre{white-space:pre-wrap;font:13px monospace;background:#f8fafc;padding:8px;border-radius:8px}
+[hidden]{display:none!important}

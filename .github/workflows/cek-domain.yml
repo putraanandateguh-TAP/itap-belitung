@@ -1,0 +1,64 @@
+name: Cek domain & HTTPS
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+    inputs:
+      tes:
+        description: 'Kirim pesan tes ke Telegram'
+        type: boolean
+        default: false
+permissions:
+  contents: read
+  pages: write
+  actions: write
+concurrency: cek-domain
+jobs:
+  cek:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ambil state terakhir
+        uses: actions/cache/restore@v4
+        with:
+          path: state.txt
+          key: cek-domain-state-${{ github.run_id }}
+          restore-keys: cek-domain-state-
+      - name: Cek
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TG_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TG_CHAT: ${{ secrets.TELEGRAM_CHAT_ID }}
+          REPO: ${{ github.repository }}
+          TES: ${{ inputs.tes }}
+        run: |
+          set +e
+          kirim() { curl -s -o /dev/null -w "telegram %{http_code}\n" "https://api.telegram.org/bot${TG_TOKEN}/sendMessage" --data-urlencode "chat_id=${TG_CHAT}" --data-urlencode "text=$1"; }
+          [ "$TES" = "true" ] && kirim "Tes notif iTAP: pengecekan otomatis udah aktif ✅"
+          LAMA=$(cat state.txt 2>/dev/null || echo awal)
+          HTTP=$(curl -s -o /dev/null -w '%{http_code}' -m 20 -L http://itapbelitung.my.id/)
+          HTTPS=$(curl -s -o /dev/null -w '%{http_code}' -m 20 https://itapbelitung.my.id/)
+          echo "http=$HTTP https=$HTTPS state_lama=$LAMA"
+          if [ "$HTTPS" = "200" ]; then
+            gh api -X PUT "repos/$REPO/pages" -F https_enforced=true >/dev/null 2>&1 && echo "https_enforced on" || echo "gak bisa set https_enforced (izin kurang), lanjut cek aja"
+            BARU=https
+          elif [ "$HTTP" = "200" ]; then
+            gh api -X PUT "repos/$REPO/pages" -F https_enforced=true >/dev/null 2>&1 && echo "coba enforce: ok" || echo "sertifikat belum siap"
+            BARU=http
+          else
+            BARU=down
+          fi
+          echo "$BARU" > state.txt
+          if [ "$BARU" != "$LAMA" ]; then
+            case "$BARU" in
+              https) kirim "Website itapbelitung.my.id udah live pakai HTTPS 🔒 Pengecekan domain gue matiin otomatis." ;;
+              down) kirim "⚠️ Website itapbelitung.my.id lagi gak bisa dibuka (http $HTTP). Cek GitHub Pages ya bos." ;;
+              http) [ "$LAMA" = "down" ] && kirim "Website itapbelitung.my.id udah bisa dibuka lagi (HTTPS-nya masih nunggu sertifikat)." ;;
+            esac
+          fi
+          if [ "$BARU" = "https" ]; then gh workflow disable cek-domain.yml -R "$REPO" && echo "workflow dimatiin"; fi
+          exit 0
+      - name: Simpan state
+        uses: actions/cache/save@v4
+        with:
+          path: state.txt
+          key: cek-domain-state-${{ github.run_id }}

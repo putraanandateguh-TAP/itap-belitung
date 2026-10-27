@@ -113,7 +113,7 @@ const HK='itap_studio_hist';const hist=()=>{try{return JSON.parse(localStorage.g
 function saveProj(){if(!D)return;const h=hist().filter(x=>x.id!==D.id);D.id=D.id||Date.now();h.unshift({id:D.id,t:new Date().toLocaleString('id-ID'),d:D});try{localStorage.setItem(HK,JSON.stringify(h.slice(0,10)))}catch(e){}showHist()}
 function showHist(){const h=hist();$('hist').innerHTML=h.length?'🕘 Riwayat: '+h.map((x,i)=>`<a href="#" style="color:var(--teal)" onclick="loadProj(${i});return false">${esc(x.d.title)}</a>`).join(' · ')+` · <a href="#" style="color:var(--mut)" onclick="localStorage.removeItem(HK);showHist();return false">hapus</a>`:''}
 function loadProj(i){const x=hist()[i];if(!x)return;D=x.d;render()}
-function shareWA(){const t=`🎬 ${D.title}\n\n🗣️ Narasi:\n${get('N')}\n\n📣 ${D.caption}\n${D.hashtags.join(' ')}\n\nDibuat pakai iTAP Story Studio: http://itapbelitung.my.id/generator/studio.html`;open('https://wa.me/?text='+encodeURIComponent(t),'_blank')}
+function shareWA(){const t=`🎬 ${D.title}\n\n🗣️ Narasi:\n${get('N')}\n\n📣 ${D.caption}\n${D.hashtags.join(' ')}\n\nDibuat pakai iTAP Story Studio: https://itapbelitung.my.id/generator/studio.html`;open('https://wa.me/?text='+encodeURIComponent(t),'_blank')}
 function srt(){const dur=(D.cfg&&D.cfg.dur)||+$('dur').value,f=t=>{const m=Math.floor(t/60),x=t%60;return`00:${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')},000`};return D.scenes.map((s,i)=>`${i+1}\n${f(i*dur)} --> ${f(i*dur+dur)}\n${s.narration}\n`).join('\n')}
 function dl(n,c,t){if(!FULL)return lock();const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c],{type:t}));a.download=(D.title||'paket').replace(/\W+/g,'-')+n;document.body.appendChild(a);a.click();a.remove()}
 // --- render

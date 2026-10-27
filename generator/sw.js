@@ -1,5 +1,5 @@
 // iTAP Epic Video Generator SW (scope /generator/). Naikkan VER tiap rilis.
-const VER='itapgen-v14',A=['./','index.html','manifest.json','studio.html','studio.js','lock.js','/icons/icon-192.png','/icons/icon-512.png'];
+const VER='itapgen-v15',A=['./','index.html','manifest.json','studio.html','studio.js','lock.js','/icons/icon-192.png','/icons/icon-512.png'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(VER).then(c=>c.addAll(A)).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('itapgen-')&&k!==VER).map(k=>caches.delete(k)))).then(()=>self.clients.claim()))});
 self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(e.request.method!=='GET'||u.origin!==location.origin)return;

@@ -1,0 +1,15 @@
+# Template GitHub Actions. Pindahkan ke .github/workflows/keuangan.yml (butuh token dengan scope "workflow").
+name: Update info keuangan
+on:
+  schedule: [{cron: "15 2,5,9 * * 1-5"}]   # 09:15, 12:15, 16:15 WIB, Senin-Jumat
+  workflow_dispatch:
+permissions: {contents: write}
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 scripts/update_keuangan.py
+      - run: |
+          git config user.name "Teguh Ananda Putra"; git config user.email putraanandateguh@gmail.com
+          git add data/keuangan.json; git diff --cached --quiet || (git commit -m "info keuangan $(date -u +%F)" && git push)

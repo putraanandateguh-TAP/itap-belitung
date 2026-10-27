@@ -3,9 +3,10 @@ on:
   schedule:
     - cron: "0 0 * * *"            # 07:00 WIB tiap hari: harga pangan
     - cron: "15 2,5,9 * * 1-5"     # 09:15, 12:15, 16:15 WIB Senin-Jumat: kurs, IHSG, emas
+    - cron: "0 23,5,11 * * *"       # 06:00, 12:00, 18:00 WIB tiap hari: berita Belitung
   workflow_dispatch:
     inputs:
-      target: {description: "pangan | keuangan | semua", default: semua}
+      target: {description: "pangan | keuangan | berita | loker | semua", default: semua}
 permissions: {contents: write}
 concurrency: {group: update-data, cancel-in-progress: false}
 jobs:
@@ -17,16 +18,22 @@ jobs:
         with: {python-version: "3.12"}
       - run: pip install beautifulsoup4
       - name: Harga pangan
-        if: github.event.schedule == '0 0 * * *' || (github.event_name == 'workflow_dispatch' && inputs.target != 'keuangan')
+        if: github.event.schedule == '0 0 * * *' || (github.event_name == 'workflow_dispatch' && inputs.target != 'keuangan' && inputs.target != 'berita')
         run: python3 scripts/update_harga.py || (echo "::warning::Harga pangan gagal, data lama dipertahankan"; git checkout -- data/harga-pangan.json)
       - name: Kurs & IHSG
-        if: github.event.schedule == '15 2,5,9 * * 1-5' || (github.event_name == 'workflow_dispatch' && inputs.target != 'pangan')
+        if: github.event.schedule == '15 2,5,9 * * 1-5' || (github.event_name == 'workflow_dispatch' && inputs.target != 'pangan' && inputs.target != 'berita')
         run: python3 scripts/update_keuangan.py || (echo "::warning::Keuangan gagal, data lama dipertahankan"; git checkout -- data/keuangan.json)
+      - name: Berita Belitung
+        if: github.event.schedule == '0 23,5,11 * * *' || (github.event_name == 'workflow_dispatch' && (inputs.target == 'berita' || inputs.target == 'semua'))
+        run: python3 scripts/update_berita.py || (echo "::warning::Berita gagal, data lama dipertahankan"; git checkout -- data/berita.json || true)
+      - name: Lowongan kerja Belitung
+        if: github.event.schedule == '0 23,5,11 * * *' || (github.event_name == 'workflow_dispatch' && (inputs.target == 'loker' || inputs.target == 'semua'))
+        run: python3 scripts/update_loker.py || (echo "::warning::Loker gagal, data lama dipertahankan"; git checkout -- data/loker.json || true)
       - name: Commit kalau ada perubahan
         run: |
-          python3 -c "import json;[json.load(open(f)) for f in ('data/harga-pangan.json','data/keuangan.json')]" || git checkout -- data/
+          python3 -c "import json;[json.load(open(f)) for f in ('data/harga-pangan.json','data/keuangan.json','data/berita.json','data/loker.json')]" || git checkout -- data/
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/harga-pangan.json data/keuangan.json
+          git add data/harga-pangan.json data/keuangan.json data/berita.json data/loker.json
           git diff --cached --quiet && echo "Tidak ada perubahan" && exit 0
           git commit -m "data harian $(TZ=Asia/Jakarta date '+%F %H:%M') WIB"
           git pull --rebase && git push

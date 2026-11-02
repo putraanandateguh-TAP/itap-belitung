@@ -1,7 +1,7 @@
 {
- "tanggal_sumber": "21-10-2026",
+ "tanggal_sumber": "01-11-2026",
  "lokasi": "Pasar Tanjung Pandan, Belitung",
- "diambil": "2026-11-01 10:48 WIB",
+ "diambil": "2026-11-02 10:53 WIB",
  "sumber": "ADAT Belitung, Diskominfo Kab. Belitung (data: Dinas Ketahanan Pangan dan Pertanian Kab. Belitung)",
  "url": "https://adat.belitung.go.id/komoditas",
  "items": [
@@ -28,7 +28,7 @@
   },
   {
    "komoditas": "Bawang Merah",
-   "harga": 42000,
+   "harga": 45000,
    "satuan": "kg",
    "status": "stabil",
    "perubahan": "Harga tetap / baru"
@@ -42,14 +42,14 @@
   },
   {
    "komoditas": "Cabe Merah Keriting",
-   "harga": 85000,
+   "harga": 90000,
    "satuan": "kg",
    "status": "stabil",
    "perubahan": "Harga tetap / baru"
   },
   {
    "komoditas": "Cabe Rawit Merah",
-   "harga": 90000,
+   "harga": 100000,
    "satuan": "kg",
    "status": "stabil",
    "perubahan": "Harga tetap / baru"
@@ -65,8 +65,8 @@
    "komoditas": "Daging Ayam Ras",
    "harga": 38000,
    "satuan": "kg",
-   "status": "turun",
-   "perubahan": "- Rp 2.000 dari kemarin"
+   "status": "stabil",
+   "perubahan": "Harga tetap / baru"
   },
   {
    "komoditas": "Telur Ayam Ras",

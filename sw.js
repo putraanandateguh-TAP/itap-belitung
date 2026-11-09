@@ -1,7 +1,7 @@
 // iTAP Belitung — service worker situs utama.
 // Naikkan VER tiap rilis aset. Cache lama itap-* dihapus saat aktivasi.
 // localStorage / IndexedDB (termasuk data kasir) tidak disentuh.
-const VER = 'itap-v56';
+const VER = 'itap-v57';
 const SCOPE = new URL('./', self.location).pathname;
 const LIVE = /^data\/(harga-pangan|keuangan|ppob-harga|berita|loker)\.json$/;
 const PRECACHE = [
@@ -15,6 +15,8 @@ const PRECACHE = [
   'ppob.js',
   'berita.js',
   'loker.js',
+  'komunitas.js',
+  'privasi.html',
   'pwa.js',
   'manifest.webmanifest',
   'favicon.png',
@@ -44,7 +46,7 @@ function sensitive(url) {
 
 function leaveToNetwork(rel) {
   if (rel == null) return true;
-  if (rel === 'sw.js' || rel === 'generator/sw.js') return true;
+  if (rel === 'sw.js' || rel === 'generator/sw.js' || rel === 'config.js') return true;
   if (rel.startsWith('generator/')) return true;
   if (rel.startsWith('audio/')) return true;
   return false;

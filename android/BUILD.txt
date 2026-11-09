@@ -1,0 +1,26 @@
+Bangun APK uji iTAP Belitung
+=============================
+
+Aplikasi ini hanya membuka https://itapbelitung.my.id/ di WebView.
+Tidak ada backend baru. Keystore TIDAK boleh masuk git, situs, atau lampiran rilis.
+
+Untuk rilis yang bisa diperbarui, buat keystore sendiri dan simpan di luar repo:
+
+  keytool -genkeypair -keystore /jalur/rahasia/itap-release.keystore -alias itap -keyalg RSA -keysize 2048 -validity 10000
+
+Lalu:
+
+  export ANDROID_HOME=...
+  export ITAP_KEYSTORE=/jalur/rahasia/itap-release.keystore
+  export ITAP_STORE_PASS=...
+  export ITAP_KEY_ALIAS=itap
+  export ITAP_KEY_PASS=...
+  cd android && ./gradlew assembleRelease
+
+Salin app/build/outputs/apk/release/*.apk ke downloads/, hitung SHA-256,
+dan perbarui downloads/itap-android.json (version harus sama dengan versionName
+dan ada di nama berkas). Jangan unggah keystore.
+
+APK di folder downloads/ pada commit ini ditandatangani kunci uji yang tidak
+disimpan. Memasang versi berikutnya dengan kunci lain perlu hapus aplikasi dulu.
+Ini bukan rilis Play Store.

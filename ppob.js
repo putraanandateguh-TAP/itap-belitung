@@ -45,6 +45,7 @@ function upd(){
 }
 function send(e){e.preventDefault();
  const c=C[cat],raw=$('#pp-id').value.trim(),err=$('#pp-err');let id=raw;
+ if(!navigator.onLine){err.textContent='Pesanan lewat WhatsApp butuh internet. Pulsa, token, dan pembayaran tidak diproses offline.';return}
  if(c.t==='hp'){id=norm(raw);if(!/^08\d{8,11}$/.test(id))return err.textContent='Nomor HP harus 10–13 digit, diawali 08.';}
  if(c.t==='meter'){id=raw.replace(/\D/g,'');if(!/^\d{11,12}$/.test(id))return err.textContent='Nomor meter/ID PLN harus 11–12 digit.';}
  if(c.t==='uid'){id=raw;if(!/^[A-Za-z0-9._-]{3,30}$/.test(id))return err.textContent='User ID belum valid, cek lagi di profil game.';}
@@ -66,7 +67,7 @@ function init(){if(!$('#ppob'))return;
  $('#pp-sub').onclick=e=>{const b=e.target.closest('[data-s]');if(b){sub=b.dataset.s;sel=null;$('#pp-err').textContent='';upd()}};
  $('#pp-list').onclick=e=>{const t=e.target.closest('[data-t]');if(t){$('#pp-cat2').value=t.dataset.t;return}const b=e.target.closest('[data-n]');if(b){sel=+b.dataset.n;$('#pp-err').textContent='';upd()}};
  $('#pp-id').oninput=upd;$('#pp-form').onsubmit=send;
- render();fetch('data/ppob-harga.json?v=29').then(r=>r.ok?r.json():{}).then(j=>{H=j||{};upd()}).catch(()=>{});
+ render();fetch('data/ppob-harga.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():{}).then(j=>{H=j||{};upd()}).catch(()=>{if(!navigator.onLine&&$('#pp-err'))$('#pp-err').textContent='Harga pulsa butuh internet. Tidak ada harga tersimpan yang ditampilkan sebagai harga hari ini.'});
 }
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();
 })();

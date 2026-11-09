@@ -1,4 +1,4 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>iTAP Kasir · Buat Kode (Owner)</title><link rel="icon" href="/favicon.png"><link rel="stylesheet" href="kasir.css?v=2"></head><body>
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>iTAP Kasir · Buat Kode (Owner)</title><link rel="icon" href="../favicon.png"><link rel="stylesheet" href="kasir.css?v=2"></head><body>
 <header class="top"><b>🔐 Buat Kode Pembeli</b><a class="btn ghost" style="margin:0" href="app.html">← Aplikasi</a></header><main>
 <div id="locked" class="card warn">🔒 Halaman ini khusus owner. Buka dulu <a href="app.html">aplikasi</a> lalu masukkan kode owner di ⚙️ Atur.</div>
 <div id="maker" class="card" hidden><label>Paket</label><select id="plan"><option value="B">Bulanan · 30 hari · Rp49rb</option><option value="T3">3 Bulan · 90 hari · Rp129rb</option><option value="TH">Tahunan · 365 hari · Rp399rb</option></select>
@@ -13,4 +13,4 @@ $('#code').textContent=c;$('#expi').textContent=`${KNAME[p]} · berlaku sampai $
 const m=`Halo${n?' Kak '+n:''}, terima kasih sudah beli iTAP Kasir paket ${KNAME[p]} 🙏\n\nKode akses FULL: ${c}\nBerlaku sampai: ${e}\n\nCara pakai:\n1. Buka https://itapbelitung.my.id/kasir/app.html\n2. Masuk ⚙️ Atur → Akses FULL, tempel kode, klik Buka\n(atau langsung buka: https://itapbelitung.my.id/kasir/app.html?kode=${c})\n\n📘 Ebook panduan: https://itapbelitung.my.id/kasir/panduan-b1ab176cfd.pdf\n\nRutin Backup JSON ya, data tersimpan di HP Kakak. Ada kendala chat aja di sini.`;
 $('#msg').textContent=m;$('#wa').href='https://wa.me/?text='+encodeURIComponent(m);$('#out').hidden=false}
 function cp(){navigator.clipboard?.writeText($('#msg').textContent).then(()=>alert('Tersalin'),()=>{const t=document.createElement('textarea');t.value=$('#msg').textContent;document.body.append(t);t.select();document.execCommand('copy');t.remove();alert('Tersalin')})}
-</script></body></html>
+</script><script src="../pwa.js" data-root="../"></script></body></html>

@@ -81,8 +81,80 @@ const apk = await page.evaluate(() => {
 check('apk row visible', apk.hidden === false, JSON.stringify(apk));
 check('apk version matches', apk.ver === '0.1.0-test' && apk.href === 'downloads/itap-belitung-0.1.0-test.apk');
 check('apk hash shown', /^[a-f0-9]{64}$/.test(apk.sha || ''));
+const overflow = await page.evaluate(() => {
+  const root = document.documentElement;
+  const code = document.querySelector('[data-apk-sha]');
+  const detail = document.getElementById('apk-detail');
+  const closed = detail && !detail.open;
+  const pageOk = root.scrollWidth <= root.clientWidth + 1;
+  if (detail) detail.open = true;
+  const codeBox = code?.getBoundingClientRect();
+  const codeInside = !!codeBox && codeBox.right <= root.clientWidth + 1 && codeBox.left >= -1;
+  const openOk = root.scrollWidth <= root.clientWidth + 1;
+  if (detail) detail.open = false;
+  const strip = document.getElementById('infochips');
+  const cards = [...strip.querySelectorAll('.ic')].slice(0, 3).map((card) => {
+    const text = card.innerText.replace(/\s+/g, ' ').trim();
+    const box = card.getBoundingClientRect();
+    const clipped = card.scrollWidth > card.clientWidth + 1;
+    return { text, clipped, w: Math.round(box.width) };
+  });
+  return { closed, pageOk, codeInside, openOk, cards, stripScrolls: strip.scrollWidth > strip.clientWidth };
+});
+check('hash stays inside card', overflow.closed && overflow.pageOk && overflow.codeInside && overflow.openOk, JSON.stringify(overflow));
+check('three info cards not clipped', overflow.cards.length >= 3 && overflow.cards.every((card) => card.text && !card.clipped), JSON.stringify(overflow.cards));
 await page.locator('#pasang').scrollIntoViewIfNeeded();
 await shot(page, 'pasang-apk-mobile.png');
+
+const fixture = {
+  label: 'FIXTURE — bukan data live',
+  note: 'Jam dan jadwal di berkas ini hanya contoh uji pemilihan sholat. Bukan cuaca atau jadwal yang ditampilkan ke pengunjung.',
+  timezone: 'Asia/Jakarta',
+  cases: [
+    { at: '09:57', minutes: 9 * 60 + 57, timings: { Fajr: '04:06', Dhuhr: '11:52', Asr: '15:10', Maghrib: '17:58', Isha: '19:08' }, expect: 'Dzuhur' },
+    { at: '03:10', minutes: 3 * 60 + 10, timings: { Fajr: '04:06', Dhuhr: '11:52', Asr: '15:10', Maghrib: '17:58', Isha: '19:08' }, expect: 'Subuh' },
+    { at: '12:00', minutes: 12 * 60, timings: { Fajr: '04:06', Dhuhr: '11:52', Asr: '15:10', Maghrib: '17:58', Isha: '19:08' }, expect: 'Ashar' },
+    { at: '19:30', minutes: 19 * 60 + 30, timings: { Fajr: '04:06', Dhuhr: '11:52', Asr: '15:10', Maghrib: '17:58', Isha: '19:08' }, expect: null }
+  ]
+};
+const prayer = await page.evaluate((cases) => cases.map((item) => {
+  const found = nextPrayer(item.timings, item.minutes);
+  const clock = jakartaParts(new Date('2026-11-09T02:57:00Z'));
+  return { at: item.at, got: found ? found[0] : null, expect: item.expect, jakartaOfUtc0257: clock };
+}), fixture.cases);
+const prayerOk = prayer.every((item, i) => item.got === fixture.cases[i].expect) && prayer[0].jakartaOfUtc0257.hour === '09' && prayer[0].jakartaOfUtc0257.minute === '57';
+check('jakarta prayer boundaries use fixture only', prayerOk, JSON.stringify(prayer));
+await page.waitForFunction(() => /Sholat berikutnya|Jadwal sholat/.test(document.body.innerText), { timeout: 15000 }).catch(() => {});
+const livePrayer = await page.evaluate(() => {
+  const clock = jakartaParts(new Date());
+  const text = document.getElementById('infochips')?.innerText || '';
+  const match = text.match(/Sholat berikutnya\s+([A-Za-z]+)\s+(\d{1,2}:\d{2})(\s+besok)?/);
+  return { clock, match: match ? match.slice(1) : [], vmHour: new Date().getHours(), source: 'live Aladhan + jam Asia/Jakarta, bukan fixture' };
+});
+if (livePrayer.match.length >= 2) {
+  const shown = (+livePrayer.match[1].slice(0, 2)) * 60 + (+livePrayer.match[1].slice(3));
+  const tomorrow = Boolean(livePrayer.match[2]);
+  check('live prayer is still ahead in WIB', tomorrow || shown > livePrayer.clock.minutes, JSON.stringify(livePrayer));
+} else {
+  check('live prayer chip present', false, 'API sholat tidak mengisi chip: ' + JSON.stringify(livePrayer));
+}
+await page.setViewportSize({ width: 320, height: 700 });
+await page.waitForTimeout(200);
+const narrow = await page.evaluate(() => {
+  const root = document.documentElement;
+  const strip = document.getElementById('infochips');
+  const cards = [...strip.querySelectorAll('.ic')].slice(0, 3).map((card) => ({
+    text: card.innerText.replace(/\s+/g, ' ').trim(),
+    clipped: card.scrollWidth > card.clientWidth + 1,
+    reachable: card.offsetLeft + card.offsetWidth <= strip.scrollWidth + 1
+  }));
+  return { page: root.scrollWidth <= root.clientWidth + 1, cards };
+});
+check('narrow 320 cards scroll without page overflow', narrow.page && narrow.cards.length >= 3 && narrow.cards.every((card) => card.text && !card.clipped && card.reachable), JSON.stringify(narrow));
+await page.setViewportSize({ width: 390, height: 844 });
+await page.evaluate(() => scrollTo(0, 0));
+await shot(page, 'home-mobile.png');
+await writeFile(path.join(ART, 'prayer-jakarta-fixture.json'), JSON.stringify({ fixture, result: prayer, live: livePrayer, narrow }, null, 2));
 
 await page.locator('.bnav a[href="#berita"]').click();
 await page.waitForTimeout(300);

@@ -1,5 +1,7 @@
 const $=id=>document.getElementById(id);const now=new Date();
-$('yr').textContent=now.getFullYear();$('today').textContent=now.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+function jakartaParts(date=new Date()){const o=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(date).filter(p=>p.type!=='literal').map(p=>[p.type,p.value]));const hour=o.hour==='24'?'00':o.hour;return{day:o.day,month:o.month,year:o.year,hour,minute:o.minute,minutes:(+hour)*60+(+o.minute),api:o.day+'-'+o.month+'-'+o.year}}
+function nextPrayer(timings,minutes){const L=[['Subuh','Fajr'],['Dzuhur','Dhuhr'],['Ashar','Asr'],['Maghrib','Maghrib'],['Isya','Isha']];const mins=s=>{const m=String(s||'').match(/(\d{1,2}):(\d{2})/);return m?+m[1]*60+(+m[2]):NaN};return L.find(([,k])=>mins(timings?.[k])>minutes)||null}
+$('yr').textContent=jakartaParts(now).year;$('today').textContent=now.toLocaleDateString('id-ID',{timeZone:'Asia/Jakarta',weekday:'long',day:'numeric',month:'long',year:'numeric'});
 function openFold(id){const el=$(id);if(!el)return;let n=el;while(n){if(n.tagName==='DETAILS')n.open=true;n=n.parentElement}}
 function go(id){if(!$(id))return;if(location.hash!=='#'+id)location.hash=id;openFold(id);$(id).scrollIntoView({behavior:'smooth',block:'start'});if(id==='cari')setTimeout(()=>$('q')&&$('q').focus(),350)}
 addEventListener('hashchange',()=>openFold((location.hash||'').slice(1)));
@@ -53,12 +55,14 @@ const CITIES=[{n:'Tanjung Pandan',la:-2.7487,lo:107.6516},{n:'Manggar',la:-2.883
  try{const r=await fetch('https://marine-api.open-meteo.com/v1/marine?latitude=-2.55&longitude=107.68&current=wave_height,wave_period&daily=wave_height_max&timezone=Asia%2FJakarta&forecast_days=4').then(r=>r.json());
   const h=r.current.wave_height,v=h<0.5?0:h<1.25?1:2,txt=['Tenang — cocok island hopping','Sedang — hati-hati perahu kecil','Tinggi — tunda penyeberangan'][v];INFO.wave=h+' m';drawInfo();
   m.innerHTML=`<div class="eyebrow">🌊 Laut utara (Tj. Kelayang)</div><div class="big">${h} m</div><span class="verdict v${v}">${txt}</span><div class="mu sm">Periode ${r.current.wave_period}s</div><div class="fc">${[1,2,3].map(i=>`<div>${hari(r.daily.time[i])}<br>maks ${r.daily.wave_height_max[i]} m</div>`).join('')}</div><p class="mu sm" style="margin-top:8px">Estimasi model, bukan pengganti info resmi BMKG/syahbandar.</p>`}catch(e){m.textContent=navigator.onLine?'Data gelombang gagal dimuat.':'Gelombang butuh internet. Tidak tersedia offline.'}})();
-// Prayer
-(()=>{const dd=String(now.getDate()).padStart(2,'0')+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+now.getFullYear();
-fetch('https://api.aladhan.com/v1/timings/'+dd+'?latitude=-2.7487&longitude=107.6516&method=20&timezonestring=Asia%2FJakarta').then(r=>r.json()).then(r=>{const t=r.data.timings,h=r.data.date.hijri;$('sd').textContent=h.day+' '+h.month.en+' '+h.year+' H';
- const L=[['Subuh','Fajr'],['Terbit','Sunrise'],['Dzuhur','Dhuhr'],['Ashar','Asr'],['Maghrib','Maghrib'],['Isya','Isha']];const cur=now.getHours()*60+now.getMinutes();const mins=s=>+s.slice(0,2)*60+ +s.slice(3,5);
- const nx=L.find(([a,b])=>b!=='Sunrise'&&mins(t[b])>cur)||L[0];INFO.next=nx[0]+' '+t[nx[1]];drawInfo();
- $('pt').innerHTML=L.map(([a,b])=>`<div class="pt${a===nx[0]?' nx':''}"><span>${a}${a===nx[0]?' · berikutnya':''}</span><b>${t[b]}</b></div>`).join('')}).catch(()=>{$('pt').textContent=navigator.onLine?'Jadwal sholat gagal dimuat.':'Jadwal sholat butuh internet. Tidak tersedia offline.'})})();
+// Prayer — pembanding jam selalu Asia/Jakarta, bukan zona mesin.
+(()=>{const clock=jakartaParts(now);const url=d=>'https://api.aladhan.com/v1/timings/'+d+'?latitude=-2.7487&longitude=107.6516&method=20&timezonestring=Asia/Jakarta';
+const L=[['Subuh','Fajr'],['Terbit','Sunrise'],['Dzuhur','Dhuhr'],['Ashar','Asr'],['Maghrib','Maghrib'],['Isya','Isha']];
+const paint=(t,name)=>{$('sd').textContent=t._hijri?t._hijri.day+' '+t._hijri.month.en+' '+t._hijri.year+' H':'';$('pt').innerHTML=L.map(([a,b])=>`<div class="pt${a===name?' nx':''}"><span>${a}${a===name?' · berikutnya':''}</span><b>${t[b]}</b></div>`).join('')};
+fetch(url(clock.api)).then(r=>r.json()).then(async r=>{const t=r.data.timings;t._hijri=r.data.date.hijri;const nx=nextPrayer(t,clock.minutes);
+ if(nx){INFO.next=nx[0]+' '+t[nx[1]];paint(t,nx[0]);drawInfo();return}
+ const tomorrow=jakartaParts(new Date(Date.parse(clock.year+'-'+clock.month+'-'+clock.day+'T12:00:00+07:00')+86400000));
+ const r2=await fetch(url(tomorrow.api)).then(x=>x.json());INFO.next='Subuh '+r2.data.timings.Fajr+' besok';paint(t,null);drawInfo()}).catch(()=>{$('pt').textContent=navigator.onLine?'Jadwal sholat gagal dimuat.':'Jadwal sholat butuh internet. Tidak tersedia offline.'})})();
 drawInfo();
 // Trip planner
 const TRIP={1:[['Hari 1 — Pesisir utara & island hopping',['Pagi: berangkat dari Pantai Tanjung Kelayang, island hopping ke Batu Berlayar, Pulau Lengkuas (mercusuar), Pulau Burung — cek gelombang di atas dulu','Siang: makan seafood / gangan','Sore: Pantai Tanjung Tinggi (batu granit Laskar Pelangi)','Malam: Mie Belitung & ngopi di Tanjung Pandan, atau Bakso Aci iTAP']]],

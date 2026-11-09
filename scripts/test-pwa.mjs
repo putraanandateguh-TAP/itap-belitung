@@ -69,7 +69,7 @@ check('berita hidden on home', !home.berita);
 check('lowongan hidden on home', !home.loker);
 check('belanja hidden on home', !home.belanja);
 check('no horizontal overflow', !home.overflow);
-check('nav labels', home.nav.join('|') === '🏠 Beranda|🛒 Belanja|📰 Berita|💼 Lowongan|☰ Menu', home.nav.join('|'));
+check('nav labels', home.nav.join('|') === 'Beranda|Belanja|Chat|Berita|Menu', home.nav.join('|'));
 check('pwa button is not an apk link', home.pwaInlineHidden === true);
 await shot(page, 'home-mobile.png');
 
@@ -146,23 +146,32 @@ async function layoutGap(target) {
     if (!strip || !grid) return { missing: true };
     const hit = (a, b) => !(a.right <= b.left + 0.5 || a.left >= b.right - 0.5 || a.bottom <= b.top + 0.5 || a.top >= b.bottom - 0.5);
     const music = document.getElementById('music').getBoundingClientRect();
-    const fab = document.querySelector('a.fab').getBoundingClientRect();
+    const mid = document.querySelector('.bnav-mid');
+    const fab = mid ? mid.getBoundingClientRect() : null;
     const title = document.querySelector('#pasang h2').getBoundingClientRect();
     const note = document.querySelector('#pasang .mu').getBoundingClientRect();
     const cards = [...strip.querySelectorAll('.ic')].slice(0, 3);
     const cardBottom = Math.max(...cards.map((card) => card.getBoundingClientRect().bottom));
-    const gridTop = grid.getBoundingClientRect().top;
+    const feature = document.querySelector('#beranda .feature');
+    const next = feature || grid;
+    const nextTop = next.getBoundingClientRect().top;
+    const featureGap = feature ? Math.round(grid.getBoundingClientRect().top - feature.getBoundingClientRect().bottom) : 0;
+    const cap = feature && feature.querySelector('.cap b');
+    const nav = document.querySelector('.bnav').getBoundingClientRect();
+    const titleUnderNav = cap ? cap.getBoundingClientRect().bottom > nav.top + 1 && cap.getBoundingClientRect().top < nav.bottom : false;
     return {
-      visualGap: Math.round(gridTop - cardBottom),
-      stripGap: Math.round(gridTop - strip.getBoundingClientRect().bottom),
+      visualGap: Math.round(nextTop - cardBottom),
+      stripGap: Math.round(nextTop - strip.getBoundingClientRect().bottom),
+      featureGap,
+      titleUnderNav,
       overflow: root.scrollWidth > root.clientWidth + 1,
       cards: cards.map((card) => ({
         text: card.innerText.replace(/\s+/g, ' ').trim(),
         clipped: card.scrollWidth > card.clientWidth + 1
       })),
-      coverTitle: hit(music, title) || hit(fab, title),
-      coverNote: hit(music, note) || hit(fab, note),
-      coverTab: [...document.querySelectorAll('.bnav a')].some((tab) => hit(music, tab.getBoundingClientRect()) || hit(fab, tab.getBoundingClientRect()))
+      coverTitle: hit(music, title) || Boolean(fab && hit(fab, title)),
+      coverNote: hit(music, note) || Boolean(fab && hit(fab, note)),
+      coverTab: [...document.querySelectorAll('.bnav a:not(.bnav-mid)')].some((tab) => hit(music, tab.getBoundingClientRect()) || (fab && hit(fab, tab.getBoundingClientRect())))
     };
   });
 }
@@ -172,7 +181,29 @@ for (const width of [320, 390, 412]) {
   await page.waitForTimeout(150);
   gapResults['live' + width] = await layoutGap(page);
   const row = gapResults['live' + width];
-  check('strip sits on grid at ' + width, row.visualGap >= 0 && row.visualGap <= 28 && row.stripGap <= 28 && !row.overflow && row.cards.length >= 3 && row.cards.every((card) => card.text && !card.clipped), JSON.stringify(row));
+  check('strip sits on grid at ' + width, row.visualGap >= 0 && row.visualGap <= 28 && row.stripGap <= 28 && row.featureGap >= 0 && row.featureGap <= 28 && !row.titleUnderNav && !row.overflow && row.cards.length >= 3 && row.cards.every((card) => card.text && !card.clipped), JSON.stringify(row));
+  const chrome = await page.evaluate(() => {
+    const rowEl = document.querySelector('.headrow');
+    const rowBox = rowEl.getBoundingClientRect();
+    const labels = [...document.querySelectorAll('.bnav a')].map((a) => {
+      const span = a.querySelector(':scope > span:last-child');
+      const style = getComputedStyle(span);
+      return { text: span.textContent.trim(), h: span.getBoundingClientRect().height, color: style.color, svg: !!a.querySelector('svg') };
+    });
+    const today = document.getElementById('today');
+    const todayBox = today.getBoundingClientRect();
+    const active = labels.find((item, i) => document.querySelectorAll('.bnav a')[i].getAttribute('aria-current') === 'page');
+    return {
+      headerClipped: [...rowEl.children].some((el) => el.getBoundingClientRect().right > rowBox.right + 1),
+      today: today.textContent,
+      todayVisible: todayBox.width > 40 && todayBox.right <= window.innerWidth + 1,
+      labels,
+      active
+    };
+  });
+  check('header fits at ' + width, !chrome.headerClipped, JSON.stringify(chrome.labels.map((item) => item.text)));
+  check('date visible at ' + width, chrome.todayVisible && /,\s+\d{1,2}\s+\S+\s+\d{4}$/.test(chrome.today), chrome.today);
+  check('nav labels stay visible at ' + width, chrome.labels.length === 5 && chrome.labels.every((item) => item.text && item.h > 8 && item.svg && item.color !== 'rgb(255, 255, 255)') && chrome.active && chrome.active.text, JSON.stringify(chrome.labels));
   check('floats clear Pasang and tabs at ' + width, !row.coverTitle && !row.coverNote && !row.coverTab, JSON.stringify(row));
 }
 const blocked = await browser.newPage({ viewport: { width: 390, height: 844 } });
@@ -180,11 +211,32 @@ await blocked.route('**/*', (route) => /open-meteo|aladhan|marine-api/.test(rout
 await blocked.goto(base, { waitUntil: 'domcontentloaded' });
 await blocked.waitForTimeout(400);
 gapResults.noApi390 = await layoutGap(blocked);
-check('strip sits on grid without weather API', gapResults.noApi390.visualGap >= 0 && gapResults.noApi390.visualGap <= 28 && !gapResults.noApi390.overflow, JSON.stringify(gapResults.noApi390));
+check('strip sits on grid without weather API', gapResults.noApi390.visualGap >= 0 && gapResults.noApi390.visualGap <= 28 && gapResults.noApi390.featureGap <= 28 && !gapResults.noApi390.overflow, JSON.stringify(gapResults.noApi390));
 await blocked.close();
+const copy = await page.evaluate(() => document.body.innerText);
+check('headline is iTAP wording', !/KABAR · RASA · LAYANAN|Cerita pulau, dari iTAP|dekat denganmu/.test(copy) && /Cuaca, wisata, rasa/.test(copy));
+for (const width of [320, 390, 412]) {
+  await page.setViewportSize({ width, height: 844 });
+  const slides = await page.evaluate(async () => {
+    const caps = [...document.querySelectorAll('.feature .cap')];
+    const out = [];
+    for (const cap of caps) {
+      cap.scrollIntoView({ block: 'center', inline: 'center' });
+      await new Promise((r) => requestAnimationFrame(r));
+      const label = cap.querySelector('small').getBoundingClientRect();
+      const title = cap.querySelector('b').getBoundingClientRect();
+      const music = document.getElementById('music').getBoundingClientRect();
+      const hit = !(music.right <= title.left || music.left >= title.right || music.bottom <= title.top || music.top >= title.bottom);
+      out.push({ gap: Math.round(title.top - label.bottom), hit });
+    }
+    return out;
+  });
+  check('banner labels sit above titles at ' + width, slides.length >= 1 && slides.every((s) => s.gap >= 4 && !s.hit), JSON.stringify(slides));
+}
 await page.setViewportSize({ width: 390, height: 844 });
-await page.evaluate(() => scrollTo(0, 0));
+await page.evaluate(() => { scrollTo(0, 0); document.querySelectorAll('.spotlight,.hrow').forEach((el) => { el.scrollLeft = 0; }); });
 await shot(page, 'home-mobile.png');
+await page.screenshot({ path: path.join(ART, 'home-mobile-full.png'), fullPage: true });
 await page.locator('#pasang').scrollIntoViewIfNeeded();
 await shot(page, 'pasang-apk-mobile.png');
 await writeFile(path.join(ART, 'prayer-jakarta-fixture.json'), JSON.stringify({ fixture, result: prayer, live: livePrayer, gapResults }, null, 2));
@@ -282,7 +334,7 @@ await page.waitForTimeout(500);
 const offline = await page.evaluate(() => document.body.innerText);
 check('offline shell or notice', /iTAP Belitung|butuh internet|offline/i.test(offline));
 const offlineGap = await layoutGap(page);
-check('strip sits on grid offline', !offlineGap.missing && offlineGap.visualGap >= 0 && offlineGap.visualGap <= 28 && !offlineGap.overflow, JSON.stringify(offlineGap));
+check('strip sits on grid offline', !offlineGap.missing && offlineGap.visualGap >= 0 && offlineGap.visualGap <= 28 && offlineGap.featureGap <= 28 && !offlineGap.overflow, JSON.stringify(offlineGap));
 await page.screenshot({ path: path.join(ART, 'offline-mobile.png') }).catch(() => {});
 
 const noisy = errors.filter((line) => !/Failed to load resource|net::ERR|favicon/i.test(line));

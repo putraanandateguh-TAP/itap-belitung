@@ -182,9 +182,30 @@ await blocked.waitForTimeout(400);
 gapResults.noApi390 = await layoutGap(blocked);
 check('strip sits on grid without weather API', gapResults.noApi390.visualGap >= 0 && gapResults.noApi390.visualGap <= 28 && !gapResults.noApi390.overflow, JSON.stringify(gapResults.noApi390));
 await blocked.close();
+const copy = await page.evaluate(() => document.body.innerText);
+check('headline is iTAP wording', !/KABAR · RASA · LAYANAN|Cerita pulau, dari iTAP|dekat denganmu/.test(copy) && /Cuaca, wisata, rasa/.test(copy));
+for (const width of [320, 390, 412]) {
+  await page.setViewportSize({ width, height: 844 });
+  const slides = await page.evaluate(async () => {
+    const caps = [...document.querySelectorAll('.spotlight .cap')];
+    const out = [];
+    for (const cap of caps) {
+      cap.scrollIntoView({ block: 'center', inline: 'center' });
+      await new Promise((r) => requestAnimationFrame(r));
+      const label = cap.querySelector('small').getBoundingClientRect();
+      const title = cap.querySelector('b').getBoundingClientRect();
+      const music = document.getElementById('music').getBoundingClientRect();
+      const hit = !(music.right <= title.left || music.left >= title.right || music.bottom <= title.top || music.top >= title.bottom);
+      out.push({ gap: Math.round(title.top - label.bottom), hit });
+    }
+    return out;
+  });
+  check('banner labels sit above titles at ' + width, slides.length === 4 && slides.every((s) => s.gap >= 4 && !s.hit), JSON.stringify(slides));
+}
 await page.setViewportSize({ width: 390, height: 844 });
-await page.evaluate(() => scrollTo(0, 0));
+await page.evaluate(() => { scrollTo(0, 0); document.querySelectorAll('.spotlight,.hrow').forEach((el) => { el.scrollLeft = 0; }); });
 await shot(page, 'home-mobile.png');
+await page.screenshot({ path: path.join(ART, 'home-mobile-full.png'), fullPage: true });
 await page.locator('#pasang').scrollIntoViewIfNeeded();
 await shot(page, 'pasang-apk-mobile.png');
 await writeFile(path.join(ART, 'prayer-jakarta-fixture.json'), JSON.stringify({ fixture, result: prayer, live: livePrayer, gapResults }, null, 2));

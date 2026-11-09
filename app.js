@@ -45,7 +45,7 @@ renderAll();showRecent();
 const WC={0:'☀️ Cerah',1:'🌤️ Cerah berawan',2:'⛅ Berawan',3:'☁️ Mendung',45:'🌫️ Berkabut',48:'🌫️ Berkabut',51:'🌦️ Gerimis',53:'🌦️ Gerimis',55:'🌦️ Gerimis',61:'🌧️ Hujan ringan',63:'🌧️ Hujan',65:'🌧️ Hujan lebat',80:'🌦️ Hujan lokal',81:'🌧️ Hujan lokal',82:'⛈️ Hujan deras',95:'⛈️ Badai petir',96:'⛈️ Badai petir',99:'⛈️ Badai petir'};
 const wc=c=>WC[c]||'🌡️',hari=d=>new Date(d).toLocaleDateString('id-ID',{weekday:'short',day:'numeric'}),hm=s=>s.slice(11,16);
 const chip=(i,l,v,href)=>`<${href?'a':'div'} class="ic"${href?` href="${href}"`:''}>${i} <small>${l}</small><b>${v}</b></${href?'a':'div'}>`;const INFO={};
-function drawInfo(){$('infochips').innerHTML=[INFO.wx&&chip('🌡️','Tanjung Pandan',INFO.wx),INFO.next&&chip('🕌','Sholat berikutnya',INFO.next),INFO.sun&&chip('🌅','Terbit · terbenam',INFO.sun),INFO.wave&&chip('🌊','Gelombang utara',INFO.wave),chip('🚑','PSC 119 Belitung','0817-4119-119','tel:+6281741191119'),chip('🛒','Promo ebook','Rp20rb')].filter(Boolean).join('')}
+function drawInfo(){const w=document.getElementById('wx-now');if(w)w.innerHTML=INFO.wx?`<b>${INFO.wx}</b><small>Tanjung Pandan · langit hari ini</small>`:'<b>Cuaca belum masuk</b><small>Tanjung Pandan</small>';$('infochips').innerHTML=[INFO.next&&chip('🕌','Sholat berikutnya',INFO.next),INFO.sun&&chip('🌅','Terbit · terbenam',INFO.sun),INFO.wave&&chip('🌊','Gelombang utara',INFO.wave),chip('🚑','PSC 119 Belitung','0817-4119-119','tel:+6281741191119'),chip('🛒','Promo ebook','Rp20rb')].filter(Boolean).join('')||'<div class="ic">Info harian butuh internet.</div>'}
 const CITIES=[{n:'Tanjung Pandan',la:-2.7487,lo:107.6516},{n:'Manggar',la:-2.8833,lo:108.2667}];
 (async()=>{const box=$('wx');box.innerHTML='';
  for(const c of CITIES){const el=document.createElement('div');el.className='card wx';el.textContent='Memuat '+c.n+'…';box.appendChild(el);
@@ -77,7 +77,7 @@ addEventListener('hashchange',markNav);markNav();
 
 // Music
 (()=>{const a=new Audio('audio/belitung-bg-64k.mp3');a.loop=true;a.preload='none';a.volume=0;const b=$('music');let on=false;
-const ui=()=>{b.textContent=on?'🎵 Musik: on':'🔇 Putar musik';b.classList.toggle('on',on)};
+const ui=()=>{b.textContent=on?'Musik hidup':'Musik';b.classList.toggle('on',on)};
 const fade=(to,cb)=>{const st=a.volume,t0=performance.now();const f=()=>{const k=Math.min(1,(performance.now()-t0)/1500);a.volume=st+(to-st)*k;k<1?requestAnimationFrame(f):cb&&cb()};f()};
 const play=()=>a.play().then(()=>{on=true;ui();fade(.35)}).catch(()=>{});
 const stop=()=>{on=false;ui();fade(0,()=>a.pause())};

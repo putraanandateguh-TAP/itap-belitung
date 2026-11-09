@@ -1,0 +1,20 @@
+<!doctype html><html lang="id"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Admin undangan · iTAP</title>
+<link rel="icon" href="../../favicon.png">
+<link rel="stylesheet" href="../undangan.css">
+</head><body>
+<div class="wrap">
+<header class="top"><a href="../../"><img src="../../logo-sm.png" alt=""></a><b>Admin undangan</b></header>
+<div id="gate" class="card"><p>Masuk dengan email admin.</p>
+<form id="login"><label>Email<input type="email" name="email" required></label><button class="cta" type="submit">Kirim tautan</button></form>
+<p id="msg" class="note"></p></div>
+<div id="board" hidden>
+<h2>Pesanan</h2><div id="orders"></div>
+<h2>Undangan</h2><p class="note">Isi email pembeli supaya dia bisa masuk dengan tautan email dan hanya melihat undangannya. Tautan sunting ditampilkan sekali; yang tersimpan hanya hash-nya.</p><div id="linkbox" class="card" hidden></div><div id="invites"></div><div id="guests"></div>
+</div>
+</div>
+<script src="../../config.js"></script>
+<script src="admin.js"></script>
+</body></html>

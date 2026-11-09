@@ -1,0 +1,23 @@
+{
+  "slug": "demo-pantai",
+  "theme": "pantai",
+  "package": "penuh",
+  "demo": true,
+  "eventType": "Syukuran",
+  "title": "Syukuran Nia",
+  "kicker": "Contoh undangan",
+  "inviteLine": "Keluarga mengundang",
+  "dateLabel": "Sabtu, 6 Juni 2027",
+  "hosts": [
+    {"role": "Tuan rumah", "name": "Keluarga Rahman", "detail": "Contoh, bukan keluarga sungguhan"}
+  ],
+  "countdownTo": "2027-06-06T16:00:00+07:00",
+  "events": [
+    {"name": "Syukuran sore", "start": "20270606T160000", "end": "20270606T180000", "timeLabel": "16.00–18.00 WIB", "place": "Tepi pantai, contoh", "address": "Sijuk, Belitung", "maps": "https://www.google.com/maps/search/?api=1&query=Pantai+Tanjung+Tinggi+Belitung"}
+  ],
+  "story": [],
+  "gallery": ["../img/e33.webp", "../img/e15.webp", "../img/e8.webp", "../img/e42.webp"],
+  "streamUrl": "",
+  "gift": {"bank": "BRI", "number": "2222222222", "holder": "Contoh Penerima", "qris": ""},
+  "closing": "Angin laut hanya di contoh ini."
+}

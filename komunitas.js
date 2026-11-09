@@ -122,8 +122,8 @@
     if (!aiReady) {
       return '<div class="card soon"><h2>Asisten</h2><p>Asisten belum dipasang. Tanya iTAP lewat WhatsApp.</p><p><a class="cta" href="' + WA + '">Buka WhatsApp</a></p></div>';
     }
-    if (!user) return '<div class="card"><h2>Asisten iTAP</h2><p>Masuk dulu supaya pertanyaan terbatasi per akun.</p><p><a class="cta" href="#akun">Masuk</a></p></div>';
-    return '<div class="card"><h2>Asisten iTAP</h2><p class="mu sm">Jawaban lewat Gemini. Percakapan tidak disimpan. Bukan data live kalau fungsi belum terpasang.</p><div id="chat-log" class="chat-log"></div><form id="chat-form" class="cm-form"><input name="message" required maxlength="800" placeholder="Tanya singkat"><button class="cta" type="submit">Kirim</button></form><p id="chat-note" class="mu sm" role="status"></p></div>';
+    if (!user) return '<div class="card"><h2>Asisten iTAP</h2><p>Masuk dulu untuk bertanya. Setiap akun dibatasi 12 pertanyaan per jam.</p><p><a class="cta" href="#akun">Masuk</a></p><p class="mu sm">Atau <a href="' + WA + '">tanya lewat WhatsApp</a>.</p></div>';
+    return '<div class="card"><h2>Asisten iTAP</h2><p class="mu sm">Jawaban lewat Gemini. Percakapan tidak disimpan di iTAP.</p><div id="chat-log" class="chat-log"></div><form id="chat-form" class="cm-form"><input name="message" required maxlength="800" placeholder="Tanya singkat"><button class="cta" type="submit">Kirim</button></form><p id="chat-note" class="mu sm" role="status"></p><p class="mu sm"><a href="' + WA + '">Tanya lewat WhatsApp</a></p></div>';
   }
 
   async function loadPublic() {

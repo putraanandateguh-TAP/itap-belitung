@@ -17,6 +17,10 @@ for (const table of ['profiles', 'listings', 'listing_photos', 'listing_reports'
 check('schema blocks role change', /keep_profile_role/.test(schema) && /new\.role := old\.role/.test(schema));
 check('schema keeps story pending', /new\.status := 'pending'/.test(schema));
 check('anon cannot read ai usage', /revoke all on public\.ai_usage from anon, authenticated/i.test(schema));
+const komunitas = readFileSync(new URL('../komunitas.js', import.meta.url), 'utf8');
+const config = readFileSync(new URL('../config.js', import.meta.url), 'utf8');
+check('delete button calls delete-account', /functions\.invoke\('delete-account'/.test(komunitas));
+check('ai function is chat', /AI_FUNCTION:\s*'chat'/.test(config));
 
 const server = spawn('python3', ['-m', 'http.server', '8797', '--bind', '127.0.0.1'], { cwd: '/workspace', stdio: 'ignore' });
 await new Promise((r) => setTimeout(r, 250));
@@ -170,6 +174,35 @@ await page.fill('#chat-form input[name=message]', 'Sekali lagi');
 await page.click('#chat-form button[type=submit]');
 await page.waitForTimeout(150);
 check('chat rate limit', /Cukup dulu/.test(await page.locator('#chat-note').innerText()));
+await page.goto(base + 'index.html?hapus=1#akun', { waitUntil: 'domcontentloaded' });
+await page.waitForSelector('#delete-account');
+await page.click('#delete-account');
+await page.waitForTimeout(200);
+check('delete account button runs', /Akun uji dihapus/.test(await page.locator('#auth-note').innerText()));
+
+const guest = await browser.newPage({ viewport: { width: 390, height: 844 } });
+await guest.addInitScript(() => {
+  window.ITAP_AUTH_MOCK = { ai: true, reply: 'tidak dipakai' };
+  sessionStorage.setItem('itap_mock_db', JSON.stringify({ user: null, profile: null, listings: [], stories: [], reports: [] }));
+});
+await guest.goto(base + '#chat', { waitUntil: 'domcontentloaded' });
+await guest.waitForSelector('.bnav-mid[href="#chat"]');
+const guestText = await guest.locator('#chat-root').innerText();
+check('logged out chat asks to sign in', /Masuk/.test(guestText) && /WhatsApp/.test(guestText) && await guest.locator('#chat-form').count() === 0, guestText.slice(0, 160));
+await guest.screenshot({ path: path.join(ART, 'chat-guest-mobile.png') });
+await guest.close();
+
+const wired = await browser.newPage({ viewport: { width: 390, height: 844 } });
+const fnPosts = [];
+wired.on('request', (req) => {
+  if (req.method() === 'POST' && /functions\/v1\//.test(req.url())) fnPosts.push(req.url());
+});
+await wired.goto(base + '#chat', { waitUntil: 'domcontentloaded' });
+await wired.waitForFunction(() => /Masuk dulu/.test(document.getElementById('chat-root')?.innerText || ''));
+const wiredText = await wired.locator('#chat-root').innerText();
+check('configured chat stays logged out', /Masuk/.test(wiredText) && /WhatsApp/.test(wiredText), wiredText.slice(0, 180));
+check('logged out does not call the function', fnPosts.length === 0, fnPosts.join(' '));
+await wired.close();
 
 await browser.close();
 server.kill();

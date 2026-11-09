@@ -69,7 +69,7 @@ check('berita hidden on home', !home.berita);
 check('lowongan hidden on home', !home.loker);
 check('belanja hidden on home', !home.belanja);
 check('no horizontal overflow', !home.overflow);
-check('nav labels', home.nav.join('|') === 'Beranda|Belanja|Chat|Berita|Menu', home.nav.join('|'));
+check('nav labels', home.nav.join('|') === 'Beranda|Belanja|Asisten|Berita|Menu', home.nav.join('|'));
 check('pwa button is not an apk link', home.pwaInlineHidden === true);
 await shot(page, 'home-mobile.png');
 

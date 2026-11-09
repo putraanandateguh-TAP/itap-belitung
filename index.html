@@ -3,22 +3,25 @@
 <meta name="description" content="iTAP Belitung: cuaca & gelombang live, jadwal sholat, matahari terbit/terbenam, pencarian serba Belitung, rencana trip, cerita video, ebook, kelas & jasa video AI, Kedai Bakso Aci iTAP.">
 <meta property="og:title" content="iTAP Belitung · Cerita, sejarah & budaya Belitung"><meta property="og:description" content="Cuaca, gelombang, wisata, kuliner, legenda & cerita rakyat dari kreator Belitung."><meta property="og:image" content="https://itapbelitung.my.id/logo-sm.png"><meta property="og:url" content="https://itapbelitung.my.id/"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://itapbelitung.my.id/"><link rel="icon" href="favicon.png"><meta name="theme-color" content="#082c50">
-<link rel="stylesheet" href="style.css?v=46"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="iTAP Belitung"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head><body>
-<div class="top"><div class="w"><span>📍 Belitung, Kepulauan Bangka Belitung</span><span id="today"></span></div></div>
-<header class="hd"><div class="w"><a href="#beranda" class="brand"><img src="logo-sm.png" alt="iTAP"><span><b>iTAP</b><small>BELITUNG</small></span></a>
-<button class="sbtn" onclick="go('cari')">Cari</button><button id="music" class="music" type="button" aria-label="Musik latar">Musik</button></div>
-<div class="hello w"><b id="greet">Selamat datang</b><span>Tanjung Pandan, Belitung</span></div>
+<link rel="stylesheet" href="style.css?v=47"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="iTAP Belitung"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head><body>
+<div class="top"><div class="w"><span>Belitung, Kepulauan Bangka Belitung</span><span id="today"></span></div></div>
+<header class="hd"><div class="w headrow"><a href="#beranda" class="brand"><img src="logo-sm.png" alt="iTAP"><span><b>iTAP</b><small>BELITUNG</small></span></a>
+<button class="iconbtn" type="button" onclick="go('cari')" data-i18n-aria="search" aria-label="Cari">⌕</button>
+<div class="lang" role="group" aria-label="Bahasa"><button type="button" data-set-lang="id" aria-pressed="true">ID</button><button type="button" data-set-lang="en" aria-pressed="false">EN</button></div>
+<a class="iconbtn" href="#menu" aria-label="Menu">☰</a>
+<button id="music" class="music" type="button" aria-label="Musik latar" data-i18n="music">Musik</button></div>
 <nav class="tabs" aria-label="Kategori"><div class="w">
-<a href="#beranda">Beranda</a><a href="#belanja">Belanja</a><a href="#berita">Berita</a><a href="#loker">Lowongan</a><a href="#menu">Menu</a>
+<a href="#beranda"><span data-i18n="home">Beranda</span></a><a href="#belanja"><span data-i18n="shop">Belanja</span></a><a href="#berita"><span data-i18n="news">Berita</span></a><a href="#loker"><span data-i18n="jobs">Lowongan</span></a><a href="#menu"><span data-i18n="menu">Menu</span></a>
 </div></nav></header>
 <main id="app" class="w">
 <section id="beranda" class="panel">
 <div class="eyebrow">iTAP BELITUNG · STORY</div>
 <h1>Cuaca, wisata, rasa, <span>dan cerita.</span></h1>
 <div class="wxboard">
-<div id="wx-now" class="wxmain"><b>Memuat cuaca…</b><small>Tanjung Pandan</small></div>
+<div id="wx-now" class="wxmain"><span id="greet">Selamat datang</span><b id="wx-val">Memuat cuaca…</b><small>Tanjung Pandan · Open-Meteo</small></div>
 <div class="chips-info" id="infochips"><div class="ic">⏳ Info harian menyusul</div></div>
 </div>
+<a class="feature" id="home-feature" href="#jelajah"><img src="img/e33.webp" alt="Pantai Tanjung Tinggi"><span class="cap"><small>Wisata</small><b>Pantai Tanjung Tinggi</b><em>Sijuk, Belitung</em></span></a>
 <nav class="home-grid" aria-label="Layanan utama">
 <a href="#cuaca"><b aria-hidden="true">🌤️</b><span>Cuaca</span></a>
 <a href="#ppob"><b aria-hidden="true">📱</b><span>Pulsa</span></a>
@@ -29,13 +32,7 @@
 <a href="#jelajah"><b aria-hidden="true">🏝️</b><span>Wisata</span></a>
 <a href="#kedai"><b aria-hidden="true">🥣</b><span>Kedai</span></a>
 </nav>
-<div class="spotlight" aria-label="Sorotan iTAP">
-<a href="#jelajah"><img src="img/e33.webp" alt="Pantai Tanjung Tinggi"><span class="cap"><small>Wisata</small><b>Pantai dan batu granit Belitung</b></span></a>
-<a href="#kedai"><img src="img/kedai.webp" alt="Menu Kedai Bakso Aci iTAP"><span class="cap"><small>Kedai</small><b>Bakso Aci iTAP, buka tiap hari</b></span></a>
-<a href="https://lynk.id/itap025/zx9v358qogmm" target="_blank" rel="noopener"><img src="img/p-ebook.webp" alt="Sampul ebook iTAP"><span class="cap"><small>Ebook</small><b>Bikin video sinematik dari HP</b></span></a>
-<a href="kasir/"><img src="img/jasa.webp" alt="Jasa dan kasir iTAP"><span class="cap"><small>Kasir</small><b>Catat jual di HP sendiri</b></span></a>
-</div>
-<div class="sh"><div><div class="eyebrow">DARI iTAP</div><h2>Terbaru</h2></div><a class="more" href="#berita">Semua kabar</a></div>
+<div class="sh"><div><div class="eyebrow">DARI iTAP</div><h2 data-i18n="latest">Terbaru</h2></div><a class="more" href="#berita" data-i18n="allnews">Semua kabar →</a></div>
 <div class="fresh" id="home-news"><p class="mu sm">Memuat kabar…</p></div>
 <div class="sh"><div><div class="eyebrow">KERJA</div><h2>Lowongan</h2></div><a class="more" href="#loker">Semua</a></div>
 <div class="hrow" id="home-jobs"><p class="mu sm">Memuat lowongan…</p></div>
@@ -92,10 +89,11 @@
 <section class="panel" id="berita"><div class="sh"><div><div class="eyebrow">KABAR TERKINI DARI PULAU KITA</div><h2>📰 Berita Belitung</h2><p class="mu sm" id="berita-upd">Memuat…</p></div></div><div class="row nws" id="berita-list"><div class="card">Memuat berita…</div></div><p class="mu sm">Judul &amp; tautan dari Belitong Ekspres, ANTARA Babel, Pos Belitung, Bangka Pos, Babel Pos &amp; Google Berita. Klik untuk baca di situs aslinya.</p></section><section class="panel" id="loker"><div class="sh"><div><div class="eyebrow">CARI KERJA DI PULAU KITA</div><h2>💼 Lowongan Kerja Belitung</h2><p class="mu sm" id="loker-upd">Memuat…</p></div></div><input id="loker-q" class="lk-q" type="search" placeholder="Cari posisi, perusahaan, lokasi… (mis. Tanjung Pandan)"><div id="loker-list"><div class="card">Memuat lowongan…</div></div><p class="lk-warn">⚠️ Selalu cek keaslian lowongan, jangan bayar apa pun untuk melamar.</p><p class="mu sm">Dihimpun otomatis tiap hari dari Glints, Loker.id &amp; Google Berita (30 hari terakhir). Klik untuk melamar di situs aslinya.</p></section>
 
 <div id="panel-cuaca" class="panel">
-<section id="cuaca"><div class="sh"><div><div class="eyebrow">LANGIT & LAUT HARI INI</div><h2>Cuaca, gelombang & matahari</h2></div></div><div class="card wclock" id="wclock" aria-live="off"><div class="wc-t"><span id="wc-time">--:--:--</span> <b>WIB</b></div><div class="wc-d" id="wc-date">&nbsp;</div></div><div class="g3" id="wx"><div class="card">Memuat cuaca…</div></div></section>
+<section id="cuaca"><div class="sh"><div><div class="eyebrow">LANGIT & LAUT HARI INI</div><h2>Cuaca, gelombang & matahari</h2></div></div><div class="card wclock" id="wclock" aria-live="off"><div class="wc-t"><span id="wc-time">--:--:--</span> <b>WIB</b></div><div class="wc-d" id="wc-date">&nbsp;</div></div><div class="g3" id="wx"><div class="card">Memuat cuaca…</div></div>
+<div class="card" id="gempa"><div class="eyebrow">GEMPA TERBARU · NASIONAL</div><h3>Dari BMKG, bukan peringatan khusus Belitung</h3><p id="gempa-body">Memuat gempa terbaru dari BMKG…</p><p class="src">Sumber: <a href="https://www.bmkg.go.id/" target="_blank" rel="noopener">BMKG</a> (data.bmkg.go.id, gempa terbaru). Angka ini berubah mengikuti BMKG, dan lokasinya sering di luar Belitung.</p></div></section>
 
 <section class="grid2"><div class="card" id="sholat"><div class="sh"><div><div class="eyebrow">JADWAL SHOLAT</div><h3>Tanjung Pandan</h3></div><span class="mu" id="sd"></span></div><div id="pt">Memuat…</div></div>
-<div class="card"><div class="eyebrow">NOMOR DARURAT LOKAL</div><h3>Belitung & Belitung Timur</h3>
+<div class="card" id="darurat"><div class="eyebrow">NOMOR DARURAT LOKAL</div><h3>Belitung & Belitung Timur</h3>
 <details class="fold"><summary>Nomor kabupaten</summary><div class="fold-b"><p class="mu sm" style="margin:6px 0 2px"><b>Kab. Belitung (Tanjung Pandan)</b></p>
 <div class="pt"><span>🚑 PSC 119 (ambulans, 24 jam)</span><a href="tel:+6281741191119"><b>0817-4119-119</b></a></div>
 <div class="pt"><span>🏥 IGD RSUD dr. H. Marsidi Judono</span><a href="tel:+6271922190"><b>(0719) 22190</b></a></div>
@@ -180,6 +178,5 @@
 <div><b>iTAP</b><a href="https://lynk.id/itap025" target="_blank" rel="noopener">Toko Lynk.id</a><a href="#produk">Jasa Video AI</a><a href="#kelas">Kelas Video AI</a><a href="#ppob">Isi Pulsa & Token PLN</a><a href="#kedai">Kedai Bakso Aci</a><a href="paket-kreator/">Paket Kreator AI</a><a href="prompt-pack/">AI Prompt Pack</a><a href="iklan/">Pasang Iklan</a><a href="kelas-ai/">Kelas Kreator AI</a><a href="jasa-web/">Jasa Website</a><a href="jasa-chatbot/">Jasa Chatbot WA</a><a href="https://linktr.ee/itapbelitung" target="_blank" rel="noopener">Linktree</a></div>
 <div><b>Ikuti</b><a href="https://www.instagram.com/itapbelitung" target="_blank" rel="noopener">Instagram</a><a href="https://www.tiktok.com/@itap025" target="_blank" rel="noopener">TikTok</a><a href="https://www.youtube.com/@irmaindriani" target="_blank" rel="noopener">YouTube</a><a href="https://www.facebook.com/share/14tSNvhH7vK/" target="_blank" rel="noopener">Facebook</a><a href="https://wa.me/6285141121283" target="_blank" rel="noopener">WhatsApp (endorse)</a></div></div>
 <p class="w sm copy">© <span id="yr"></span> iTAP Belitung · Cuaca & laut: Open-Meteo · Sholat: Aladhan (Kemenag) · <a href="credits.html" style="display:inline;text-decoration:underline">Kredit foto & lisensi</a> · Musik orisinal dibuat dengan ElevenLabs</p></footer>
-<div id="pwa-install" class="pwa-bar" hidden role="region" aria-label="Pasang iTAP Belitung"><p><b>Pasang iTAP Belitung</b><span data-android hidden>Browser ini mendukung pemasangan. Ketuk Pasang untuk menambah ke layar utama.</span><span data-ios hidden>Di iPhone atau iPad tidak ada tombol pasang otomatis. Ketuk Bagikan, lalu Tambahkan ke Layar Utama. Paling andal lewat Safari.</span></p><button type="button" data-install hidden>Pasang</button><button type="button" data-close aria-label="Tutup">✕</button></div><a class="fab" aria-label="Tanya iTAP via WhatsApp" title="Tanya iTAP" href="https://wa.me/6285141121283?text=Halo%20iTAP" target="_blank" rel="noopener">💬 Tanya iTAP</a>
-<nav class="bnav" aria-label="Kategori bawah"><a href="#beranda">🏠<span>Beranda</span></a><a href="#belanja">🛒<span>Belanja</span></a><a href="#berita">📰<span>Berita</span></a><a href="#loker">💼<span>Lowongan</span></a><a href="#menu">☰<span>Menu</span></a></nav>
+<div id="pwa-install" class="pwa-bar" hidden role="region" aria-label="Pasang iTAP Belitung"><p><b>Pasang iTAP Belitung</b><span data-android hidden>Browser ini mendukung pemasangan. Ketuk Pasang untuk menambah ke layar utama.</span><span data-ios hidden>Di iPhone atau iPad tidak ada tombol pasang otomatis. Ketuk Bagikan, lalu Tambahkan ke Layar Utama. Paling andal lewat Safari.</span></p><button type="button" data-install hidden>Pasang</button><button type="button" data-close aria-label="Tutup">✕</button></div><nav class="bnav" aria-label="Kategori bawah"><a href="#beranda"><b aria-hidden="true">⌂</b><span data-i18n="home">Beranda</span></a><a href="#belanja"><b aria-hidden="true">▣</b><span data-i18n="shop">Belanja</span></a><a class="bnav-mid" href="https://wa.me/6285141121283?text=Halo%20iTAP" target="_blank" rel="noopener" aria-label="Tanya iTAP lewat WhatsApp">WA</a><a href="#berita"><b aria-hidden="true">☰</b><span data-i18n="news">Berita</span></a><a href="#menu"><b aria-hidden="true">☺</b><span data-i18n="menu">Menu</span></a></nav>
 <script src="data.js?v=39"></script><script src="app.js?v=39"></script><script src="views.js?v=39"></script><script src="data-belitung.js?v=39"></script><script src="ppob.js?v=39"></script><script src="berita.js?v=39"></script><script src="loker.js?v=39"></script><script src="pwa.js" data-root="./"></script></body></html>

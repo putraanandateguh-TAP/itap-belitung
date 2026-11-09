@@ -2,7 +2,12 @@ const $=id=>document.getElementById(id);const now=new Date();
 function jakartaParts(date=new Date()){const o=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(date).filter(p=>p.type!=='literal').map(p=>[p.type,p.value]));const hour=o.hour==='24'?'00':o.hour;return{day:o.day,month:o.month,year:o.year,hour,minute:o.minute,minutes:(+hour)*60+(+o.minute),api:o.day+'-'+o.month+'-'+o.year}}
 function nextPrayer(timings,minutes){const L=[['Subuh','Fajr'],['Dzuhur','Dhuhr'],['Ashar','Asr'],['Maghrib','Maghrib'],['Isya','Isha']];const mins=s=>{const m=String(s||'').match(/(\d{1,2}):(\d{2})/);return m?+m[1]*60+(+m[2]):NaN};return L.find(([,k])=>mins(timings?.[k])>minutes)||null}
 $('yr').textContent=jakartaParts(now).year;$('today').textContent=now.toLocaleDateString('id-ID',{timeZone:'Asia/Jakarta',weekday:'long',day:'numeric',month:'long',year:'numeric'});
-(()=>{const g=document.getElementById('greet');if(!g)return;const h=+jakartaParts(now).hour;g.textContent=h<11?'Selamat pagi':h<15?'Selamat siang':h<18?'Selamat sore':'Selamat malam'})();
+let LANG=localStorage.getItem('itap_lang')==='en'?'en':'id';
+const UI={id:{search:'Cari',music:'Musik',musicOn:'Musik hidup',home:'Beranda',shop:'Belanja',news:'Berita',jobs:'Lowongan',menu:'Menu',latest:'Terbaru',allnews:'Semua kabar →',h1a:'Cuaca, wisata, rasa, ',h1b:'dan cerita.',gm:'Selamat pagi',ga:'Selamat siang',ge:'Selamat sore',gn:'Selamat malam'},en:{search:'Search',music:'Music',musicOn:'Music on',home:'Home',shop:'Shop',news:'News',jobs:'Jobs',menu:'Menu',latest:'Latest',allnews:'All stories →',h1a:'Weather, sights, taste, ',h1b:'and stories.',gm:'Good morning',ga:'Good afternoon',ge:'Good evening',gn:'Good night'}};
+function t(k){return (UI[LANG]||UI.id)[k]||UI.id[k]||''}
+function applyLang(lang){LANG=lang==='en'?'en':'id';try{localStorage.setItem('itap_lang',LANG)}catch(e){}document.documentElement.lang=LANG;document.querySelectorAll('[data-i18n]').forEach(el=>{const v=t(el.dataset.i18n);if(v)el.textContent=v});const h1=document.querySelector('#beranda h1');if(h1)h1.innerHTML=t('h1a')+'<span>'+t('h1b')+'</span>';document.querySelectorAll('[data-set-lang]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.setLang===LANG?'true':'false'));const g=document.getElementById('greet');if(g){const hr=+jakartaParts(now).hour;g.textContent=t(hr<11?'gm':hr<15?'ga':hr<18?'ge':'gn')}const m=document.getElementById('music');if(m)m.textContent=m.classList.contains('on')?t('musicOn'):t('music')}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-set-lang]');if(b)applyLang(b.dataset.setLang)});
+applyLang(LANG);
 function openFold(id){const el=$(id);if(!el)return;let n=el;while(n){if(n.tagName==='DETAILS')n.open=true;n=n.parentElement}}
 function go(id){if(!$(id))return;if(location.hash!=='#'+id)location.hash=id;openFold(id);$(id).scrollIntoView({behavior:'smooth',block:'start'});if(id==='cari')setTimeout(()=>$('q')&&$('q').focus(),350)}
 addEventListener('hashchange',()=>openFold((location.hash||'').slice(1)));
@@ -45,7 +50,9 @@ renderAll();showRecent();
 const WC={0:'☀️ Cerah',1:'🌤️ Cerah berawan',2:'⛅ Berawan',3:'☁️ Mendung',45:'🌫️ Berkabut',48:'🌫️ Berkabut',51:'🌦️ Gerimis',53:'🌦️ Gerimis',55:'🌦️ Gerimis',61:'🌧️ Hujan ringan',63:'🌧️ Hujan',65:'🌧️ Hujan lebat',80:'🌦️ Hujan lokal',81:'🌧️ Hujan lokal',82:'⛈️ Hujan deras',95:'⛈️ Badai petir',96:'⛈️ Badai petir',99:'⛈️ Badai petir'};
 const wc=c=>WC[c]||'🌡️',hari=d=>new Date(d).toLocaleDateString('id-ID',{weekday:'short',day:'numeric'}),hm=s=>s.slice(11,16);
 const chip=(i,l,v,href)=>`<${href?'a':'div'} class="ic"${href?` href="${href}"`:''}>${i} <small>${l}</small><b>${v}</b></${href?'a':'div'}>`;const INFO={};
-function drawInfo(){const w=document.getElementById('wx-now');if(w)w.innerHTML=INFO.wx?`<b>${INFO.wx}</b><small>Tanjung Pandan · langit hari ini</small>`:'<b>Cuaca belum masuk</b><small>Tanjung Pandan</small>';$('infochips').innerHTML=[INFO.next&&chip('🕌','Sholat berikutnya',INFO.next),INFO.sun&&chip('🌅','Terbit · terbenam',INFO.sun),INFO.wave&&chip('🌊','Gelombang utara',INFO.wave),chip('🚑','PSC 119 Belitung','0817-4119-119','tel:+6281741191119'),chip('🛒','Promo ebook','Rp20rb')].filter(Boolean).join('')||'<div class="ic">Info harian butuh internet.</div>'}
+function drawInfo(){const v=document.getElementById('wx-val');if(v)v.textContent=INFO.wx||(navigator.onLine?'Memuat cuaca…':'Cuaca butuh internet');$('infochips').innerHTML=[INFO.next&&chip('🕌','Sholat berikutnya',INFO.next),INFO.sun&&chip('🌅','Matahari',INFO.sun),INFO.wave&&chip('🌊','Gelombang',INFO.wave),INFO.usd&&chip('💵','USD · BCA, tertunda',INFO.usd),INFO.gempa&&chip('◎','Gempa BMKG',INFO.gempa,'#gempa'),chip('🆘','Darurat','112 & lokal','#darurat')].filter(Boolean).join('')||'<div class="ic">Info harian butuh internet.</div>'}
+fetch('data/keuangan.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{const usd=d&&d.kurs&&d.kurs.data&&d.kurs.data.USD&&d.kurs.data.USD.erate&&d.kurs.data.USD.erate[1];if(usd){INFO.usd='Rp'+Math.round(usd).toLocaleString('id-ID');drawInfo()}}).catch(()=>{});
+fetch('https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(d=>{const g=d&&d.Infogempa&&d.Infogempa.gempa;const el=document.getElementById('gempa-body');if(!g){if(el)el.textContent='Info gempa BMKG tidak tersedia.';return}const line='M'+g.Magnitude+' · '+g.Wilayah+' · kedalaman '+g.Kedalaman+' · '+g.Tanggal+' '+g.Jam;if(el)el.textContent=line;INFO.gempa='M'+g.Magnitude+' nasional';drawInfo()}).catch(()=>{const el=document.getElementById('gempa-body');if(el)el.textContent='Info gempa BMKG tidak tersedia.'});
 const CITIES=[{n:'Tanjung Pandan',la:-2.7487,lo:107.6516},{n:'Manggar',la:-2.8833,lo:108.2667}];
 (async()=>{const box=$('wx');box.innerHTML='';
  for(const c of CITIES){const el=document.createElement('div');el.className='card wx';el.textContent='Memuat '+c.n+'…';box.appendChild(el);
@@ -77,7 +84,7 @@ addEventListener('hashchange',markNav);markNav();
 
 // Music
 (()=>{const a=new Audio('audio/belitung-bg-64k.mp3');a.loop=true;a.preload='none';a.volume=0;const b=$('music');let on=false;
-const ui=()=>{b.textContent=on?'Musik hidup':'Musik';b.classList.toggle('on',on)};
+const ui=()=>{b.textContent=on?t('musicOn'):t('music');b.classList.toggle('on',on)};
 const fade=(to,cb)=>{const st=a.volume,t0=performance.now();const f=()=>{const k=Math.min(1,(performance.now()-t0)/1500);a.volume=st+(to-st)*k;k<1?requestAnimationFrame(f):cb&&cb()};f()};
 const play=()=>a.play().then(()=>{on=true;ui();fade(.35)}).catch(()=>{});
 const stop=()=>{on=false;ui();fade(0,()=>a.pause())};

@@ -69,7 +69,7 @@ check('berita hidden on home', !home.berita);
 check('lowongan hidden on home', !home.loker);
 check('belanja hidden on home', !home.belanja);
 check('no horizontal overflow', !home.overflow);
-check('nav labels', home.nav.join('|') === '⌂ Beranda|▣ Belanja|WA|☰ Berita|☺ Menu', home.nav.join('|'));
+check('nav labels', home.nav.join('|') === 'Beranda|Belanja|Chat|Berita|Menu', home.nav.join('|'));
 check('pwa button is not an apk link', home.pwaInlineHidden === true);
 await shot(page, 'home-mobile.png');
 
@@ -182,6 +182,28 @@ for (const width of [320, 390, 412]) {
   gapResults['live' + width] = await layoutGap(page);
   const row = gapResults['live' + width];
   check('strip sits on grid at ' + width, row.visualGap >= 0 && row.visualGap <= 28 && row.stripGap <= 28 && row.featureGap >= 0 && row.featureGap <= 28 && !row.titleUnderNav && !row.overflow && row.cards.length >= 3 && row.cards.every((card) => card.text && !card.clipped), JSON.stringify(row));
+  const chrome = await page.evaluate(() => {
+    const rowEl = document.querySelector('.headrow');
+    const rowBox = rowEl.getBoundingClientRect();
+    const labels = [...document.querySelectorAll('.bnav a')].map((a) => {
+      const span = a.querySelector(':scope > span:last-child');
+      const style = getComputedStyle(span);
+      return { text: span.textContent.trim(), h: span.getBoundingClientRect().height, color: style.color, svg: !!a.querySelector('svg') };
+    });
+    const today = document.getElementById('today');
+    const todayBox = today.getBoundingClientRect();
+    const active = labels.find((item, i) => document.querySelectorAll('.bnav a')[i].getAttribute('aria-current') === 'page');
+    return {
+      headerClipped: [...rowEl.children].some((el) => el.getBoundingClientRect().right > rowBox.right + 1),
+      today: today.textContent,
+      todayVisible: todayBox.width > 40 && todayBox.right <= window.innerWidth + 1,
+      labels,
+      active
+    };
+  });
+  check('header fits at ' + width, !chrome.headerClipped, JSON.stringify(chrome.labels.map((item) => item.text)));
+  check('date visible at ' + width, chrome.todayVisible && /,\s+\d{1,2}\s+\S+\s+\d{4}$/.test(chrome.today), chrome.today);
+  check('nav labels stay visible at ' + width, chrome.labels.length === 5 && chrome.labels.every((item) => item.text && item.h > 8 && item.svg && item.color !== 'rgb(255, 255, 255)') && chrome.active && chrome.active.text, JSON.stringify(chrome.labels));
   check('floats clear Pasang and tabs at ' + width, !row.coverTitle && !row.coverNote && !row.coverTab, JSON.stringify(row));
 }
 const blocked = await browser.newPage({ viewport: { width: 390, height: 844 } });

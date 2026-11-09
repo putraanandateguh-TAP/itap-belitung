@@ -138,23 +138,56 @@ if (livePrayer.match.length >= 2) {
 } else {
   check('live prayer chip present', false, 'API sholat tidak mengisi chip: ' + JSON.stringify(livePrayer));
 }
-await page.setViewportSize({ width: 320, height: 700 });
-await page.waitForTimeout(200);
-const narrow = await page.evaluate(() => {
-  const root = document.documentElement;
-  const strip = document.getElementById('infochips');
-  const cards = [...strip.querySelectorAll('.ic')].slice(0, 3).map((card) => ({
-    text: card.innerText.replace(/\s+/g, ' ').trim(),
-    clipped: card.scrollWidth > card.clientWidth + 1,
-    reachable: card.offsetLeft + card.offsetWidth <= strip.scrollWidth + 1
-  }));
-  return { page: root.scrollWidth <= root.clientWidth + 1, cards };
-});
-check('narrow 320 cards scroll without page overflow', narrow.page && narrow.cards.length >= 3 && narrow.cards.every((card) => card.text && !card.clipped && card.reachable), JSON.stringify(narrow));
+async function layoutGap(target) {
+  return target.evaluate(() => {
+    const strip = document.getElementById('infochips');
+    const grid = document.querySelector('#beranda .home-grid');
+    const root = document.documentElement;
+    if (!strip || !grid) return { missing: true };
+    const hit = (a, b) => !(a.right <= b.left + 0.5 || a.left >= b.right - 0.5 || a.bottom <= b.top + 0.5 || a.top >= b.bottom - 0.5);
+    const music = document.getElementById('music').getBoundingClientRect();
+    const fab = document.querySelector('a.fab').getBoundingClientRect();
+    const title = document.querySelector('#pasang h2').getBoundingClientRect();
+    const note = document.querySelector('#pasang .mu').getBoundingClientRect();
+    const cards = [...strip.querySelectorAll('.ic')].slice(0, 3);
+    const cardBottom = Math.max(...cards.map((card) => card.getBoundingClientRect().bottom));
+    const gridTop = grid.getBoundingClientRect().top;
+    return {
+      visualGap: Math.round(gridTop - cardBottom),
+      stripGap: Math.round(gridTop - strip.getBoundingClientRect().bottom),
+      overflow: root.scrollWidth > root.clientWidth + 1,
+      cards: cards.map((card) => ({
+        text: card.innerText.replace(/\s+/g, ' ').trim(),
+        clipped: card.scrollWidth > card.clientWidth + 1
+      })),
+      coverTitle: hit(music, title) || hit(fab, title),
+      coverNote: hit(music, note) || hit(fab, note),
+      coverTab: [...document.querySelectorAll('.bnav a')].some((tab) => hit(music, tab.getBoundingClientRect()) || hit(fab, tab.getBoundingClientRect()))
+    };
+  });
+}
+const gapResults = {};
+for (const width of [320, 390, 412]) {
+  await page.setViewportSize({ width, height: 844 });
+  await page.waitForTimeout(150);
+  gapResults['live' + width] = await layoutGap(page);
+  const row = gapResults['live' + width];
+  check('strip sits on grid at ' + width, row.visualGap >= 0 && row.visualGap <= 28 && row.stripGap <= 28 && !row.overflow && row.cards.length >= 3 && row.cards.every((card) => card.text && !card.clipped), JSON.stringify(row));
+  check('floats clear Pasang and tabs at ' + width, !row.coverTitle && !row.coverNote && !row.coverTab, JSON.stringify(row));
+}
+const blocked = await browser.newPage({ viewport: { width: 390, height: 844 } });
+await blocked.route('**/*', (route) => /open-meteo|aladhan|marine-api/.test(route.request().url()) ? route.abort() : route.continue());
+await blocked.goto(base, { waitUntil: 'domcontentloaded' });
+await blocked.waitForTimeout(400);
+gapResults.noApi390 = await layoutGap(blocked);
+check('strip sits on grid without weather API', gapResults.noApi390.visualGap >= 0 && gapResults.noApi390.visualGap <= 28 && !gapResults.noApi390.overflow, JSON.stringify(gapResults.noApi390));
+await blocked.close();
 await page.setViewportSize({ width: 390, height: 844 });
 await page.evaluate(() => scrollTo(0, 0));
 await shot(page, 'home-mobile.png');
-await writeFile(path.join(ART, 'prayer-jakarta-fixture.json'), JSON.stringify({ fixture, result: prayer, live: livePrayer, narrow }, null, 2));
+await page.locator('#pasang').scrollIntoViewIfNeeded();
+await shot(page, 'pasang-apk-mobile.png');
+await writeFile(path.join(ART, 'prayer-jakarta-fixture.json'), JSON.stringify({ fixture, result: prayer, live: livePrayer, gapResults }, null, 2));
 
 await page.locator('.bnav a[href="#berita"]').click();
 await page.waitForTimeout(300);
@@ -248,6 +281,8 @@ await page.goto(base, { waitUntil: 'domcontentloaded' }).catch(() => {});
 await page.waitForTimeout(500);
 const offline = await page.evaluate(() => document.body.innerText);
 check('offline shell or notice', /iTAP Belitung|butuh internet|offline/i.test(offline));
+const offlineGap = await layoutGap(page);
+check('strip sits on grid offline', !offlineGap.missing && offlineGap.visualGap >= 0 && offlineGap.visualGap <= 28 && !offlineGap.overflow, JSON.stringify(offlineGap));
 await page.screenshot({ path: path.join(ART, 'offline-mobile.png') }).catch(() => {});
 
 const noisy = errors.filter((line) => !/Failed to load resource|net::ERR|favicon/i.test(line));

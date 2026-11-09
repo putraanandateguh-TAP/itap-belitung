@@ -8,7 +8,7 @@
 .cta{display:inline-block;background:var(--blue);color:#fff;font-weight:700;border-radius:99px;padding:9px 16px;font-size:.9rem;margin-top:6px}
 .tabs .w{display:flex;gap:6px;overflow-x:auto;padding:8px 16px;scrollbar-width:none}.tabs a{white-space:nowrap;padding:7px 13px;border-radius:12px;font-size:.88rem;color:#3a5068}.tabs a.on,.tabs a:hover{background:var(--blue);color:#fff}
 .eyebrow{font-size:.7rem;font-weight:800;letter-spacing:.12em;color:var(--blue)}.mu{color:var(--mu)}.sm{font-size:.82rem}
-.chips-info{display:flex;align-items:flex-start;gap:8px;overflow-x:auto;overflow-y:hidden;margin-top:12px;padding:2px 2px 8px;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}.ic{flex:0 0 auto;height:auto;max-width:78vw;background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px 12px;white-space:normal;font-size:.85rem;box-shadow:var(--sh);scroll-snap-align:start}.ic small,.ic b{display:block;overflow-wrap:anywhere}.ic small{color:var(--mu);font-size:.7rem}
+.chips-info{display:flex;align-items:flex-start;gap:8px;overflow-x:auto;overflow-y:hidden;margin-top:12px;margin-bottom:0;padding:2px 2px 6px;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity}.chips-info>*{flex:0 0 auto;align-self:flex-start;min-width:max-content;min-height:0}.ic{height:auto;max-width:78vw;background:#fff;border:1px solid var(--line);border-radius:14px;padding:9px 12px;white-space:normal;font-size:.85rem;line-height:1.25;box-shadow:var(--sh);scroll-snap-align:start}.ic small,.ic b{display:block;overflow-wrap:anywhere}.ic small{color:var(--mu);font-size:.7rem}
 .card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:16px;box-shadow:var(--sh)}
 .grid2{display:grid;gap:16px;grid-template-columns:1fr}@media(min-width:900px){.grid2{grid-template-columns:2fr 1fr}#kedai.grid2,.grid2#x{grid-template-columns:1fr 1fr}}
 .g3,.g4{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}.g4{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
@@ -104,7 +104,7 @@ footer{background:var(--navy);color:#cfe0f5;padding:36px 0 90px;margin-top:40px}
 .lk-h{width:100%;display:flex;align-items:center;gap:8px;border:0;background:none;padding:12px 14px;font:inherit;font-weight:700;color:var(--navy);cursor:pointer;text-align:left}.lk-g.on .lk-h{background:#f3f7fc}
 .lk-n{background:var(--blue);color:#fff;border-radius:999px;padding:1px 9px;font-size:.78rem}.lk-ar{margin-left:auto;color:var(--mu)}
 /* audit 27/10: tombol melayang ringkas di HP biar tidak menutupi konten */
-@media(max-width:899px){.music,.fab{display:block;width:44px;height:44px;padding:0;overflow:hidden;white-space:nowrap;font-size:0;line-height:44px;text-align:center}
+@media(max-width:899px){.music,.fab{bottom:calc(64px + env(safe-area-inset-bottom));display:block;width:44px;height:44px;padding:0;overflow:hidden;white-space:nowrap;font-size:0;line-height:44px;text-align:center}
 .music::first-letter,.fab::first-letter{font-size:1.2rem}
 .fab{width:48px;height:48px;line-height:48px}}
 .home-grid,.menu-list.home-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}

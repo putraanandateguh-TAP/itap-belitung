@@ -2,6 +2,7 @@ const $=id=>document.getElementById(id);const now=new Date();
 function jakartaParts(date=new Date()){const o=Object.fromEntries(new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(date).filter(p=>p.type!=='literal').map(p=>[p.type,p.value]));const hour=o.hour==='24'?'00':o.hour;return{day:o.day,month:o.month,year:o.year,hour,minute:o.minute,minutes:(+hour)*60+(+o.minute),api:o.day+'-'+o.month+'-'+o.year}}
 function nextPrayer(timings,minutes){const L=[['Subuh','Fajr'],['Dzuhur','Dhuhr'],['Ashar','Asr'],['Maghrib','Maghrib'],['Isya','Isha']];const mins=s=>{const m=String(s||'').match(/(\d{1,2}):(\d{2})/);return m?+m[1]*60+(+m[2]):NaN};return L.find(([,k])=>mins(timings?.[k])>minutes)||null}
 $('yr').textContent=jakartaParts(now).year;$('today').textContent=now.toLocaleDateString('id-ID',{timeZone:'Asia/Jakarta',weekday:'long',day:'numeric',month:'long',year:'numeric'});
+(()=>{const g=document.getElementById('greet');if(!g)return;const h=+jakartaParts(now).hour;g.textContent=h<11?'Selamat pagi':h<15?'Selamat siang':h<18?'Selamat sore':'Selamat malam'})();
 function openFold(id){const el=$(id);if(!el)return;let n=el;while(n){if(n.tagName==='DETAILS')n.open=true;n=n.parentElement}}
 function go(id){if(!$(id))return;if(location.hash!=='#'+id)location.hash=id;openFold(id);$(id).scrollIntoView({behavior:'smooth',block:'start'});if(id==='cari')setTimeout(()=>$('q')&&$('q').focus(),350)}
 addEventListener('hashchange',()=>openFold((location.hash||'').slice(1)));
@@ -71,7 +72,7 @@ const TRIP={1:[['Hari 1 — Pesisir utara & island hopping',['Pagi: berangkat da
 function trip(d){$('tripout').innerHTML=TRIP[d].map(([h,l])=>`<div class="day"><h3>${h}</h3><ul>${l.map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('')+'<p class="mu sm">Saran umum. Jarak Tanjung Pandan–Manggar ±1,5 jam berkendara (perkiraan). Sewa mobil/motor paling praktis.</p>';document.querySelectorAll('#tripbtn .chip').forEach(b=>b.classList.toggle('on',b.dataset.d==d))}
 $('tripbtn').onclick=e=>{const b=e.target.closest('.chip');if(b)trip(b.dataset.d)};trip(1);
 // active tab on scroll
-function markNav(){const h=location.hash||'#beranda';const shop=['#belanja','#produk','#kelas','#jasa-baru','#slot-iklan'];const cur=h==='#beranda'||h==='#pasang'?'#beranda':h==='#berita'?'#berita':h==='#loker'?'#loker':shop.includes(h)?'#belanja':'#menu';document.querySelectorAll('.tabs a, .bnav a').forEach(a=>a.setAttribute('aria-current',a.getAttribute('href')===cur?'page':'false'))}
+function markNav(){const h=location.hash||'#beranda';const shop=['#belanja','#produk','#kelas','#jasa-baru','#slot-iklan'];const cur=h==='#beranda'?'#beranda':h==='#pasang'?'#menu':h==='#berita'?'#berita':h==='#loker'?'#loker':shop.includes(h)?'#belanja':'#menu';document.querySelectorAll('.tabs a, .bnav a').forEach(a=>a.setAttribute('aria-current',a.getAttribute('href')===cur?'page':'false'))}
 addEventListener('hashchange',markNav);markNav();
 
 // Music

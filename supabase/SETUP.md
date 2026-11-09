@@ -34,7 +34,7 @@ Jangan menaruh `service_role` atau kunci AI di git, di `config.js`, atau di brow
 
 ## 4. Isi config situs
 
-Di **Project Settings → API** salin Project URL dan `anon` `public` key.
+Di **Project Settings → API** salin Project URL dan kunci **publishable** (`sb_publishable_...`). Itulah yang ditempel sebagai `SUPABASE_ANON_KEY`. Pustaka situs memakai `@supabase/supabase-js` 2.119.0, yang menerima kunci bentuk ini dan tidak mengirimnya sebagai JWT.
 
 Edit `config.js` di repo (boleh di-commit; ini bukan kunci rahasia):
 

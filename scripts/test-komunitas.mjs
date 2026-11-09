@@ -24,6 +24,10 @@ const browser = await chromium.launch({ executablePath: '/usr/local/bin/google-c
 const base = 'http://127.0.0.1:8797/';
 
 const plain = await browser.newPage({ viewport: { width: 390, height: 844 } });
+await plain.route('**/config.js', (route) => route.fulfill({
+  contentType: 'application/javascript',
+  body: "window.ITAP_CONFIG={SUPABASE_URL:'',SUPABASE_ANON_KEY:'',AI_FUNCTION:''};"
+}));
 const leaked = [];
 plain.on('request', (req) => {
   if (/supabase\.co|generativelanguage\.googleapis/.test(req.url())) leaked.push(req.url());

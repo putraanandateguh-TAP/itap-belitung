@@ -204,7 +204,7 @@
         user = db.user || null;
         profile = db.profile || null;
       } else {
-        const lib = await import('https://esm.sh/@supabase/supabase-js@2');
+        const lib = await import('https://esm.sh/@supabase/supabase-js@2.119.0');
         sb = lib.createClient(String(cfg.SUPABASE_URL).replace(/\/$/, ''), cfg.SUPABASE_ANON_KEY);
         const session = await sb.auth.getSession();
         user = session.data.session && session.data.session.user;

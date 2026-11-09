@@ -1,0 +1,20 @@
+name: Cek status CCTV Belitung
+on:
+  schedule:
+    - cron: "20 */2 * * *"   # tiap 2 jam
+  workflow_dispatch:
+permissions: {contents: write}
+concurrency: {group: update-data, cancel-in-progress: false}
+jobs:
+  cctv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: python3 scripts/update_cctv.py || (echo "::warning::Cek CCTV gagal, data lama dipertahankan"; git checkout -- data/cctv.json)
+      - name: Commit kalau status berubah
+        run: |
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git diff --quiet -I '"diperbarui"' data/cctv.json && echo "Status sama" && exit 0
+          git add data/cctv.json && git commit -m "status CCTV $(TZ=Asia/Jakarta date '+%F %H:%M') WIB" && git pull --rebase && git push

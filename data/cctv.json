@@ -1,0 +1,267 @@
+{
+ "diperbarui": "2026-11-09 11:44 WIB",
+ "sumber": "https://cctv.belitung.go.id/",
+ "items": [
+  {
+   "id": 49,
+   "nama": "Dinas Perikanan",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Perkantoran",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=49",
+   "live": false,
+   "yt": null
+  },
+  {
+   "id": 45,
+   "nama": "Halaman Gedung Nasional 2",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Ruang Publik",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=45",
+   "live": true,
+   "yt": null
+  },
+  {
+   "id": 37,
+   "nama": "Halte GOR Tanjungpandan",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Ruang Publik",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=37",
+   "live": false,
+   "yt": null
+  },
+  {
+   "id": 40,
+   "nama": "Kantor Bapenda",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Perkantoran",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=40",
+   "live": false,
+   "yt": null
+  },
+  {
+   "id": 46,
+   "nama": "Kantor Dekranasda",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Perkantoran",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=46",
+   "live": true,
+   "yt": null
+  },
+  {
+   "id": 29,
+   "nama": "Kv. Senang Dalam",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Ruang Publik",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=29",
+   "live": true,
+   "yt": null
+  },
+  {
+   "id": 20,
+   "nama": "Museum Tanjungpandan",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Wisata",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=20",
+   "live": false,
+   "yt": null
+  },
+  {
+   "id": 4,
+   "nama": "Pantai Tanjung Tinggi",
+   "wilayah": "Sijuk",
+   "kategori": "Wisata",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=4",
+   "live": false,
+   "yt": null
+  },
+  {
+   "id": 21,
+   "nama": "Pantai Wisata Tanjung Pendam",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Wisata",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=21",
+   "live": true,
+   "yt": null
+  },
+  {
+   "id": 11,
+   "nama": "Pasar Tanjungpandan/Jl. Kimting",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Pasar",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=11",
+   "live": true,
+   "yt": null
+  },
+  {
+   "id": 17,
+   "nama": "Pendopo Tanjung Kelayang",
+   "wilayah": "Sijuk",
+   "kategori": "Wisata",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=17",
+   "live": false,
+   "yt": null
+  },
+  {
+   "id": 42,
+   "nama": "PKM Tanjungpandan",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Perkantoran",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=42",
+   "live": true,
+   "yt": null
+  },
+  {
+   "id": 30,
+   "nama": "RSUD Marsidi Judono (Loket)",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Perkantoran",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=30",
+   "live": true,
+   "yt": null
+  },
+  {
+   "id": 38,
+   "nama": "Simp. Dinas Arpus",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Perkantoran",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=38",
+   "live": true,
+   "yt": "otp7zzXCNfU"
+  },
+  {
+   "id": 34,
+   "nama": "Simp. Kantor Pol PP",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Perkantoran",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=34",
+   "live": false,
+   "yt": null
+  },
+  {
+   "id": 26,
+   "nama": "Simpang 4 Sijuk",
+   "wilayah": "Sijuk",
+   "kategori": "Persimpangan",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=26",
+   "live": true,
+   "yt": null
+  },
+  {
+   "id": 31,
+   "nama": "Simpang DPRD",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Persimpangan",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=31",
+   "live": false,
+   "yt": null
+  },
+  {
+   "id": 23,
+   "nama": "Simpang Kerjan",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Persimpangan",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=23",
+   "live": true,
+   "yt": null
+  },
+  {
+   "id": 43,
+   "nama": "Simpang Masjid Al Mabrur",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Persimpangan",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=43",
+   "live": true,
+   "yt": null
+  },
+  {
+   "id": 50,
+   "nama": "Simpang PKM Air Saga",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Perkantoran",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=50",
+   "live": true,
+   "yt": null
+  },
+  {
+   "id": 12,
+   "nama": "Traffic Light Jl. Pemuda",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Persimpangan",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=12",
+   "live": false,
+   "yt": null
+  },
+  {
+   "id": 39,
+   "nama": "Traffic Light Kp Ujung 2/Sriwijaya",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Persimpangan",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=39",
+   "live": false,
+   "yt": null
+  },
+  {
+   "id": 9,
+   "nama": "Traffic Light Pangkallalang",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Persimpangan",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=9",
+   "live": true,
+   "yt": null
+  },
+  {
+   "id": 41,
+   "nama": "Traffic Light Rahat",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Persimpangan",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=41",
+   "live": true,
+   "yt": null
+  },
+  {
+   "id": 35,
+   "nama": "Traffic Light Rumah Adat 1",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Persimpangan",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=35",
+   "live": false,
+   "yt": null
+  },
+  {
+   "id": 36,
+   "nama": "Traffic Light Rumah Adat 2",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Persimpangan",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=36",
+   "live": false,
+   "yt": null
+  },
+  {
+   "id": 13,
+   "nama": "Traffic Light Simp. Membalong",
+   "wilayah": "Membalong",
+   "kategori": "Persimpangan",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=13",
+   "live": false,
+   "yt": null
+  },
+  {
+   "id": 32,
+   "nama": "Traffic Light Terminal",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Pelabuhan",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=32",
+   "live": false,
+   "yt": null
+  },
+  {
+   "id": 33,
+   "nama": "Traffic Light Terminal 2",
+   "wilayah": "Tanjungpandan",
+   "kategori": "Pelabuhan",
+   "portal": "https://cctv.belitung.go.id/?page=detail&id=33",
+   "live": false,
+   "yt": null
+  }
+ ]
+}

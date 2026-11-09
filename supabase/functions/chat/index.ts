@@ -59,8 +59,8 @@ Deno.serve(async (req) => {
     return json({ error: 'limit' }, 429);
   }
 
-  const first = Deno.env.get('GEMINI_MODEL') || 'gemini-2.5-flash';
-  const models = [...new Set([first, 'gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-flash-latest'])];
+  // Model lama dipensiunkan Google; urutan cadangan dari yang terbaru.
+  const models = [...new Set(['gemini-3.8-flash', 'gemini-3.5-flash-lite', 'gemini-3.6-flash', 'gemini-3.1-flash-lite', 'gemini-flash-latest', 'gemini-flash-lite-latest', Deno.env.get('GEMINI_MODEL') || 'gemini-3.8-flash'])];
   const prompt = [
     'Kamu asisten singkat iTAP Belitung. Jawab dalam bahasa yang dipakai pengguna.',
     'Jangan mengarang harga, nomor telepon, jadwal kapal, atau berita.',
@@ -77,8 +77,10 @@ Deno.serve(async (req) => {
         headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
         body: JSON.stringify({
           contents: [{ role: 'user', parts: [{ text: prompt }] }],
-          // Tanpa mode "berpikir" supaya jatah token tidak habis sebelum jawaban keluar.
-          generationConfig: { maxOutputTokens: 1024, temperature: 0.4, thinkingConfig: { thinkingBudget: 0 } }
+          // Jatah token longgar supaya mode "berpikir" tidak menghabiskannya sebelum jawaban keluar.
+          generationConfig: model.startsWith('gemini-2.5')
+            ? { maxOutputTokens: 1024, temperature: 0.4, thinkingConfig: { thinkingBudget: 0 } }
+            : { maxOutputTokens: 2048, temperature: 0.4 }
         })
       }
     );

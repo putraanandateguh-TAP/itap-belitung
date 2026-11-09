@@ -1,0 +1,11 @@
+{
+  "name": "iTAP Belitung",
+  "channel": "test",
+  "version": "0.1.0-test",
+  "versionCode": 1,
+  "file": "downloads/itap-belitung-0.1.0-test.apk",
+  "sha256": "23d50d97fb25fdba3b490eca28983fa69963afb6fbc67771ce2af7624fbf0a39",
+  "label": "APK uji coba",
+  "site": "https://itapbelitung.my.id/",
+  "signing": "Kunci uji sekali pakai, tidak disimpan di repo. Bukan rilis Play Store. Pembaruan dengan kunci lain perlu hapus aplikasi dulu."
+}

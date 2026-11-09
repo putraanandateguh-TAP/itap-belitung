@@ -93,4 +93,3 @@ const BAKSO=[['Boci Keju',19000],['Boci Daging Cincang',19000],['Boci Daging Mer
 function seedBakso(){let n=0;BAKSO.forEach(([nama,jual])=>{if(DB.produk.some(p=>p.nama===nama))return;if(!FULL()&&DB.produk.length>=LIM.produk)return;DB.produk.push({id:uid(),nama,kat:'Menu Kedai',jual,hpp:0,stok:20,min:5,foto:''});n++});if(DB.toko.nama==='Toko Saya')DB.toko.nama='Kedai Bakso Aci iTAP';save();toast(`✅ ${n} menu ditambahkan. Isi HPP & stok aslinya di 📦 Produk.`);show('produk')}
 // ---- init
 (async()=>{const k=new URLSearchParams(location.search).get('kode');if(k){await itapCheckCode(k);history.replaceState(null,'',location.pathname);if(FULL())toast('✅ iTAP Kasir FULL aktif')}renderPlan();renderDash()})();
-if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});

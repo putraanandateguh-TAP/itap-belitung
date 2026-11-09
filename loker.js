@@ -14,5 +14,5 @@ function draw(){const q=(Q.value||'').toLowerCase().trim();
  L.innerHTML=h||'<div class="card">Belum ada lowongan yang cocok.</div>'}
 L.onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.g!=null){const k=b.dataset.g;open[k]=!open[k]}else if(b.dataset.m!=null){const k=b.dataset.m;more[k]=!more[k]}draw()};
 Q.oninput=draw;
-fetch('/data/loker.json?t='+Date.now()).then(r=>r.json()).then(d=>{all=(d.items||[]).map(x=>(x._r=reg(x),x));if(!all.length)throw 0;draw();
-U.textContent=all.length+' lowongan · diperbarui '+new Date(d.updated).toLocaleString('id-ID',{timeZone:'Asia/Jakarta',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})+' WIB'}).catch(()=>{L.innerHTML='<div class="card">Lowongan belum bisa dimuat. Coba lagi nanti ya.</div>';U.textContent=''})})();
+fetch('data/loker.json?t='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{all=(d.items||[]).map(x=>(x._r=reg(x),x));if(!all.length)throw 0;draw();
+U.textContent=all.length+' lowongan · diperbarui '+new Date(d.updated).toLocaleString('id-ID',{timeZone:'Asia/Jakarta',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})+' WIB'}).catch(()=>{L.innerHTML='<div class="card">'+(navigator.onLine?'Lowongan belum bisa dimuat. Coba lagi nanti ya.':'Lowongan butuh internet. Data lama tidak ditampilkan sebagai lowongan hari ini.')+'</div>';U.textContent=''})})();

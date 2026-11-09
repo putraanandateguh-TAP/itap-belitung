@@ -59,7 +59,8 @@ Deno.serve(async (req) => {
     return json({ error: 'limit' }, 429);
   }
 
-  const model = Deno.env.get('GEMINI_MODEL') || 'gemini-2.5-flash';
+  const first = Deno.env.get('GEMINI_MODEL') || 'gemini-2.5-flash';
+  const models = [...new Set([first, 'gemini-2.5-flash', 'gemini-2.5-flash-lite', 'gemini-flash-latest'])];
   const prompt = [
     'Kamu asisten singkat iTAP Belitung. Jawab dalam bahasa yang dipakai pengguna.',
     'Jangan mengarang harga, nomor telepon, jadwal kapal, atau berita.',
@@ -67,21 +68,30 @@ Deno.serve(async (req) => {
     'Nomor darurat resmi tetap 112, 110, dan 115, plus nomor yang sudah terbit di situs iTAP.',
     'Pengguna: ' + message
   ].join('\n');
-  const ai = await fetch(
-    'https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(model) + ':generateContent?key=' + encodeURIComponent(key),
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ role: 'user', parts: [{ text: prompt }] }],
-        generationConfig: { maxOutputTokens: 400, temperature: 0.4 }
-      })
+  let text = '';
+  for (const model of models) {
+    const ai = await fetch(
+      'https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(model) + ':generateContent',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+        body: JSON.stringify({
+          contents: [{ role: 'user', parts: [{ text: prompt }] }],
+          // Tanpa mode "berpikir" supaya jatah token tidak habis sebelum jawaban keluar.
+          generationConfig: { maxOutputTokens: 1024, temperature: 0.4, thinkingConfig: { thinkingBudget: 0 } }
+        })
+      }
+    );
+    if (!ai.ok) {
+      console.error('gemini', model, ai.status, (await ai.text()).slice(0, 300));
+      continue;
     }
-  );
-  if (!ai.ok) return json({ error: 'upstream' }, 502);
-  const payload = await ai.json();
-  const text = payload?.candidates?.[0]?.content?.parts?.map((part: { text?: string }) => part.text || '').join('').trim();
-  if (!text) return json({ error: 'empty' }, 502);
+    const payload = await ai.json();
+    text = (payload?.candidates?.[0]?.content?.parts || []).map((part: { text?: string }) => part.text || '').join('').trim();
+    if (text) break;
+    console.error('gemini kosong', model, JSON.stringify(payload?.candidates?.[0]?.finishReason || payload?.promptFeedback || '').slice(0, 200));
+  }
+  if (!text) return json({ error: 'upstream' }, 502);
 
   await admin.from('ai_usage').insert({ user_id: user.id, ip_hash: ipHash });
   return json({ text });

@@ -107,11 +107,10 @@ footer{background:var(--navy);color:#cfe0f5;padding:36px 0 90px;margin-top:40px}
 @media(max-width:899px){.music,.fab{display:block;width:44px;height:44px;padding:0;overflow:hidden;white-space:nowrap;font-size:0;line-height:44px;text-align:center}
 .music::first-letter,.fab::first-letter{font-size:1.2rem}
 .fab{width:48px;height:48px;line-height:48px}}
-.home-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-.home-grid a{display:flex;align-items:center;gap:8px;min-height:52px;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:14px;font-weight:700;box-shadow:var(--sh)}
-.home-grid span{font-size:.95rem;line-height:1.2}
-.menu-list{display:grid;gap:8px;margin-top:10px}
-.menu-list a{display:flex;align-items:center;min-height:48px;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:14px;font-weight:700}
+.home-grid,.menu-list.home-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
+.home-grid a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:72px;padding:8px 4px;background:#fff;border:1px solid var(--line);border-radius:14px;font-weight:700;text-align:center;box-shadow:var(--sh)}
+.home-grid b{font-size:1.35rem;line-height:1;font-weight:400}
+.home-grid span{font-size:.72rem;line-height:1.15}
 .pasang h2{font-size:1.15rem}
 .pasang .cta, #pwa-inline{min-height:44px}
 #pwa-inline{border:0;background:var(--navy);color:#fff;border-radius:999px;padding:10px 14px;font-weight:700;margin-top:8px}
@@ -185,6 +184,7 @@ footer{background:var(--navy);color:#cfe0f5;padding:36px 0 90px;margin-top:40px}
   .tabs a{white-space:normal;text-align:center;min-height:44px;display:flex;align-items:center;justify-content:center;padding:6px 3px;font-size:.72rem;line-height:1.15}
   .bnav a{min-height:52px;display:flex;flex-direction:column;align-items:center;justify-content:center}
 }
-html{scroll-padding-top:116px;scroll-padding-bottom:84px}
+html{scroll-padding-top:108px;scroll-padding-bottom:120px}
+#pasang{scroll-margin-bottom:120px;margin-bottom:28px}
 #beranda h1{font-size:clamp(1.35rem,4.2vw,2rem)}
 .lead{margin:6px 0 0}

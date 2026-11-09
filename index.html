@@ -3,35 +3,34 @@
 <meta name="description" content="iTAP Belitung: cuaca & gelombang live, jadwal sholat, matahari terbit/terbenam, pencarian serba Belitung, rencana trip, cerita video, ebook, kelas & jasa video AI, Kedai Bakso Aci iTAP.">
 <meta property="og:title" content="iTAP Belitung · Cerita, sejarah & budaya Belitung"><meta property="og:description" content="Cuaca, gelombang, wisata, kuliner, legenda & cerita rakyat dari kreator Belitung."><meta property="og:image" content="https://itapbelitung.my.id/logo-sm.png"><meta property="og:url" content="https://itapbelitung.my.id/"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://itapbelitung.my.id/"><link rel="icon" href="favicon.png"><meta name="theme-color" content="#082c50">
-<link rel="stylesheet" href="style.css?v=39"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="iTAP Belitung"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head><body>
+<link rel="stylesheet" href="style.css?v=40"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="iTAP Belitung"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head><body>
 <div class="top"><div class="w"><span>📍 Belitung, Kepulauan Bangka Belitung</span><span id="today"></span></div></div>
 <header class="hd"><div class="w"><a href="#" class="brand"><img src="logo-sm.png" alt="iTAP"><span><b>iTAP</b><small>BELITUNG · STORY</small></span></a>
 <button class="sbtn" onclick="go('cari')">🔍 Cari</button></div>
 <nav class="tabs" aria-label="Kategori"><div class="w">
-<a href="#beranda">Beranda</a><a href="#belanja">Belanja &amp; Kelas</a><a href="#berita">Berita</a><a href="#loker">Lowongan</a><a href="#menu">Menu</a>
+<a href="#beranda">Beranda</a><a href="#belanja">Belanja</a><a href="#berita">Berita</a><a href="#loker">Lowongan</a><a href="#menu">Menu</a>
 </div></nav></header>
 <main id="app" class="w">
 <section id="beranda" class="panel">
 <div class="eyebrow">iTAP BELITUNG</div>
-<h1>Cuaca, cerita, dan layanan pulau</h1>
-<p class="lead mu">Pilih satu kategori. Berita, lowongan, dan toko tidak ditumpuk di beranda.</p>
+<h1>Layanan pulau</h1>
 <div class="chips-info" id="infochips"><div class="ic">⏳ Memuat info hari ini…</div></div>
 <nav class="home-grid" aria-label="Layanan utama">
-<a href="#cuaca">🌤️ <span>Cuaca &amp; laut</span></a>
-<a href="#ppob">📱 <span>Pulsa &amp; token</span></a>
-<a href="#keuangan">💹 <span>Kurs &amp; harga</span></a>
-<a href="#belanja">🛒 <span>Belanja &amp; kelas</span></a>
-<a href="#berita">📰 <span>Berita</span></a>
-<a href="#loker">💼 <span>Lowongan</span></a>
-<a href="#kedai">🥣 <span>Kedai</span></a>
-<a href="#cari">🔍 <span>Cari pulau</span></a>
+<a href="#cuaca"><b aria-hidden="true">🌤️</b><span>Cuaca</span></a>
+<a href="#ppob"><b aria-hidden="true">📱</b><span>Pulsa</span></a>
+<a href="#keuangan"><b aria-hidden="true">💹</b><span>Kurs</span></a>
+<a href="#belanja"><b aria-hidden="true">🛒</b><span>Belanja</span></a>
+<a href="#berita"><b aria-hidden="true">📰</b><span>Berita</span></a>
+<a href="#loker"><b aria-hidden="true">💼</b><span>Lowongan</span></a>
+<a href="#jelajah"><b aria-hidden="true">🏝️</b><span>Wisata</span></a>
+<a href="#kedai"><b aria-hidden="true">🥣</b><span>Kedai</span></a>
 </nav>
 <div id="pasang" class="card pasang">
 <h2>Pasang di HP</h2>
-<p class="mu sm"><b>Dari browser.</b> Ini bukan unduhan APK. Tombol Pasang hanya muncul di Chrome Android yang mendukung pemasangan. Di iPhone atau iPad: ketuk Bagikan, lalu Tambahkan ke Layar Utama. Paling andal lewat Safari.</p>
+<p class="mu sm"><b>Dari browser</b> bukan file APK. Tombol Pasang hanya muncul di Chrome yang mendukung. iPhone: Bagikan, lalu Tambahkan ke Layar Utama.</p>
 <button type="button" id="pwa-inline" hidden>Pasang dari browser</button>
 <div id="apk-dl" hidden>
-<p class="mu sm"><b>Unduh APK Android (uji coba)</b> versi <span data-apk-ver></span>. Berkas APK sungguhan, terpisah dari pasang browser. Tanda tangan uji, bukan rilis Play Store. Aplikasi hanya membuka https://itapbelitung.my.id/. Pembelian Lynk dan WhatsApp terbuka di aplikasi masing-masing.</p>
+<p class="mu sm"><b>APK uji</b> <span data-apk-ver></span>. Berkas sungguhan, tanda tangan uji, hanya membuka itapbelitung.my.id.</p>
 <p><a class="cta" data-apk-link>Unduh APK uji coba</a></p>
 <p class="mu sm">SHA-256 <code data-apk-sha></code></p>
 </div>
@@ -40,17 +39,17 @@
 <section id="menu" class="panel">
 <h2>Menu</h2>
 <p class="mu sm">Layanan lain. Satu halaman tiap pilihan, bukan daftar panjang di beranda.</p>
-<nav class="menu-list" aria-label="Layanan lain">
-<a href="#cuaca">Cuaca, gelombang, dan sholat</a>
-<a href="#keuangan">Kurs, IHSG, emas, dan harga pangan</a>
-<a href="#ppob">Pulsa, data, game, dan token PLN</a>
-<a href="#cari">Pencarian Belitung</a>
-<a href="#jelajah">Wisata, kuliner, dan cerita</a>
-<a href="#data">Data wilayah dan bupati</a>
-<a href="#kedai">Kedai Bakso Aci</a>
-<a href="#tersimpan">Tersimpan di HP</a>
-<a href="#pasang">Pasang di HP</a>
-<a href="credits.html">Kredit foto</a>
+<nav class="menu-list home-grid" aria-label="Layanan lain">
+<a href="#cuaca"><b aria-hidden="true">🌤️</b><span>Cuaca</span></a>
+<a href="#keuangan"><b aria-hidden="true">💹</b><span>Kurs</span></a>
+<a href="#ppob"><b aria-hidden="true">📱</b><span>Pulsa</span></a>
+<a href="#cari"><b aria-hidden="true">🔍</b><span>Cari</span></a>
+<a href="#jelajah"><b aria-hidden="true">🏝️</b><span>Wisata</span></a>
+<a href="#data"><b aria-hidden="true">📊</b><span>Data</span></a>
+<a href="#kedai"><b aria-hidden="true">🥣</b><span>Kedai</span></a>
+<a href="#tersimpan"><b aria-hidden="true">🔖</b><span>Simpan</span></a>
+<a href="#pasang"><b aria-hidden="true">📲</b><span>Pasang</span></a>
+<a href="credits.html"><b aria-hidden="true">📷</b><span>Kredit</span></a>
 </nav>
 </section>
 <div id="belanja" class="panel"><h2>Belanja &amp; Kelas</h2><p class="mu sm">Harga dan tujuan bayar tetap di sini. Lynk, QRIS, dan WhatsApp butuh internet, tidak diproses offline.</p>

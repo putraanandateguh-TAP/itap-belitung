@@ -27,9 +27,11 @@ def yt_id(u):
     return m.group(1) if m else None
 
 def yt_live(vid):
+    """True = live, False = jelas tidak live, None = halaman tidak terbaca (mis. diblokir)."""
     p = get('https://www.youtube.com/watch?v=' + vid)
     t = re.search(r'<title>([^<]*)', p)
-    return '"isLiveNow":true' in p, H.unescape(t.group(1)).replace(' - YouTube', '') if t else ''
+    state = True if '"isLiveNow":true' in p else (False if '"isLiveNow":false' in p else None)
+    return state, H.unescape(t.group(1)).replace(' - YouTube', '') if t else ''
 
 def main():
     page = get(PORTAL, timeout=25)
@@ -44,6 +46,10 @@ def main():
         live, title = yt_live(v)
         if live and 'cctv' in title.lower():
             cand.append((v, norm(title)))
+    try:
+        prev = {x['id']: x for x in json.load(open('data/cctv.json'))['items']}
+    except Exception:
+        prev = {}
     out = []
     for c in cams:
         if str(c.get('is_active')) != '1':
@@ -52,17 +58,29 @@ def main():
         item = {'id': c['id'], 'nama': c['nama'].replace('CCTV ', '', 1).strip(),
                 'wilayah': c.get('region') or 'Lainnya', 'kategori': c.get('category') or '',
                 'portal': f"{PORTAL}?page=detail&id={c['id']}", 'live': False, 'yt': None}
+        old = prev.get(c['id'], {})
         vid = yt_id(u) if 'youtu' in u else None
         if vid:
             live, _ = yt_live(vid)
             if not live:
                 n = norm(c['nama'])
-                vid = next((v for v, t in cand if t == n or n in t or t in n), None)
-                live = bool(vid)
-            item['live'], item['yt'] = live, vid if live else None
+                new = next((v for v, t in cand if t == n or n in t or t in n), None)
+                if new:
+                    vid, live = new, True
+                elif old.get('yt'):
+                    # siaran pengganti yang pernah ditemukan: cek langsung
+                    st, _ = yt_live(old['yt'])
+                    if st is not False:
+                        vid, live = old['yt'], (True if st else old.get('live', False))
+            item['live'], item['yt'] = bool(live), vid if live else None
         elif u:
-            m = get(u, {'Origin': 'https://cctv.belitung.go.id', 'Referer': PORTAL}, timeout=10)
-            item['live'] = m.lstrip().startswith('#EXTM3U')
+            m = get(u, {'Origin': 'https://cctv.belitung.go.id', 'Referer': PORTAL}, timeout=12)
+            if m.lstrip().startswith('#EXTM3U'):
+                item['live'] = True
+            elif '"code":404' in m or 'File not found' in m:
+                item['live'] = False
+            else:
+                item['live'] = old.get('live', False)  # tidak terbaca: pakai status terakhir
         out.append(item)
     if not any(x['live'] for x in out):
         raise SystemExit('semua kamera terbaca mati, kemungkinan cek gagal; data lama dipertahankan')

@@ -1,0 +1,33 @@
+<!doctype html><html lang="id"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pesan undangan · iTAP</title>
+<link rel="icon" href="../../favicon.png">
+<link rel="stylesheet" href="../undangan.css">
+</head><body>
+<div class="wrap">
+<header class="top"><a href="../"><img src="../../logo-sm.png" alt="iTAP"></a><b>Pesan undangan</b></header>
+<p class="note">Data ini dipakai admin untuk merakit draf. Bayar setelah kamu setuju dengan hasilnya. Foto bisa menyusul di WhatsApp.</p>
+<form id="order" class="card">
+<label>Jenis acara<select name="event" required>
+<option>Pernikahan</option><option>Khitanan</option><option>Aqiqah</option><option>Ulang tahun</option><option>Wisuda</option><option>Syukuran</option><option>Acara sendiri</option>
+</select></label>
+<label>Tema<select name="theme" required>
+<option value="melayu">Melayu Belitong</option><option value="emas">Putih emas</option><option value="pantai">Pantai Belitung</option><option value="islami">Islami</option>
+</select></label>
+<label>Paket<select name="package" id="package" required></select></label>
+<label>Nama yang tercantum<input name="names" required maxlength="80" placeholder="Contoh: Adi & Sari"></label>
+<label>Tanggal<input name="date" type="date" required></label>
+<label>Tempat<input name="venue" required maxlength="120"></label>
+<label>Tautan Google Maps<input name="maps" type="url" placeholder="https://"></label>
+<label>WhatsApp kamu<input name="wa" inputmode="numeric" required placeholder="08…"></label>
+<label>Catatan<textarea name="note" maxlength="800"></textarea></label>
+<label>Foto (opsional, dikirim lewat WhatsApp)<input name="photos" type="file" accept="image/*" multiple></label>
+<button class="cta" type="submit">Kirim dan buka WhatsApp</button>
+<p id="status" class="note" role="status"></p>
+</form>
+<p><a href="../">Kembali</a></p>
+</div>
+<script src="../../config.js"></script>
+<script src="../config.js"></script>
+<script src="pesan.js"></script>
+</body></html>

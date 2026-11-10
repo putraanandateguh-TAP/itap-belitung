@@ -56,3 +56,4 @@ footer{background:var(--navy);color:#cfe0f5;padding:22px 0;margin-top:30px;font-
 @media(min-width:900px){.bnav{display:none}body{padding-bottom:0}}
 @media(max-width:600px){.brand small{display:none}.top{font-size:.7rem}}
 .item select{padding:7px 10px;border:1px solid #cbd5e1;border-radius:99px;background:#fff;font-size:.84rem}
+.form label.consent{display:flex;gap:10px;align-items:flex-start;font-weight:400;font-size:.86rem}.form label.consent input{width:20px;height:20px;flex:0 0 20px;margin-top:2px;padding:0}.consent a{color:var(--blue);text-decoration:underline}

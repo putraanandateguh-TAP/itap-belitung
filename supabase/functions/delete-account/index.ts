@@ -32,6 +32,22 @@ Deno.serve(async (req) => {
     });
   }
   const admin = createClient(supabaseUrl, service);
+  // Hapus foto iklan milik akun ini dari bucket publik "listings" (struktur: <user_id>/<listing_id>/<file>).
+  // Baris tabel ikut terhapus lewat cascade, tetapi file Storage tidak, jadi dibersihkan di sini.
+  try {
+    const uid = data.user.id;
+    const bucket = admin.storage.from('listings');
+    const top = await bucket.list(uid, { limit: 1000 });
+    const paths: string[] = [];
+    for (const entry of top.data || []) {
+      if (entry.id) { paths.push(uid + '/' + entry.name); continue; }
+      const inner = await bucket.list(uid + '/' + entry.name, { limit: 1000 });
+      for (const f of inner.data || []) paths.push(uid + '/' + entry.name + '/' + f.name);
+    }
+    for (let i = 0; i < paths.length; i += 100) await bucket.remove(paths.slice(i, i + 100));
+  } catch (_) {
+    // Lanjut hapus akun; sisa file bisa dibersihkan admin lewat "Bersihkan foto yatim".
+  }
   const removed = await admin.auth.admin.deleteUser(data.user.id);
   if (removed.error) {
     return new Response(JSON.stringify({ error: 'delete' }), {

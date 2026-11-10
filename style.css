@@ -343,3 +343,5 @@ code[data-apk-sha]{display:block;max-width:100%;overflow-wrap:anywhere;word-brea
 .sholat-cd{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;border-radius:14px;padding:10px 14px;margin:8px 0}
 .sholat-cd small{opacity:.85}.sholat-cd b{font-size:1.5rem;font-variant-numeric:tabular-nums;letter-spacing:.03em}
 .jb-h{display:flex;justify-content:space-between;align-items:center;gap:10px}.jb-add{margin-top:0}
+#pp-form[hidden],#pp-cats[hidden],#pp-soon[hidden]{display:none!important}.pp-soonbox{padding:4px 2px}.pp-soonbox h3{margin-bottom:4px}
+.jb-cats{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:10px 0 0;padding-bottom:4px}.jb-cats button,.jb-cats a{flex:0 0 auto;padding:6px 12px;border-radius:99px;border:1px solid var(--line);background:#fff;font-size:.82rem;cursor:pointer;white-space:nowrap}.jb-cats button.on{background:var(--blue);color:#fff;border-color:var(--blue)}

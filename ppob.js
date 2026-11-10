@@ -67,7 +67,9 @@ function init(){if(!$('#ppob'))return;
  $('#pp-sub').onclick=e=>{const b=e.target.closest('[data-s]');if(b){sub=b.dataset.s;sel=null;$('#pp-err').textContent='';upd()}};
  $('#pp-list').onclick=e=>{const t=e.target.closest('[data-t]');if(t){$('#pp-cat2').value=t.dataset.t;return}const b=e.target.closest('[data-n]');if(b){sel=+b.dataset.n;$('#pp-err').textContent='';upd()}};
  $('#pp-id').oninput=upd;$('#pp-form').onsubmit=send;
- render();fetch('data/ppob-harga.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():{}).then(j=>{H=j||{};upd()}).catch(()=>{if(!navigator.onLine&&$('#pp-err'))$('#pp-err').textContent='Harga pulsa butuh internet. Tidak ada harga tersimpan yang ditampilkan sebagai harga hari ini.'});
+ // Selama daftar harga kosong, tawaran PPOB disembunyikan dan diganti 'segera hadir'.
+ function gate(){const has=Object.values(H||{}).some(v=>v&&typeof v==='object'?Object.keys(v).length:v);const f=$('#pp-form'),c=$('#pp-cats'),so=document.getElementById('pp-soon');if(f)f.hidden=!has;if(c)c.hidden=!has;if(so)so.hidden=has}
+ render();fetch('data/ppob-harga.json?t='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.json():{}).then(j=>{H=j||{};upd();gate()}).catch(()=>{gate();if(!navigator.onLine&&$('#pp-err'))$('#pp-err').textContent='Harga pulsa butuh internet. Tidak ada harga tersimpan yang ditampilkan sebagai harga hari ini.'});
 }
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',init):init();
 })();

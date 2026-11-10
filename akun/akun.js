@@ -7,6 +7,8 @@
   const KAT = window.ITAP_KATALOG || { wa: '6287749476651', items: [] };
   const ITEMS = KAT.items;
   const app = document.getElementById('app');
+  // Versi dokumen yang disetujui saat daftar (dicatat di metadata akun sebagai bukti persetujuan).
+  const CONSENT_DOC = 'privasi.html 2026-11-10';
   const params = new URLSearchParams(location.search);
   const S = {
     sb: null, user: null, profile: null, admin: false, google: false,
@@ -99,7 +101,7 @@
     let form;
     if (!admin && S.authTab === 'daftar') {
       form = '<h2>Buat akun pengunjung</h2><p class="mu sm">Gratis. Untuk pesan produk iTAP, pasang iklan jual beli, menulis ulasan, dan kirim kabar.</p>' + google +
-        '<form id="f-daftar" class="form"><label>Nama<input name="name" maxlength="60" required autocomplete="name"></label><label>Email<input type="email" name="email" required autocomplete="email"></label><label>Kata sandi (min. 8 karakter)<input type="password" name="password" minlength="8" required autocomplete="new-password"></label><button class="btn block" type="submit">Daftar</button></form><p class="mu sm" style="margin-top:8px">Kami kirim email konfirmasi. Buka tautannya sekali, lalu kamu bisa masuk.</p>';
+        '<form id="f-daftar" class="form"><label>Nama<input name="name" maxlength="60" required autocomplete="name"></label><label>Email<input type="email" name="email" required autocomplete="email"></label><label>Kata sandi (min. 8 karakter)<input type="password" name="password" minlength="8" required autocomplete="new-password"></label><label class="consent"><input type="checkbox" name="consent" value="1" required><span>Saya sudah membaca dan setuju dengan <a href="../privasi.html#ketentuan" target="_blank" rel="noopener">Syarat Penggunaan</a> dan <a href="../privasi.html" target="_blank" rel="noopener">Kebijakan Privasi</a> iTAP.</span></label><button class="btn block" type="submit">Daftar</button></form><p class="mu sm" style="margin-top:8px">Kami kirim email konfirmasi. Buka tautannya sekali, lalu kamu bisa masuk.</p>';
     } else {
       form = '<h2>' + (admin ? 'Masuk Admin / Owner' : 'Selamat datang kembali') + '</h2><p class="mu sm">' + (admin ? 'Khusus akun pemilik iTAP. Akses ditentukan peran admin di database, bukan kode yang bisa dibagikan.' : 'Masuk ke akun pengunjung iTAP.') + '</p>' + google +
         '<form id="f-masuk" class="form"><label>Email<input type="email" name="email" required autocomplete="email"></label><label>Kata sandi<input type="password" name="password" autocomplete="current-password" placeholder="Kosongkan bila pakai tautan email"></label><button class="btn block" type="submit">Masuk</button><button class="btn ghost block" type="button" id="b-magic">Kirim tautan masuk ke email</button></form><p class="sm" style="margin-top:8px;text-align:center"><button type="button" class="btn line sm" id="b-lupa">Lupa kata sandi?</button></p>';
@@ -148,7 +150,7 @@
 
   function favOn(id) { return S.favs.some((f) => f.kind === 'produk' && f.item_id === id); }
   function prodCard(it, acts) {
-    return '<div class="card prod">' + thumb(it) + '<div class="bd"><span class="badge mu">' + esc(it.cat) + '</span><h3>' + esc(it.name) + '</h3><p class="pr">' + esc(it.label) + '</p><p class="mu sm">' + esc(it.blurb || '') + '</p><div class="row acts">' + acts + '</div></div></div>';
+    return '<div class="card prod">' + thumb(it) + '<div class="bd"><span class="badge mu">' + esc(it.cat) + '</span><h3>' + esc(it.name) + '</h3><p class="pr">' + (it.was ? '<s class="mu" style="font-weight:400;font-size:.85em">' + esc(it.was) + '</s> ' : '') + esc(it.label) + '</p><p class="mu sm">' + esc(it.blurb || '') + '</p><div class="row acts">' + acts + '</div></div></div>';
   }
   function vBelanja() {
     const list = ITEMS.filter((it) => it.kind !== 'kedai').map((it) => {
@@ -251,7 +253,7 @@
     const revs = A.reviews.map((r) => '<div class="item"><div class="row" style="justify-content:space-between"><b>' + esc(item(r.product_id).name) + '</b>' + badge(REV_ST[r.status] || REV_ST.pending) + '</div><p class="stars">' + stars(r.rating) + '</p><p class="sm">' + esc(r.body) + '</p><p class="mu sm">' + esc(r.author_name || 'Pengunjung') + ' · ' + dOnly(r.created_at) + '</p><div class="row" style="margin-top:6px">' + (r.status !== 'approved' ? '<button type="button" class="btn sm" data-rev="' + r.id + '" data-st="approved">Tayangkan</button>' : '') + (r.status !== 'hidden' ? '<button type="button" class="btn line sm" data-rev="' + r.id + '" data-st="hidden">Sembunyikan</button>' : '') + '<button type="button" class="btn bad sm" data-delrev="' + r.id + '">Hapus</button></div></div>').join('');
     return '<div class="sec-h"><h2>Kabar menunggu</h2><span class="badge warn">' + pend.length + '</span></div>' + (stories ? '<div class="list">' + stories + '</div>' : '<p class="card mu">Tidak ada kabar yang menunggu.</p>') +
       '<div class="sec-h"><h2>Ulasan</h2></div>' + (!S.ready.reviews ? SOON('ulasan') : revs ? '<div class="list">' + revs + '</div>' : '<p class="card mu">Belum ada ulasan masuk.</p>') +
-      '<div class="sec-h"><h2>Iklan jual beli</h2><a class="btn line sm" href="../#jualbeli">Buka Jual Beli</a></div>' + (lst ? '<div class="list">' + lst + '</div>' : '<p class="card mu">Belum ada iklan.</p>');
+      '<div class="sec-h"><h2>Iklan jual beli</h2><div class="row"><button type="button" class="btn line sm" id="b-orphans">Bersihkan foto yatim</button><a class="btn line sm" href="../#jualbeli">Buka Jual Beli</a></div></div>' + (lst ? '<div class="list">' + lst + '</div>' : '<p class="card mu">Belum ada iklan.</p>');
   }
 
   function aAkses() {
@@ -282,12 +284,14 @@
   }
   async function magic(email) {
     if (!email) { setNote('Isi email dulu.', 'warn'); return; }
-    const r = await S.sb.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectUrl() } });
+    const r = await S.sb.auth.signInWithOtp({ email, options: { emailRedirectTo: redirectUrl(), shouldCreateUser: false } });
+    if (r.error && /signup|not allowed|not found/i.test(r.error.message || '')) { setNote('Email ini belum terdaftar. Buka tab Daftar dan setujui syarat & privasi dulu.', 'warn'); return; }
     setNote(r.error ? 'Tautan belum terkirim: ' + r.error.message : 'Tautan masuk dikirim ke ' + email + '. Buka dari HP/browser ini.', r.error ? 'bad' : 'ok');
   }
   async function signUp(form) {
     const d = new FormData(form);
-    const r = await S.sb.auth.signUp({ email: String(d.get('email') || '').trim(), password: String(d.get('password') || ''), options: { data: { full_name: String(d.get('name') || '').trim() }, emailRedirectTo: redirectUrl() } });
+    if (d.get('consent') !== '1') { setNote('Centang persetujuan Syarat Penggunaan dan Kebijakan Privasi dulu.', 'warn'); return; }
+    const r = await S.sb.auth.signUp({ email: String(d.get('email') || '').trim(), password: String(d.get('password') || ''), options: { data: { full_name: String(d.get('name') || '').trim(), consent_at: new Date().toISOString(), consent_doc: CONSENT_DOC }, emailRedirectTo: redirectUrl() } });
     setNote(r.error ? 'Belum bisa daftar: ' + r.error.message : 'Cek email untuk konfirmasi. Setelah itu kamu langsung masuk.', r.error ? 'bad' : 'ok');
   }
 
@@ -356,6 +360,21 @@
     await listFiles(id);
   }
 
+  async function removePhotoFiles(listingIds) {
+    if (!listingIds.length) return;
+    const r = await S.sb.from('listing_photos').select('path').in('listing_id', listingIds);
+    const paths = (r.data || []).map((x) => x.path).filter(Boolean);
+    if (paths.length) await S.sb.storage.from('listings').remove(paths);
+  }
+  async function cleanOrphans() {
+    const r = await S.sb.rpc('admin_listing_photo_orphans');
+    if (r.error) throw new Error(missing(r.error) || /function/i.test(r.error.message || '') ? 'pembersih foto belum dipasang (supabase/privasi-foto.sql)' : r.error.message);
+    const paths = (r.data || []).map((x) => x.name || x).filter(Boolean);
+    if (!paths.length) return 0;
+    for (let i = 0; i < paths.length; i += 100) { const d = await S.sb.storage.from('listings').remove(paths.slice(i, i + 100)); if (d.error) throw d.error; }
+    return paths.length;
+  }
+
   async function grant(userId, productId, days, orderId) {
     const expires_at = days > 0 ? new Date(Date.now() + days * 864e5).toISOString() : null;
     const r = await S.sb.from('entitlements').upsert({ user_id: userId, product_id: productId, expires_at, order_id: orderId || null }, { onConflict: 'user_id,product_id' });
@@ -399,8 +418,9 @@
     if (t.id === 'b-magic') { const em = (document.querySelector('#f-masuk [name=email]') || {}).value; t.disabled = true; await magic(String(em || '').trim()); t.disabled = false; return; }
     if (t.id === 'b-lupa') { const em = String((document.querySelector('#f-masuk [name=email]') || {}).value || '').trim(); if (!em) { setNote('Isi email dulu, lalu tekan Lupa kata sandi.', 'warn'); return; } const r = await S.sb.auth.resetPasswordForEmail(em, { redirectTo: redirectUrl() }); setNote(r.error ? 'Belum terkirim: ' + r.error.message : 'Tautan atur ulang kata sandi dikirim ke ' + em + '.', r.error ? 'bad' : 'ok'); return; }
     if (t.id === 'b-google') { const r = await S.sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: redirectUrl() } }); if (r.error) setNote('Google belum bisa dipakai.', 'bad'); return; }
+    if (t.id === 'b-orphans') { if (!confirm('Hapus file foto di bucket listings yang iklannya sudah tidak ada?')) return; await act(async () => { const n = await cleanOrphans(); setNote(n ? n + ' file foto yatim dihapus.' : 'Tidak ada foto yatim.', 'ok'); }); return; }
     if (t.id === 'b-out') { await S.sb.auth.signOut(); S.user = null; S.profile = null; S.admin = false; S.tab = ''; setNote('Kamu sudah keluar.', 'ok'); paint(); return; }
-    if (t.id === 'b-del') { if (!confirm('Hapus akun beserta iklan, ulasan, dan pesanan yang tercatat?')) return; await act(async () => { const r = await S.sb.functions.invoke('delete-account', { body: {} }); if (r.error) throw r.error; await S.sb.auth.signOut(); S.user = null; paint(); }, 'Akun dihapus.'); return; }
+    if (t.id === 'b-del') { if (!confirm('Hapus akun beserta iklan (termasuk fotonya), ulasan, favorit, dan pesanan yang tercatat?')) return; await act(async () => { const own = await S.sb.from('listings').select('id').eq('owner_id', S.user.id); await removePhotoFiles((own.data || []).map((x) => x.id)).catch(() => {}); const r = await S.sb.functions.invoke('delete-account', { body: {} }); if (r.error) throw r.error; await S.sb.auth.signOut(); S.user = null; paint(); }, 'Akun dihapus.'); return; }
     if (ds.rate) { const n = Number(ds.rate); const f = document.getElementById('f-review'); f.elements.rating.value = n; document.querySelectorAll('#rate button').forEach((b) => { const on = Number(b.dataset.rate) <= n; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(Number(b.dataset.rate) === n)); }); return; }
     if (ds.order) { orderSheet(ds.order); return; }
     if (ds.fav) { await act(async () => { const on = favOn(ds.fav); const r = on ? await S.sb.from('favorites').delete().eq('user_id', S.user.id).eq('kind', 'produk').eq('item_id', ds.fav) : await S.sb.from('favorites').insert({ user_id: S.user.id, kind: 'produk', item_id: ds.fav, label: item(ds.fav).name }); if (r.error) { if (missing(r.error)) { S.ready.fav = false; throw new Error('favorit sedang disiapkan'); } throw r.error; } await refresh(); }); return; }
@@ -415,7 +435,7 @@
     if (ds.rev) { await act(async () => { const r = await S.sb.from('reviews').update({ status: ds.st }).eq('id', ds.rev); if (r.error) throw r.error; await refresh(); }, ds.st === 'approved' ? 'Ulasan ditayangkan.' : 'Ulasan disembunyikan.'); return; }
     if (ds.story) { await act(async () => { const r = await S.sb.from('stories').update({ status: ds.st }).eq('id', ds.story); if (r.error) throw r.error; await refresh(); }, ds.st === 'approved' ? 'Kabar disetujui dan tayang.' : 'Kabar ditolak.'); return; }
     if (ds.flag) { await act(async () => { const r = await S.sb.from('listings').update({ flagged: ds.on === '1' }).eq('id', ds.flag); if (r.error) throw r.error; await refresh(); }, ds.on === '1' ? 'Iklan disembunyikan.' : 'Iklan tayang lagi.'); return; }
-    if (ds.ldel) { if (!confirm('Hapus iklan ini permanen?')) return; await act(async () => { const r = await S.sb.from('listings').delete().eq('id', ds.ldel); if (r.error) throw r.error; await refresh(); }, 'Iklan dihapus.'); return; }
+    if (ds.ldel) { if (!confirm('Hapus iklan ini permanen?')) return; await act(async () => { await removePhotoFiles([ds.ldel]).catch(() => {}); const r = await S.sb.from('listings').delete().eq('id', ds.ldel); if (r.error) throw r.error; await refresh(); }, 'Iklan dan fotonya dihapus.'); return; }
     if (ds.grant) { const o = S.a.orders.find((x) => x.id === ds.grant); if (!o) return; const days = o.product_id === 'kasir' ? 30 : 0; await act(async () => { await grant(o.user_id, o.product_id, days, o.id); if (o.status === 'baru') await S.sb.from('shop_orders').update({ status: 'dibayar' }).eq('id', o.id); await refresh(); }, 'Akses diberikan' + (days ? ' (30 hari)' : ' (selamanya)') + '.'); return; }
     if (ds.revoke) { if (!confirm('Cabut akses ini?')) return; await act(async () => { const r = await S.sb.from('entitlements').delete().eq('id', ds.revoke); if (r.error) throw r.error; await refresh(); }, 'Akses dicabut.'); return; }
     if (ds.odel) { if (!confirm('Hapus pesanan ini dari catatan?')) return; await act(async () => { const r = await S.sb.from('shop_orders').delete().eq('id', ds.odel); if (r.error) throw r.error; await refresh(); }, 'Pesanan dihapus.'); return; }

@@ -7,7 +7,10 @@
   const configured = Boolean(mock) || (urlOk && keyOk);
   const aiName = String(cfg.AI_FUNCTION || '');
   const aiReady = mock ? Boolean(mock.ai) : (urlOk && keyOk && /^[a-z0-9_-]{1,40}$/i.test(aiName));
-  const CATS = [['elektronik', 'Elektronik'], ['kendaraan', 'Kendaraan'], ['rumah', 'Rumah'], ['jasa', 'Jasa'], ['lainnya', 'Lainnya']];
+  // 11 kategori iklan + Lowongan (tautan ke Loker), dari usulan kategori Jual Beli iTAP. 'rumah' = kategori lama, tetap terbaca.
+  const CATS = [['kuliner', 'Kuliner & oleh-oleh'], ['hasil-laut', 'Hasil laut & olahan'], ['kerajinan', 'Kerajinan & batu satam'], ['pertanian', 'Pertanian & kebun'], ['properti', 'Properti, kos & kontrak'], ['kendaraan', 'Kendaraan'], ['elektronik', 'Elektronik & HP'], ['sewa', 'Sewa alat & trip'], ['jasa', 'Jasa lokal'], ['rumah-tangga', 'Rumah tangga & perlengkapan'], ['lainnya', 'Lain-lain']];
+  const LEGACY = [['rumah', 'Rumah (kategori lama)']];
+  const BASIC = ['elektronik', 'kendaraan', 'jasa', 'lainnya', 'rumah'];
   const SCATS = [['kabar', 'Kabar'], ['wisata', 'Wisata'], ['kuliner', 'Kuliner'], ['budaya', 'Budaya']];
 
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -91,7 +94,7 @@
   }
 
   function labelCat(id) {
-    return (CATS.find((row) => row[0] === id) || SCATS.find((row) => row[0] === id) || ['', id])[1];
+    return (CATS.find((row) => row[0] === id) || LEGACY.find((row) => row[0] === id) || SCATS.find((row) => row[0] === id) || ['', id])[1];
   }
 
   function renderJual() {
@@ -101,10 +104,10 @@
       const hay = (row.title + ' ' + row.description).toLowerCase();
       return (!q || hay.includes(q.toLowerCase())) && (!cat || row.category === cat);
     });
-    const options = '<option value="">Semua</option>' + CATS.map((row) => '<option value="' + row[0] + '">' + row[1] + '</option>').join('');
-    const form = user ? '<form id="listing-form" class="cm-form card"><h3>Pasang iklan</h3><input type="hidden" name="id"><label>Judul<input name="title" required minlength="3" maxlength="80"></label><label>Harga (Rp)<input name="price" inputmode="numeric" required></label><label>Kategori<select name="category">' + CATS.map((row) => '<option value="' + row[0] + '">' + row[1] + '</option>').join('') + '</select></label><label>Deskripsi<textarea name="description" required minlength="10" maxlength="2000"></textarea></label><label>WhatsApp<input name="wa" inputmode="numeric" required placeholder="08…"></label><div class="up"><label class="up-btn">Pilih foto<input name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple></label><p class="mu sm">Paling banyak 3 foto, masing-masing 1,5 MB.</p><div class="up-previews" id="up-previews"></div></div><button class="cta" type="submit">Tayangkan</button></form>' : '<p class="card"><a href="akun/" style="text-decoration:underline">Masuk</a> dulu untuk memasang iklan.</p>';
+    const options = '<option value="">Semua kategori</option>' + CATS.concat(listings.some((r) => r.category === 'rumah') ? LEGACY : []).map((row) => '<option value="' + row[0] + '"' + (row[0] === cat ? ' selected' : '') + '>' + esc(row[1]) + '</option>').join('');
+    const form = user ? '<form id="listing-form" class="cm-form card"><h3>Pasang iklan</h3><input type="hidden" name="id"><label>Judul<input name="title" required minlength="3" maxlength="80"></label><label>Harga (Rp)<input name="price" inputmode="numeric" required></label><label>Kategori<select name="category">' + CATS.map((row) => '<option value="' + row[0] + '">' + row[1] + '</option>').join('') + '</select></label><label>Deskripsi<textarea name="description" required minlength="10" maxlength="2000"></textarea></label><label>WhatsApp<input name="wa" inputmode="numeric" required placeholder="08…"></label><div class="up"><label class="up-btn">Pilih foto<input name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple></label><p class="mu sm">Paling banyak 3 foto. Foto diperkecil dan data lokasi/EXIF dihapus otomatis sebelum diunggah.</p><div class="up-previews" id="up-previews"></div></div><button class="cta" type="submit">Tayangkan</button></form>' : '<p class="card"><a href="akun/" style="text-decoration:underline">Masuk</a> dulu untuk memasang iklan.</p>';
     const own = mine.length ? '<h3 class="cm-own">Iklan saya</h3><div class="cm-grid">' + mine.map((row) => itemHtml(row, true)).join('') + '</div>' : '';
-    return '<div class="card"><div class="jb-h"><h2>Ruang jual beli</h2><a class="cta jb-add" href="' + (user ? '#listing-form' : 'akun/') + '">+ Jual</a></div><p class="mu sm">Iklan warga. Pembayaran tidak lewat iTAP. Sumber: akun yang memasang.</p><form id="jual-filter" class="cm-form"><input id="jual-q" type="search" placeholder="Cari judul" value="' + esc(q) + '"><select id="jual-cat">' + options + '</select></form></div>' + form + '<div class="cm-grid">' + (rows.map((row) => itemHtml(row, false)).join('') || '<p class="card cm-empty">Belum ada iklan yang tampil.</p>') + '</div>' + own + '<p id="jual-note" class="mu sm" role="status">' + esc(notice) + '</p>';
+    return '<div class="card"><div class="jb-h"><h2>Ruang jual beli</h2><a class="cta jb-add" href="' + (user ? '#listing-form' : 'akun/') + '">+ Jual</a></div><p class="mu sm">Iklan warga. Pembayaran tidak lewat iTAP. Sumber: akun yang memasang.</p><form id="jual-filter" class="cm-form"><input id="jual-q" type="search" placeholder="Cari judul" value="' + esc(q) + '"><select id="jual-cat">' + options + '</select></form><p class="mu sm" style="margin-top:6px">Cari kerja? Lowongan ada di <a href="#loker" style="text-decoration:underline">Loker</a>, tidak dipasang di Jual Beli.</p></div>' + form + '<div class="cm-grid">' + (rows.map((row) => itemHtml(row, false)).join('') || '<p class="card cm-empty">Belum ada iklan yang tampil.</p>') + '</div>' + own + '<p id="jual-note" class="mu sm" role="status">' + esc(notice) + '</p>';
   }
 
   function renderKabar() {
@@ -227,10 +230,39 @@
     paint();
   }
 
+  // Foto dibuat ulang lewat canvas sebelum diunggah: metadata EXIF/GPS (lokasi rumah, merek HP) tidak ikut.
+  async function cleanImage(file) {
+    let bmp;
+    try { bmp = await createImageBitmap(file, { imageOrientation: 'from-image' }); } catch (e) { bmp = await createImageBitmap(file); }
+    const max = 1600;
+    const k = Math.min(1, max / Math.max(bmp.width, bmp.height));
+    const w = Math.max(1, Math.round(bmp.width * k));
+    const h = Math.max(1, Math.round(bmp.height * k));
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
+    ctx.drawImage(bmp, 0, 0, w, h);
+    if (bmp.close) bmp.close();
+    const blob = await new Promise((res) => canvas.toBlob(res, 'image/jpeg', 0.85));
+    if (!blob) throw new Error('Foto belum bisa diproses. Coba foto lain.');
+    return new File([blob], 'foto.jpg', { type: 'image/jpeg' });
+  }
+
+  // Hapus file foto di bucket publik "listings" untuk iklan tertentu (pemilik: folder sendiri; admin: lewat kebijakan admin).
+  async function removePhotoFiles(listingIds) {
+    if (mock || !sb || !listingIds.length) return;
+    const { data } = await sb.from('listing_photos').select('path').in('listing_id', listingIds);
+    const paths = (data || []).map((row) => row.path).filter(Boolean);
+    if (paths.length) await sb.storage.from('listings').remove(paths);
+  }
+
   async function filePayload(file, ownerId, listingId) {
     if (!file) return null;
-    if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size > 1500000) throw new Error('Foto harus JPG, PNG, atau WebP, paling besar 1,5 MB.');
-    const ext = file.type === 'image/png' ? 'png' : file.type === 'image/webp' ? 'webp' : 'jpg';
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size > 12000000) throw new Error('Foto harus JPG, PNG, atau WebP.');
+    file = await cleanImage(file);
+    if (file.size > 1500000) throw new Error('Foto masih lebih dari 1,5 MB setelah diperkecil. Coba foto lain.');
+    const ext = 'jpg';
     const path = ownerId + '/' + listingId + '/' + crypto.randomUUID() + '.' + ext;
     if (mock) {
       const data = await file.arrayBuffer();
@@ -402,6 +434,8 @@
         profile = null;
         notice = 'Akun uji dihapus di perangkat ini.';
       } else {
+        const own = await sb.from('listings').select('id').eq('owner_id', user.id);
+        await removePhotoFiles((own.data || []).map((row) => row.id)).catch(() => {});
         const { error } = await sb.functions.invoke('delete-account', { body: {} });
         if (error) throw error;
         user = null;
@@ -457,7 +491,7 @@
       }
       notice = 'Iklan tersimpan.';
     } catch (err) {
-      notice = err && err.message ? err.message : 'Iklan belum tersimpan.';
+      notice = err && err.code === '23514' && !BASIC.includes(category) ? 'Kategori ini sedang disiapkan. Untuk sementara pilih Elektronik & HP, Kendaraan, Jasa lokal, atau Lain-lain.' : (err && err.message ? err.message : 'Iklan belum tersimpan.');
     }
     await loadPublic();
     await loadMine();
@@ -485,10 +519,11 @@
         db.listings = (db.listings || []).filter((row) => row.id !== id);
         saveMock(db);
       } else {
+        await removePhotoFiles([id]).catch(() => {});
         const { error } = await sb.from('listings').delete().eq('id', id);
         if (error) throw error;
       }
-      notice = 'Iklan dihapus.';
+      notice = 'Iklan dan fotonya dihapus.';
     } catch (err) {
       notice = 'Iklan belum terhapus.';
     }

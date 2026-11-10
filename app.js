@@ -69,9 +69,9 @@ const CITIES=[{n:'Tanjung Pandan',la:-2.7487,lo:107.6516},{n:'Manggar',la:-2.883
 const L=[['Subuh','Fajr'],['Terbit','Sunrise'],['Dzuhur','Dhuhr'],['Ashar','Asr'],['Maghrib','Maghrib'],['Isya','Isha']];
 const paint=(t,name)=>{$('sd').textContent=t._hijri?t._hijri.day+' '+t._hijri.month.en+' '+t._hijri.year+' H':'';$('pt').innerHTML=L.map(([a,b])=>`<div class="pt${a===name?' nx':''}"><span>${a}${a===name?' · berikutnya':''}</span><b>${t[b]}</b></div>`).join('')};
 fetch(url(clock.api)).then(r=>r.json()).then(async r=>{const t=r.data.timings;t._hijri=r.data.date.hijri;const nx=nextPrayer(t,clock.minutes);
- if(nx){INFO.next=nx[0]+' '+t[nx[1]];paint(t,nx[0]);drawInfo();return}
+ if(nx){INFO.next=nx[0]+' '+t[nx[1]];window.ITAP_SHOLAT={name:nx[0],time:t[nx[1]],day:clock.year+'-'+clock.month+'-'+clock.day};paint(t,nx[0]);drawInfo();return}
  const tomorrow=jakartaParts(new Date(Date.parse(clock.year+'-'+clock.month+'-'+clock.day+'T12:00:00+07:00')+86400000));
- const r2=await fetch(url(tomorrow.api)).then(x=>x.json());INFO.next='Subuh '+r2.data.timings.Fajr+' besok';paint(t,null);drawInfo()}).catch(()=>{$('pt').textContent=navigator.onLine?'Jadwal sholat gagal dimuat.':'Jadwal sholat butuh internet. Tidak tersedia offline.'})})();
+ const r2=await fetch(url(tomorrow.api)).then(x=>x.json());INFO.next='Subuh '+r2.data.timings.Fajr+' besok';window.ITAP_SHOLAT={name:'Subuh',time:r2.data.timings.Fajr,day:tomorrow.year+'-'+tomorrow.month+'-'+tomorrow.day};paint(t,null);drawInfo()}).catch(()=>{$('pt').textContent=navigator.onLine?'Jadwal sholat gagal dimuat.':'Jadwal sholat butuh internet. Tidak tersedia offline.'})})();
 drawInfo();
 // Trip planner
 const TRIP={1:[['Hari 1 — Pesisir utara & island hopping',['Pagi: berangkat dari Pantai Tanjung Kelayang, island hopping ke Batu Berlayar, Pulau Lengkuas (mercusuar), Pulau Burung — cek gelombang di atas dulu','Siang: makan seafood / gangan','Sore: Pantai Tanjung Tinggi (batu granit Laskar Pelangi)','Malam: Mie Belitung & ngopi di Tanjung Pandan, atau Bakso Aci iTAP']]],

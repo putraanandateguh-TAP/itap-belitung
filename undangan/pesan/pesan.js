@@ -7,6 +7,38 @@
   if (preset && [...sel.options].some((o) => o.value === preset)) sel.value = preset;
   const digits = (s) => String(s || '').replace(/\D/g, '');
 
+  // Desain katalog -> gaya dasar yang diterima database (melayu/emas/pantai/islami).
+  const designs = [
+    { id: 'melayu', theme: 'melayu', name: 'Melayu Belitong', demo: 'demo-melayu', event: 'Pernikahan' },
+    { id: 'emas', theme: 'emas', name: 'Putih Emas', demo: 'demo-emas', event: 'Pernikahan' },
+    { id: 'pantai', theme: 'pantai', name: 'Pantai Tanjung', demo: 'demo-pantai', event: 'Pernikahan' },
+    { id: 'hijab', theme: 'islami', name: 'Syar\u2019i Hijau', demo: 'demo-hijab', event: 'Pernikahan' },
+    { id: 'khitanan', theme: 'islami', name: 'Khitanan Ceria', demo: 'demo-khitanan', event: 'Khitanan' },
+    { id: 'islami', theme: 'islami', name: 'Aqiqah Lembut', demo: 'demo-islami', event: 'Aqiqah' }
+  ];
+  const form = document.getElementById('order');
+  const pick = document.getElementById('pickTheme');
+  pick.innerHTML = designs.map((d, i) => '<label><input type="radio" name="design" value="' + d.id + '"' + (i === 0 ? ' checked' : '') + '><img src="../img/mock/' + d.id + '-1.webp" alt="" width="270" height="570" loading="lazy">' + d.name + '</label>').join('');
+  const qTema = new URLSearchParams(location.search).get('tema');
+  const pre = designs.find((d) => d.id === qTema) || designs.find((d) => d.theme === qTema);
+  if (pre) { form.elements.design.value = pre.id; form.elements.event.value = pre.event; }
+  const current = () => designs.find((d) => d.id === form.elements.design.value) || designs[0];
+  function sync() {
+    const d = current();
+    document.getElementById('theme').value = d.theme;
+    document.getElementById('themeNote').textContent = 'Tema terpilih: ' + d.name + '. Foto contoh diganti fotomu sendiri.';
+    document.getElementById('sumPreview').href = '../../u/?s=' + d.demo + '&to=Tamu+Undangan';
+    const p = cfg.packages.find((x) => x.id === sel.value) || {};
+    document.getElementById('sumName').textContent = 'Paket ' + (p.name || '') + ' · ' + d.name;
+    document.getElementById('sumPrice').innerHTML = '<small>Rp</small>' + Number(p.price || 0).toLocaleString('id-ID');
+    document.getElementById('sumBlurb').textContent = p.blurb || '';
+  }
+  form.addEventListener('change', sync);
+  sync();
+  const burger = document.querySelector('.burger');
+  if (burger) burger.onclick = () => { const open = document.body.classList.toggle('menu-open'); burger.setAttribute('aria-expanded', String(open)); };
+  document.querySelectorAll('[data-wa]').forEach((a) => { a.href = 'https://wa.me/' + cfg.wa + '?text=' + encodeURIComponent(a.dataset.wa); a.target = '_blank'; a.rel = 'noopener'; });
+
   document.getElementById('order').onsubmit = async (e) => {
     e.preventDefault();
     const f = new FormData(e.target);
@@ -23,9 +55,11 @@
       venue: String(f.get('venue') || '').trim(),
       maps: String(f.get('maps') || '').trim(),
       note: String(f.get('note') || '').trim(),
+      design: current().id,
       photos: (f.getAll('photos') || []).filter((file) => file && file.name).map((file) => file.name)
     };
-    const row = { event_type: String(f.get('event')), theme: String(f.get('theme')), package: String(f.get('package')), contact_wa: contact, payload };
+    sync();
+    const row = { event_type: String(f.get('event')), theme: current().theme, package: String(f.get('package')), contact_wa: contact, payload };
     let saved = false;
     try {
       const site = window.ITAP_CONFIG || {};
@@ -39,7 +73,7 @@
     const text = [
       'Halo iTAP, saya mau pesan undangan digital.',
       'Acara: ' + row.event_type,
-      'Tema: ' + row.theme,
+      'Tema: ' + current().name + ' (' + row.theme + ')',
       'Paket: ' + (pack ? pack.name + ' ' + rp(pack.price) : row.package),
       'Nama: ' + payload.names,
       'Tanggal: ' + payload.date,

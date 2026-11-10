@@ -1,0 +1,45 @@
+{
+  "slug": "demo-khitanan",
+  "theme": "islami",
+  "package": "penuh",
+  "demo": true,
+  "eventType": "Khitanan",
+  "title": "Khitanan Rafa",
+  "kicker": "Tasyakuran Khitanan",
+  "inviteLine": "Mohon doa untuk putra kami",
+  "dateLabel": "Sabtu, 10 Juli 2027",
+  "hosts": [
+    {
+      "role": "Putra kami",
+      "name": "Rafa Alfarizi",
+      "detail": "Putra Bapak Iwan & Ibu Dewi, contoh"
+    }
+  ],
+  "countdownTo": "2027-07-10T09:00:00+07:00",
+  "events": [
+    {
+      "name": "Doa dan syukuran",
+      "start": "20270710T090000",
+      "end": "20270710T120000",
+      "timeLabel": "09.00–12.00 WIB",
+      "place": "Rumah, contoh",
+      "address": "Manggar, Belitung Timur",
+      "maps": "https://www.google.com/maps/search/?api=1&query=Manggar+Belitung+Timur"
+    }
+  ],
+  "story": [],
+  "gallery": [
+    "../undangan/img/talent/khitanan.webp",
+    "../img/e26.webp"
+  ],
+  "streamUrl": "",
+  "gift": {
+    "bank": "BSI",
+    "number": "3333333333",
+    "holder": "Contoh Penerima",
+    "qris": ""
+  },
+  "closing": "Terima kasih atas doa dan kehadirannya. Ini hanya contoh tampilan iTAP.",
+  "design": "khitanan",
+  "cover": "../undangan/img/talent/khitanan.webp"
+}

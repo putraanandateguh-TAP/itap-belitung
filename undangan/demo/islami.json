@@ -5,20 +5,47 @@
   "demo": true,
   "eventType": "Aqiqah",
   "title": "Aqiqah Yusuf",
-  "kicker": "Contoh undangan",
+  "kicker": "Tasyakuran Aqiqah",
   "inviteLine": "Mengharap doa restu",
   "dateLabel": "Ahad, 2 Mei 2027",
   "hosts": [
-    {"role": "Orang tua", "name": "Ahmad & Fatimah", "detail": "Nama contoh"},
-    {"role": "Yang diaqiqahkan", "name": "Yusuf Ahmad", "detail": "Putra, contoh"}
+    {
+      "role": "Orang tua",
+      "name": "Ahmad & Fatimah",
+      "detail": "Nama contoh"
+    },
+    {
+      "role": "Yang diaqiqahkan",
+      "name": "Yusuf Ahmad",
+      "detail": "Putra, contoh"
+    }
   ],
   "countdownTo": "2027-05-02T08:00:00+07:00",
   "events": [
-    {"name": "Doa dan makan", "start": "20270502T080000", "end": "20270502T110000", "timeLabel": "08.00–11.00 WIB", "place": "Rumah, contoh", "address": "Tanjung Pandan", "maps": "https://www.google.com/maps/search/?api=1&query=Masjid+Agung+Al-Mabrur+Tanjung+Pandan"}
+    {
+      "name": "Doa dan makan",
+      "start": "20270502T080000",
+      "end": "20270502T110000",
+      "timeLabel": "08.00–11.00 WIB",
+      "place": "Rumah, contoh",
+      "address": "Tanjung Pandan",
+      "maps": "https://www.google.com/maps/search/?api=1&query=Masjid+Agung+Al-Mabrur+Tanjung+Pandan"
+    }
   ],
   "story": [],
-  "gallery": ["../img/e26.webp", "../img/e44.webp"],
+  "gallery": [
+    "../undangan/img/talent/aqiqah.webp",
+    "../img/e26.webp",
+    "../img/e44.webp"
+  ],
   "streamUrl": "",
-  "gift": {"bank": "BSI", "number": "3333333333", "holder": "Contoh Penerima", "qris": ""},
-  "closing": "Semoga contoh ini cukup untuk melihat rasanya."
+  "gift": {
+    "bank": "BSI",
+    "number": "3333333333",
+    "holder": "Contoh Penerima",
+    "qris": ""
+  },
+  "closing": "Semoga contoh ini cukup untuk melihat rasanya.",
+  "design": "aqiqah",
+  "cover": "../undangan/img/talent/aqiqah.webp"
 }

@@ -9,7 +9,7 @@
     ['pantai', 'pantai', 'Pantai Tanjung'], ['khitanan', 'islami', 'Khitanan Ceria'], ['islami', 'islami', 'Aqiqah Lembut'],
     ['ultah', 'pantai', 'Ulang Tahun Laut'], ['wisuda', 'emas', 'Wisuda Emas'], ['syukuran', 'melayu', 'Selamatan Rumah']
   ];
-  const tracks = [['', 'Tanpa musik'], ['../audio/undangan/gymnopedie-1.mp3', 'Gymnopédie No. 1 (public domain)'], ['../audio/undangan/nocturne-op15-1.mp3', 'Nocturne Op. 15 No. 1 (CC0)']];
+  const music = window.ITAP_UNDANGAN_MUSIC || { tracks: [], options: () => '', knownUrl: () => false };
   let sb = null; let user = null; let current = null; let all = []; let invFilter = 'semua'; let fromOrder = null;
   const pkgs = ((window.ITAP_UNDANGAN || {}).packages || []).filter((p) => p.id !== 'coba');
   const flash = (t) => (window.ITAP_ADMIN && window.ITAP_ADMIN.flash ? window.ITAP_ADMIN.flash(t) : say(t));
@@ -63,7 +63,7 @@
       + '<div class="g2"><label>Tanggal tampilan<input name="dateLabel" value="' + esc(d.dateLabel || '') + '" placeholder="Sabtu, 20 Desember 2026"></label><label>Hitung mundur ke (WIB)<input type="datetime-local" name="countdownTo" value="' + esc(toLocal(d.countdownTo)) + '"></label></div>'
       + '<label>Foto sampul (URL)<input name="cover" value="' + esc(d.cover || '') + '"></label><p><input type="file" accept="image/*" id="upCover"> <small class="note">Unggah foto sampul</small></p>'
       + '<label>Galeri (satu URL per baris)<textarea name="gallery" rows="4">' + esc((d.gallery || []).join('\n')) + '</textarea></label><p><input type="file" accept="image/*" multiple id="upGallery"> <small class="note">Unggah foto galeri (maks 3 MB per foto)</small></p>'
-      + '<div class="g2"><label>Musik<select name="musicPick">' + tracks.map((t) => '<option value="' + t[0] + '"' + (t[0] === (d.musicUrl || '') ? ' selected' : '') + '>' + t[1] + '</option>').join('') + '<option value="custom"' + (d.musicUrl && !tracks.some((t) => t[0] === d.musicUrl) ? ' selected' : '') + '>Tautan sendiri (bebas royalti)</option></select></label><label>Tautan musik sendiri<input name="musicUrl" value="' + esc(tracks.some((t) => t[0] === d.musicUrl) ? '' : (d.musicUrl || '')) + '"></label></div>'
+      + '<div class="g2"><label>Musik<select name="musicPick">' + music.options(d.musicUrl || '') + '</select></label><label>Tautan musik sendiri<input name="musicUrl" value="' + esc(music.knownUrl(d.musicUrl) ? '' : (d.musicUrl || '')) + '"></label></div>'
       + '<div class="g2"><label>Video YouTube (opsional)<input name="youtube" value="' + esc(d.youtube || '') + '" placeholder="https://youtu.be/…"></label><label>Siaran langsung (opsional)<input name="streamUrl" value="' + esc(d.streamUrl || '') + '"></label></div>'
       + '<label><input type="checkbox" name="autoscroll"' + (d.autoscroll === false ? '' : ' checked') + ' style="width:auto"> Auto scroll menyala setelah undangan dibuka</label>'
       + '<label>Kalimat pembuka (kosongkan untuk otomatis)<textarea name="opening" rows="3">' + esc(d.opening || '') + '</textarea></label>'

@@ -58,7 +58,7 @@ Catatan: teks deskripsi paket, nama paket, dan fitur tiap paket masih di `undang
 - **"Akun ini bukan admin":** kamu masuk dengan email lain. Klik Keluar, masuk lagi dengan email admin.
 - **"Slug sudah dipakai":** ganti tautan, mis. `adi-sari-2`.
 - **Kolom JSON salah:** pesan merah menyebut kolom yang salah. Periksa koma dan tanda kutip.
-- **Musik:** pilih dua lagu bebas royalti bawaan, atau tempel tautan MP3 bebas royalti. Jangan pakai lagu berhak cipta tanpa izin.
+- **Musik:** pilih lagu bebas royalti bawaan (piano public domain/CC0, atau tiga lagu bernuansa Islami/Timur Tengah berlisensi CC BY), atau tempel tautan MP3 bebas royalti. Jangan pakai lagu berhak cipta tanpa izin. Kredit CC BY tampil otomatis di kaki undangan.
 - **Hapus undangan:** tombol **Hapus** di editor. RSVP dan ucapannya ikut terhapus, tidak bisa dibatalkan.
 - **Jangan pernah** membagikan tautan sunting ke grup tamu.
 

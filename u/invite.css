@@ -181,3 +181,22 @@ img.avatar{object-fit:cover;object-position:top;padding:0}
 @media(hover:hover){.dock a:hover{background:var(--soft)}.dock.textnav a:hover{background:#ffffff33}}
 .dock.textnav{-webkit-mask-image:linear-gradient(90deg,#000 88%,#0000);mask-image:linear-gradient(90deg,#000 88%,#0000)}
 .draftbar{position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:60;background:#b42318;color:#fff;font-size:.75rem;font-weight:600;padding:6px 14px;border-radius:0 0 10px 10px}
+/* v2.4: cerita bergambar, pilihan rekening, QR tamu, tombol Edit pemilik, muncul saat digulir, ornamen gelombang */
+.fab[hidden],.qrbox[hidden]{display:none}
+.editpill{position:fixed;top:calc(12px + env(safe-area-inset-top));right:max(12px,calc(50% - 228px));z-index:21;height:40px;width:auto;padding:0 14px;border-radius:999px;gap:6px;display:flex;align-items:center;text-decoration:none;font-size:.8rem;font-weight:600;background:#fff;color:var(--accent);box-shadow:0 0 0 2px var(--accent),0 6px 16px #0003}
+.editpill svg{width:18px;height:18px}
+.qrbox{position:fixed;inset:0;z-index:60;background:#0008;display:grid;place-items:center;padding:20px}
+.qrcard{position:relative;background:var(--card,#fff);border-radius:20px;padding:22px 20px;max-width:320px;width:100%;text-align:center;box-shadow:0 20px 40px #0005}
+.qrimg{width:220px;height:220px;margin:6px auto 10px;display:grid;place-items:center;background:#fff;border-radius:12px;font-size:.8rem}.qrimg svg{width:100%;height:100%}
+.qrx{position:absolute;top:8px;right:10px;width:34px;height:34px;border-radius:50%;border:0;background:#0000000f;font-size:1.3rem;cursor:pointer}
+.step.has-pic{padding-top:12px}.spic{width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:12px;margin-bottom:10px}
+.bpick{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:12px 0 4px}
+.bpick button{border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:999px;padding:6px 14px;font:inherit;font-size:.8rem;cursor:pointer}
+.bpick button[aria-selected="true"]{background:var(--accent);color:#fff}
+.bank[hidden]{display:none}
+.hero-btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}.hero-btns .pill{display:inline-flex;align-items:center;gap:6px}.hero-btns svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8}
+.rv{opacity:0;transform:translateY(26px);transition:opacity .8s ease,transform .8s ease}.rv.in{opacity:1;transform:none}
+.body .block+.block::before{content:"";display:block;width:132px;height:16px;margin:-20px auto 22px;background:var(--accent);opacity:.45;-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 132 16'%3E%3Cpath d='M2 8c8-8 14-8 22 0s14 8 22 0 14-8 22 0 14 8 22 0 14-8 22 0 14 8 18 2' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 132 16'%3E%3Cpath d='M2 8c8-8 14-8 22 0s14 8 22 0 14-8 22 0 14 8 22 0 14-8 22 0 14 8 18 2' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat}
+#rsvp-box.no-rsvp #rsvp label:nth-of-type(3),#rsvp-box.no-rsvp #rsvp label:nth-of-type(4),#rsvp-box.no-rsvp #cek{display:none}
+#rsvp-box.no-wish #rsvp label:nth-of-type(2),#rsvp-box.no-wish .sub,#rsvp-box.no-wish #wish-note,#rsvp-box.no-wish #wishes{display:none}
+@media (prefers-reduced-motion: reduce){.rv{opacity:1;transform:none;transition:none}}

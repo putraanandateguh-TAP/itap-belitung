@@ -22,6 +22,8 @@
     gift: '<svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="13" rx="1"/><path d="M3 12h18M12 8v13M12 8S10 3 7.5 4.5 9 8 12 8zm0 0s2-5 4.5-3.5S15 8 12 8z"/></svg>',
     clock: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/></svg>',
     music: '<svg viewBox="0 0 24 24"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg>',
+    qr: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg>',
+    edit: '<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13.5 6.5 4 4"/></svg>',
     play: '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>',
     pause: '<svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg>',
     mail: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',
@@ -65,15 +67,18 @@
       const embed = flags.mapsEmbed && (ev.address || ev.place) ? '<iframe class="map" title="Peta ' + esc(ev.name) + '" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=' + encodeURIComponent(ev.address || ev.place) + '&z=14&output=embed"></iframe>' : '';
       return '<article class="event"><h3>' + esc(ev.name) + '</h3><p class="when">' + esc(ev.timeLabel) + '</p><p><b>' + esc(ev.place) + '</b><br>' + esc(ev.address) + '</p>' + embed + '<div class="row-actions">' + mapBtn + '<a href="' + cal + '" target="_blank" rel="noopener">Simpan ke kalender</a></div></article>';
     }).join('');
+    const ev0 = (data.events || [])[0];
+    const firstCal = ev0 && ev0.start ? 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent((data.title || '') + ' · ' + (ev0.name || '')) + '&dates=' + encodeURIComponent(ev0.start + '/' + (ev0.end || ev0.start)) + '&location=' + encodeURIComponent((ev0.place || '') + ', ' + (ev0.address || '')) : '';
     const schedule = (data.schedule || []).length ? '<h3 class="sub center">Susunan acara</h3><ol class="sched">' + data.schedule.map((s) => '<li><span class="t">' + esc(s.time) + '</span><b>' + esc(s.title) + '</b>' + (s.text ? '<small>' + esc(s.text) + '</small>' : '') + '</li>').join('') + '</ol>' : '';
     const photos = (data.gallery || []).slice(0, flags.gallery || 0).map((src) => '<button type="button" class="pic" data-src="' + esc(src) + '"><img src="' + esc(src) + '" alt="" loading="lazy"></button>').join('');
     const yt = ytId(data.youtube);
     const video = yt && flags.gallery ? '<div class="yt"><iframe src="https://www.youtube-nocookie.com/embed/' + yt + '" title="Video" loading="lazy" allow="accelerometer; encrypted-media; picture-in-picture" allowfullscreen></iframe></div>' : '';
-    const story = flags.story ? (data.story || []).map((s) => '<article class="step"><span class="when">' + esc(s.when) + '</span><b>' + esc(s.title) + '</b><p>' + esc(s.text) + '</p></article>').join('') : '';
+    const story = flags.story ? (data.story || []).map((s) => '<article class="step' + (s.photo && !data.hideStoryPhotos ? ' has-pic' : '') + '">' + (s.photo && !data.hideStoryPhotos ? '<img class="spic" src="' + esc(s.photo) + '" alt="" loading="lazy">' : '') + '<span class="when">' + esc(s.when) + '</span><b>' + esc(s.title) + '</b><p>' + esc(s.text) + '</p></article>').join('') : '';
     const accounts = (data.gifts && data.gifts.length ? data.gifts : (data.gift ? [data.gift] : [])).filter((g) => g && g.number);
     const addr = data.giftAddress && data.giftAddress.address ? data.giftAddress : null;
     const gift = flags.gift && (accounts.length || addr) ? '<section class="block gift" id="amplop"><p class="eyebrow center">Amplop digital</p><h2 class="script center">Tanda kasih</h2><p class="muted center">Doa restu Anda sudah lebih dari cukup. Bila ingin memberi tanda kasih, silakan lewat:</p>'
-      + accounts.map((g) => '<article class="bank"><div class="chip"></div><p class="bname">' + esc(g.bank) + '</p><p class="bnum">' + esc(g.number) + '</p><p class="bholder">a.n. ' + esc(g.holder) + '</p><button type="button" class="copy" data-copy="' + esc(g.number) + '">Salin</button></article>').join('')
+      + (accounts.length > 1 ? '<div class="bpick" role="tablist" aria-label="Pilih rekening">' + accounts.map((g, i) => '<button type="button" role="tab" data-bank="' + i + '" aria-selected="' + (i === 0) + '">' + esc(g.bank || 'Rekening') + '</button>').join('') + '</div>' : '')
+      + accounts.map((g, i) => '<article class="bank" data-acc="' + i + '"' + (accounts.length > 1 && i > 0 ? ' hidden' : '') + '><div class="chip"></div><p class="bname">' + esc(g.bank) + '</p><p class="bnum">' + esc(g.number) + '</p><p class="bholder">a.n. ' + esc(g.holder) + '</p><button type="button" class="copy" data-copy="' + esc(g.number) + '">Salin Nomor</button></article>').join('')
       + (data.gift && data.gift.qris ? '<img class="qris" src="' + esc(data.gift.qris) + '" alt="QRIS">' : '')
       + (addr ? '<article class="kado">' + ico.gift + '<b>Kirim kado fisik</b><p>' + esc(addr.name || '') + '<br>' + esc(addr.address) + '</p>' + (addr.note ? '<small>' + esc(addr.note) + '</small>' : '') + '<button type="button" class="copy" data-copy="' + esc((addr.name ? addr.name + ', ' : '') + addr.address) + '">Salin alamat</button></article>' : '')
       + (data.demo ? '<p class="muted center">Nomor dan alamat di atas hanya contoh.</p>' : '')
@@ -83,13 +88,15 @@
       ? 'Dengan memohon rahmat dan rida Tuhan Yang Maha Esa, kami bermaksud menyelenggarakan pernikahan putra-putri kami. Kehadiran dan doa Bapak/Ibu/Saudara/i adalah hadiah terindah bagi kami.'
       : 'Dengan penuh rasa syukur, kami mengundang Bapak/Ibu/Saudara/i untuk hadir dan mendoakan acara keluarga kami.');
     const quote = data.quote || (isWedding && muslim ? '“Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan untukmu dari jenismu sendiri, agar kamu merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang.” (QS Ar-Rum: 21)' : '');
-    const hostCards = (data.hosts || []).map((h, i) => {
+    const hostList = data.hostsReverse ? (data.hosts || []).slice().reverse() : (data.hosts || []);
+    const hostCards = hostList.map((h, i) => {
       const ig = igHandle(h.instagram);
       const pic = h.photo ? '<img class="avatar" src="' + esc(h.photo) + '" alt="">' : '<div class="avatar">' + esc((h.name || '?').trim().charAt(0)) + '</div>';
       return '<article class="person">' + (i > 0 && isWedding ? '<p class="amp">&amp;</p>' : '') + pic + '<p class="role">' + esc(h.role) + '</p><h3 class="script">' + esc(h.name) + '</h3><p class="muted">' + esc(h.detail) + '</p>'
         + (ig ? '<a class="ig" href="https://instagram.com/' + ig + '" target="_blank" rel="noopener">' + ico.ig + '@' + ig + '</a>' : (data.demo ? '<span class="ig off">' + ico.ig + 'Instagram (opsional)</span>' : '')) + '</article>';
     }).join('');
-    const secs = [['beranda', 'Opening', ico.home], ['pembuka', isWedding ? 'Salam' : 'Pembuka', ico.mail], ['mempelai', isWedding ? 'Mempelai' : 'Keluarga', ico.people], ['acara', 'Acara', ico.pin], photos || video ? ['galeri', 'Galeri', ico.photo] : null, gift ? ['amplop', 'Kado', ico.gift] : null, ['rsvp-box', 'RSVP', ico.chat]].filter(Boolean);
+    const noRsvp = !!data.hideRsvp, noWish = !!data.hideWishes;
+    const secs = [['beranda', 'Opening', ico.home], ['pembuka', isWedding ? 'Salam' : 'Pembuka', ico.mail], ['mempelai', isWedding ? 'Mempelai' : 'Keluarga', ico.people], ['acara', 'Acara', ico.pin], photos || video ? ['galeri', 'Galeri', ico.photo] : null, gift ? ['amplop', 'Kado', ico.gift] : null, (noRsvp && noWish) ? null : ['rsvp-box', noRsvp ? 'Ucapan' : 'RSVP', ico.chat]].filter(Boolean);
     const nav = '<nav class="dock' + (design === 'masjid' ? ' textnav' : '') + '" aria-label="Navigasi undangan">' + secs.map((s) => '<a href="#' + s[0] + '">' + s[2] + '<span>' + s[1] + '</span></a>').join('') + '</nav>';
 
     app.innerHTML = ''
@@ -97,23 +104,24 @@
       + '<section class="cover' + (cover ? ' has-photo' : '') + '" id="cover"' + bg + '>' + (doors ? '<div class="half l"><i></i></div><div class="half r"><i></i></div>' : '') + (design === 'masjid' ? MOSQUE : '')
       + '<div class="cover-in">' + (design === 'masjid' && cover ? '<img class="ring" src="' + esc(cover) + '" alt="">' : '') + '<p class="kicker">' + esc(data.kicker || data.eventType || '') + '</p><h1 class="script">' + esc(data.title) + '</h1><p class="date">' + esc(data.dateLabel || '') + '</p><div class="guest"><span>Kepada Yth. Bapak/Ibu/Saudara/i</span><b id="to"></b></div><p class="small">Tanpa mengurangi rasa hormat, kami mengundang Anda untuk hadir di acara kami.</p><button class="open" id="buka" type="button">' + ico.mail + ' Buka Undangan</button></div></section>'
       + '<div class="inside" id="in">'
-      + '<section class="hero' + (cover ? ' has-photo' : '') + '" id="beranda"' + bg + '>' + (design === 'masjid' ? MOSQUE : '') + '<div class="hero-in"><p class="kicker">' + esc(data.kicker || data.eventType || '') + '</p><h2 class="script big">' + esc(data.title) + '</h2><p class="date">' + esc(data.dateLabel || '') + '</p><div class="count" id="count"></div><a class="pill" href="#acara">Lihat acara</a></div></section>'
+      + '<section class="hero' + (cover ? ' has-photo' : '') + '" id="beranda"' + bg + '>' + (design === 'masjid' ? MOSQUE : '') + '<div class="hero-in"><p class="kicker">' + esc(data.kicker || data.eventType || '') + '</p><h2 class="script big">' + esc(data.title) + '</h2><p class="date">' + esc(data.dateLabel || '') + '</p><div class="count" id="count"></div><div class="hero-btns"><a class="pill" href="#acara">Lihat acara</a>' + (firstCal ? '<a class="pill" href="' + firstCal + '" target="_blank" rel="noopener">' + ico.clock + ' Save the date</a>' : '') + '</div></div></section>'
       + '<div class="body">'
       + (data.demo ? '<p class="demo-note">Contoh tampilan. Nama, foto, dan acara bukan sungguhan. Isian RSVP dan ucapan pratinjau hanya tersimpan di HP ini.</p>' : '')
       + '<section class="block center" id="pembuka"><p class="eyebrow">' + (isWedding ? 'Our Wedding' : esc(data.eventType || 'Undangan')) + '</p>' + (cover ? '<img class="ring sm" src="' + esc(cover) + '" alt="" loading="lazy">' : '') + '<h2 class="script">' + (muslim ? 'Assalamu&#39;alaikum' : (isWedding ? 'Salam bahagia' : 'Salam hangat')) + '</h2><p>' + esc(opening) + '</p>' + (quote ? '<blockquote>' + esc(quote) + '</blockquote>' : '') + '</section>'
       + '<section class="block center" id="mempelai"><p class="eyebrow">' + (isWedding ? 'Mempelai' : 'Yang mengundang') + '</p>' + hostCards + '</section>'
       + '<section class="block" id="acara"><p class="eyebrow center">Waktu &amp; tempat</p><h2 class="script center">Rangkaian acara</h2>' + events + schedule + stream + '</section>'
       + (photos || video ? '<section class="block" id="galeri"><p class="eyebrow center">Galeri</p><h2 class="script center">Momen kami</h2>' + video + '<div class="gallery">' + photos + '</div></section>' : '')
-      + (story ? '<section class="block" id="kisah"><p class="eyebrow center">Kisah</p><h2 class="script center">Perjalanan kami</h2><div class="timeline">' + story + '</div></section>' : '')
+      + (story ? '<section class="block" id="kisah"><p class="eyebrow center">' + (isWedding ? 'Love story' : 'Kisah') + '</p><h2 class="script center">Cerita Kami</h2><div class="timeline">' + story + '</div></section>' : '')
       + gift
-      + '<section class="block" id="rsvp-box"><p class="eyebrow center">RSVP</p><h2 class="script center">Konfirmasi &amp; ucapan</h2><form id="rsvp" class="cardform"><label>Nama<input name="name" required maxlength="60"></label><label>Pesan atau doa<textarea name="message" maxlength="400" placeholder="Tulis ucapan untuk tuan rumah (opsional)"></textarea></label><label>Kehadiran<select name="attendance"><option value="hadir">Hadir</option><option value="tidak">Tidak hadir</option><option value="ragu">Masih ragu</option></select></label><label>Jumlah tamu<select name="guests"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label><button class="cta" type="submit">Kirim</button><p id="rsvp-note" class="muted"></p></form>'
+      + '<section class="block' + (noRsvp ? ' no-rsvp' : '') + (noWish ? ' no-wish' : '') + '" id="rsvp-box"' + (noRsvp && noWish ? ' hidden' : '') + '><p class="eyebrow center">RSVP</p><h2 class="script center">Konfirmasi &amp; ucapan</h2><form id="rsvp" class="cardform"><label>Nama<input name="name" required maxlength="60"></label><label>Pesan atau doa<textarea name="message" maxlength="400" placeholder="Tulis ucapan untuk tuan rumah (opsional)"></textarea></label><label>Kehadiran<select name="attendance"><option value="hadir">Hadir</option><option value="tidak">Tidak hadir</option><option value="ragu">Masih ragu</option></select></label><label>Jumlah tamu<select name="guests"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label><button class="cta" type="submit">Kirim</button><p id="rsvp-note" class="muted"></p></form>'
       + (flags.checkin ? '<p class="center"><button type="button" id="cek" class="ghost">Catat saya hadir</button></p>' : '')
       + '<h3 class="sub center">Ucapan &amp; doa</h3><p id="wish-note" class="muted center"></p><div id="wishes" class="feed"></div></section>'
       + '<section class="block center closing-box"><h2 class="script">Terima kasih</h2><p class="closing">' + esc(data.closing || '') + '</p><p><button type="button" id="share" class="ghost">Bagikan lewat WhatsApp</button></p></section>'
       + '<p class="foot"><a href="../undangan/">Dibuat dengan iTAP Undangan</a>' + (function () { const credit = window.ITAP_UNDANGAN_MUSIC && window.ITAP_UNDANGAN_MUSIC.creditFor(data.musicUrl); return credit ? '<br><small>Musik: ' + credit + '</small>' : ''; })() + '</p>'
       + '</div>'
       + nav
-      + '<div class="fabs"><button type="button" id="musik" class="fab" aria-label="Musik" title="Musik">' + ico.music + '</button></div>'
+      + '<div class="fabs"><a id="ownerEdit" class="fab editpill" hidden href="../undangan/akun/?inv=' + encodeURIComponent(data.slug || '') + '">' + ico.edit + '<span>Edit</span></a><button type="button" id="qrBtn" class="fab" aria-label="QR undangan" title="QR undangan">' + ico.qr + '</button><button type="button" id="musik" class="fab" aria-label="Musik" title="Musik">' + ico.music + '</button></div>'
+      + '<div class="qrbox" id="qrbox" hidden role="dialog" aria-modal="true" aria-label="QR undangan"><div class="qrcard"><button type="button" class="qrx" id="qrClose" aria-label="Tutup">×</button><p class="eyebrow center">QR undangan</p><div id="qrImg" class="qrimg"></div><b id="qrName"></b><p class="muted">Tunjukkan QR ini kepada penerima tamu saat datang.</p></div></div>'
       + (flags.autoscroll ? '<button type="button" id="gulir" class="scrollpill" aria-pressed="false">' + ico.play + '<span>Auto scroll</span></button><p class="tip" id="scrollTip">Matikan auto scroll untuk gulir manual</p>' : '')
       + '<p class="toast" id="toast" role="status"></p>'
       + '</div>';
@@ -124,6 +132,12 @@
     $('rsvp').onsubmit = sendRsvp;
     app.querySelectorAll('[data-copy]').forEach((b) => b.onclick = () => navigator.clipboard.writeText(b.dataset.copy).then(() => { const t = b.textContent; b.textContent = 'Tersalin ✓'; setTimeout(() => { b.textContent = t; }, 1800); }).catch(() => toast('Salin manual: ' + b.dataset.copy)));
     $('musik').onclick = toggleMusic;
+    $('qrBtn').onclick = showQr;
+    $('qrClose').onclick = () => { $('qrbox').hidden = true; };
+    $('qrbox').onclick = (e) => { if (e.target.id === 'qrbox') $('qrbox').hidden = true; };
+    app.querySelectorAll('[data-bank]').forEach((b) => b.onclick = () => { app.querySelectorAll('[data-bank]').forEach((x) => x.setAttribute('aria-selected', String(x === b))); app.querySelectorAll('[data-acc]').forEach((c) => { c.hidden = c.dataset.acc !== b.dataset.bank; }); });
+    reveal();
+    ownerPill();
     const gulir = $('gulir');
     if (gulir) gulir.onclick = () => setScroll(!scrolling);
     $('share').onclick = share;
@@ -164,6 +178,43 @@
     const m = Math.floor(diff / 60000) % 60;
     const s = Math.floor(diff / 1000) % 60;
     box.innerHTML = [['hari', d], ['jam', h], ['menit', m], ['detik', s]].map(([l, n]) => '<div><strong>' + n + '</strong><span>' + l + '</span></div>').join('');
+  }
+  // QR berisi tautan undangan dengan nama tamu (untuk dicatat di pintu masuk).
+  async function showQr() {
+    const link = location.origin + location.pathname + '?s=' + encodeURIComponent(data.slug || slug) + (guest ? '&to=' + encodeURIComponent(guest).replace(/%20/g, '+') : '');
+    $('qrName').textContent = guest || 'Tamu undangan';
+    $('qrbox').hidden = false;
+    const box = $('qrImg');
+    if (box.dataset.for === link) return;
+    box.textContent = 'Membuat QR…';
+    try {
+      const mod = await import('https://esm.sh/qrcode-generator@1.4.4');
+      const qrcode = mod.default || mod;
+      const q = qrcode(0, 'M'); q.addData(link); q.make();
+      box.innerHTML = q.createSvgTag({ cellSize: 6, margin: 2, scalable: true });
+      box.dataset.for = link;
+    } catch (e) { box.textContent = 'QR belum bisa dibuat. Periksa internet.'; }
+  }
+  // Muncul pelan saat digulir (dimatikan bila pengguna memilih gerak minimal).
+  function reveal() {
+    const els = app.querySelectorAll('.body .block');
+    if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const io = new IntersectionObserver((list) => list.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } }), { rootMargin: '0px 0px -8% 0px' });
+    els.forEach((el) => { el.classList.add('rv'); io.observe(el); });
+  }
+  // Tombol Edit hanya untuk pemilik undangan atau admin yang sedang masuk di HP ini.
+  async function ownerPill() {
+    if (data.demo || !data.id) return;
+    try {
+      const client = await db(); if (!client) return;
+      const s = await client.auth.getSession();
+      const user = s.data.session && s.data.session.user; if (!user) return;
+      let ok = false;
+      const own = await client.rpc('invitation_owned', { inv: data.id });
+      if (!own.error) ok = own.data === true;
+      if (!ok) { const p = await client.from('profiles').select('role').eq('id', user.id).maybeSingle(); ok = !!(p.data && p.data.role === 'admin'); }
+      if (ok) $('ownerEdit').hidden = false;
+    } catch (e) { /* abaikan */ }
   }
   function toggleMusic() {
     const btn = $('musik');
@@ -220,6 +271,8 @@
     const row = { guest_name: String(f.get('name') || '').trim(), attendance: String(f.get('attendance')), guests: Math.max(0, Math.min(10, Number(f.get('guests')) || 1)), guest_token: token() };
     const message = String(f.get('message') || '').trim();
     if (row.guest_name.length < 2) { note('rsvp-note', 'Nama belum diisi.'); return; }
+    // RSVP disembunyikan pemilik: formulir hanya mengirim ucapan.
+    if (data.hideRsvp) { if (message.length >= 2) await sendWish(row.guest_name, message); else note('rsvp-note', 'Ucapan belum diisi.'); return; }
     if (data.demo) {
       const all = JSON.parse(localStorage.getItem(localKey('rsvp')) || '[]');
       all.unshift(row);

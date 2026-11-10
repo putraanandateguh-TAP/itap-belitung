@@ -47,6 +47,8 @@ Akun admin: **putraanandateguh@gmail.com** (peran `admin` di database). Semua bi
 
 **10. Selesai.** Setelah acara, ubah status pesanan ke **Selesai**. Pesanan batal → **Batal**.
 
+**Fitur tamu di undangan.** Tombol QR menampilkan QR tautan + nama tamu (check-in di pintu). Tombol **Edit** hanya muncul untuk pemilik/admin yang masuk. Hero punya **Save the date**. Rekening lebih dari satu tampil sebagai pilihan. Di editor: **Pustaka kutipan**, **Cerita Kami** dengan foto (`photo`), dan **Tampilan** (balik urutan mempelai, sembunyikan foto cerita/RSVP/ucapan).
+
 ## D. Undangan untuk diri sendiri (akses penuh seumur hidup)
 
 Tab **Undangan** → **+ Buat undangan baru** → centang **Undangan untuk saya sendiri**. Paket otomatis **Penuh** (semua fitur), gratis, aktif selamanya, tanpa batas jumlah. Ini dijaga database berdasarkan peran admin, bukan kode rahasia.

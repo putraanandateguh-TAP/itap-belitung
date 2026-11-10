@@ -9,6 +9,17 @@
     ['pantai', 'pantai', 'Pantai Tanjung'], ['khitanan', 'islami', 'Khitanan Ceria'], ['islami', 'islami', 'Aqiqah Lembut'],
     ['ultah', 'pantai', 'Ulang Tahun Laut'], ['wisuda', 'emas', 'Wisuda Emas'], ['syukuran', 'melayu', 'Selamatan Rumah']
   ];
+  // Pustaka kutipan: terjemahan ayat (Kemenag, bebas dikutip) dan kalimat buatan iTAP.
+  const QUOTES = [
+    ['QS Ar-Rum: 21', '“Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan untukmu dari jenismu sendiri, agar kamu merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang.” (QS Ar-Rum: 21)'],
+    ['QS Adz-Dzariyat: 49', '“Dan segala sesuatu Kami ciptakan berpasang-pasangan agar kamu mengingat kebesaran Allah.” (QS Adz-Dzariyat: 49)'],
+    ['QS An-Nur: 32', '“Dan nikahkanlah orang-orang yang masih membujang di antara kamu… Jika mereka miskin, Allah akan memampukan mereka dengan karunia-Nya.” (QS An-Nur: 32)'],
+    ['QS Yasin: 36', '“Mahasuci Allah yang telah menciptakan semuanya berpasang-pasangan.” (QS Yasin: 36)'],
+    ['Doa pengantin (hadis riwayat Abu Dawud)', '“Semoga Allah memberkahimu dan menetapkan keberkahan atasmu, serta mengumpulkan kalian berdua dalam kebaikan.”'],
+    ['Kalimat iTAP · dua hati', 'Dua hati dipertemukan, dua keluarga disatukan. Dengan doa dan restu Anda, kami memulai langkah baru.'],
+    ['Kalimat iTAP · rumah', 'Rumah bukan soal tempat, melainkan dengan siapa kita pulang. Terima kasih telah menjadi bagian dari perjalanan kami.'],
+    ['Kalimat iTAP · khitanan/aqiqah', 'Dengan penuh syukur atas karunia-Nya, kami mohon doa agar buah hati kami tumbuh menjadi anak yang saleh dan berbakti.']
+  ];
   const music = window.ITAP_UNDANGAN_MUSIC || { tracks: [], options: () => '', knownUrl: () => false };
   let sb = null; let user = null; let current = null; let all = []; let invFilter = 'semua'; let fromOrder = null;
   const pkgs = ((window.ITAP_UNDANGAN || {}).packages || []).filter((p) => p.id !== 'coba');
@@ -75,13 +86,17 @@
       + '<label><input type="checkbox" name="autoscroll"' + (d.autoscroll === false ? '' : ' checked') + ' style="width:auto"> Auto scroll menyala setelah undangan dibuka</label>'
       + '<label>Kalimat pembuka (kosongkan untuk otomatis)<textarea name="opening" rows="3">' + esc(d.opening || '') + '</textarea></label>'
       + '<label>Kutipan / ayat (kosongkan untuk otomatis)<textarea name="quote" rows="2">' + esc(d.quote || '') + '</textarea></label>'
+      + '<label>Pustaka kutipan <small>pilih untuk mengisi kolom di atas</small><select id="quoteLib"><option value="">— pilih kutipan —</option>' + QUOTES.map((q, i) => '<option value="' + i + '">' + esc(q[0]) + '</option>').join('') + '</select></label>'
+      + '<fieldset class="own"><legend>Tampilan</legend>'
+      + [['hostsReverse', 'Balik urutan mempelai (wanita dulu, lalu pria)'], ['hideStoryPhotos', 'Sembunyikan foto di Cerita Kami'], ['hideRsvp', 'Sembunyikan RSVP (formulir hanya untuk ucapan)'], ['hideWishes', 'Sembunyikan ucapan tamu']].map((o) => '<label class="chk"><input type="checkbox" name="' + o[0] + '"' + (d[o[0]] ? ' checked' : '') + '> ' + o[1] + '</label>').join('')
+      + '</fieldset>'
       + '<label>Penutup<textarea name="closing" rows="2">' + esc(d.closing || '') + '</textarea></label>'
       + '<details open><summary>Data bertingkat (JSON)</summary><p class="note">Format sama dengan contoh. Tiap kolom harus JSON yang sah.</p>'
       + '<label>Mempelai / tuan rumah <small>[{role, name, detail, instagram, photo}]</small><textarea name="hosts" rows="6" class="mono">' + esc(json(d.hosts)) + '</textarea></label>'
       + '<label>Acara <small>[{name, start, end, timeLabel, place, address, maps}] · start/end format 20261220T090000</small><textarea name="events" rows="8" class="mono">' + esc(json(d.events)) + '</textarea></label>'
       + '<label>Susunan acara <small>[{time, title, text}]</small><textarea name="schedule" rows="5" class="mono">' + esc(json(d.schedule)) + '</textarea></label>'
-      + '<label>Kisah <small>[{when, title, text}]</small><textarea name="story" rows="5" class="mono">' + esc(json(d.story)) + '</textarea></label>'
-      + '<label>Rekening amplop <small>[{bank, number, holder}]</small><textarea name="gifts" rows="5" class="mono">' + esc(json(d.gifts || (d.gift && d.gift.number ? [d.gift] : []))) + '</textarea></label>'
+      + '<label>Cerita Kami <small>[{when, title, text, photo}] · photo = URL foto (opsional)</small><textarea name="story" rows="5" class="mono">' + esc(json(d.story)) + '</textarea></label>'
+      + '<label>Rekening amplop <small>[{bank, number, holder}] · bank: BCA, BRI, Mandiri, BNI, BSI, DANA, GoPay, OVO, ShopeePay, dll.</small><textarea name="gifts" rows="5" class="mono">' + esc(json(d.gifts || (d.gift && d.gift.number ? [d.gift] : []))) + '</textarea></label>'
       + '<label>Alamat kado fisik <small>{name, address, note} atau kosongkan</small><textarea name="giftAddress" rows="3" class="mono">' + esc(d.giftAddress ? JSON.stringify(d.giftAddress, null, 2) : '') + '</textarea></label>'
       + '</details>'
       + '<p class="act"><button class="cta" type="submit">Simpan</button> <button type="button" id="edClose">Tutup</button>' + (row.id ? ' <button type="button" id="edDel" class="danger">Hapus</button>' : '') + '</p>'
@@ -210,6 +225,8 @@
       };
       loadGuests(row);
     }
+    const ql = $('quoteLib');
+    if (ql) ql.onchange = () => { const q = QUOTES[Number(ql.value)]; if (q) { f.elements.quote.value = q[1]; say('Kutipan diisi. Klik Simpan.'); } };
     f.querySelectorAll('[data-ext]').forEach((b) => b.onclick = () => {
       const n = Number(b.dataset.ext); const inp = f.elements.expires_at;
       if (!n) { inp.value = ''; say('Masa aktif: selamanya. Klik Simpan.'); return; }
@@ -237,7 +254,8 @@
         musicUrl: pick === 'custom' ? v('musicUrl') : pick, youtube: v('youtube'), streamUrl: v('streamUrl'),
         autoscroll: f.elements.autoscroll.checked, opening: v('opening'), quote: v('quote'), closing: v('closing'),
         hosts: parse('hosts', []), events: parse('events', []), schedule: parse('schedule', []), story: parse('story', []),
-        gifts: parse('gifts', []), giftAddress: parse('giftAddress', null)
+        gifts: parse('gifts', []), giftAddress: parse('giftAddress', null),
+        hostsReverse: f.elements.hostsReverse.checked, hideStoryPhotos: f.elements.hideStoryPhotos.checked, hideRsvp: f.elements.hideRsvp.checked, hideWishes: f.elements.hideWishes.checked
       });
       delete data.demo;
       data.gift = Object.assign({ bank: '', number: '', holder: '', qris: '' }, (data.gifts && data.gifts[0]) || {}, { qris: (current.data && current.data.gift && current.data.gift.qris) || '' });

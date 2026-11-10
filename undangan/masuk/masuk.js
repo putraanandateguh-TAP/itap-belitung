@@ -1,5 +1,7 @@
 (function () {
   const $ = (id) => document.getElementById(id);
+  // Datang dari tautan email (Supabase menaruh token di hash atau ?code=): setelah sesi terbaca, langsung ke dasbor.
+  const fromLink = /access_token=|type=magiclink|[?&]code=/.test(location.hash + location.search);
   let sb = null;
   async function client() {
     if (sb) return sb;
@@ -17,6 +19,7 @@
       $('signed').hidden = !user;
       $('login').hidden = !!user;
       if (user) $('who').textContent = user.email || '';
+      if (user && fromLink) location.replace('../akun/');
     } catch (e) { $('msg').textContent = 'Layanan masuk belum tersambung. Coba lagi nanti.'; }
   }
   $('login').onsubmit = async (e) => {
@@ -27,12 +30,13 @@
     $('msg').textContent = 'Mengirim tautan…';
     try {
       await client();
-      // Tautan di email membawa pembeli langsung ke halaman sunting.
-      const res = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: new URL('../sunting/', location.href).href, shouldCreateUser: true } });
+      // Tautan di email kembali ke halaman ini (sudah terdaftar di Supabase), lalu diteruskan ke dasbor /undangan/akun/.
+      const res = await sb.auth.signInWithOtp({ email, options: { emailRedirectTo: new URL('./', location.href).href, shouldCreateUser: true } });
       $('msg').textContent = res.error ? 'Tautan belum terkirim. Periksa email lalu coba lagi sebentar lagi.' : 'Tautan masuk sudah dikirim ke ' + email + '. Buka email itu dari HP ini.';
     } catch (err) { $('msg').textContent = 'Tautan belum terkirim. Periksa internet lalu coba lagi.'; }
     btn.disabled = false;
   };
   $('logout').onclick = async () => { await client(); await sb.auth.signOut(); draw(); };
   draw();
+  client().then(() => sb.auth.onAuthStateChange(() => draw())).catch(() => {});
 })();

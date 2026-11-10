@@ -44,7 +44,7 @@ Akun admin: <strong>putraanandateguh@gmail.com</strong> (peran <code>admin</code
 <ol>
 <li>Buka Supabase → SQL Editor → tempel isi file <code>supabase/undangan-admin.sql</code> → <strong>Run</strong>. Ini menyalakan: status pesanan, hapus ucapan/RSVP, ubah harga dari dasbor, dan paket Penuh otomatis untuk undanganmu sendiri. Cukup sekali; aman bila terjalankan dua kali.</li>
 <li>Supabase → Authentication → URL Configuration → tambahkan ke <strong>Redirect URLs</strong>:
-   <code>https://itapbelitung.my.id/undangan/admin/</code>, <code>https://itapbelitung.my.id/undangan/sunting/</code>, <code>https://itapbelitung.my.id/undangan/masuk/</code>.</li>
+   <code>https://itapbelitung.my.id/undangan/admin/</code>, <code>https://itapbelitung.my.id/undangan/sunting/</code>, <code>https://itapbelitung.my.id/undangan/masuk/</code> (dasbor pembeli <code>/undangan/akun/</code> memakai alamat masuk ini, jadi tidak perlu ditambah).</li>
 <li>Selesai. Setelah ini semua kerja harian lewat dasbor.</li>
 </ol>
 <h3>B. Masuk ke dasbor</h3>
@@ -64,13 +64,15 @@ Akun admin: <strong>putraanandateguh@gmail.com</strong> (peran <code>admin</code
    - Status biarkan <strong>Draf</strong>, klik <strong>Simpan</strong>.</p>
 <p><strong>4. Kirim draf untuk dicek.</strong> Klik <strong>Buka</strong> untuk melihat draf (hanya kamu yang bisa, ada pita merah "Pratinjau draf"). Untuk dicek pembeli, ambil tangkapan layar, atau sementara ubah status ke <strong>Aktif</strong> lalu kirim tautannya (tautan tidak tercantum di mana pun). Revisi sesuai permintaan (jumlah revisi ikut paket).</p>
 <p><strong>5. Pembayaran.</strong> Setelah pembeli setuju, kirim nomor rekening/QRIS resmi lewat WA. Setelah dana masuk: di tab <strong>Pesanan</strong>, ubah status ke <strong>Dibayar</strong>, isi catatan (mis. "lunas BCA 10/11"), klik <strong>Simpan status</strong>.</p>
-<p><strong>6. Terbitkan.</strong> Di editor undangan, status <strong>Aktif</strong> → <strong>Simpan</strong>. Tidak ada masa aktif; undangan tetap hidup.</p>
+<p><strong>6. Terbitkan.</strong> Di editor undangan, status <strong>Aktif</strong> → <strong>Simpan</strong>. Masa aktif mulai dihitung saat itu: Dasar 30 hari, Klasik 90 hari, Lengkap ke atas selamanya (angka hari diatur di tab <strong>Harga</strong>). Tanggal habis tampil di editor dan di daftar undangan.</p>
 <p><strong>7. Kirim tautan sunting (paket Lengkap ke atas).</strong> Di editor, bagian <strong>Tautan sunting untuk pembeli</strong> → <strong>Buat tautan sunting</strong> → <strong>Salin</strong> atau <strong>Kirim ke pembeli via WA</strong>. Tautan hanya tampil sekali. Bila bocor/hilang: <strong>Buat tautan baru</strong> (yang lama mati) atau <strong>Cabut tautan</strong>. Alternatif: isi email pembeli; dia bisa masuk di <code>/undangan/masuk/</code>.</p>
 <p><strong>8. Bagikan ke tamu.</strong> Bagian <strong>Tautan untuk tamu</strong>: ketik nama tamu → <strong>Salin tautan</strong> atau <strong>Kirim lewat WA</strong>. Nama tamu tampil di sampul (<code>?to=Nama+Tamu</code>). Ajari pembeli caranya; jumlah tamu tanpa batas.</p>
 <p><strong>9. Pantau tamu.</strong> Bagian <strong>RSVP &amp; ucapan tamu</strong>: jumlah hadir, daftar RSVP, ucapan. Hapus ucapan spam dengan <strong>Hapus</strong>. <strong>Unduh daftar tamu (CSV)</strong> untuk dikirim ke pembeli.</p>
+<p><strong>Dasbor pembeli.</strong> Pembeli yang emailnya tertaut masuk di <code>/undangan/akun/</code> (tombol Login di menu bawah). Di sana ada 5 tab: <strong>Beranda</strong> (kartu undangan, sisa masa aktif, hitung mundur hari-H), <strong>RSVP</strong> (statistik + sembunyikan ucapan), <strong>Sebar</strong> (daftar tamu + tombol Kirim WhatsApp dengan pesan yang bisa diubah), <strong>Layanan</strong> (paket, upgrade/perpanjang lewat WA), <strong>Profil</strong> (Daftar Transaksi, Pusat Bantuan, S&amp;K, refund, privasi). Kamu juga bisa membukanya sebagai admin: ada pemilih undangan di kanan atas. Contoh tanpa login: <code>/undangan/akun/?demo=1</code>. Transaksi pembeli muncul bila pesanan sudah ditautkan ke undangannya (otomatis lewat <strong>Buat undangan dari pesanan</strong>) atau memakai email yang sama.</p>
+<p><strong>Masa aktif habis / perpanjang.</strong> Saat habis, tamu melihat halaman "Masa aktif undangan sudah habis" (tanpa isi dan data tamu). Data tetap tersimpan dan pembeli tetap bisa masuk dasbor. Untuk memperpanjang: buka undangan di tab Undangan → <strong>+30 hari</strong> / <strong>+90 hari</strong> / <strong>Selamanya</strong> atau isi tanggal sendiri → <strong>Simpan</strong>. Upgrade paket otomatis menghitung ulang dari hari itu.</p>
 <p><strong>10. Selesai.</strong> Setelah acara, ubah status pesanan ke <strong>Selesai</strong>. Pesanan batal → <strong>Batal</strong>.</p>
 <h3>D. Undangan untuk diri sendiri (akses penuh seumur hidup)</h3>
-<p>Tab <strong>Undangan</strong> → <strong>+ Buat undangan baru</strong> → centang <strong>Undangan untuk saya sendiri</strong>. Paket otomatis <strong>Penuh</strong> (semua fitur), gratis, tanpa masa aktif, tanpa batas jumlah. Ini dijaga database berdasarkan peran admin, bukan kode rahasia.</p>
+<p>Tab <strong>Undangan</strong> → <strong>+ Buat undangan baru</strong> → centang <strong>Undangan untuk saya sendiri</strong>. Paket otomatis <strong>Penuh</strong> (semua fitur), gratis, aktif selamanya (tidak pernah habis), tanpa batas jumlah. Ini dijaga database berdasarkan peran admin, bukan kode rahasia.</p>
 <h3>E. Mengubah harga</h3>
 <p>Tab <strong>Harga</strong> → ubah angka → <strong>Simpan harga</strong>. Halaman jualan (beranda, katalog, pesan) memakai harga baru begitu dibuka ulang. <strong>Kembalikan ke harga bawaan</strong> memakai harga di <code>undangan/config.js</code>.
 Catatan: teks deskripsi paket, nama paket, dan fitur tiap paket masih di <code>undangan/config.js</code> (perlu GitHub untuk diubah).</p>
@@ -86,7 +88,7 @@ Catatan: teks deskripsi paket, nama paket, dan fitur tiap paket masih di <code>u
 </ul>
 <h3>G. Yang masih perlu SQL/GitHub</h3>
 <ul>
-<li>Sekali saja: menjalankan <code>supabase/undangan-admin.sql</code> dan menambah Redirect URLs (bagian A).</li>
+<li>Sekali saja: menjalankan <code>supabase/undangan-admin.sql</code>, lalu <code>supabase/undangan-dashboard.sql</code> (masa aktif, sembunyikan ucapan, daftar tamu di server, transaksi pembeli), dan menambah Redirect URLs (bagian A).</li>
 <li>Menambah admin baru: ubah <code>profiles.role</code> menjadi <code>admin</code> di Supabase (Table Editor, tanpa SQL).</li>
 <li>Mengubah nama/fitur/deskripsi paket, menambah tema baru, atau mengubah tampilan halaman: lewat GitHub (<code>undangan/config.js</code>, <code>undangan/common.js</code>, <code>u/</code>).</li>
 </ul>

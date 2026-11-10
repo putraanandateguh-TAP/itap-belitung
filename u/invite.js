@@ -272,10 +272,18 @@
     if (data.demo) { paintWishes(JSON.parse(localStorage.getItem(localKey('wish')) || '[]')); return; }
     const client = await db();
     if (!client || !data.id) return;
-    const res = await client.from('invitation_wishes').select('guest_name,message,created_at').eq('invitation_id', data.id).order('created_at', { ascending: false }).limit(40);
+    // Ucapan yang disembunyikan pemilik tidak ditampilkan (kolom hidden dari supabase/undangan-dashboard.sql).
+    let res = await client.from('invitation_wishes').select('guest_name,message,created_at').eq('invitation_id', data.id).eq('hidden', false).order('created_at', { ascending: false }).limit(40);
+    if (res.error) res = await client.from('invitation_wishes').select('guest_name,message,created_at').eq('invitation_id', data.id).order('created_at', { ascending: false }).limit(40);
     if (!res.error) paintWishes(res.data || []);
   }
   function fail(text) { app.innerHTML = '<p class="loading-msg">' + esc(text) + '</p>'; const ld = $('loading'); if (ld) ld.remove(); }
+  // Masa aktif habis: halaman sopan tanpa isi undangan maupun data tamu.
+  function expiredPage() {
+    document.title = 'Masa aktif undangan sudah habis';
+    app.innerHTML = '<div class="loading-msg expired-msg"><p style="font-size:2.2rem;margin:0">⏳</p><h1 style="font-size:1.3rem;margin:.4em 0">Masa aktif undangan sudah habis</h1><p>Terima kasih sudah berkunjung. Undangan ini tidak lagi bisa dibuka karena masa aktifnya telah berakhir.</p><p style="font-size:.85rem;opacity:.8">Pemilik undangan bisa memperpanjangnya lewat <a href="../undangan/akun/">dasbor undangan</a>.</p><p style="font-size:.8rem;opacity:.7"><a href="../undangan/">iTAP Undangan</a></p></div>';
+    const ld = $('loading'); if (ld) ld.remove();
+  }
 
   async function start() {
     if (!slug || !/^[a-z0-9-]{3,48}$/.test(slug)) { fail('Tautan undangan belum lengkap.'); return; }
@@ -289,11 +297,21 @@
     if (!cfg.SUPABASE_URL) { fail('Undangan ini belum tersedia.'); return; }
     const lib = await import('https://esm.sh/@supabase/supabase-js@2.119.0');
     const client = lib.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
-    let res = await client.from('invitations').select('id,slug,theme,package,data,status').eq('slug', slug).eq('status', 'active').maybeSingle();
+    // expires_at ada setelah supabase/undangan-dashboard.sql dijalankan; sebelum itu dibaca tanpa kolom tersebut.
+    let cols = 'id,slug,theme,package,data,status,expires_at';
+    let res = await client.from('invitations').select(cols).eq('slug', slug).eq('status', 'active').maybeSingle();
+    if (res.error) { cols = 'id,slug,theme,package,data,status'; res = await client.from('invitations').select(cols).eq('slug', slug).eq('status', 'active').maybeSingle(); }
     // Draf hanya terbaca oleh admin atau pemiliknya yang sedang masuk (dijaga RLS); tampil sebagai pratinjau.
-    if (!res.error && !res.data) res = await client.from('invitations').select('id,slug,theme,package,data,status').eq('slug', slug).maybeSingle();
+    if (!res.error && !res.data) res = await client.from('invitations').select(cols).eq('slug', slug).maybeSingle();
+    if (!res.error && !res.data) {
+      const st = await client.rpc('invitation_public_state', { p_slug: slug });
+      if (!st.error && st.data === 'expired') { expiredPage(); return; }
+    }
     if (res.error || !res.data) { fail('Undangan tidak ditemukan atau belum diaktifkan.'); return; }
-    if (res.data.status !== 'active') setTimeout(() => { const b = document.createElement('div'); b.className = 'draftbar'; b.textContent = 'Pratinjau draf · belum bisa dibuka tamu'; document.body.appendChild(b); }, 0);
+    const isExpired = res.data.expires_at && new Date(res.data.expires_at).getTime() <= Date.now();
+    // Yang masih bisa membaca undangan habis hanya pemilik/admin (RLS); tamu melihat halaman habis.
+    if (isExpired) setTimeout(() => { const b = document.createElement('div'); b.className = 'draftbar'; b.textContent = 'Masa aktif habis · tamu tidak bisa membuka. Perpanjang dari dasbor.'; document.body.appendChild(b); }, 0);
+    else if (res.data.status !== 'active') setTimeout(() => { const b = document.createElement('div'); b.className = 'draftbar'; b.textContent = 'Pratinjau draf · belum bisa dibuka tamu'; document.body.appendChild(b); }, 0);
     data = Object.assign({ id: res.data.id, slug: res.data.slug, theme: res.data.theme, package: res.data.package }, res.data.data || {});
     render();
   }

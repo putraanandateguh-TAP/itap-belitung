@@ -25,9 +25,13 @@
   const slugify = (t) => (String(t || 'acara').toLowerCase().replace(/&/g, 'dan').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40) || 'acara');
   const toLocal = (iso) => { if (!iso) return ''; const d = new Date(iso); if (isNaN(d)) return ''; const p = (n) => String(n).padStart(2, '0'); return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate()) + 'T' + p(d.getHours()) + ':' + p(d.getMinutes()); };
   const fromLocal = (v) => v ? v + ':00+07:00' : '';
+  // Kolom masa aktif (expires_at) ada setelah supabase/undangan-dashboard.sql dijalankan.
+  let hasExp = false;
+  const COLS = () => 'id,slug,theme,package,status,data,owner_id,owner_email,edit_token_hash' + (hasExp ? ',expires_at' : '');
+  const expLabel = (r) => { if (!hasExp || r.owner_id === (user && user.id)) return ''; if (!r.expires_at) return ' · aktif selamanya'; const d = new Date(r.expires_at); return d.getTime() <= Date.now() ? ' · <span class="bad">masa aktif habis</span>' : ' · aktif s.d. ' + d.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Jakarta' }); };
 
   async function listMine() {
-    const res = await sb.from('invitations').select('id,slug,theme,package,status,data,owner_id,owner_email,edit_token_hash,created_at').order('created_at', { ascending: false }).limit(500);
+    const res = await sb.from('invitations').select(COLS() + ',created_at').order('created_at', { ascending: false }).limit(500);
     all = res.data || [];
     paintList();
   }
@@ -37,7 +41,7 @@
     const n = (k) => all.filter(f[k]).length;
     $('invChips').innerHTML = [['semua', 'Semua'], ['saya', 'Milik saya'], ['pembeli', 'Pembeli'], ['aktif', 'Aktif'], ['draf', 'Draf']].map(([k, l]) => '<button type="button" class="chip' + (k === invFilter ? ' on' : '') + '" data-if="' + k + '">' + l + ' <small>' + n(k) + '</small></button>').join('');
     const rows = all.filter(f[invFilter]).filter((r) => !q || (r.slug + ' ' + ((r.data && r.data.title) || '') + ' ' + (r.owner_email || '')).toLowerCase().includes(q));
-    $('mineList').innerHTML = rows.length ? rows.map((r) => '<article class="mrow"><div><b>' + esc((r.data && r.data.title) || r.slug) + '</b><small>' + esc(r.slug) + ' · ' + (r.status === 'active' ? '<span class="ok">aktif</span>' : 'draf') + ' · paket ' + esc(r.package) + (r.owner_id === user.id ? ' · milik saya' : (r.owner_email ? ' · ' + esc(r.owner_email) : '')) + (r.edit_token_hash ? ' · ada tautan sunting' : '') + '</small></div><div class="mbtn"><a href="../../u/?s=' + esc(r.slug) + '" target="_blank" rel="noopener">Buka</a><button type="button" data-ed="' + esc(r.id) + '">Sunting</button></div></article>').join('') : '<p class="note">Belum ada undangan di filter ini. Klik "Buat undangan baru".</p>';
+    $('mineList').innerHTML = rows.length ? rows.map((r) => '<article class="mrow"><div><b>' + esc((r.data && r.data.title) || r.slug) + '</b><small>' + esc(r.slug) + ' · ' + (r.status === 'active' ? '<span class="ok">aktif</span>' : 'draf') + ' · paket ' + esc(r.package) + expLabel(r) + (r.owner_id === user.id ? ' · milik saya' : (r.owner_email ? ' · ' + esc(r.owner_email) : '')) + (r.edit_token_hash ? ' · ada tautan sunting' : '') + '</small></div><div class="mbtn"><a href="../../u/?s=' + esc(r.slug) + '" target="_blank" rel="noopener">Buka</a><button type="button" data-ed="' + esc(r.id) + '">Sunting</button></div></article>').join('') : '<p class="note">Belum ada undangan di filter ini. Klik "Buat undangan baru".</p>';
   }
 
   function json(v) { return JSON.stringify(v ?? [], null, 2); }
@@ -45,7 +49,7 @@
     const d = row.data || {};
     const design = d.design || row.theme;
     return '<h2>' + (row.id ? 'Sunting: ' + esc(row.slug) : 'Undangan baru') + '</h2>'
-      + '<p class="note">Undangan milik admin otomatis paket Penuh (semua fitur), gratis, tanpa masa aktif. Untuk pembeli, pilih paket sesuai pesanan.</p>'
+      + '<p class="note">Undangan milik admin otomatis paket Penuh (semua fitur), gratis, aktif selamanya. Untuk pembeli, pilih paket sesuai pesanan; masa aktif ikut paket (atur hari di tab Harga).</p>'
       + '<form id="edForm" class="ed">'
       + (row.id ? '' : '<label>Mulai dari contoh tema<select name="template">' + designs.map((x) => '<option value="' + x[0] + '"' + (x[0] === design ? ' selected' : '') + '>' + esc(x[2]) + '</option>').join('') + '</select></label><p><button type="button" id="loadTpl">Isi dari contoh</button> <small class="note">Mengisi semua kolom dengan data contoh tema itu, lalu tinggal diganti.</small></p>')
       + '<div class="g2"><label>Tautan (slug)<input name="slug" required pattern="[a-z0-9\\-]{3,48}" value="' + esc(row.slug || '') + '" ' + (row.id ? 'readonly' : '') + ' placeholder="adi-sari"></label>'
@@ -53,9 +57,12 @@
       + '<div class="g2"><label>Jenis acara<input name="eventType" value="' + esc(d.eventType || 'Pernikahan') + '"></label><label>Status<select name="status"><option value="active"' + (row.status !== 'draft' ? ' selected' : '') + '>Aktif (bisa dibuka tamu)</option><option value="draft"' + (row.status === 'draft' ? ' selected' : '') + '>Draf (tersembunyi)</option></select></label></div>'
       + (function () {
         const mine = row.id ? row.owner_id === user.id : !row.fromOrder;
-        return '<fieldset class="own"><legend>Pemilik & paket</legend><label class="chk"><input type="checkbox" name="mine"' + (mine ? ' checked' : '') + '> Undangan untuk saya sendiri (paket Penuh otomatis, gratis, tanpa masa aktif)</label>'
+        return '<fieldset class="own"><legend>Pemilik & paket</legend><label class="chk"><input type="checkbox" name="mine"' + (mine ? ' checked' : '') + '> Undangan untuk saya sendiri (paket Penuh otomatis, gratis, aktif selamanya)</label>'
           + '<div class="g2"><label>Paket<select name="package"' + (mine ? ' disabled' : '') + '>' + pkgs.map((p) => '<option value="' + p.id + '"' + (p.id === (mine ? 'penuh' : (row.package || 'lengkap')) ? ' selected' : '') + '>' + esc(p.name) + ' · Rp' + Number(p.price).toLocaleString('id-ID') + '</option>').join('') + '</select></label>'
           + '<label>Email pembeli (untuk masuk & sunting sendiri)<input type="email" name="owner_email" value="' + esc(mine ? '' : (row.owner_email || '')) + '"' + (mine ? ' disabled' : '') + ' placeholder="pembeli@gmail.com"></label></div>'
+          + (hasExp ? '<div class="g2 exp"><label>Masa aktif sampai (WIB) <small>kosong = selamanya</small><input type="datetime-local" name="expires_at" value="' + esc(toLocal(row.expires_at)) + '"' + (mine ? ' disabled' : '') + '></label><p class="expbtn"' + (mine ? ' hidden' : '') + '><button type="button" data-ext="30">+30 hari</button> <button type="button" data-ext="90">+90 hari</button> <button type="button" data-ext="0">Selamanya</button></p></div>'
+            + '<p class="note">' + (row.expires_at && new Date(row.expires_at).getTime() <= Date.now() ? '<b class="bad">Masa aktif habis.</b> Tamu melihat halaman "masa aktif habis". Perpanjang lalu Simpan. ' : '') + 'Saat undangan pertama kali diaktifkan, tanggal diisi otomatis sesuai paket. Ganti paket = dihitung ulang dari hari ini. Tombol +hari menambah dari tanggal habis (atau dari sekarang bila sudah lewat).</p>'
+            : '<p class="note">Masa aktif belum aktif di database: jalankan <code>supabase/undangan-dashboard.sql</code>. Sampai saat itu semua undangan aktif selamanya.</p>')
           + (row.fromOrder ? '<p class="note">Dari pesanan WA ' + esc(row.fromOrder.contact_wa) + '. Setelah disimpan, pesanan ditautkan ke undangan ini.</p>' : '') + '</fieldset>';
       })()
       + '<label>Judul<input name="title" required value="' + esc(d.title || '') + '" placeholder="Adi & Sari"></label>'
@@ -203,6 +210,14 @@
       };
       loadGuests(row);
     }
+    f.querySelectorAll('[data-ext]').forEach((b) => b.onclick = () => {
+      const n = Number(b.dataset.ext); const inp = f.elements.expires_at;
+      if (!n) { inp.value = ''; say('Masa aktif: selamanya. Klik Simpan.'); return; }
+      const cur = inp.value ? new Date(fromLocal(inp.value)) : null;
+      const from = cur && cur.getTime() > Date.now() ? cur : new Date();
+      inp.value = toLocal(new Date(from.getTime() + n * 86400000).toISOString());
+      say('Masa aktif diperpanjang ' + n + ' hari. Klik Simpan.');
+    });
     f.onsubmit = save;
   }
 
@@ -231,14 +246,15 @@
       if (email && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) throw new Error('Email pembeli tidak sah.');
       const row = { theme: design[1], package: mine ? 'penuh' : v('package'), status: v('status') === 'draft' ? 'draft' : 'active', data, owner_email: mine ? (user.email || '').toLowerCase() : (email || null) };
       if (mine) row.owner_id = user.id; else if (current.id && current.owner_id === user.id) row.owner_id = null;
+      if (hasExp && !mine && f.elements.expires_at) { const ex = v('expires_at'); row.expires_at = ex ? new Date(fromLocal(ex)).toISOString() : null; }
       if (JSON.stringify(data).length > 100000) throw new Error('Data terlalu besar.');
       let res;
       if (current.id) {
-        res = await sb.from('invitations').update(row).eq('id', current.id).select('id,slug,theme,package,status,data,owner_id,owner_email,edit_token_hash').single();
+        res = await sb.from('invitations').update(row).eq('id', current.id).select(COLS()).single();
       } else {
         const slug = v('slug');
         if (!slugOk(slug)) throw new Error('Slug hanya huruf kecil, angka, dan tanda minus (3–48 karakter).');
-        res = await sb.from('invitations').insert(Object.assign(row, { slug })).select('id,slug,theme,package,status,data,owner_id,owner_email,edit_token_hash').single();
+        res = await sb.from('invitations').insert(Object.assign(row, { slug })).select(COLS()).single();
       }
       if (res.error) throw new Error(/duplicate|unique/i.test(res.error.message) ? 'Slug sudah dipakai, ganti yang lain.' : 'Belum tersimpan: ' + res.error.message);
       const ok = 'Tersimpan · paket ' + res.data.package + ' · ' + (res.data.status === 'active' ? 'aktif' : 'draf') + '.';
@@ -252,18 +268,23 @@
 
   async function openById(id) {
     await client();
-    const r = await sb.from('invitations').select('id,slug,theme,package,status,data,owner_id,owner_email,edit_token_hash').eq('id', id).single();
+    const r = await sb.from('invitations').select(COLS()).eq('id', id).single();
     if (r.error) { say('Undangan tidak bisa dibuka.'); return; }
     open(r.data);
   }
 
   document.addEventListener('itap-admin', async (e) => {
     user = e.detail; await client();
+    const probe = await sb.from('invitations').select('expires_at').limit(1);
+    hasExp = !probe.error;
     $('newInv').onclick = () => open({ slug: '', theme: 'melayu', status: 'active', data: { design: 'melayu', eventType: 'Pernikahan' } });
     $('mineList').onclick = (ev) => { const b = ev.target.closest('[data-ed]'); if (b) openById(b.dataset.ed); };
     $('invChips').onclick = (ev) => { const b = ev.target.closest('[data-if]'); if (b) { invFilter = b.dataset.if; paintList(); } };
     $('invQ').oninput = paintList;
     listMine();
+    // Dari dasbor pemilik: /undangan/admin/?edit=<id> langsung membuka editor undangan itu.
+    const want = new URLSearchParams(location.search).get('edit');
+    if (want) openById(want);
   });
   document.addEventListener('itap-edit', (e) => openById(e.detail));
   document.addEventListener('itap-from-order', async (e) => {
@@ -285,7 +306,7 @@
     if (p.venue && d.events && d.events[0]) { d.events[0].place = p.venue; d.events[0].address = p.venue; }
     if (p.maps && d.events && d.events[0]) d.events[0].maps = p.maps;
     const pkg = pkgs.some((x) => x.id === o.package) ? o.package : 'lengkap';
-    open({ slug: slugify(names), theme: o.theme, package: pkg, status: 'draft', data: d, fromOrder: o, fromOrderWa: o.contact_wa });
+    open({ slug: slugify(names), theme: o.theme, package: pkg, status: 'draft', data: d, owner_email: (p.email || '').toLowerCase() || null, fromOrder: o, fromOrderWa: o.contact_wa });
     say('Terisi dari pesanan dan contoh tema. Ganti teks contoh (mempelai, rekening, alamat) dengan data asli, lalu Simpan. Status awal: Draf.');
   });
 })();

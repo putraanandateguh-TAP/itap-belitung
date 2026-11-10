@@ -27,6 +27,8 @@
     document.getElementById('sumName').textContent = 'Paket ' + (p.name || '') + ' · ' + d.name;
     document.getElementById('sumPrice').innerHTML = '<small>Rp</small>' + Number(p.price || 0).toLocaleString('id-ID');
     document.getElementById('sumBlurb').textContent = p.blurb || '';
+    const act = document.getElementById('sumActive');
+    if (act) act.textContent = (cfg.activeText ? cfg.activeText(p) : (p.days > 0 ? 'Aktif ' + p.days + ' hari' : 'Aktif selamanya')) + ' sejak diaktifkan';
   }
   form.addEventListener('change', sync);
   sync();
@@ -48,6 +50,7 @@
       venue: String(f.get('venue') || '').trim(),
       maps: String(f.get('maps') || '').trim(),
       note: String(f.get('note') || '').trim(),
+      email: String(f.get('email') || '').trim().toLowerCase().slice(0, 120),
       design: current().id,
       photos: (f.getAll('photos') || []).filter((file) => file && file.name).map((file) => file.name)
     };
@@ -73,6 +76,7 @@
       'Tempat: ' + payload.venue,
       payload.maps ? 'Peta: ' + payload.maps : '',
       payload.note ? 'Catatan: ' + payload.note : '',
+      payload.email ? 'Email (untuk dasbor): ' + payload.email : '',
       payload.photos.length ? 'Foto menyusul di chat ini: ' + payload.photos.join(', ') : ''
     ].filter(Boolean).join('\n');
     document.getElementById('status').textContent = saved

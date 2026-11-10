@@ -6,7 +6,7 @@
   const URL_ = C.SUPABASE_URL || 'https://mmtxxztkezbuissxembl.supabase.co';
   const KEY = C.SUPABASE_ANON_KEY || 'sb_publishable__1FyoGH0-q564WInyZZBQg_YP0SIYt4';
   const rp = (n) => 'Rp' + Number(n || 0).toLocaleString('id-ID');
-  U.defaults = U.defaults || { packages: Object.fromEntries(U.packages.map((p) => [p.id, p.price])), plans: Object.fromEntries((U.plans || []).map((p) => [p.id, p.price])) };
+  U.defaults = U.defaults || { days: Object.fromEntries(U.packages.map((p) => [p.id, p.days || 0])), packages: Object.fromEntries(U.packages.map((p) => [p.id, p.price])), plans: Object.fromEntries((U.plans || []).map((p) => [p.id, p.price])) };
   function apply(v) {
     if (!v || typeof v !== 'object') return false;
     let changed = false;
@@ -14,8 +14,15 @@
       const n = v[k] && Number(v[k][p.id]);
       if (Number.isFinite(n) && n >= 0 && n <= 100000000 && p.price !== n) { p.price = Math.round(n); changed = true; }
     }));
+    (U.packages || []).forEach((p) => {
+      const raw = v.days ? v.days[p.id] : (U.defaults.days || {})[p.id];
+      const d = raw === '' || raw == null ? 0 : Number(raw);
+      if (Number.isFinite(d) && d >= 0 && d <= 3650 && (p.days || 0) !== Math.round(d)) { p.days = Math.round(d); changed = true; }
+    });
     return changed;
   }
+  // Teks masa aktif per paket: 0 / kosong = selamanya.
+  U.activeText = (p) => (p && p.days > 0 ? 'Aktif ' + p.days + ' hari' : 'Aktif selamanya');
   function paintStatic() {
     const min = Math.min.apply(null, U.packages.filter((p) => p.price > 0).map((p) => p.price));
     if (!Number.isFinite(min)) return;

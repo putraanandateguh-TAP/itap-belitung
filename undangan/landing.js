@@ -33,7 +33,7 @@
 
   // Harga
   const featRows = (p) => [
-    [true, 'Dirakit admin, terima beres'], [true, 'Akses semua tema'], [p.price > 0, 'Tanpa masa aktif'], [p.share, 'Boleh disebar ke tamu'],
+    [true, 'Dirakit admin, terima beres'], [true, 'Akses semua tema'], [p.price > 0, p.price > 0 ? (window.ITAP_UNDANGAN.activeText ? window.ITAP_UNDANGAN.activeText(p) : (p.days > 0 ? 'Aktif ' + p.days + ' hari' : 'Aktif selamanya')) : 'Masa aktif'], [p.share, 'Boleh disebar ke tamu'],
     [p.share, 'Nama tamu tanpa batas'], [true, 'RSVP & ucapan'], [true, 'Peta lokasi & hitung mundur'], [true, 'Simpan ke Google Calendar'],
     [p.revisions !== 0, p.revisions == null ? 'Revisi leluasa' : (p.revisions ? p.revisions + '× revisi' : 'Revisi')],
     [p.music, 'Musik latar'], [p.gallery > 0, p.gallery ? 'Galeri ' + p.gallery + ' foto' : 'Galeri foto'], [p.gift, 'Amplop digital'],
@@ -48,7 +48,7 @@
     return '<article class="pcard' + (p.id === 'lengkap' ? ' pick' : '') + '">' + (p.id === 'lengkap' ? '<span class="ribbon">Disarankan</span>' : '') + '<h3>' + p.name + '</h3><p class="psub">' + (sub[p.id] || p.blurb) + '</p>' + priceBand(p.price) + '<ul class="pl">' + rows + '</ul><button type="button" class="more">Tampilkan lebih banyak ⌄</button>' + cta + '</article>';
   }
   function planCard(p) {
-    return '<article class="pcard"><h3>' + p.name + '</h3><p class="psub">' + p.blurb + '</p>' + priceBand(p.price) + '<ul class="pl"><li class="y">Banyak undangan dalam ' + p.name + '</li><li class="y">Fitur setara paket Penuh</li><li class="y">Semua tema iTAP</li><li class="y">Tanpa masa aktif per undangan</li><li class="y">Dibantu admin lewat WhatsApp</li></ul><a class="btn xs wide" href="' + wa('Halo iTAP, saya tertarik paket langganan ' + p.name + ' (' + rp(p.price) + ').') + '" target="_blank" rel="noopener">Tanya paket ' + p.name + '</a></article>';
+    return '<article class="pcard"><h3>' + p.name + '</h3><p class="psub">' + p.blurb + '</p>' + priceBand(p.price) + '<ul class="pl"><li class="y">Banyak undangan dalam ' + p.name + '</li><li class="y">Fitur setara paket Penuh</li><li class="y">Semua tema iTAP</li><li class="y">Undangan aktif selamanya</li><li class="y">Dibantu admin lewat WhatsApp</li></ul><a class="btn xs wide" href="' + wa('Halo iTAP, saya tertarik paket langganan ' + p.name + ' (' + rp(p.price) + ').') + '" target="_blank" rel="noopener">Tanya paket ' + p.name + '</a></article>';
   }
   function paintPrices(mode) {
     $('prices').innerHTML = mode === 'langganan' ? cfg.plans.map(planCard).join('') : cfg.packages.map(pkgCard).join('');
@@ -63,7 +63,7 @@
   paintPrices('satuan');
   addEventListener('itap-prices', () => { const on = document.querySelector('.toggle button.on'); paintPrices(on ? on.dataset.mode : 'satuan'); });
 
-  $('checks').innerHTML = ['Ganti nama tamu tanpa batas', 'Tanpa masa aktif', 'RSVP & ucapan tamu', 'Peta Google Maps', 'Hitung mundur hari-H', 'Simpan ke Google Calendar', 'Musik latar bebas royalti', 'Galeri foto', 'Amplop digital & QRIS', 'Tautan siaran langsung', 'Gulir otomatis', 'Catat hadir di pintu', 'Kisah perjalanan', 'Peta tertanam', 'Warna aksen sendiri', 'Sunting sendiri lewat email', 'Revisi leluasa (Lengkap+)', 'Dirakit admin, terima beres'].map((t) => '<li>' + t + '</li>').join('');
+  $('checks').innerHTML = ['Ganti nama tamu tanpa batas', 'Aktif selamanya mulai paket Lengkap', 'Dasbor RSVP & sebar via WhatsApp', 'RSVP & ucapan tamu', 'Peta Google Maps', 'Hitung mundur hari-H', 'Simpan ke Google Calendar', 'Musik latar bebas royalti', 'Galeri foto', 'Amplop digital & QRIS', 'Tautan siaran langsung', 'Gulir otomatis', 'Catat hadir di pintu', 'Kisah perjalanan', 'Peta tertanam', 'Warna aksen sendiri', 'Sunting sendiri lewat email', 'Revisi leluasa (Lengkap+)', 'Dirakit admin, terima beres'].map((t) => '<li>' + t + '</li>').join('');
 
   // Teks berganti di hero
   const words = ['Pernikahan', 'Khitanan', 'Aqiqah', 'Ulang Tahun', 'Wisuda', 'Syukuran'];

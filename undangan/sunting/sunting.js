@@ -70,7 +70,7 @@
     const email = (user.email || '').toLowerCase();
     const rows = (list.data || []).filter((row) => row.owner_id === user.id || (row.owner_email || '').toLowerCase() === email);
     if (!rows.length) { board.innerHTML = '<p>Belum ada undangan untuk email ini. Minta admin iTAP menautkan email kamu.</p>'; return; }
-    const current = rows[0];
+    const current = rows.find((r) => r.id === params.get('id')) || rows[0];
     if (!current.owner_id) await sb.from('invitations').update({ owner_id: user.id }).eq('id', current.id);
     board.innerHTML = formHtml(current);
     document.getElementById('edit').onsubmit = async (e) => {

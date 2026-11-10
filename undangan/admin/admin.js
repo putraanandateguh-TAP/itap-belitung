@@ -109,11 +109,13 @@
     $('priceForm').innerHTML = (ok ? '' : '<p class="warn">Tabel harga belum ada. Jalankan sekali supabase/undangan-admin.sql. Sebelum itu harga hanya bisa diubah di undangan/config.js lewat GitHub.</p>')
       + '<h3>Paket satuan</h3>' + U.packages.map((p) => row('packages', p)).join('')
       + '<h3>Langganan</h3>' + (U.plans || []).map((p) => row('plans', p)).join('')
+      + '<h3>Masa aktif per paket (hari)</h3><p class="note">Dihitung sejak undangan diaktifkan. Isi 0 atau kosongkan = aktif selamanya. Butuh <code>supabase/undangan-dashboard.sql</code> agar berlaku di database.</p>'
+      + U.packages.filter((p) => p.id !== 'coba').map((p) => { const def = (defs.days || {})[p.id] || 0; const cur = v.days ? (v.days[p.id] ?? '') : def; return '<label class="prow"><span><b>' + esc(p.name) + '</b><small>bawaan ' + (def ? def + ' hari' : 'selamanya') + '</small></span><input type="number" min="0" max="3650" step="1" inputmode="numeric" data-days="' + esc(p.id) + '" value="' + esc(cur === 0 ? '' : cur) + '" placeholder="selamanya"></label>'; }).join('')
       + '<p class="note">' + (r.data ? 'Terakhir diubah ' + esc(new Date(r.data.updated_at).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })) + ' WIB.' : 'Saat ini memakai harga bawaan dari config.js.') + '</p>'
       + '<p class="act"><button type="submit" class="pri"' + (ok ? '' : ' disabled') + '>Simpan harga</button><button type="button" id="priceReset"' + (ok ? '' : ' disabled') + '>Kembalikan ke harga bawaan</button></p>';
     const reset = $('priceReset');
     if (reset) reset.onclick = async () => {
-      if (!confirm('Kembalikan semua harga ke bawaan config.js?')) return;
+      if (!confirm('Kembalikan semua harga dan masa aktif ke bawaan config.js?')) return;
       const d = await sb.from('undangan_settings').delete().eq('key', 'prices');
       flash(d.error ? 'Gagal: ' + d.error.message : 'Harga kembali ke bawaan.'); localStorage.removeItem('itap_prices'); loadPrices();
     };
@@ -125,6 +127,12 @@
       const n = Number(inp.value);
       if (!Number.isFinite(n) || n < 0 || n > 100000000) { flash('Harga ' + inp.dataset.id + ' tidak sah.'); return; }
       value[inp.dataset.kind][inp.dataset.id] = Math.round(n);
+    }
+    value.days = {};
+    for (const inp of $('priceForm').querySelectorAll('input[data-days]')) {
+      const t = String(inp.value).trim(); const n = t === '' ? 0 : Number(t);
+      if (!Number.isFinite(n) || n < 0 || n > 3650) { flash('Masa aktif ' + inp.dataset.days + ' tidak sah (0–3650 hari).'); return; }
+      value.days[inp.dataset.days] = Math.round(n);
     }
     const r = await sb.from('undangan_settings').upsert({ key: 'prices', value, updated_at: new Date().toISOString() }).select('key');
     if (r.error) { flash('Harga belum tersimpan: ' + r.error.message); return; }

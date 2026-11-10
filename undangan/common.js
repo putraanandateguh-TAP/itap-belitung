@@ -2,7 +2,7 @@
 (function () {
   const cfg = window.ITAP_UNDANGAN || {};
   const base = document.body.dataset.base || './';
-  const VERSION = 'Undangan iTAP v2.3 · 10 Nov 2026';
+  const VERSION = 'Undangan iTAP v2.4 · 10 Nov 2026';
   const wa = (text) => 'https://wa.me/' + (cfg.wa || '6287749476651') + '?text=' + encodeURIComponent(text || 'Halo iTAP');
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
@@ -65,7 +65,7 @@
       + '<div><h3>Pembayaran</h3><div class="paychips"><span>Transfer bank</span><span>QRIS</span></div><p>Rekening atau kode QRIS resmi dikirim admin lewat WhatsApp setelah draf kamu setujui. Jangan transfer ke nomor yang tidak dikirim admin iTAP.</p></div>'
       + '<div><h3>Kontak</h3><p>📍 Belitung, Air Merbau<br>💬 <a href="' + wa('Halo iTAP, saya mau tanya soal undangan digital.') + '" target="_blank" rel="noopener">WhatsApp 0877-4947-6651</a>'
       + (cfg.email ? '<br>✉️ <a href="mailto:' + esc(cfg.email) + '">' + esc(cfg.email) + '</a>' : '') + '<br>🌐 <a href="' + base + '../">itapbelitung.my.id</a></p>'
-      + '<p><a href="' + base + 'syarat/">Syarat &amp; Ketentuan</a> · <a href="' + base + 'refund/">Kebijakan Refund</a></p></div>'
+      + '<p><a href="' + base + 'syarat/">Syarat &amp; Ketentuan</a> · <a href="' + base + 'refund/">Kebijakan Refund</a> · <a href="' + base + 'privasi/">Kebijakan Privasi</a><br><a href="' + base + 'akun/">Dasbor pemilik undangan</a></p></div>'
       + '</div><p class="w copy">© iTAP Belitung · ' + VERSION + ' · Foto contoh tema adalah ilustrasi buatan, bukan orang sungguhan.</p>';
   }
   // Navigasi bawah + WA mengambang (disisipkan sekali)
@@ -80,7 +80,7 @@
     const page = document.body.dataset.page || '';
     const nav = document.createElement('nav');
     nav.className = 'bnav'; nav.setAttribute('aria-label', 'Navigasi cepat');
-    nav.innerHTML = '<a href="' + (onLanding ? '#top' : base) + '"' + (onLanding ? ' class="on"' : '') + '>' + ic.home + 'Beranda</a><a href="' + (onLanding ? '#harga' : base + '#harga') + '" data-smooth>' + ic.price + 'Harga</a><a href="' + base + 'tema/"' + (page === 'tema' ? ' class="on"' : '') + '>' + ic.tpl + 'Template</a><a href="' + base + 'masuk/"' + (page === 'masuk' ? ' class="on"' : '') + '>' + ic.user + 'Login</a>';
+    nav.innerHTML = '<a href="' + (onLanding ? '#top' : base) + '"' + (onLanding ? ' class="on"' : '') + '>' + ic.home + 'Beranda</a><a href="' + (onLanding ? '#harga' : base + '#harga') + '" data-smooth>' + ic.price + 'Harga</a><a href="' + base + 'tema/"' + (page === 'tema' ? ' class="on"' : '') + '>' + ic.tpl + 'Template</a><a href="' + base + 'akun/"' + (page === 'masuk' || page === 'akun' ? ' class="on"' : '') + '>' + ic.user + 'Login</a>';
     document.body.appendChild(nav);
   }
   if (!document.querySelector('.wa-fab')) {

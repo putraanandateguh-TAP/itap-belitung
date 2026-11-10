@@ -33,7 +33,7 @@ Akun admin: **putraanandateguh@gmail.com** (peran `admin` di database). Semua bi
 
 **5. Pembayaran.** Setelah pembeli setuju, kirim nomor rekening/QRIS resmi lewat WA. Setelah dana masuk: di tab **Pesanan**, ubah status ke **Dibayar**, isi catatan (mis. "lunas BCA 10/11"), klik **Simpan status**.
 
-**6. Terbitkan.** Di editor undangan, status **Aktif** → **Simpan**. Tidak ada masa aktif; undangan tetap hidup.
+**6. Terbitkan.** Di editor undangan, status **Aktif** → **Simpan**. Masa aktif mulai dihitung saat itu: Dasar 30 hari, Klasik 90 hari, Lengkap ke atas selamanya (angka hari diatur di tab **Harga**).
 
 **7. Kirim tautan sunting (paket Lengkap ke atas).** Di editor, bagian **Tautan sunting untuk pembeli** → **Buat tautan sunting** → **Salin** atau **Kirim ke pembeli via WA**. Tautan hanya tampil sekali. Bila bocor/hilang: **Buat tautan baru** (yang lama mati) atau **Cabut tautan**. Alternatif: isi email pembeli; dia bisa masuk di `/undangan/masuk/`.
 
@@ -41,11 +41,15 @@ Akun admin: **putraanandateguh@gmail.com** (peran `admin` di database). Semua bi
 
 **9. Pantau tamu.** Bagian **RSVP & ucapan tamu**: jumlah hadir, daftar RSVP, ucapan. Hapus ucapan spam dengan **Hapus**. **Unduh daftar tamu (CSV)** untuk dikirim ke pembeli.
 
+**Dasbor pembeli.** Pembeli masuk di `/undangan/akun/` (tombol Login di menu bawah) dengan email yang tertaut. Tab: **Beranda** (kartu undangan, sisa masa aktif, hitung mundur), **RSVP** (statistik, sembunyikan ucapan), **Sebar** (daftar tamu + Kirim WhatsApp dengan pesan yang bisa diubah), **Layanan** (paket, upgrade/perpanjang via WA), **Profil** (Daftar Transaksi, Pusat Bantuan, S&K, refund, privasi). Admin juga bisa membukanya dengan pemilih undangan. Contoh tanpa login: `/undangan/akun/?demo=1`.
+
+**Masa aktif habis / perpanjang.** Tamu melihat halaman "Masa aktif undangan sudah habis"; data tetap tersimpan, pembeli tetap bisa masuk. Perpanjang di editor: **+30 hari** / **+90 hari** / **Selamanya** atau isi tanggal → **Simpan**. Upgrade paket menghitung ulang dari hari itu.
+
 **10. Selesai.** Setelah acara, ubah status pesanan ke **Selesai**. Pesanan batal → **Batal**.
 
 ## D. Undangan untuk diri sendiri (akses penuh seumur hidup)
 
-Tab **Undangan** → **+ Buat undangan baru** → centang **Undangan untuk saya sendiri**. Paket otomatis **Penuh** (semua fitur), gratis, tanpa masa aktif, tanpa batas jumlah. Ini dijaga database berdasarkan peran admin, bukan kode rahasia.
+Tab **Undangan** → **+ Buat undangan baru** → centang **Undangan untuk saya sendiri**. Paket otomatis **Penuh** (semua fitur), gratis, aktif selamanya, tanpa batas jumlah. Ini dijaga database berdasarkan peran admin, bukan kode rahasia.
 
 ## E. Mengubah harga
 
@@ -63,6 +67,8 @@ Catatan: teks deskripsi paket, nama paket, dan fitur tiap paket masih di `undang
 - **Jangan pernah** membagikan tautan sunting ke grup tamu.
 
 ## G. Yang masih perlu SQL/GitHub
+
+- Sekali saja, setelah `undangan-admin.sql`: jalankan `supabase/undangan-dashboard.sql` (masa aktif, sembunyikan ucapan, daftar tamu di server, transaksi pembeli). Aman dijalankan ulang.
 
 - Sekali saja: menjalankan `supabase/undangan-admin.sql` dan menambah Redirect URLs (bagian A).
 - Menambah admin baru: ubah `profiles.role` menjadi `admin` di Supabase (Table Editor, tanpa SQL).

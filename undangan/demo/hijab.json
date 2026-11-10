@@ -1,0 +1,90 @@
+{
+  "slug": "demo-hijab",
+  "theme": "islami",
+  "package": "penuh",
+  "demo": true,
+  "eventType": "Pernikahan",
+  "title": "Fikri & Aisyah",
+  "kicker": "Walimatul Ursy",
+  "inviteLine": "Mengharap doa restu",
+  "dateLabel": "Ahad, 18 April 2027",
+  "hosts": [
+    {
+      "role": "Mempelai pria",
+      "name": "Muhammad Fikri",
+      "detail": "Putra Bapak Hasan & Ibu Aminah, contoh"
+    },
+    {
+      "role": "Mempelai wanita",
+      "name": "Aisyah Putri",
+      "detail": "Putri Bapak Umar & Ibu Khadijah, contoh"
+    }
+  ],
+  "countdownTo": "2027-04-18T08:00:00+07:00",
+  "events": [
+    {
+      "name": "Akad nikah",
+      "start": "20270418T080000",
+      "end": "20270418T090000",
+      "timeLabel": "08.00–09.00 WIB",
+      "place": "Masjid, contoh",
+      "address": "Tanjung Pandan",
+      "maps": "https://www.google.com/maps/search/?api=1&query=Masjid+Agung+Al-Mabrur+Tanjung+Pandan"
+    },
+    {
+      "name": "Walimah",
+      "start": "20270418T100000",
+      "end": "20270418T130000",
+      "timeLabel": "10.00–13.00 WIB",
+      "place": "Rumah keluarga, contoh",
+      "address": "Tanjung Pandan",
+      "maps": "https://www.google.com/maps/search/?api=1&query=Tanjung+Pandan+Belitung"
+    }
+  ],
+  "story": [],
+  "gallery": [
+    "../undangan/img/talent/hijab.webp",
+    "../img/e26.webp",
+    "../img/e44.webp"
+  ],
+  "streamUrl": "",
+  "gift": {
+    "bank": "BSI",
+    "number": "3333333333",
+    "holder": "Contoh Penerima",
+    "qris": ""
+  },
+  "closing": "Jazakumullahu khairan. Ini hanya contoh tampilan iTAP.",
+  "design": "hijab",
+  "cover": "../undangan/img/talent/hijab.webp",
+  "musicUrl": "../audio/undangan/nocturne-op15-1.mp3",
+  "gifts": [
+    {
+      "bank": "BSI",
+      "number": "3333333333",
+      "holder": "Contoh Penerima"
+    },
+    {
+      "bank": "DANA",
+      "number": "081200000000",
+      "holder": "Contoh Penerima"
+    }
+  ],
+  "giftAddress": {
+    "name": "Contoh Penerima",
+    "address": "Jl. Contoh No. 1, Tanjung Pandan, Belitung",
+    "note": "Alamat contoh, bukan alamat sungguhan."
+  },
+  "schedule": [
+    {
+      "time": "08.00",
+      "title": "Akad nikah",
+      "text": "Masjid, contoh"
+    },
+    {
+      "time": "10.00",
+      "title": "Walimah",
+      "text": "Rumah keluarga, contoh"
+    }
+  ]
+}

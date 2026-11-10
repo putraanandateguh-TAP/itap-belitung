@@ -5,24 +5,98 @@
   "demo": true,
   "eventType": "Pernikahan",
   "title": "Adi & Sari",
-  "kicker": "Contoh undangan",
+  "kicker": "Walimatul Ursy",
   "inviteLine": "Mengundang saudara sekampung",
   "dateLabel": "Sabtu, 20 Desember 2026",
   "hosts": [
-    {"role": "Mempelai pria", "name": "Adi Pratama", "detail": "Putra Bapak Herman & Ibu Lina, contoh"},
-    {"role": "Mempelai wanita", "name": "Sari Lestari", "detail": "Putri Bapak Yusuf & Ibu Maya, contoh"}
+    {
+      "role": "Mempelai pria",
+      "name": "Adi Pratama",
+      "detail": "Putra Bapak Herman & Ibu Lina, contoh"
+    },
+    {
+      "role": "Mempelai wanita",
+      "name": "Sari Lestari",
+      "detail": "Putri Bapak Yusuf & Ibu Maya, contoh"
+    }
   ],
   "countdownTo": "2026-12-20T09:00:00+07:00",
   "events": [
-    {"name": "Akad nikah", "start": "20261220T090000", "end": "20261220T100000", "timeLabel": "09.00–10.00 WIB", "place": "Rumah keluarga, contoh", "address": "Air Merbau, Tanjung Pandan", "maps": "https://www.google.com/maps/search/?api=1&query=Air+Merbau+Tanjung+Pandan"},
-    {"name": "Makan bersama", "start": "20261220T110000", "end": "20261220T140000", "timeLabel": "11.00–14.00 WIB", "place": "Halaman rumah, contoh", "address": "Air Merbau, Tanjung Pandan", "maps": "https://www.google.com/maps/search/?api=1&query=Tanjung+Pandan+Belitung"}
+    {
+      "name": "Akad nikah",
+      "start": "20261220T090000",
+      "end": "20261220T100000",
+      "timeLabel": "09.00–10.00 WIB",
+      "place": "Rumah keluarga, contoh",
+      "address": "Air Merbau, Tanjung Pandan",
+      "maps": "https://www.google.com/maps/search/?api=1&query=Air+Merbau+Tanjung+Pandan"
+    },
+    {
+      "name": "Makan bersama",
+      "start": "20261220T110000",
+      "end": "20261220T140000",
+      "timeLabel": "11.00–14.00 WIB",
+      "place": "Halaman rumah, contoh",
+      "address": "Air Merbau, Tanjung Pandan",
+      "maps": "https://www.google.com/maps/search/?api=1&query=Tanjung+Pandan+Belitung"
+    }
   ],
   "story": [
-    {"when": "2019", "title": "Bertemu di pelabuhan", "text": "Ini kisah contoh untuk pratinjau tema, bukan riwayat orang sungguhan."},
-    {"when": "2024", "title": "Lamaran keluarga", "text": "Kedua keluarga duduk bersama. Tetap contoh, bukan acara nyata."}
+    {
+      "when": "2019",
+      "title": "Bertemu di pelabuhan",
+      "text": "Ini kisah contoh untuk pratinjau tema, bukan riwayat orang sungguhan."
+    },
+    {
+      "when": "2024",
+      "title": "Lamaran keluarga",
+      "text": "Kedua keluarga duduk bersama. Tetap contoh, bukan acara nyata."
+    }
   ],
-  "gallery": ["../img/e33.webp", "../img/e26.webp", "../img/e44.webp"],
+  "gallery": [
+    "../undangan/img/talent/melayu.webp",
+    "../img/e33.webp",
+    "../img/e26.webp",
+    "../img/e44.webp"
+  ],
   "streamUrl": "",
-  "gift": {"bank": "BCA", "number": "0000000000", "holder": "Contoh Penerima", "qris": ""},
-  "closing": "Sampai jumpa. Ini hanya contoh tampilan iTAP."
+  "gift": {
+    "bank": "BCA",
+    "number": "0000000000",
+    "holder": "Contoh Penerima",
+    "qris": ""
+  },
+  "closing": "Sampai jumpa. Ini hanya contoh tampilan iTAP.",
+  "design": "melayu",
+  "cover": "../undangan/img/talent/melayu.webp",
+  "musicUrl": "../audio/undangan/gymnopedie-1.mp3",
+  "gifts": [
+    {
+      "bank": "BCA",
+      "number": "0000000000",
+      "holder": "Contoh Penerima"
+    },
+    {
+      "bank": "DANA",
+      "number": "081200000000",
+      "holder": "Contoh Penerima"
+    }
+  ],
+  "giftAddress": {
+    "name": "Contoh Penerima",
+    "address": "Jl. Contoh No. 1, Tanjung Pandan, Belitung",
+    "note": "Alamat contoh, bukan alamat sungguhan."
+  },
+  "schedule": [
+    {
+      "time": "09.00",
+      "title": "Akad nikah",
+      "text": "Rumah keluarga, contoh"
+    },
+    {
+      "time": "11.00",
+      "title": "Makan bersama",
+      "text": "Halaman rumah, contoh"
+    }
+  ]
 }

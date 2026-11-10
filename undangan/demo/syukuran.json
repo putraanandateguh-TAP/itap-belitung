@@ -1,0 +1,56 @@
+{
+  "slug": "demo-syukuran",
+  "design": "syukuran",
+  "theme": "melayu",
+  "package": "penuh",
+  "demo": true,
+  "eventType": "Syukuran",
+  "title": "Syukuran Rumah Baru",
+  "kicker": "Selamatan rumah",
+  "inviteLine": "Keluarga Rahman mengundang",
+  "dateLabel": "Ahad, 7 Februari 2027",
+  "hosts": [
+    {
+      "role": "Tuan rumah",
+      "name": "Keluarga Rahman",
+      "detail": "Contoh, bukan keluarga sungguhan"
+    }
+  ],
+  "countdownTo": "2027-02-07T09:00:00+07:00",
+  "events": [
+    {
+      "name": "Doa selamatan",
+      "start": "20270207T090000",
+      "end": "20270207T120000",
+      "timeLabel": "09.00–12.00 WIB",
+      "place": "Rumah baru, contoh",
+      "address": "Membalong, Belitung",
+      "maps": "https://www.google.com/maps/search/?api=1&query=Membalong+Belitung"
+    }
+  ],
+  "schedule": [
+    {
+      "time": "09.00",
+      "title": "Doa selamatan",
+      "text": "Rumah baru, contoh"
+    }
+  ],
+  "story": [],
+  "gallery": [],
+  "streamUrl": "",
+  "gift": {
+    "bank": "BRI",
+    "number": "4444444444",
+    "holder": "Contoh Penerima",
+    "qris": ""
+  },
+  "gifts": [
+    {
+      "bank": "BRI",
+      "number": "4444444444",
+      "holder": "Contoh Penerima"
+    }
+  ],
+  "closing": "Terima kasih atas doa dan kehadirannya. Ini hanya contoh tampilan iTAP.",
+  "musicUrl": "../audio/undangan/gymnopedie-1.mp3"
+}

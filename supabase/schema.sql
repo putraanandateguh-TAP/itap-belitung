@@ -106,7 +106,9 @@ security definer
 set search_path = public
 as $$
 begin
-  if auth.role() = 'service_role' then
+  -- service_role (server) dan pemilik database di SQL Editor dashboard boleh ganti peran;
+  -- pengguna lewat API (anon/authenticated) tidak.
+  if auth.role() = 'service_role' or session_user in ('postgres', 'supabase_admin') then
     return new;
   end if;
   new.role := old.role;

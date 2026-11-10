@@ -1,7 +1,7 @@
 // iTAP Belitung — service worker situs utama.
 // Naikkan VER tiap rilis aset. Cache lama itap-* dihapus saat aktivasi.
 // localStorage / IndexedDB (termasuk data kasir) tidak disentuh.
-const VER = 'itap-v61';
+const VER = 'itap-v66';
 const SCOPE = new URL('./', self.location).pathname;
 const LIVE = /^data\/(harga-pangan|keuangan|ppob-harga|berita|loker)\.json$/;
 const PRECACHE = [
@@ -21,12 +21,29 @@ const PRECACHE = [
   'undangan/undangan.css',
   'undangan/config.js',
   'undangan/landing.js',
+  'undangan/landing.css',
+  'undangan/common.js',
+  'undangan/prices.js',
+  'undangan/tema/index.html',
+  'undangan/tema/tema.js',
+  'undangan/cari/index.html',
+  'undangan/cari/cari.js',
+  'undangan/masuk/index.html',
+  'undangan/masuk/masuk.js',
+  'undangan/syarat/index.html',
+  'undangan/refund/index.html',
   'undangan/pesan/index.html',
   'undangan/pesan/pesan.js',
   'undangan/demo/melayu.json',
   'undangan/demo/emas.json',
   'undangan/demo/pantai.json',
   'undangan/demo/islami.json',
+  'undangan/demo/hijab.json',
+  'undangan/demo/khitanan.json',
+  'undangan/demo/masjid.json',
+  'undangan/demo/ultah.json',
+  'undangan/demo/wisuda.json',
+  'undangan/demo/syukuran.json',
   'u/index.html',
   'u/invite.js',
   'u/invite.css',
@@ -70,7 +87,7 @@ function neverStore(rel, url) {
   if (rel == null) return true;
   if (LIVE.test(rel)) return true;
   if (sensitive(url)) return true;
-  if (rel.startsWith('admin/')) return true;
+  if (rel.startsWith('admin/') || rel.startsWith('undangan/admin/')) return true;
   if (rel.startsWith('kasir/buatkode')) return true;
   return false;
 }
@@ -145,7 +162,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  if (rel.startsWith('admin/') || rel.startsWith('kasir/buatkode') || sensitive(url)) {
+  if (rel.startsWith('admin/') || rel.startsWith('undangan/admin/') || rel.startsWith('kasir/buatkode') || sensitive(url)) {
     if (request.mode === 'navigate') {
       event.respondWith(fetch(request).catch(() => offlineResponse()));
     }

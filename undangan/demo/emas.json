@@ -5,24 +5,98 @@
   "demo": true,
   "eventType": "Pernikahan",
   "title": "Raka & Intan",
-  "kicker": "Contoh undangan",
+  "kicker": "The Wedding of",
   "inviteLine": "Turut mengundang",
   "dateLabel": "Minggu, 14 Februari 2027",
   "hosts": [
-    {"role": "Mempelai pria", "name": "Raka Wijaya", "detail": "Putra Bapak Danu & Ibu Rina, contoh"},
-    {"role": "Mempelai wanita", "name": "Intan Maharani", "detail": "Putri Bapak Joko & Ibu Wati, contoh"}
+    {
+      "role": "Mempelai pria",
+      "name": "Raka Wijaya",
+      "detail": "Putra Bapak Danu & Ibu Rina, contoh"
+    },
+    {
+      "role": "Mempelai wanita",
+      "name": "Intan Maharani",
+      "detail": "Putri Bapak Joko & Ibu Wati, contoh"
+    }
   ],
   "countdownTo": "2027-02-14T10:00:00+07:00",
   "events": [
-    {"name": "Akad", "start": "20270214T100000", "end": "20270214T110000", "timeLabel": "10.00–11.00 WIB", "place": "Aula contoh", "address": "Tanjung Pandan", "maps": "https://www.google.com/maps/search/?api=1&query=Tanjung+Pandan+Belitung"},
-    {"name": "Resepsi", "start": "20270214T120000", "end": "20270214T150000", "timeLabel": "12.00–15.00 WIB", "place": "Aula contoh", "address": "Tanjung Pandan", "maps": "https://www.google.com/maps/search/?api=1&query=Tanjung+Pandan+Belitung"}
+    {
+      "name": "Akad",
+      "start": "20270214T100000",
+      "end": "20270214T110000",
+      "timeLabel": "10.00–11.00 WIB",
+      "place": "Aula contoh",
+      "address": "Tanjung Pandan",
+      "maps": "https://www.google.com/maps/search/?api=1&query=Tanjung+Pandan+Belitung"
+    },
+    {
+      "name": "Resepsi",
+      "start": "20270214T120000",
+      "end": "20270214T150000",
+      "timeLabel": "12.00–15.00 WIB",
+      "place": "Aula contoh",
+      "address": "Tanjung Pandan",
+      "maps": "https://www.google.com/maps/search/?api=1&query=Tanjung+Pandan+Belitung"
+    }
   ],
   "story": [
-    {"when": "2021", "title": "Satu kelas", "text": "Contoh alur kisah untuk tema putih-emas."},
-    {"when": "2026", "title": "Restu orang tua", "text": "Bukan pasangan nyata."}
+    {
+      "when": "2021",
+      "title": "Satu kelas",
+      "text": "Contoh alur kisah untuk tema putih-emas."
+    },
+    {
+      "when": "2026",
+      "title": "Restu orang tua",
+      "text": "Bukan pasangan nyata."
+    }
   ],
-  "gallery": ["../img/e8.webp", "../img/e2.webp", "../img/e42.webp"],
+  "gallery": [
+    "../undangan/img/talent/emas.webp",
+    "../img/e8.webp",
+    "../img/e2.webp",
+    "../img/e42.webp"
+  ],
   "streamUrl": "",
-  "gift": {"bank": "Mandiri", "number": "1111111111", "holder": "Contoh Penerima", "qris": ""},
-  "closing": "Terima kasih sudah membuka contoh ini."
+  "gift": {
+    "bank": "Mandiri",
+    "number": "1111111111",
+    "holder": "Contoh Penerima",
+    "qris": ""
+  },
+  "closing": "Terima kasih sudah membuka contoh ini.",
+  "design": "emas",
+  "cover": "../undangan/img/talent/emas.webp",
+  "musicUrl": "../audio/undangan/nocturne-op15-1.mp3",
+  "gifts": [
+    {
+      "bank": "Mandiri",
+      "number": "1111111111",
+      "holder": "Contoh Penerima"
+    },
+    {
+      "bank": "DANA",
+      "number": "081200000000",
+      "holder": "Contoh Penerima"
+    }
+  ],
+  "giftAddress": {
+    "name": "Contoh Penerima",
+    "address": "Jl. Contoh No. 1, Tanjung Pandan, Belitung",
+    "note": "Alamat contoh, bukan alamat sungguhan."
+  },
+  "schedule": [
+    {
+      "time": "10.00",
+      "title": "Akad",
+      "text": "Aula contoh"
+    },
+    {
+      "time": "12.00",
+      "title": "Resepsi",
+      "text": "Aula contoh"
+    }
+  ]
 }

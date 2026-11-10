@@ -1,0 +1,37 @@
+<!doctype html><html lang="id"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light only">
+<title>Masuk · iTAP Undangan</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Masuk ke akun iTAP Undangan dengan tautan email.">
+<link rel="icon" href="../../favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../landing.css">
+</head><body id="top" data-base="../" data-page="masuk">
+<header class="nav"><div class="w navrow">
+<a class="logo" href="../"><img src="../../logo-sm.png" alt="" width="34" height="34"><span><b>iTAP</b> Undangan</span></a>
+<nav class="links" id="menu" aria-label="Menu utama"><a href="../">Beranda</a><a href="../tema/">Tema</a><a href="../#harga">Harga</a><a href="../cari/">Cari Contoh</a><a href="../#faq">FAQ</a><a href="../masuk/">Masuk</a><a href="../../">Situs iTAP</a></nav>
+<a class="btn sm" href="../pesan/">Pesan Sekarang</a>
+<button class="burger" type="button" aria-label="Buka menu" aria-controls="menu" aria-expanded="false"><span></span><span></span><span></span></button>
+</div></header>
+<main class="w login">
+<div class="ocard lcard">
+<img src="../../logo-sm.png" alt="" width="48" height="48" class="llogo">
+<h1>Masuk ke iTAP Undangan</h1>
+<p class="note">Untuk pembeli yang ingin menyunting undangannya sendiri. Kami kirim tautan masuk ke email kamu, tanpa kata sandi.</p>
+<form id="login">
+<label>Email<input type="email" name="email" required autocomplete="email" placeholder="nama@email.com"></label>
+<button class="btn" type="submit">Kirim tautan masuk</button>
+</form>
+<p id="msg" class="status" role="status"></p>
+<div id="signed" hidden><p>Kamu sudah masuk sebagai <b id="who"></b>.</p><a class="btn wide" href="../sunting/">Buka undangan saya</a><button type="button" class="btn out wide" id="logout" style="margin-top:8px">Keluar</button></div>
+<p class="note small">Belum punya undangan? <a href="../pesan/">Pesan dulu</a>. Pakai email yang sama dengan saat memesan, atau minta admin menautkannya.</p>
+</div>
+</main>
+<footer id="foot"></footer>
+<script src="../../config.js"></script>
+<script src="../config.js"></script>
+<script src="../common.js"></script>
+<script src="masuk.js"></script>
+</body></html>

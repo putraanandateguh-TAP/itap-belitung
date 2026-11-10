@@ -27,6 +27,7 @@
     if (!profile.data || profile.data.role !== 'admin') { msg('Akun ini bukan admin.'); return; }
     document.getElementById('gate').hidden = true;
     document.getElementById('board').hidden = false;
+    document.dispatchEvent(new CustomEvent('itap-admin', { detail: user }));
     const orders = await sb.from('invitation_orders').select('*').order('created_at', { ascending: false }).limit(40);
     document.getElementById('orders').innerHTML = '<table><tr><th>Waktu</th><th>Acara</th><th>Tema</th><th>WA</th><th></th></tr>' + (orders.data || []).map((o) => '<tr><td>' + esc(new Date(o.created_at).toLocaleString('id-ID')) + '</td><td>' + esc(o.event_type) + '<br>' + esc(o.payload && o.payload.names) + '</td><td>' + esc(o.theme) + ' · ' + esc(o.package) + '</td><td>' + esc(o.contact_wa) + '</td><td><button type="button" data-draft="' + esc(o.id) + '">Buat draf</button></td></tr>').join('') + '</table>';
     const inv = await sb.from('invitations').select('id,slug,theme,status,package,owner_email,edit_token_hash').order('created_at', { ascending: false }).limit(40);
@@ -53,6 +54,7 @@
     document.getElementById('invites').onclick = async (ev) => {
       const t = ev.target;
       if (!t || !t.dataset) return;
+      if (t.dataset.full) { document.dispatchEvent(new CustomEvent('itap-edit', { detail: t.dataset.full })); return; }
       if (t.dataset.on) {
         const upd = await sb.from('invitations').update({ status: 'active' }).eq('id', t.dataset.on);
         msg(upd.error ? 'Belum aktif. Hanya admin yang bisa mengaktifkan.' : 'Undangan aktif.');

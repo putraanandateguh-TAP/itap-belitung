@@ -4,6 +4,7 @@
 <title>Admin undangan · iTAP</title>
 <link rel="icon" href="../../favicon.png">
 <link rel="stylesheet" href="../undangan.css">
+<link rel="stylesheet" href="editor.css">
 </head><body>
 <div class="wrap">
 <header class="top"><a href="../../"><img src="../../logo-sm.png" alt=""></a><b>Admin undangan</b></header>
@@ -11,10 +12,15 @@
 <form id="login"><label>Email<input type="email" name="email" required></label><button class="cta" type="submit">Kirim tautan</button></form>
 <p id="msg" class="note"></p></div>
 <div id="board" hidden>
+<section id="mine" class="card mine"><h2>Undangan saya · akses penuh</h2><p class="note">Khusus akun admin: semua fitur paket Penuh, tanpa batas jumlah, tanpa masa aktif, tanpa pembayaran. Diatur oleh peran admin di database.</p>
+<p><button type="button" class="cta" id="newInv">+ Buat undangan baru</button></p><div id="mineList"></div></section>
+<section id="editor" class="card" hidden></section>
 <h2>Pesanan</h2><div id="orders"></div>
 <h2>Undangan</h2><p class="note">Isi email pembeli supaya dia bisa masuk dengan tautan email dan hanya melihat undangannya. Tautan sunting ditampilkan sekali; yang tersimpan hanya hash-nya.</p><div id="linkbox" class="card" hidden></div><div id="invites"></div><div id="guests"></div>
 </div>
 </div>
 <script src="../../config.js"></script>
+<script src="../config.js"></script>
 <script src="admin.js"></script>
+<script src="editor.js"></script>
 </body></html>

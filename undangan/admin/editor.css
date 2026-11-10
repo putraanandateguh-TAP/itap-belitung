@@ -1,0 +1,11 @@
+.mine{border:2px solid var(--gold)}
+.mrow{display:flex;justify-content:space-between;align-items:center;gap:10px;border-top:1px solid var(--line);padding:10px 0}
+.mrow small{display:block;color:var(--mu)}.mbtn{display:flex;gap:8px;align-items:center}
+.mbtn a,.mbtn button,.ed button,#board article button{min-height:40px;padding:6px 12px;border-radius:10px;border:1px solid var(--line);background:#fff;font:inherit;cursor:pointer}
+.ed .cta{background:var(--navy);color:#fff;border:0;width:auto}
+.ed .danger{color:#b42318;border-color:#f3c3bd}
+.g2{display:grid;gap:0 12px}@media(min-width:640px){.g2{grid-template-columns:1fr 1fr}}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8rem}
+.ed details{margin-top:12px}.ed small{font-weight:400;color:var(--mu)}
+.share{background:var(--paper);border-radius:12px;padding:12px;margin-top:12px}.share code{word-break:break-all;font-size:.8rem}
+.act{display:flex;gap:8px;flex-wrap:wrap}

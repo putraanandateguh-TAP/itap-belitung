@@ -1,5 +1,6 @@
 (function () {
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const musicVal = (f) => { const pick = String(f.get('musicPick') || ''); return pick === 'custom' ? String(f.get('musicUrl') || '') : pick; };
   let sb = null;
   const params = new URLSearchParams(location.search);
   const slug = params.get('s') || '';
@@ -18,7 +19,7 @@
     return '<form id="edit" class="card"><h2>' + esc(row.slug) + '</h2><p class="note">' + esc(row.status) + ' · ' + esc(row.package) + '</p>'
       + '<label>Judul<input name="title" value="' + esc(data.title || '') + '"></label>'
       + '<label>Tanggal tampilan<input name="dateLabel" value="' + esc(data.dateLabel || '') + '"></label>'
-      + '<label>Tautan musik bebas royalti<input name="musicUrl" value="' + esc(data.musicUrl || '') + '"></label>'
+      + (function () { const music = window.ITAP_UNDANGAN_MUSIC || { options: () => '', knownUrl: () => false }; return '<label>Musik<select name="musicPick">' + music.options(data.musicUrl || '') + '</select></label><label>Tautan musik sendiri (jika pilih tautan sendiri)<input name="musicUrl" value="' + esc(music.knownUrl(data.musicUrl) ? '' : (data.musicUrl || '')) + '"></label>'; })()
       + '<label>Bank<input name="bank" value="' + esc(gift.bank || '') + '"></label>'
       + '<label>Nomor<input name="number" value="' + esc(gift.number || '') + '"></label>'
       + '<label>Atas nama<input name="holder" value="' + esc(gift.holder || '') + '"></label>'
@@ -45,7 +46,7 @@
       const next = Object.assign({}, row.data || {}, {
         title: String(f.get('title') || ''),
         dateLabel: String(f.get('dateLabel') || ''),
-        musicUrl: String(f.get('musicUrl') || ''),
+        musicUrl: musicVal(f),
         gift: { bank: String(f.get('bank') || ''), number: String(f.get('number') || ''), holder: String(f.get('holder') || ''), qris: (row.data && row.data.gift && row.data.gift.qris) || '' }
       });
       const saved = await sb.rpc('invitation_save_token', { p_slug: slug, p_token: key, p_data: next });
@@ -78,7 +79,7 @@
       const data = Object.assign({}, current.data || {}, {
         title: String(f.get('title') || ''),
         dateLabel: String(f.get('dateLabel') || ''),
-        musicUrl: String(f.get('musicUrl') || ''),
+        musicUrl: musicVal(f),
         gift: { bank: String(f.get('bank') || ''), number: String(f.get('number') || ''), holder: String(f.get('holder') || ''), qris: (current.data && current.data.gift && current.data.gift.qris) || '' }
       });
       const upd = await sb.from('invitations').update({ data }).eq('id', current.id);

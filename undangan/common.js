@@ -2,7 +2,7 @@
 (function () {
   const cfg = window.ITAP_UNDANGAN || {};
   const base = document.body.dataset.base || './';
-  const VERSION = 'Undangan iTAP v2.2 · 10 Nov 2026';
+  const VERSION = 'Undangan iTAP v2.3 · 10 Nov 2026';
   const wa = (text) => 'https://wa.me/' + (cfg.wa || '6287749476651') + '?text=' + encodeURIComponent(text || 'Halo iTAP');
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 

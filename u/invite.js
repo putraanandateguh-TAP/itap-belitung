@@ -110,7 +110,7 @@
       + (flags.checkin ? '<p class="center"><button type="button" id="cek" class="ghost">Catat saya hadir</button></p>' : '')
       + '<h3 class="sub center">Ucapan &amp; doa</h3><p id="wish-note" class="muted center"></p><div id="wishes" class="feed"></div></section>'
       + '<section class="block center closing-box"><h2 class="script">Terima kasih</h2><p class="closing">' + esc(data.closing || '') + '</p><p><button type="button" id="share" class="ghost">Bagikan lewat WhatsApp</button></p></section>'
-      + '<p class="foot"><a href="../undangan/">Dibuat dengan iTAP Undangan</a>' + (data.demo && data.musicUrl ? '<br><small>Musik contoh: rekaman public domain/CC0 dari Musopen via Wikimedia Commons.</small>' : '') + '</p>'
+      + '<p class="foot"><a href="../undangan/">Dibuat dengan iTAP Undangan</a>' + (function () { const credit = window.ITAP_UNDANGAN_MUSIC && window.ITAP_UNDANGAN_MUSIC.creditFor(data.musicUrl); return credit ? '<br><small>Musik: ' + credit + '</small>' : ''; })() + '</p>'
       + '</div>'
       + nav
       + '<div class="fabs"><button type="button" id="musik" class="fab" aria-label="Musik" title="Musik">' + ico.music + '</button></div>'

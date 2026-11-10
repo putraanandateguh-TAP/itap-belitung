@@ -330,3 +330,16 @@ code[data-apk-sha]{display:block;max-width:100%;overflow-wrap:anywhere;word-brea
 .iconbtn.acct{background:var(--navy);color:#fff}
 .rv-row .rv{min-width:260px;max-width:300px;scroll-snap-align:start}.rv-h{display:flex;justify-content:space-between;gap:8px;align-items:center}.rv-s{color:var(--gold);letter-spacing:1px;white-space:nowrap}.rv-s i{color:#cbd5e1;font-style:normal}
 #ulasan-produk[hidden],#ulasan-kedai[hidden],#kabar-warga[hidden]{display:none}#kabar-warga{margin-bottom:12px}#ulasan-kedai .rv-row .rv{box-shadow:none}
+/* Layar ala portal (satam-layar.js) */
+.askbar{display:flex;align-items:center;gap:8px;margin:12px 0 4px;background:#fff;border:1px solid var(--line);border-radius:99px;padding:6px 6px 6px 16px;box-shadow:0 8px 22px #082c5014}
+.askbar input{flex:1;min-width:0;border:0;outline:0;font-size:1rem;background:transparent;padding:8px 0}
+.askbar button{width:42px;height:42px;border-radius:99px;border:0;background:linear-gradient(135deg,var(--blue),var(--navy));color:#fff;font-size:1rem;cursor:pointer}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.home-grid a span{font-size:.74rem;line-height:1.15}
+.mgrp{margin:16px 0 0;font-size:.95rem;color:var(--navy)}
+.sos-big{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;background:linear-gradient(135deg,#d92d20,#a3150b);color:#fff;border-radius:22px;padding:20px;margin:6px 0 14px;box-shadow:0 10px 24px #d92d2040;text-align:center}
+.sos-big b{font-size:2.6rem;line-height:1;letter-spacing:.04em}.sos-big span{font-size:.85rem;opacity:.9}
+.sos-g .pt a b{color:var(--blue)}
+.sholat-cd{display:flex;justify-content:space-between;align-items:center;background:linear-gradient(135deg,var(--navy),var(--blue));color:#fff;border-radius:14px;padding:10px 14px;margin:8px 0}
+.sholat-cd small{opacity:.85}.sholat-cd b{font-size:1.5rem;font-variant-numeric:tabular-nums;letter-spacing:.03em}
+.jb-h{display:flex;justify-content:space-between;align-items:center;gap:10px}.jb-add{margin-top:0}

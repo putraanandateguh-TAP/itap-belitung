@@ -3,7 +3,7 @@
 <meta name="description" content="iTAP Belitung: cuaca & gelombang live, jadwal sholat, matahari terbit/terbenam, pencarian serba Belitung, rencana trip, cerita video, ebook, kelas & jasa video AI, Kedai Bakso Aci iTAP.">
 <meta property="og:title" content="iTAP Belitung · Cerita, sejarah & budaya Belitung"><meta property="og:description" content="Cuaca, gelombang, wisata, kuliner, legenda & cerita rakyat dari kreator Belitung."><meta property="og:image" content="https://itapbelitung.my.id/logo-sm.png"><meta property="og:url" content="https://itapbelitung.my.id/"><meta property="og:type" content="website"><meta name="twitter:card" content="summary_large_image">
 <link rel="canonical" href="https://itapbelitung.my.id/"><link rel="icon" href="favicon.png"><meta name="theme-color" content="#082c50">
-<link rel="stylesheet" href="style.css?v=51"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="iTAP Belitung"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head><body>
+<link rel="stylesheet" href="style.css?v=52"><link rel="manifest" href="manifest.webmanifest"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="iTAP Belitung"><meta name="apple-mobile-web-app-status-bar-style" content="default"></head><body>
 <div class="top"><div class="w"><span>Belitung, Kepulauan Bangka Belitung</span><span id="today"></span></div></div>
 <header class="hd"><div class="w headrow"><a href="#beranda" class="brand"><img src="logo-sm.png" alt="iTAP"><span><b>iTAP</b><small>BELITUNG</small></span></a>
 <button class="iconbtn" type="button" onclick="go('cari')" aria-label="Cari"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></svg></button>
@@ -22,16 +22,24 @@
 <div class="chips-info" id="infochips"><div class="ic">⏳ Info harian menyusul</div></div>
 </div>
 <a class="feature" id="home-feature" href="#jelajah"><img src="img/e33.webp" alt="Pantai Tanjung Tinggi"><span class="cap"><small>Wisata</small><b>Pantai Tanjung Tinggi</b><em>Sijuk, Belitung</em></span></a>
+<form class="askbar" id="askbar" action="#chat" role="search"><label class="sr" for="ask-q">Tanya AI iTAP</label><input id="ask-q" name="q" placeholder="Tanya AI iTAP… (wisata, kuliner, cuaca)" autocomplete="off" maxlength="300"><button type="submit" aria-label="Tanya">➤</button></form>
 <nav class="home-grid" aria-label="Layanan utama">
 <a href="#cuaca"><b aria-hidden="true">🌤️</b><span>Cuaca</span></a>
+<a href="#sholat"><b aria-hidden="true">🕌</b><span>Jadwal Salat</span></a>
 <a href="#ppob"><b aria-hidden="true">📱</b><span>Pulsa</span></a>
 <a href="#keuangan"><b aria-hidden="true">💹</b><span>Kurs</span></a>
 <a href="#belanja"><b aria-hidden="true">🛒</b><span>Belanja</span></a>
+<a href="#jualbeli"><b aria-hidden="true">🏷</b><span>Jual Beli</span></a>
 <a href="#berita"><b aria-hidden="true">📰</b><span>Berita</span></a>
 <a href="#loker"><b aria-hidden="true">💼</b><span>Lowongan</span></a>
 <a href="#jelajah"><b aria-hidden="true">🏝️</b><span>Wisata</span></a>
+<a href="#rasa"><b aria-hidden="true">🍜</b><span>Kuliner</span></a>
+<a href="#hargapangan"><b aria-hidden="true">🧺</b><span>Harga Pangan</span></a>
 <a href="#kedai"><b aria-hidden="true">🥣</b><span>Kedai</span></a>
 <a href="undangan/"><b aria-hidden="true">✉</b><span>Undangan</span></a>
+<a href="#cctv"><b aria-hidden="true">▣</b><span>CCTV</span></a>
+<a href="#sos"><b aria-hidden="true">🆘</b><span>SOS</span></a>
+<a href="#menu"><b aria-hidden="true">▦</b><span>Semua</span></a>
 </nav>
 <div class="sh"><div><div class="eyebrow">DARI iTAP</div><h2 data-i18n="latest">Terbaru</h2></div><a class="more" href="#berita" data-i18n="allnews">Semua kabar →</a></div>
 <div class="fresh" id="home-news"><p class="mu sm">Memuat kabar…</p></div>
@@ -56,27 +64,13 @@
 </div>
 </section>
 <section id="menu" class="panel">
-<h2>Menu</h2>
-<p class="mu sm">Layanan lain. Satu halaman tiap pilihan, bukan daftar panjang di beranda.</p>
+<h2>Semua layanan</h2>
+<p class="mu sm">Dikelompokkan supaya cepat ketemu.</p>
 <button id="music" class="music menu-music" type="button" aria-pressed="false" aria-label="Musik latar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18V6l10-2v12"/><path d="M9 18a2.2 2.2 0 1 1-4.4 0A2.2 2.2 0 0 1 9 18z"/><path d="M19 16a2.2 2.2 0 1 1-4.4 0A2.2 2.2 0 0 1 19 16z"/></svg><span data-i18n="music">Musik</span></button>
-<nav class="menu-list home-grid" aria-label="Layanan lain">
-<a href="#cuaca"><b aria-hidden="true">🌤️</b><span>Cuaca</span></a>
-<a href="#keuangan"><b aria-hidden="true">💹</b><span>Kurs</span></a>
-<a href="#ppob"><b aria-hidden="true">📱</b><span>Pulsa</span></a>
-<a href="#cari"><b aria-hidden="true">🔍</b><span>Cari</span></a>
-<a href="#jelajah"><b aria-hidden="true">🏝️</b><span>Wisata</span></a>
-<a href="#data"><b aria-hidden="true">📊</b><span>Data</span></a>
-<a href="#kedai"><b aria-hidden="true">🥣</b><span>Kedai</span></a>
-<a href="#tersimpan"><b aria-hidden="true">🔖</b><span>Simpan</span></a>
-<a href="#pasang"><b aria-hidden="true">📲</b><span>Pasang</span></a>
-<a href="#jualbeli"><b aria-hidden="true">🏷</b><span>Jual Beli</span></a>
-<a href="#kabar"><b aria-hidden="true">✎</b><span>Kirim kabar</span></a>
-<a href="#cctv"><b aria-hidden="true">▣</b><span>CCTV</span></a>
-<a href="undangan/"><b aria-hidden="true">✉</b><span>Undangan</span></a>
-<a href="akun/" data-akun><b aria-hidden="true">☺</b><span>Masuk</span></a>
-<a href="akun/?peran=admin"><b aria-hidden="true">🔑</b><span>Owner</span></a>
-<a href="credits.html"><b aria-hidden="true">📷</b><span>Kredit</span></a>
-</nav>
+<h3 class="mgrp">Jelajah Belitung</h3><nav class="menu-list home-grid" aria-label="Jelajah Belitung"><a href="#jelajah"><b aria-hidden="true">🏝️</b><span>Wisata</span></a><a href="#rasa"><b aria-hidden="true">🍜</b><span>Kuliner</span></a><a href="#sejarah"><b aria-hidden="true">⛏️</b><span>Sejarah & Budaya</span></a><a href="#ibadah"><b aria-hidden="true">🛐</b><span>Tempat Ibadah</span></a><a href="#trip"><b aria-hidden="true">🗺️</b><span>Rencana Trip</span></a><a href="#cerita"><b aria-hidden="true">🎬</b><span>Cerita Video</span></a><a href="#cari"><b aria-hidden="true">🔍</b><span>Cari</span></a><a href="#tersimpan"><b aria-hidden="true">🔖</b><span>Tersimpan</span></a></nav>
+<h3 class="mgrp">Info harian</h3><nav class="menu-list home-grid" aria-label="Info harian"><a href="#cuaca"><b aria-hidden="true">🌤️</b><span>Cuaca & Laut</span></a><a href="#sholat"><b aria-hidden="true">🕌</b><span>Jadwal Salat</span></a><a href="#hargapangan"><b aria-hidden="true">🧺</b><span>Harga Pangan</span></a><a href="#keuangan"><b aria-hidden="true">💹</b><span>Kurs & Emas</span></a><a href="#berita"><b aria-hidden="true">📰</b><span>Berita</span></a><a href="#loker"><b aria-hidden="true">💼</b><span>Lowongan</span></a><a href="#cctv"><b aria-hidden="true">▣</b><span>CCTV</span></a><a href="#transport"><b aria-hidden="true">✈️</b><span>Pesawat, Kapal & BBM</span></a><a href="#data"><b aria-hidden="true">📊</b><span>Data Belitung</span></a><a href="#sos"><b aria-hidden="true">🆘</b><span>SOS</span></a></nav>
+<h3 class="mgrp">Warga &amp; layanan</h3><nav class="menu-list home-grid" aria-label="Warga &amp; layanan"><a href="#jualbeli"><b aria-hidden="true">🏷</b><span>Jual Beli</span></a><a href="#kabar"><b aria-hidden="true">✎</b><span>Kirim kabar</span></a><a href="#chat"><b aria-hidden="true">💬</b><span>Asisten AI</span></a><a href="akun/" data-akun><b aria-hidden="true">☺</b><span>Masuk</span></a><a href="akun/?peran=admin"><b aria-hidden="true">🔑</b><span>Owner</span></a></nav>
+<h3 class="mgrp">Produk &amp; jasa iTAP</h3><nav class="menu-list home-grid" aria-label="Produk &amp; jasa iTAP"><a href="#belanja"><b aria-hidden="true">🛒</b><span>Belanja</span></a><a href="#ppob"><b aria-hidden="true">📱</b><span>Pulsa & PLN</span></a><a href="undangan/"><b aria-hidden="true">✉</b><span>Undangan</span></a><a href="#kelas"><b aria-hidden="true">🎓</b><span>Kelas AI</span></a><a href="kasir/"><b aria-hidden="true">🧾</b><span>Kasir</span></a><a href="#kedai"><b aria-hidden="true">🥣</b><span>Kedai</span></a><a href="iklan/"><b aria-hidden="true">📣</b><span>Pasang Iklan</span></a><a href="#pasang"><b aria-hidden="true">📲</b><span>Pasang Aplikasi</span></a><a href="credits.html"><b aria-hidden="true">📷</b><span>Kredit</span></a></nav>
 </section>
 <div id="belanja" class="panel"><h2>Belanja &amp; Kelas</h2><p class="mu sm">Harga dan tujuan bayar tetap di sini. Lynk, QRIS, dan WhatsApp butuh internet, tidak diproses offline.</p>
 <section id="jasa-baru" style="margin:12px 0"><h2>🚀 Jasa Digital iTAP</h2><div class="g3"><div class="card prod"><span class="tag">Jasa</span><h3>🌐 Jasa Website UMKM</h3><p class="mu sm">Landing page Rp350rb · Toko/katalog Rp750rb · Maintenance Rp50rb/bln.</p><a class="cta" href="jasa-web/">Lihat paket</a></div><div class="card prod"><span class="tag">Jasa</span><h3>🤖 Jasa Chatbot WhatsApp</h3><p class="mu sm">Auto-balas &amp; terima pesanan 24 jam. Mulai Rp300rb + Rp100rb/bln.</p><a class="cta" href="jasa-chatbot/">Lihat paket</a></div></div></section>
@@ -133,7 +127,7 @@
 <li><b>Sejarah</b> Belitung dikenal sebagai daerah tambang timah sejak masa Hindia Belanda; hingga kini timah dan pariwisata jadi penggerak ekonomi.</li>
 <li><b>Geopark</b> Belitong ditetapkan sebagai UNESCO Global Geopark pada 2021, dengan lanskap batu granit dan pantai yang khas.</li></ul>
 <p class="src">Sumber: Data Kependudukan Semester II 2024, Dinas P3ACSKB Prov. Kep. Babel (luas & penduduk); UU No. 5/2003; <a href="https://www.unesco.org/en/iggp/geoparks/belitong" target="_blank" rel="noopener">UNESCO Global Geoparks</a>. · data per 2024</p></div></div></details>
-<div class="card db"><h3>🛒 Harga pangan harian</h3><p class="mu sm" id="hp-upd">Memuat…</p><div class="hpg" id="hp"></div>
+<div class="card db" id="hargapangan"><h3>🛒 Harga pangan harian</h3><p class="mu sm" id="hp-upd">Memuat…</p><div class="hpg" id="hp"></div>
 <p class="src">Sumber: <a href="https://adat.belitung.go.id/komoditas" target="_blank" rel="noopener">ADAT Belitung</a>, Diskominfo Kab. Belitung (data Dinas Ketahanan Pangan dan Pertanian Kab. Belitung), Pasar Tanjung Pandan. Diperbarui otomatis tiap hari. · data per hari ini</p></div>
 <details class="fold"><summary>Wilayah, desa, dan bupati</summary><div class="fold-b"><div class="card db"><h3>🗺️ Wilayah: kecamatan & desa</h3><input id="wq" class="wq" placeholder="Cari desa / kecamatan…" aria-label="Cari desa"><div id="wil"></div>
 <p class="src">Sumber: Kepmendagri No. 300.2.2-2138 Tahun 2025 (kode wilayah); jumlah penduduk per kecamatan: Data Kependudukan Semester II 2024 (Dukcapil, via Dinas P3ACSKB Prov. Babel). · data per 2025 (wilayah), 2024 (penduduk)</p></div>
@@ -186,6 +180,18 @@
 <section class="panel" id="kabar"><h2>Kirim kabar</h2><div id="kabar-warga" class="card" hidden></div><div id="kabar-root" class="card soon"><p>Segera hadir. Draf tidak dikirim sebelum akun terhubung.</p></div></section>
 <section class="panel" id="akun"><h2>Masuk</h2><div id="akun-root" class="card"><p>Satu akun iTAP untuk belanja, jual beli, ulasan, dan kirim kabar.</p><p><a class="cta" href="akun/">Masuk Pengunjung</a> <a class="cta" style="background:var(--navy)" href="akun/?peran=admin">Masuk Admin / Owner</a></p><p class="mu sm"><a href="privasi.html">Privasi dan ketentuan</a></p></div></section>
 <section class="panel" id="chat"><h2>Asisten</h2><div id="chat-root" class="card soon"><p>Asisten belum dipasang. Tanya iTAP lewat WhatsApp.</p><p><a class="cta" href="https://wa.me/6285141121283?text=Halo%20iTAP">Buka WhatsApp</a></p></div></section>
+<section class="panel" id="sos"><div class="sh"><div><div class="eyebrow">DARURAT</div><h2>🆘 SOS Belitung</h2><p class="mu sm">Ketuk nomor untuk menelepon. Dalam bahaya, telepon 112 dulu.</p></div></div>
+<a class="sos-big" href="tel:112"><b>112</b><span>Panggilan darurat nasional · gratis</span></a>
+<div class="g3 sos-g">
+<div class="card"><h3>🚑 Kesehatan</h3><div class="pt"><span>PSC 119 Belitung (ambulans, 24 jam)</span><a href="tel:+6281741191119"><b>0817-4119-119</b></a></div><div class="pt"><span>IGD RSUD dr. H. Marsidi Judono</span><a href="tel:+6271922190"><b>(0719) 22190</b></a></div><div class="pt"><span>RSUD Marsidi Judono (umum)</span><a href="tel:+6271921071"><b>(0719) 21071</b></a></div><div class="pt"><span>IGD RSUD Muhammad Zein (Beltim)</span><a href="tel:+6271991738"><b>(0719) 91738</b></a></div></div>
+<div class="card"><h3>🚒 Kebakaran &amp; bencana</h3><div class="pt"><span>Damkar &amp; Penyelamatan Belitung</span><a href="tel:+6271922113"><b>(0719) 22113</b></a></div><div class="pt"><span>BPBD Belitung – Tim Reaksi Cepat</span><a href="tel:+627199303403"><b>(0719) 9303403</b></a></div><div class="pt"><span>BPBD Beltim – kontak darurat</span><a href="tel:+628117383112"><b>0811-7383-112</b></a></div><div class="pt"><span>BPBD Beltim – kantor</span><a href="tel:+6271921001"><b>(0719) 21001</b></a></div></div>
+<div class="card"><h3>👮 Polisi &amp; SAR</h3><div class="pt"><span>Polisi (nasional)</span><a href="tel:110"><b>110</b></a></div><div class="pt"><span>SPKT Polres Belitung Timur</span><a href="tel:+6285975443119"><b>0859-7544-3119</b></a></div><div class="pt"><span>Basarnas / SAR (nasional)</span><a href="tel:115"><b>115</b></a></div></div>
+</div><p class="mu sm">Nomor sama dengan kartu Nomor Darurat Lokal, terakhir dicek 20 Okt 2026 · <a href="credits.html#darurat" style="text-decoration:underline">sumber</a>. Kabari kami bila ada nomor yang berubah.</p></section>
+<section class="panel" id="transport"><div class="sh"><div><div class="eyebrow">PERGI &amp; PULANG</div><h2>✈️ Pesawat, Kapal &amp; BBM</h2><p class="mu sm">iTAP belum punya jadwal live atau daftar SPBU. Supaya tidak menebak, tombol di bawah membuka sumber resmi.</p></div></div>
+<div class="g3"><div class="card"><h3>✈️ Penerbangan ke Belitung (TJQ)</h3><p class="mu sm">Bandara H.A.S. Hanandjoeddin, Tanjung Pandan. Cek jadwal &amp; harga terbaru.</p><a class="cta" href="https://www.google.com/travel/flights?q=Flights%20to%20TJQ" target="_blank" rel="noopener">Cari penerbangan ↗</a></div>
+<div class="card"><h3>⛴️ Kapal &amp; penyeberangan</h3><p class="mu sm">Tiket penyeberangan ASDP lewat Ferizy, kapal penumpang PELNI di situs resminya.</p><a class="cta" href="https://ferizy.com/" target="_blank" rel="noopener">Ferizy (ASDP) ↗</a> <a class="cta" style="background:var(--navy)" href="https://www.pelni.co.id/" target="_blank" rel="noopener">PELNI ↗</a></div>
+<div class="card"><h3>⛽ Harga BBM</h3><p class="mu sm">Harga resmi per liter per provinsi dari Pertamina. Pilih Kepulauan Bangka Belitung.</p><a class="cta" href="https://mypertamina.id/fuels-harga" target="_blank" rel="noopener">Harga BBM Pertamina ↗</a></div></div>
+<p class="mu sm">Cek gelombang di <a href="#cuaca" style="text-decoration:underline">Cuaca &amp; Laut</a> sebelum menyeberang.</p></section>
 <section class="panel" id="cctv"><h2>CCTV publik</h2><p class="mu sm">Kamera dari Portal CCTV Diskominfo Kabupaten Belitung. Statusnya dicek otomatis tiap 2 jam. Ketuk kamera untuk menonton siaran langsungnya di portal resmi.</p><div id="cctv-body"><p class="mu sm">Memuat status kamera…</p></div><p class="mu sm">Sumber: <a href="https://cctv.belitung.go.id/?page=daftar" target="_blank" rel="noopener">cctv.belitung.go.id</a>, Dinas Komunikasi dan Informatika Kabupaten Belitung.</p></section>
 <section class="panel" id="tersimpan"><div class="sh"><div><div class="eyebrow">DISIMPAN DI PERANGKATMU</div><h2>🔖 Tersimpan</h2></div></div><div class="g4" id="saved"></div></section>
 </main>
@@ -195,4 +201,4 @@
 <div><b>Ikuti</b><a href="https://www.instagram.com/itapbelitung" target="_blank" rel="noopener">Instagram</a><a href="https://www.tiktok.com/@itap025" target="_blank" rel="noopener">TikTok</a><a href="https://www.youtube.com/@irmaindriani" target="_blank" rel="noopener">YouTube</a><a href="https://www.facebook.com/share/14tSNvhH7vK/" target="_blank" rel="noopener">Facebook</a><a href="https://wa.me/6285141121283" target="_blank" rel="noopener">WhatsApp (endorse)</a></div></div>
 <p class="w sm copy">© <span id="yr"></span> iTAP Belitung · Cuaca & laut: Open-Meteo · Sholat: Aladhan (Kemenag) · <a href="credits.html" style="display:inline;text-decoration:underline">Kredit foto & lisensi</a> · <a href="privasi.html" style="display:inline;text-decoration:underline">Privasi</a> · Musik orisinal dibuat dengan ElevenLabs</p></footer>
 <div id="pwa-install" class="pwa-bar" hidden role="region" aria-label="Pasang iTAP Belitung"><p><b>Pasang iTAP Belitung</b><span data-android hidden>Browser ini mendukung pemasangan. Ketuk Pasang untuk menambah ke layar utama.</span><span data-ios hidden>Di iPhone atau iPad tidak ada tombol pasang otomatis. Ketuk Bagikan, lalu Tambahkan ke Layar Utama. Paling andal lewat Safari.</span></p><button type="button" data-install hidden>Pasang</button><button type="button" data-close aria-label="Tutup">✕</button></div><nav class="bnav" aria-label="Kategori bawah"><a href="#beranda"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1z"/></svg><span data-i18n="home">Beranda</span></a><a href="#belanja"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7 4 10v9a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-9l-2-3z"/><path d="M4 10h16"/><path d="M15 13a3 3 0 0 1-6 0"/></svg><span data-i18n="shop">Belanja</span></a><a class="bnav-mid" href="https://wa.me/6285141121283?text=Halo%20iTAP" target="_blank" rel="noopener" aria-label="Tanya iTAP lewat WhatsApp"><span class="bubble"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 6.5h14a1 1 0 0 1 1 1v7.5a1 1 0 0 1-1 1H9l-4 3v-3H5a1 1 0 0 1-1-1V7.5a1 1 0 0 1 1-1z"/></svg></span><span data-i18n="chat">Chat</span></a><a href="akun/" class="bnav-akun"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg><span data-i18n="account">Akun</span></a><a href="#menu"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M5 12h14M5 17h14"/></svg><span data-i18n="menu">Menu</span></a></nav>
-<script src="data.js?v=39"></script><script src="app.js?v=39"></script><script src="views.js?v=39"></script><script src="data-belitung.js?v=39"></script><script src="ppob.js?v=39"></script><script src="berita.js?v=39"></script><script src="loker.js?v=39"></script><script src="config.js"></script><script src="komunitas.js?v=3"></script><script src="akun/katalog.js?v=1"></script><script src="publik.js?v=1"></script><script src="cctv.js?v=1"></script><script src="pwa.js" data-root="./"></script></body></html>
+<script src="data.js?v=39"></script><script src="app.js?v=39"></script><script src="views.js?v=39"></script><script src="data-belitung.js?v=39"></script><script src="ppob.js?v=39"></script><script src="berita.js?v=39"></script><script src="loker.js?v=39"></script><script src="config.js"></script><script src="komunitas.js?v=4"></script><script src="akun/katalog.js?v=1"></script><script src="publik.js?v=1"></script><script src="satam-layar.js?v=1"></script><script src="cctv.js?v=1"></script><script src="pwa.js" data-root="./"></script></body></html>

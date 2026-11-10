@@ -50,7 +50,7 @@
     const kabar = document.getElementById('kabar-root');
     const akun = document.getElementById('akun-root');
     const chat = document.getElementById('chat-root');
-    const masuk = document.querySelector('#menu a[href="#akun"] span');
+    const masuk = document.querySelector('#menu a[data-akun] span');
     if (masuk) masuk.textContent = user ? 'Akun' : 'Masuk';
     if (!configured) {
       if (jual) jual.innerHTML = soon('Jual Beli', SOON);
@@ -67,9 +67,9 @@
 
   function renderAkun() {
     if (!user) {
-      return '<div class="card"><h2>Masuk</h2><p class="mu sm">Tautan dikirim ke email. iTAP tidak menyimpan kata sandi.</p><form id="login-form" class="cm-form"><label>Email<input type="email" name="email" required autocomplete="email"></label><button class="cta" type="submit">Kirim tautan masuk</button></form><p id="auth-note" class="mu sm" role="status">' + esc(notice) + '</p><p class="mu sm"><a href="privasi.html">Privasi dan ketentuan</a></p></div>';
+      return '<div class="card"><h2>Masuk</h2><p class="mu sm">Satu akun iTAP untuk belanja, jual beli, ulasan, dan kirim kabar. Masuk dengan email + kata sandi atau tautan email.</p><p><a class="cta" href="akun/">Masuk Pengunjung</a> <a class="cta" style="background:var(--navy)" href="akun/?peran=admin">Masuk Admin / Owner</a></p><p class="mu sm"><a href="privasi.html">Privasi dan ketentuan</a></p></div>';
     }
-    return '<div class="card"><h2>Akun</h2><p class="mu sm">' + esc(user.email || '') + (profile && profile.role === 'admin' ? ' · admin' : '') + '</p><form id="profile-form" class="cm-form"><label>Nama<input name="name" maxlength="60" required value="' + esc(profile && profile.display_name) + '"></label><label>WhatsApp<input name="phone" inputmode="numeric" placeholder="08…" value="' + esc(profile && profile.phone) + '"></label><button class="cta" type="submit">Simpan profil</button></form><p><button type="button" id="signout">Keluar</button> <button type="button" id="delete-account">Hapus akun</button></p><p id="auth-note" class="mu sm" role="status">' + esc(notice) + '</p><p class="mu sm"><a href="privasi.html">Privasi dan ketentuan</a></p></div>';
+    return '<div class="card"><h2>Akun</h2><p class="mu sm">' + esc(user.email || '') + (profile && profile.role === 'admin' ? ' · admin' : '') + '</p><p><a class="cta" href="akun/">' + (profile && profile.role === 'admin' ? 'Buka dasbor Owner' : 'Buka dasbor akun') + '</a></p><form id="profile-form" class="cm-form"><label>Nama<input name="name" maxlength="60" required value="' + esc(profile && profile.display_name) + '"></label><label>WhatsApp<input name="phone" inputmode="numeric" placeholder="08…" value="' + esc(profile && profile.phone) + '"></label><button class="cta" type="submit">Simpan profil</button></form><p><button type="button" id="signout">Keluar</button> <button type="button" id="delete-account">Hapus akun</button></p><p id="auth-note" class="mu sm" role="status">' + esc(notice) + '</p><p class="mu sm"><a href="privasi.html">Privasi dan ketentuan</a></p></div>';
   }
 
   function itemHtml(row, owner) {
@@ -102,13 +102,13 @@
       return (!q || hay.includes(q.toLowerCase())) && (!cat || row.category === cat);
     });
     const options = '<option value="">Semua</option>' + CATS.map((row) => '<option value="' + row[0] + '">' + row[1] + '</option>').join('');
-    const form = user ? '<form id="listing-form" class="cm-form card"><h3>Pasang iklan</h3><input type="hidden" name="id"><label>Judul<input name="title" required minlength="3" maxlength="80"></label><label>Harga (Rp)<input name="price" inputmode="numeric" required></label><label>Kategori<select name="category">' + CATS.map((row) => '<option value="' + row[0] + '">' + row[1] + '</option>').join('') + '</select></label><label>Deskripsi<textarea name="description" required minlength="10" maxlength="2000"></textarea></label><label>WhatsApp<input name="wa" inputmode="numeric" required placeholder="08…"></label><div class="up"><label class="up-btn">Pilih foto<input name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple></label><p class="mu sm">Paling banyak 3 foto, masing-masing 1,5 MB.</p><div class="up-previews" id="up-previews"></div></div><button class="cta" type="submit">Tayangkan</button></form>' : '<p class="card"><a href="#akun">Masuk</a> dulu untuk memasang iklan.</p>';
+    const form = user ? '<form id="listing-form" class="cm-form card"><h3>Pasang iklan</h3><input type="hidden" name="id"><label>Judul<input name="title" required minlength="3" maxlength="80"></label><label>Harga (Rp)<input name="price" inputmode="numeric" required></label><label>Kategori<select name="category">' + CATS.map((row) => '<option value="' + row[0] + '">' + row[1] + '</option>').join('') + '</select></label><label>Deskripsi<textarea name="description" required minlength="10" maxlength="2000"></textarea></label><label>WhatsApp<input name="wa" inputmode="numeric" required placeholder="08…"></label><div class="up"><label class="up-btn">Pilih foto<input name="photos" type="file" accept="image/jpeg,image/png,image/webp" multiple></label><p class="mu sm">Paling banyak 3 foto, masing-masing 1,5 MB.</p><div class="up-previews" id="up-previews"></div></div><button class="cta" type="submit">Tayangkan</button></form>' : '<p class="card"><a href="akun/" style="text-decoration:underline">Masuk</a> dulu untuk memasang iklan.</p>';
     const own = mine.length ? '<h3 class="cm-own">Iklan saya</h3><div class="cm-grid">' + mine.map((row) => itemHtml(row, true)).join('') + '</div>' : '';
     return '<div class="card"><h2>Jual Beli</h2><p class="mu sm">Iklan warga. Pembayaran tidak lewat iTAP. Sumber: akun yang memasang.</p><form id="jual-filter" class="cm-form"><input id="jual-q" type="search" placeholder="Cari judul" value="' + esc(q) + '"><select id="jual-cat">' + options + '</select></form></div>' + form + '<div class="cm-grid">' + (rows.map((row) => itemHtml(row, false)).join('') || '<p class="card cm-empty">Belum ada iklan yang tampil.</p>') + '</div>' + own + '<p id="jual-note" class="mu sm" role="status">' + esc(notice) + '</p>';
   }
 
   function renderKabar() {
-    if (!user) return '<div class="card"><h2>Kirim kabar</h2><p>Masuk dulu. Kabar baru berstatus menunggu dan tidak tayang sebelum admin menyetujui.</p><p><a class="cta" href="#akun">Masuk</a></p></div>';
+    if (!user) return '<div class="card"><h2>Kirim kabar</h2><p>Masuk dulu. Kabar baru berstatus menunggu dan tidak tayang sebelum admin menyetujui.</p><p><a class="cta" href="akun/">Masuk</a></p></div>';
     const own = stories.map((row) => '<article class="cm-item"><h3>' + esc(row.title) + '</h3><p class="mu sm">' + esc(labelCat(row.category)) + ' · ' + statusText(row.status) + '</p><p>' + esc(row.body) + '</p></article>').join('');
     const admin = profile && profile.role === 'admin' ? '<h3>Antrean admin</h3>' + (queue.map((row) => '<article class="cm-item"><h3>' + esc(row.title) + '</h3><p>' + esc(row.body) + '</p><p><button type="button" data-story="' + esc(row.id) + '" data-status="approved">Setujui</button> <button type="button" data-story="' + esc(row.id) + '" data-status="rejected">Tolak</button></p></article>').join('') || '<p>Tidak ada yang menunggu.</p>') : '';
     return '<div class="card"><h2>Kirim kabar</h2><form id="story-form" class="cm-form"><label>Judul<input name="title" required minlength="8" maxlength="120"></label><label>Kategori<select name="category">' + SCATS.map((row) => '<option value="' + row[0] + '">' + row[1] + '</option>').join('') + '</select></label><label>Isi<textarea name="body" required minlength="40" maxlength="8000"></textarea></label><button class="cta" type="submit">Kirim draf</button></form><p id="kabar-note" class="mu sm" role="status">' + esc(notice) + '</p></div><div class="cm-list">' + own + admin + '</div>';
@@ -122,7 +122,7 @@
     if (!aiReady) {
       return '<div class="card soon"><h2>Asisten</h2><p>Asisten belum dipasang. Tanya iTAP lewat WhatsApp.</p><p><a class="cta" href="' + WA + '">Buka WhatsApp</a></p></div>';
     }
-    if (!user) return '<div class="card"><h2>Asisten iTAP</h2><p>Masuk dulu untuk bertanya. Setiap akun dibatasi 12 pertanyaan per jam.</p><p><a class="cta" href="#akun">Masuk</a></p><p class="mu sm">Atau <a href="' + WA + '">tanya lewat WhatsApp</a>.</p></div>';
+    if (!user) return '<div class="card"><h2>Asisten iTAP</h2><p>Masuk dulu untuk bertanya. Setiap akun dibatasi 12 pertanyaan per jam.</p><p><a class="cta" href="akun/">Masuk</a></p><p class="mu sm">Atau <a href="' + WA + '">tanya lewat WhatsApp</a>.</p></div>';
     return '<div class="card"><h2>Asisten iTAP</h2><p class="mu sm">Jawaban lewat Gemini. Percakapan tidak disimpan di iTAP.</p><div id="chat-log" class="chat-log"></div><form id="chat-form" class="cm-form"><input name="message" required maxlength="800" placeholder="Tanya singkat"><button class="cta" type="submit">Kirim</button></form><p id="chat-note" class="mu sm" role="status"></p><p class="mu sm"><a href="' + WA + '">Tanya lewat WhatsApp</a></p></div>';
   }
 

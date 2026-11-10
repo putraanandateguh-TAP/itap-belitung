@@ -40,12 +40,12 @@
     [p.editor, 'Sunting sendiri'], [p.stream, 'Tautan siaran langsung'], [p.autoscroll, 'Gulir otomatis'], [p.checkin, 'Catat hadir di pintu'],
     [p.story, 'Kisah perjalanan'], [p.mapsEmbed, 'Peta tertanam'], [p.customColor, 'Warna aksen sendiri']
   ];
-  const sub = { coba: 'Uji tema, belum untuk disebar', dasar: 'Tanpa musik, galeri, dan amplop', klasik: 'Dengan musik, tanpa galeri', lengkap: 'Paling sering dipesan', luas: 'Untuk acara besar', penuh: 'Semua fitur terbuka' };
+  const sub = { coba: 'Uji tema, belum untuk disebar', dasar: 'Tanpa musik, galeri, dan amplop', klasik: 'Dengan musik, tanpa galeri', lengkap: 'Pilihan paling seimbang', luas: 'Untuk acara besar', penuh: 'Semua fitur terbuka' };
   const priceBand = (n) => '<div class="band"><small>Rp</small>' + Number(n).toLocaleString('id-ID') + '</div>';
   function pkgCard(p) {
     const rows = featRows(p).map((r) => '<li class="' + (r[0] ? 'y' : 'n') + '">' + r[1] + '</li>').join('');
     const cta = p.price > 0 ? '<a class="btn xs wide" href="pesan/?paket=' + p.id + '">Pilih ' + p.name + '</a>' : '<a class="btn out xs wide" href="#tema">Lihat tema</a>';
-    return '<article class="pcard' + (p.id === 'lengkap' ? ' pick' : '') + '">' + (p.id === 'lengkap' ? '<span class="ribbon">Terlaris</span>' : '') + '<h3>' + p.name + '</h3><p class="psub">' + (sub[p.id] || p.blurb) + '</p>' + priceBand(p.price) + '<ul class="pl">' + rows + '</ul><button type="button" class="more">Tampilkan lebih banyak ⌄</button>' + cta + '</article>';
+    return '<article class="pcard' + (p.id === 'lengkap' ? ' pick' : '') + '">' + (p.id === 'lengkap' ? '<span class="ribbon">Disarankan</span>' : '') + '<h3>' + p.name + '</h3><p class="psub">' + (sub[p.id] || p.blurb) + '</p>' + priceBand(p.price) + '<ul class="pl">' + rows + '</ul><button type="button" class="more">Tampilkan lebih banyak ⌄</button>' + cta + '</article>';
   }
   function planCard(p) {
     return '<article class="pcard"><h3>' + p.name + '</h3><p class="psub">' + p.blurb + '</p>' + priceBand(p.price) + '<ul class="pl"><li class="y">Banyak undangan dalam ' + p.name + '</li><li class="y">Fitur setara paket Penuh</li><li class="y">Semua tema iTAP</li><li class="y">Tanpa masa aktif per undangan</li><li class="y">Dibantu admin lewat WhatsApp</li></ul><a class="btn xs wide" href="' + wa('Halo iTAP, saya tertarik paket langganan ' + p.name + ' (' + rp(p.price) + ').') + '" target="_blank" rel="noopener">Tanya paket ' + p.name + '</a></article>';
@@ -67,10 +67,12 @@
   // Teks berganti di hero
   const words = ['Pernikahan', 'Khitanan', 'Aqiqah', 'Ulang Tahun', 'Wisuda', 'Syukuran'];
   let wi = 0;
-  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(() => { const r = $('rot'); r.classList.add('out'); setTimeout(() => { wi = (wi + 1) % words.length; r.textContent = words[wi]; r.classList.remove('out'); }, 250); }, 2400);
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(() => { const r = $('rot'); r.classList.add('out'); setTimeout(() => { wi = (wi + 1) % words.length; r.textContent = words[wi]; r.classList.remove('out'); }, 180); }, 2600);
 
   // Tip WhatsApp
   const tip = $('waTip');
-  if (!sessionStorage.getItem('itap_wa_tip')) setTimeout(() => tip.classList.add('on'), 2500);
+  // Muncul sekali, hanya saat pengunjung masih di atas halaman, lalu hilang sendiri supaya tidak menutupi isi.
+  const hideTip = () => { tip.classList.remove('on'); sessionStorage.setItem('itap_wa_tip', '1'); };
+  if (!sessionStorage.getItem('itap_wa_tip')) setTimeout(() => { if (scrollY < 200) { tip.classList.add('on'); setTimeout(hideTip, 6000); addEventListener('scroll', hideTip, { once: true, passive: true }); } }, 2500);
   $('waTipX').onclick = () => { tip.classList.remove('on'); sessionStorage.setItem('itap_wa_tip', '1'); };
 })();

@@ -2,14 +2,14 @@
 (function () {
   const cfg = window.ITAP_UNDANGAN || {};
   const base = document.body.dataset.base || './';
-  const VERSION = 'Undangan iTAP v2.1 · 10 Nov 2026';
+  const VERSION = 'Undangan iTAP v2.2 · 10 Nov 2026';
   const wa = (text) => 'https://wa.me/' + (cfg.wa || '6287749476651') + '?text=' + encodeURIComponent(text || 'Halo iTAP');
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
   // id = varian desain, theme = gaya dasar di database (melayu/emas/pantai/islami).
   // rating: isi hanya dari ulasan pembeli sungguhan. Kosong = tidak ditampilkan.
   const themes = [
-    { id: 'melayu', theme: 'melayu', name: 'Melayu Belitong', cats: ['pernikahan'], styles: ['budaya', 'elegan'], colors: ['#4a1c24', '#8c2f3b', '#e8c98a'], photo: true, popular: true, rec: false, tag: 'Favorit', bg: '#f3e3d3', words: 'melayu belitung adat songket marun emas tradisional' },
+    { id: 'melayu', theme: 'melayu', name: 'Melayu Belitong', cats: ['pernikahan'], styles: ['budaya', 'elegan'], colors: ['#4a1c24', '#8c2f3b', '#e8c98a'], photo: true, popular: true, rec: false, tag: 'Unggulan', bg: '#f3e3d3', words: 'melayu belitung adat songket marun emas tradisional' },
     { id: 'emas', theme: 'emas', name: 'Putih Emas', cats: ['pernikahan'], styles: ['elegan', 'formal'], colors: ['#1c1a17', '#a6843d', '#fbf8f2'], photo: true, popular: true, rec: false, tag: 'Elegan', bg: '#efe8dc', words: 'putih emas gold klasik mewah modern' },
     { id: 'hijab', theme: 'islami', name: 'Syar\u2019i Hijau', cats: ['pernikahan'], styles: ['elegan', 'simpel'], colors: ['#0c3b2e', '#2f6b4f', '#e1ede5'], photo: true, popular: true, rec: true, tag: 'Baru', bg: '#e1ede5', words: 'islami muslim syari hijab hijau sage walimah' },
     { id: 'masjid', theme: 'islami', name: 'Kubah Krem', cats: ['pernikahan'], styles: ['budaya', 'elegan'], colors: ['#2f6b4f', '#f1e8cf', '#c9b47a'], photo: true, popular: false, rec: true, tag: 'Baru', bg: '#efe6cc', words: 'islami masjid kubah krem hijau walimatul ursy pintu' },
@@ -88,6 +88,14 @@
     a.className = 'wa-fab'; a.href = wa('Halo iTAP, saya mau pesan undangan digital.'); a.target = '_blank'; a.rel = 'noopener'; a.setAttribute('aria-label', 'Chat admin di WhatsApp');
     a.innerHTML = '<svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3a13 13 0 0 0-11.2 19.6L3 29l6.6-1.7A13 13 0 1 0 16 3z" fill="#fff"/><path d="M16 5.2a10.8 10.8 0 0 0-9.2 16.5l.3.4-1.1 4 4.1-1.1.4.2A10.8 10.8 0 1 0 16 5.2z" fill="#25d366"/><path d="M12 10.3c-.3-.6-.6-.6-.9-.6h-.7c-.3 0-.7.1-1 .5-.4.4-1.3 1.3-1.3 3.1s1.3 3.6 1.5 3.9c.2.2 2.6 4.1 6.4 5.6 3.2 1.2 3.8 1 4.5.9.7-.1 2.2-.9 2.5-1.8.3-.9.3-1.6.2-1.8-.1-.2-.3-.3-.7-.5l-2.4-1.2c-.3-.1-.6-.2-.8.2l-1.1 1.4c-.2.2-.4.3-.8.1-.4-.2-1.5-.6-2.9-1.8-1.1-1-1.8-2.1-2-2.5-.2-.4 0-.6.2-.8l.6-.7.4-.6c.1-.2 0-.5 0-.7z" fill="#fff"/></svg>';
     document.body.appendChild(a);
+    // Saat digulir, gelembung WA menyingkir supaya tidak menutupi isi; muncul lagi saat berhenti.
+    let t = 0;
+    const footEl = () => document.getElementById('foot');
+    addEventListener('scroll', () => {
+      a.classList.add('away');
+      clearTimeout(t);
+      t = setTimeout(() => { const f = footEl(); const nearFoot = f && f.getBoundingClientRect().top < innerHeight - 40; a.classList.toggle('away', !!nearFoot); }, 700);
+    }, { passive: true });
   }
   // Gulir halus ke harga (dengan jarak header)
   document.addEventListener('click', (e) => {

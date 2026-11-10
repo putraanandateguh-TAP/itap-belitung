@@ -80,7 +80,7 @@
       + '</section>' : '';
     const stream = flags.stream && data.streamUrl ? '<p class="center"><a class="cta" href="' + esc(data.streamUrl) + '" target="_blank" rel="noopener">Tonton siaran</a></p>' : '';
     const opening = data.opening || (isWedding
-      ? 'Dengan memohon rahmat dan ridha Tuhan Yang Maha Esa, kami bermaksud menyelenggarakan pernikahan putra-putri kami. Kehadiran dan doa Bapak/Ibu/Saudara/i adalah hadiah terindah bagi kami.'
+      ? 'Dengan memohon rahmat dan rida Tuhan Yang Maha Esa, kami bermaksud menyelenggarakan pernikahan putra-putri kami. Kehadiran dan doa Bapak/Ibu/Saudara/i adalah hadiah terindah bagi kami.'
       : 'Dengan penuh rasa syukur, kami mengundang Bapak/Ibu/Saudara/i untuk hadir dan mendoakan acara keluarga kami.');
     const quote = data.quote || (isWedding && muslim ? '“Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan untukmu dari jenismu sendiri, agar kamu merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang.” (QS Ar-Rum: 21)' : '');
     const hostCards = (data.hosts || []).map((h, i) => {

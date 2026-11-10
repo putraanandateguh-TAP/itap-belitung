@@ -12,7 +12,7 @@
     const label = acara ? 'Tema ' + (T.cats.find((c) => c[0] === acara) || [, ''])[1] : 'Semua tema';
     $('listTitle').textContent = label + (gaya ? ' · ' + (T.styles.find((s) => s[0] === gaya) || [, ''])[1] : '');
     const groups = [
-      ['Terpopuler', list.filter((t) => t.popular), 'Paling sering dibuka di pratinjau.'],
+      ['Unggulan', list.filter((t) => t.popular), 'Tema andalan iTAP untuk mulai.'],
       ['Rekomendasi', list.filter((t) => t.rec && !t.popular), 'Pilihan admin iTAP untuk dicoba.'],
       ['Tanpa Foto', list.filter((t) => !t.photo), 'Cocok bila belum punya foto atau untuk acara keluarga.'],
       ['Tema lainnya', list.filter((t) => t.photo && !t.popular && !t.rec), '']

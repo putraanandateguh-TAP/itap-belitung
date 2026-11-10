@@ -38,7 +38,7 @@ section{padding:34px 0}section.w{padding:40px 18px}
 /* hero */
 .hero{display:grid;gap:26px;align-items:center;padding-top:34px}
 .hero h1{font-size:clamp(2rem,6.4vw,3.3rem);font-weight:700;letter-spacing:-.01em}
-.rot{color:var(--sky);display:inline-block;transition:opacity .25s,transform .25s}.rot.out{opacity:0;transform:translateY(6px)}
+.rot{color:var(--sky);display:block;white-space:nowrap;min-height:1.2em;transition:opacity .18s,transform .18s}.rot.out{opacity:0;transform:translateY(4px)}
 .hero-txt>p{font-size:1.02rem;max-width:560px}
 .fine{font-style:italic;font-size:.85rem;color:var(--ink)}
 .hero-art{position:relative;height:420px;display:flex;justify-content:center;align-items:center}
@@ -90,10 +90,10 @@ section{padding:34px 0}section.w{padding:40px 18px}
 .ftxt h2{font-size:clamp(1.25rem,3vw,1.6rem)}
 .fart{position:relative;min-height:260px;border-radius:24px;background:linear-gradient(135deg,#e7f4fd,#fff);display:flex;align-items:center;justify-content:center;padding:22px}
 .gl{background:#fff;border-radius:14px;box-shadow:0 10px 26px #0b2d4f22;padding:12px;width:min(320px,100%);font-size:.82rem}
-.gl>div{display:grid;grid-template-columns:28px 1fr 26px;padding:5px 4px;border-bottom:1px solid var(--line)}
-.glh{font-weight:600;color:var(--mu)}.gl i{font-style:normal;color:var(--sky2)}
+.gl>div{display:grid;grid-template-columns:28px 1fr 52px;padding:5px 4px;border-bottom:1px solid var(--line)}
+.glh{font-weight:600;color:var(--mu)}.gl i{font-style:normal;color:var(--sky2);text-align:right}.glh span:last-child{text-align:right}
 .gbtn{display:block;margin-top:10px;background:var(--sky);color:#fff;text-align:center;border-radius:8px;padding:8px}
-.bubble{position:absolute;right:8%;bottom:10%;background:var(--navy);color:#fff;font-size:.78rem;padding:6px 12px;border-radius:12px 12px 2px 12px}
+.bubble{position:absolute;left:8%;bottom:-6px;z-index:2;background:var(--navy);color:#fff;font-size:.78rem;padding:6px 12px;border-radius:12px 12px 2px 12px}
 .edit{gap:16px}.ep{background:#fff;border-radius:14px;box-shadow:0 10px 26px #0b2d4f22;padding:14px;width:200px;font-size:.78rem}
 .ep b{display:block;color:var(--sky2);margin-bottom:6px}.ef{border:1px solid var(--line);border-radius:8px;padding:6px 8px;margin:6px 0}
 .ef.two{display:flex;justify-content:space-between}.ep ul{padding-left:16px;margin:8px 0 0}
@@ -161,6 +161,8 @@ section{padding:34px 0}section.w{padding:40px 18px}
 /* WA mengambang + bottom nav */
 .wa-fab{position:fixed;right:16px;bottom:82px;z-index:60;width:56px;height:56px;border-radius:50%;background:var(--wa);display:grid;place-items:center;box-shadow:0 8px 22px #25d36666}
 .wa-fab svg{width:32px;height:32px}
+.wa-fab{transition:transform .25s,opacity .25s}.wa-fab.away{transform:translateX(90px);opacity:0;pointer-events:none}
+@media(max-width:960px){.wa-fab{width:50px;height:50px;right:12px;bottom:76px}.wa-fab svg{width:28px;height:28px}}
 .wa-tip{position:fixed;right:16px;bottom:146px;z-index:60;width:230px;background:#fff;border-radius:12px;box-shadow:0 10px 26px #0003;padding:10px 12px;font-size:.78rem;opacity:0;transform:translateY(8px);pointer-events:none;transition:.25s}
 .wa-tip.on{opacity:1;transform:none;pointer-events:auto}
 .wa-tip b{display:block;color:#0a9f48;font-size:.72rem}.wa-tip button{position:absolute;top:-8px;left:-8px;width:22px;height:22px;border-radius:50%;border:0;background:#eee;cursor:pointer}

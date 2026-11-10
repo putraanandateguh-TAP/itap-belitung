@@ -78,7 +78,7 @@ textarea{min-height:90px}
 /* dock + fabs */
 .dock{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:20;display:flex;gap:2px;padding:6px;border-radius:999px;background:#fffffff0;box-shadow:0 10px 30px #0003;border:1px solid var(--line)}
 .dock a{display:flex;flex-direction:column;align-items:center;gap:1px;min-width:56px;padding:6px 4px;border-radius:999px;color:var(--accent);text-decoration:none;font-size:.62rem}
-.dock a:hover,.dock a:focus{background:var(--soft)}
+.dock a:focus-visible{background:var(--soft)}
 .fabs{position:fixed;right:max(12px,calc(50% - 228px));bottom:130px;z-index:20;display:flex;flex-direction:column;gap:10px}
 .fab{width:46px;height:46px;border-radius:50%;border:0;background:var(--accent);color:#fff;display:grid;place-items:center;box-shadow:0 6px 16px #0004;cursor:pointer}
 .fab.on{background:#fff;color:var(--accent);box-shadow:0 0 0 2px var(--accent)}
@@ -170,5 +170,13 @@ img.avatar{object-fit:cover;object-position:top;padding:0}
 .dock.textnav::-webkit-scrollbar{display:none}
 .dock.textnav a{flex:0 0 auto;flex-direction:row;gap:6px;min-width:0;padding:8px 14px;font-size:.78rem;color:#f7f2e4;background:#ffffff14}
 .dock.textnav a svg{width:16px;height:16px}
-.dock.textnav a:hover,.dock.textnav a:focus{background:#ffffff33}
+.dock.textnav a:focus-visible{background:#ffffff33}
 .design-masjid .fabs{bottom:120px}.design-masjid .scrollpill{bottom:70px}.design-masjid .tip{bottom:110px}
+/* QA 10 Nov: sambungan pintu tidak lagi membelah wajah; motif sampul tanpa foto diredam supaya teks terbaca */
+.doors .half.l,.doors .half.r{border:0}
+.sheet:not(.design-masjid) .cover:not(.has-photo)::before{opacity:.16}
+.doors:not(.design-masjid) .cover:not(.has-photo) .half::after{opacity:.16}
+.sheet:not(.design-masjid) .cover:not(.has-photo) .cover-in{text-shadow:0 2px 14px #0009}
+.gallery:has(> button:only-child){columns:1;max-width:320px;margin:0 auto}
+@media(hover:hover){.dock a:hover{background:var(--soft)}.dock.textnav a:hover{background:#ffffff33}}
+.dock.textnav{-webkit-mask-image:linear-gradient(90deg,#000 88%,#0000);mask-image:linear-gradient(90deg,#000 88%,#0000)}

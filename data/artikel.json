@@ -1,0 +1,149 @@
+{
+ "diperbarui": "2026-11-10",
+ "artikel": [
+  {
+   "slug": "pantai-tanjung-tinggi",
+   "judul": "Pantai Tanjung Tinggi: Granit Raksasa di Pesisir Utara Belitung",
+   "kategori": "wisata",
+   "ringkasan": "Pantai di Kecamatan Sijuk yang dikenal lewat film Laskar Pelangi, dengan bongkahan granit raksasa, pasir putih, dan air yang tenang.",
+   "foto": "artikel/foto/pantai-tanjung-tinggi.jpg",
+   "kredit": "Raflinoer32 · CC BY-SA 4.0"
+  },
+  {
+   "slug": "pulau-lengkuas",
+   "judul": "Pulau Lengkuas dan Mercusuar Tua Penjaga Selat",
+   "kategori": "wisata",
+   "ringkasan": "Pulau kecil di utara Belitung yang terkenal dengan mercusuar besi peninggalan Belanda, air jernih, dan gugusan granit.",
+   "foto": "artikel/foto/pulau-lengkuas.jpg",
+   "kredit": "Raden Panji Purnomo Kusrachmadi · CC BY-SA 4.0"
+  },
+  {
+   "slug": "danau-kaolin",
+   "judul": "Danau Kaolin: Biru Muda di Bekas Galian Tambang",
+   "kategori": "wisata",
+   "ringkasan": "Danau berwarna biru muda di Desa Air Raya yang terbentuk dari bekas galian tambang kaolin, cantik dipandang tapi tidak untuk berenang.",
+   "foto": "artikel/foto/danau-kaolin.jpg",
+   "kredit": "Ayufib · CC BY-SA 4.0"
+  },
+  {
+   "slug": "bukit-peramun",
+   "judul": "Bukit Peramun: Hutan Kampung yang Bisa 'Diajak Ngobrol' Lewat Ponsel",
+   "kategori": "wisata",
+   "ringkasan": "Hutan kemasyarakatan di Desa Air Selumar yang dikelola warga, dengan jalur trekking di antara granit, tarsius, dan papan informasi digital berbasis QR code.",
+   "foto": null,
+   "kredit": null
+  },
+  {
+   "slug": "museum-kata-andrea-hirata",
+   "judul": "Museum Kata Andrea Hirata: Rumah Penuh Warna untuk Para Pembaca",
+   "kategori": "wisata",
+   "ringkasan": "Museum sastra di Desa Lenggang, Gantung, yang menempati rumah tua penuh warna dan menyimpan koleksi novel serta lukisan milik Andrea Hirata.",
+   "foto": "artikel/foto/museum-kata-andrea-hirata.jpg",
+   "kredit": "Haris Yunanda Rangkuti · CC BY-SA 4.0"
+  },
+  {
+   "slug": "geopark-belitong",
+   "judul": "Geopark Belitong: Ketika Batu, Hutan, dan Budaya Diakui Dunia",
+   "kategori": "wisata",
+   "ringkasan": "Pada April 2021, UNESCO menetapkan Belitong sebagai UNESCO Global Geopark karena kekayaan geologi, hayati, dan budayanya yang saling terkait.",
+   "foto": "artikel/foto/geopark-belitong.jpg",
+   "kredit": "Raden Panji Purnomo Kusrachmadi · CC BY-SA 4.0"
+  },
+  {
+   "slug": "mie-belitung",
+   "judul": "Mie Belitung: Sepiring Mi Berkuah Kental Beralas Daun Simpor",
+   "kategori": "kuliner",
+   "ringkasan": "Mi kuning dengan kuah kental cokelat, udang, tahu, kentang, timun, taoge, dan emping. Hidangan sehari-hari Belitung yang lahir dari pertemuan banyak budaya.",
+   "foto": "artikel/foto/mie-belitung.jpg",
+   "kredit": "Bagus1911 · CC BY-SA 4.0"
+  },
+  {
+   "slug": "gangan",
+   "judul": "Gangan: Kuah Kuning Belitung yang Segar Tanpa Santan",
+   "kategori": "kuliner",
+   "ringkasan": "Gangan adalah masakan berkuah kuning khas Belitung. Warnanya dari kunyit, asamnya dari nanas, dan kuahnya tanpa santan.",
+   "foto": "artikel/foto/gangan.jpg",
+   "kredit": "Raflinoer32 · CC BY-SA 4.0"
+  },
+  {
+   "slug": "budaya-ngopi-belitung",
+   "judul": "Ngopi di Warung: Ruang Ngobrol Orang Belitung",
+   "kategori": "kuliner",
+   "ringkasan": "Di Belitung, terutama Manggar yang dijuluki 'Kota 1001 Warung Kopi', warung kopi bukan sekadar tempat minum. Warung kopi juga tempat bertukar kabar, mencari kerja, dan menjalin relasi.",
+   "foto": null,
+   "kredit": null
+  },
+  {
+   "slug": "makan-bedulang",
+   "judul": "Makan Bedulang: Satu Dulang, Empat Orang, Banyak Pelajaran",
+   "kategori": "kuliner",
+   "ringkasan": "Tradisi makan bersama khas Melayu Belitung di sekeliling dulang (nampan besar), dengan tata cara yang mengajarkan hormat kepada yang lebih tua. Ditetapkan sebagai Warisan Budaya Takbenda Indonesia tahun 2023.",
+   "foto": "artikel/foto/makan-bedulang.jpg",
+   "kredit": "Haris Yunanda Rangkuti · CC BY-SA 4.0"
+  },
+  {
+   "slug": "belacan-belitung",
+   "judul": "Belacan Belitung: Terasi Udang Rebon yang Jadi Warisan Budaya",
+   "kategori": "kuliner",
+   "ringkasan": "Belacan, sebutan terasi di Belitung, dibuat dari udang rebon yang dijemur, ditumbuk, lalu dikemas dalam daun. Ditetapkan sebagai Warisan Budaya Takbenda Indonesia pada 2022.",
+   "foto": null,
+   "kredit": null
+  },
+  {
+   "slug": "otak-otak-belitung",
+   "judul": "Otak-otak: Ikan Tenggiri Berbungkus Daun, Dipanggang di Atas Bara",
+   "kategori": "kuliner",
+   "ringkasan": "Camilan dari ikan tenggiri yang dibungkus daun pisang lalu dipanggang, dinikmati dengan cuka atau sambal. Mudah ditemui di Belitung dan seluruh Bangka Belitung.",
+   "foto": null,
+   "kredit": null
+  },
+  {
+   "slug": "maras-taun",
+   "judul": "Maras Taun: Syukur Panen yang Berawal dari Selat Nasik",
+   "kategori": "budaya",
+   "ringkasan": "Upacara adat Belitung untuk bersyukur atas panen padi dan memohon keselamatan di tahun berikutnya. Berawal dari Desa Selat Nasik di Pulau Mendanau dan tercatat sebagai Kekayaan Intelektual Komunal.",
+   "foto": null,
+   "kredit": null
+  },
+  {
+   "slug": "muang-jong",
+   "judul": "Muang Jong: Perahu Kecil untuk Laut dari Suku Sawang",
+   "kategori": "budaya",
+   "ringkasan": "Upacara adat selamat laut Suku Sawang di Belitung. Miniatur perahu (jong) berisi sesaji dilarung ke laut sebagai ungkapan syukur dan permohonan keselamatan.",
+   "foto": null,
+   "kredit": null
+  },
+  {
+   "slug": "nirok-nanggok",
+   "judul": "Nirok Nanggok: Saat Sungai Surut, Satu Kampung Turun Bersama",
+   "kategori": "budaya",
+   "ringkasan": "Tradisi menangkap ikan beramai-ramai di sungai yang surut saat kemarau panjang, memakai tombak (tirok) dan keranjang rotan (tanggok), dipimpin dukun kampung.",
+   "foto": null,
+   "kredit": null
+  },
+  {
+   "slug": "beripat-beregong",
+   "judul": "Beripat Beregong: Adu Ketangkasan Rotan Diiringi Gong",
+   "kategori": "budaya",
+   "ringkasan": "Seni pertunjukan sekaligus adu ketangkasan khas Belitung: dua pemain saling menyabet punggung dengan rotan, diiringi gong, serunai, dan kelinang. Ditetapkan sebagai Warisan Budaya Takbenda Indonesia pada 2022.",
+   "foto": null,
+   "kredit": null
+  },
+  {
+   "slug": "makam-pahlawan-perawas",
+   "judul": "TMP Ksatria Tumbang Ganti di Perawas: Tempat Belitung Menitipkan Para Pejuangnya",
+   "kategori": "budaya",
+   "ringkasan": "Mengenal Taman Makam Pahlawan Ksatria Tumbang Ganti di Perawas, Tanjungpandan, tempat pejuang rakyat Pertempuran Air Seruk, veteran, dan tokoh seperti H.A.S. Hanandjoeddin dimakamkan.",
+   "foto": null,
+   "kredit": null
+  },
+  {
+   "slug": "perlawanan-air-seruk",
+   "judul": "Jembatan Air Seruk, 25 November 1945: Saat Rakyat Belitung Berdiri dengan Parang dan Keris",
+   "kategori": "budaya",
+   "ringkasan": "Kisah kontak senjata Laskar Rakyat Belitung melawan pasukan Belanda di jembatan Air Seruk, Sijuk, yang gugurnya tiga pejuang masih diperingati warga setiap 25 November.",
+   "foto": null,
+   "kredit": null
+  }
+ ]
+}

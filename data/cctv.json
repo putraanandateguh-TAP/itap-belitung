@@ -1,5 +1,5 @@
 {
- "diperbarui": "2026-11-09 11:54 WIB",
+ "diperbarui": "2026-11-11 06:26 WIB",
  "sumber": "https://cctv.belitung.go.id/",
  "items": [
   {
@@ -125,8 +125,8 @@
    "wilayah": "Tanjungpandan",
    "kategori": "Perkantoran",
    "portal": "https://cctv.belitung.go.id/?page=detail&id=38",
-   "live": true,
-   "yt": "otp7zzXCNfU"
+   "live": false,
+   "yt": null
   },
   {
    "id": 34,

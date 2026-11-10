@@ -8,7 +8,7 @@
   const ITEMS = KAT.items;
   const app = document.getElementById('app');
   // Versi dokumen yang disetujui saat daftar (dicatat di metadata akun sebagai bukti persetujuan).
-  const CONSENT_DOC = 'privasi.html 2026-11-10';
+  const CONSENT_DOC = 'syarat+privasi 2026-11-10';
   const params = new URLSearchParams(location.search);
   const S = {
     sb: null, user: null, profile: null, admin: false, google: false,
@@ -101,7 +101,7 @@
     let form;
     if (!admin && S.authTab === 'daftar') {
       form = '<h2>Buat akun pengunjung</h2><p class="mu sm">Gratis. Untuk pesan produk iTAP, pasang iklan jual beli, menulis ulasan, dan kirim kabar.</p>' + google +
-        '<form id="f-daftar" class="form"><label>Nama<input name="name" maxlength="60" required autocomplete="name"></label><label>Email<input type="email" name="email" required autocomplete="email"></label><label>Kata sandi (min. 8 karakter)<input type="password" name="password" minlength="8" required autocomplete="new-password"></label><label class="consent"><input type="checkbox" name="consent" value="1" required><span>Saya sudah membaca dan setuju dengan <a href="../privasi.html#ketentuan" target="_blank" rel="noopener">Syarat Penggunaan</a> dan <a href="../privasi.html" target="_blank" rel="noopener">Kebijakan Privasi</a> iTAP.</span></label><button class="btn block" type="submit">Daftar</button></form><p class="mu sm" style="margin-top:8px">Kami kirim email konfirmasi. Buka tautannya sekali, lalu kamu bisa masuk.</p>';
+        '<form id="f-daftar" class="form"><label>Nama<input name="name" maxlength="60" required autocomplete="name"></label><label>Email<input type="email" name="email" required autocomplete="email"></label><label>Kata sandi (min. 8 karakter)<input type="password" name="password" minlength="8" required autocomplete="new-password"></label><label class="consent"><input type="checkbox" name="consent" value="1" required><span>Saya sudah membaca dan setuju dengan <a href="../syarat.html" target="_blank" rel="noopener">Syarat Penggunaan</a> dan <a href="../privasi.html" target="_blank" rel="noopener">Kebijakan Privasi</a> iTAP.</span></label><button class="btn block" type="submit">Daftar</button></form><p class="mu sm" style="margin-top:8px">Kami kirim email konfirmasi. Buka tautannya sekali, lalu kamu bisa masuk.</p>';
     } else {
       form = '<h2>' + (admin ? 'Masuk Admin / Owner' : 'Selamat datang kembali') + '</h2><p class="mu sm">' + (admin ? 'Khusus akun pemilik iTAP. Akses ditentukan peran admin di database, bukan kode yang bisa dibagikan.' : 'Masuk ke akun pengunjung iTAP.') + '</p>' + google +
         '<form id="f-masuk" class="form"><label>Email<input type="email" name="email" required autocomplete="email"></label><label>Kata sandi<input type="password" name="password" autocomplete="current-password" placeholder="Kosongkan bila pakai tautan email"></label><button class="btn block" type="submit">Masuk</button><button class="btn ghost block" type="button" id="b-magic">Kirim tautan masuk ke email</button></form><p class="sm" style="margin-top:8px;text-align:center"><button type="button" class="btn line sm" id="b-lupa">Lupa kata sandi?</button></p>';
@@ -111,7 +111,7 @@
       : '<ul class="perks"><li><b class="i">🛒</b><span>Pesan produk iTAP, lacak status, unduh produk yang sudah dibayar.</span></li><li><b class="i">🏷</b><span>Pasang iklan jual beli dengan foto dan nomor WhatsApp.</span></li><li><b class="i">★</b><span>Tulis ulasan produk iTAP dan Kedai Bakso Aci.</span></li><li><b class="i">✎</b><span>Kirim kabar. Tayang setelah disetujui admin.</span></li></ul>';
     app.innerHTML = '<div class="seg" role="tablist" aria-label="Jenis akun"><button type="button" role="tab" data-mode="pengunjung" aria-selected="' + !admin + '">Masuk Pengunjung</button><button type="button" role="tab" data-mode="admin" aria-selected="' + admin + '">Masuk Admin / Owner</button></div>' +
       '<div class="card">' + tabs + form + noteHtml() + '</div><div class="card"><h3>' + (admin ? 'Yang bisa dilakukan owner' : 'Yang bisa kamu lakukan') + '</h3>' + perks + '</div>' +
-      '<p class="mu sm">Dengan masuk, kamu setuju dengan <a href="../privasi.html" style="text-decoration:underline">privasi dan ketentuan</a> iTAP.</p>';
+      '<p class="mu sm">Dengan masuk, kamu setuju dengan <a href="../syarat.html" style="text-decoration:underline">Syarat Penggunaan</a> dan <a href="../privasi.html" style="text-decoration:underline">Kebijakan Privasi</a> iTAP.</p>';
   }
 
   // ---------- render: sudah masuk ----------
@@ -420,7 +420,7 @@
     if (t.id === 'b-google') { const r = await S.sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: redirectUrl() } }); if (r.error) setNote('Google belum bisa dipakai.', 'bad'); return; }
     if (t.id === 'b-orphans') { if (!confirm('Hapus file foto di bucket listings yang iklannya sudah tidak ada?')) return; await act(async () => { const n = await cleanOrphans(); setNote(n ? n + ' file foto yatim dihapus.' : 'Tidak ada foto yatim.', 'ok'); }); return; }
     if (t.id === 'b-out') { await S.sb.auth.signOut(); S.user = null; S.profile = null; S.admin = false; S.tab = ''; setNote('Kamu sudah keluar.', 'ok'); paint(); return; }
-    if (t.id === 'b-del') { if (!confirm('Hapus akun beserta iklan (termasuk fotonya), ulasan, favorit, dan pesanan yang tercatat?')) return; await act(async () => { const own = await S.sb.from('listings').select('id').eq('owner_id', S.user.id); await removePhotoFiles((own.data || []).map((x) => x.id)).catch(() => {}); const r = await S.sb.functions.invoke('delete-account', { body: {} }); if (r.error) throw r.error; await S.sb.auth.signOut(); S.user = null; paint(); }, 'Akun dihapus.'); return; }
+    if (t.id === 'b-del') { if (!confirm('Hapus akun beserta iklan (termasuk fotonya), ulasan, favorit, dan akses produk? Catatan pesanan disimpan untuk pembukuan tanpa terhubung ke akunmu.')) return; await act(async () => { const own = await S.sb.from('listings').select('id').eq('owner_id', S.user.id); await removePhotoFiles((own.data || []).map((x) => x.id)).catch(() => {}); const r = await S.sb.functions.invoke('delete-account', { body: {} }); if (r.error) throw r.error; await S.sb.auth.signOut(); S.user = null; paint(); }, 'Akun dihapus.'); return; }
     if (ds.rate) { const n = Number(ds.rate); const f = document.getElementById('f-review'); f.elements.rating.value = n; document.querySelectorAll('#rate button').forEach((b) => { const on = Number(b.dataset.rate) <= n; b.classList.toggle('on', on); b.setAttribute('aria-checked', String(Number(b.dataset.rate) === n)); }); return; }
     if (ds.order) { orderSheet(ds.order); return; }
     if (ds.fav) { await act(async () => { const on = favOn(ds.fav); const r = on ? await S.sb.from('favorites').delete().eq('user_id', S.user.id).eq('kind', 'produk').eq('item_id', ds.fav) : await S.sb.from('favorites').insert({ user_id: S.user.id, kind: 'produk', item_id: ds.fav, label: item(ds.fav).name }); if (r.error) { if (missing(r.error)) { S.ready.fav = false; throw new Error('favorit sedang disiapkan'); } throw r.error; } await refresh(); }); return; }

@@ -61,6 +61,7 @@
   document.querySelectorAll('[data-pscroll]').forEach((b) => b.onclick = () => $('prices').scrollBy({ left: 300 * Number(b.dataset.pscroll), behavior: 'smooth' }));
   $('toPlans').onclick = () => { paintPrices('langganan'); $('harga').scrollIntoView({ behavior: 'smooth' }); };
   paintPrices('satuan');
+  addEventListener('itap-prices', () => { const on = document.querySelector('.toggle button.on'); paintPrices(on ? on.dataset.mode : 'satuan'); });
 
   $('checks').innerHTML = ['Ganti nama tamu tanpa batas', 'Tanpa masa aktif', 'RSVP & ucapan tamu', 'Peta Google Maps', 'Hitung mundur hari-H', 'Simpan ke Google Calendar', 'Musik latar bebas royalti', 'Galeri foto', 'Amplop digital & QRIS', 'Tautan siaran langsung', 'Gulir otomatis', 'Catat hadir di pintu', 'Kisah perjalanan', 'Peta tertanam', 'Warna aksen sendiri', 'Sunting sendiri lewat email', 'Revisi leluasa (Lengkap+)', 'Dirakit admin, terima beres'].map((t) => '<li>' + t + '</li>').join('');
 

@@ -289,8 +289,11 @@
     if (!cfg.SUPABASE_URL) { fail('Undangan ini belum tersedia.'); return; }
     const lib = await import('https://esm.sh/@supabase/supabase-js@2.119.0');
     const client = lib.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
-    const res = await client.from('invitations').select('id,slug,theme,package,data,status').eq('slug', slug).eq('status', 'active').maybeSingle();
+    let res = await client.from('invitations').select('id,slug,theme,package,data,status').eq('slug', slug).eq('status', 'active').maybeSingle();
+    // Draf hanya terbaca oleh admin atau pemiliknya yang sedang masuk (dijaga RLS); tampil sebagai pratinjau.
+    if (!res.error && !res.data) res = await client.from('invitations').select('id,slug,theme,package,data,status').eq('slug', slug).maybeSingle();
     if (res.error || !res.data) { fail('Undangan tidak ditemukan atau belum diaktifkan.'); return; }
+    if (res.data.status !== 'active') setTimeout(() => { const b = document.createElement('div'); b.className = 'draftbar'; b.textContent = 'Pratinjau draf · belum bisa dibuka tamu'; document.body.appendChild(b); }, 0);
     data = Object.assign({ id: res.data.id, slug: res.data.slug, theme: res.data.theme, package: res.data.package }, res.data.data || {});
     render();
   }

@@ -180,3 +180,4 @@ img.avatar{object-fit:cover;object-position:top;padding:0}
 .gallery:has(> button:only-child){columns:1;max-width:320px;margin:0 auto}
 @media(hover:hover){.dock a:hover{background:var(--soft)}.dock.textnav a:hover{background:#ffffff33}}
 .dock.textnav{-webkit-mask-image:linear-gradient(90deg,#000 88%,#0000);mask-image:linear-gradient(90deg,#000 88%,#0000)}
+.draftbar{position:fixed;top:0;left:50%;transform:translateX(-50%);z-index:60;background:#b42318;color:#fff;font-size:.75rem;font-weight:600;padding:6px 14px;border-radius:0 0 10px 10px}

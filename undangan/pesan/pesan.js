@@ -2,7 +2,8 @@
   const cfg = window.ITAP_UNDANGAN;
   const rp = (n) => 'Rp' + Number(n).toLocaleString('id-ID');
   const sel = document.getElementById('package');
-  sel.innerHTML = cfg.packages.filter((p) => p.price > 0).map((p) => '<option value="' + p.id + '">' + p.name + ' · ' + rp(p.price) + '</option>').join('');
+  const fillPackages = () => { const keep = sel.value; sel.innerHTML = cfg.packages.filter((p) => p.price > 0).map((p) => '<option value="' + p.id + '">' + p.name + ' · ' + rp(p.price) + '</option>').join(''); if (keep) sel.value = keep; };
+  fillPackages();
   const preset = new URLSearchParams(location.search).get('paket');
   if (preset && [...sel.options].some((o) => o.value === preset)) sel.value = preset;
   const digits = (s) => String(s || '').replace(/\D/g, '');
@@ -29,6 +30,7 @@
   }
   form.addEventListener('change', sync);
   sync();
+  addEventListener('itap-prices', () => { fillPackages(); sync(); });
 
   document.getElementById('order').onsubmit = async (e) => {
     e.preventDefault();

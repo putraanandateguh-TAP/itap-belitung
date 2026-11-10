@@ -68,5 +68,35 @@
   },
   "closing": "Sampai jumpa. Ini hanya contoh tampilan iTAP.",
   "design": "melayu",
-  "cover": "../undangan/img/talent/melayu.webp"
+  "cover": "../undangan/img/talent/melayu.webp",
+  "musicUrl": "../audio/undangan/gymnopedie-1.mp3",
+  "gifts": [
+    {
+      "bank": "BCA",
+      "number": "0000000000",
+      "holder": "Contoh Penerima"
+    },
+    {
+      "bank": "DANA",
+      "number": "081200000000",
+      "holder": "Contoh Penerima"
+    }
+  ],
+  "giftAddress": {
+    "name": "Contoh Penerima",
+    "address": "Jl. Contoh No. 1, Tanjung Pandan, Belitung",
+    "note": "Alamat contoh, bukan alamat sungguhan."
+  },
+  "schedule": [
+    {
+      "time": "09.00",
+      "title": "Akad nikah",
+      "text": "Rumah keluarga, contoh"
+    },
+    {
+      "time": "11.00",
+      "title": "Makan bersama",
+      "text": "Halaman rumah, contoh"
+    }
+  ]
 }

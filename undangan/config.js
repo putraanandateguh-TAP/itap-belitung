@@ -5,6 +5,8 @@
 // Ubah angka di objek ini saja. Teguh bisa menyesuaikan tanpa menyentuh halaman lain.
 window.ITAP_UNDANGAN = {
   wa: '6287749476651',
+  // Email kontak publik. Kosongkan bila belum ada; footer hanya menampilkannya bila terisi.
+  email: '',
   packages: [
     { id: 'coba', name: 'Coba', price: 0, share: false, music: false, gallery: 0, gift: false, editor: false, stream: false, mapsEmbed: false, story: false, checkin: false, autoscroll: false, revisions: 0, blurb: 'Pratinjau tema di HP. Belum untuk disebar ke tamu.' },
     { id: 'dasar', name: 'Dasar', price: 39000, share: true, music: false, gallery: 0, gift: false, editor: false, stream: false, mapsEmbed: false, story: false, checkin: false, autoscroll: false, revisions: 2, blurb: 'Sebar tanpa batas, nama tamu, RSVP, peta, hitung mundur. Dua kali revisi.' },

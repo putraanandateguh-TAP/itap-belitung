@@ -56,5 +56,35 @@
   },
   "closing": "Jazakumullahu khairan. Ini hanya contoh tampilan iTAP.",
   "design": "hijab",
-  "cover": "../undangan/img/talent/hijab.webp"
+  "cover": "../undangan/img/talent/hijab.webp",
+  "musicUrl": "../audio/undangan/nocturne-op15-1.mp3",
+  "gifts": [
+    {
+      "bank": "BSI",
+      "number": "3333333333",
+      "holder": "Contoh Penerima"
+    },
+    {
+      "bank": "DANA",
+      "number": "081200000000",
+      "holder": "Contoh Penerima"
+    }
+  ],
+  "giftAddress": {
+    "name": "Contoh Penerima",
+    "address": "Jl. Contoh No. 1, Tanjung Pandan, Belitung",
+    "note": "Alamat contoh, bukan alamat sungguhan."
+  },
+  "schedule": [
+    {
+      "time": "08.00",
+      "title": "Akad nikah",
+      "text": "Masjid, contoh"
+    },
+    {
+      "time": "10.00",
+      "title": "Walimah",
+      "text": "Rumah keluarga, contoh"
+    }
+  ]
 }

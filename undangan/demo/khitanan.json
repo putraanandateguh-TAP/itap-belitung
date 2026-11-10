@@ -41,5 +41,30 @@
   },
   "closing": "Terima kasih atas doa dan kehadirannya. Ini hanya contoh tampilan iTAP.",
   "design": "khitanan",
-  "cover": "../undangan/img/talent/khitanan.webp"
+  "cover": "../undangan/img/talent/khitanan.webp",
+  "musicUrl": "../audio/undangan/gymnopedie-1.mp3",
+  "gifts": [
+    {
+      "bank": "BSI",
+      "number": "3333333333",
+      "holder": "Contoh Penerima"
+    },
+    {
+      "bank": "DANA",
+      "number": "081200000000",
+      "holder": "Contoh Penerima"
+    }
+  ],
+  "giftAddress": {
+    "name": "Contoh Penerima",
+    "address": "Jl. Contoh No. 1, Tanjung Pandan, Belitung",
+    "note": "Alamat contoh, bukan alamat sungguhan."
+  },
+  "schedule": [
+    {
+      "time": "09.00",
+      "title": "Doa dan syukuran",
+      "text": "Rumah, contoh"
+    }
+  ]
 }

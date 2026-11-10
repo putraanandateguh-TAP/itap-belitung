@@ -68,5 +68,35 @@
   },
   "closing": "Terima kasih sudah membuka contoh ini.",
   "design": "emas",
-  "cover": "../undangan/img/talent/emas.webp"
+  "cover": "../undangan/img/talent/emas.webp",
+  "musicUrl": "../audio/undangan/nocturne-op15-1.mp3",
+  "gifts": [
+    {
+      "bank": "Mandiri",
+      "number": "1111111111",
+      "holder": "Contoh Penerima"
+    },
+    {
+      "bank": "DANA",
+      "number": "081200000000",
+      "holder": "Contoh Penerima"
+    }
+  ],
+  "giftAddress": {
+    "name": "Contoh Penerima",
+    "address": "Jl. Contoh No. 1, Tanjung Pandan, Belitung",
+    "note": "Alamat contoh, bukan alamat sungguhan."
+  },
+  "schedule": [
+    {
+      "time": "10.00",
+      "title": "Akad",
+      "text": "Aula contoh"
+    },
+    {
+      "time": "12.00",
+      "title": "Resepsi",
+      "text": "Aula contoh"
+    }
+  ]
 }

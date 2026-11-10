@@ -1,0 +1,56 @@
+{
+  "slug": "demo-wisuda",
+  "design": "wisuda",
+  "theme": "emas",
+  "package": "penuh",
+  "demo": true,
+  "eventType": "Wisuda",
+  "title": "Syukuran Wisuda Dimas",
+  "kicker": "Syukuran wisuda",
+  "inviteLine": "Dengan rasa syukur kami mengundang",
+  "dateLabel": "Sabtu, 28 Agustus 2027",
+  "hosts": [
+    {
+      "role": "Wisudawan",
+      "name": "Dimas Pratama, S.T.",
+      "detail": "Putra Bapak Joko & Ibu Sri, contoh"
+    }
+  ],
+  "countdownTo": "2027-08-28T11:00:00+07:00",
+  "events": [
+    {
+      "name": "Makan siang bersama",
+      "start": "20270828T110000",
+      "end": "20270828T140000",
+      "timeLabel": "11.00–14.00 WIB",
+      "place": "Rumah makan, contoh",
+      "address": "Tanjung Pandan, Belitung",
+      "maps": "https://www.google.com/maps/search/?api=1&query=Tanjung+Pandan+Belitung"
+    }
+  ],
+  "schedule": [
+    {
+      "time": "11.00",
+      "title": "Makan siang bersama",
+      "text": "Rumah makan, contoh"
+    }
+  ],
+  "story": [],
+  "gallery": [],
+  "streamUrl": "",
+  "gift": {
+    "bank": "BRI",
+    "number": "4444444444",
+    "holder": "Contoh Penerima",
+    "qris": ""
+  },
+  "gifts": [
+    {
+      "bank": "BRI",
+      "number": "4444444444",
+      "holder": "Contoh Penerima"
+    }
+  ],
+  "closing": "Terima kasih atas doanya. Ini hanya contoh tampilan iTAP.",
+  "musicUrl": "../audio/undangan/nocturne-op15-1.mp3"
+}

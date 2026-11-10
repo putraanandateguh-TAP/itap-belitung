@@ -8,14 +8,8 @@
   const digits = (s) => String(s || '').replace(/\D/g, '');
 
   // Desain katalog -> gaya dasar yang diterima database (melayu/emas/pantai/islami).
-  const designs = [
-    { id: 'melayu', theme: 'melayu', name: 'Melayu Belitong', demo: 'demo-melayu', event: 'Pernikahan' },
-    { id: 'emas', theme: 'emas', name: 'Putih Emas', demo: 'demo-emas', event: 'Pernikahan' },
-    { id: 'pantai', theme: 'pantai', name: 'Pantai Tanjung', demo: 'demo-pantai', event: 'Pernikahan' },
-    { id: 'hijab', theme: 'islami', name: 'Syar\u2019i Hijau', demo: 'demo-hijab', event: 'Pernikahan' },
-    { id: 'khitanan', theme: 'islami', name: 'Khitanan Ceria', demo: 'demo-khitanan', event: 'Khitanan' },
-    { id: 'islami', theme: 'islami', name: 'Aqiqah Lembut', demo: 'demo-islami', event: 'Aqiqah' }
-  ];
+  const evName = { pernikahan: 'Pernikahan', khitanan: 'Khitanan', aqiqah: 'Aqiqah', ultah: 'Ulang tahun', wisuda: 'Wisuda', syukuran: 'Syukuran', lainnya: 'Acara sendiri' };
+  const designs = window.ITAP_TEMA.themes.map((t) => ({ id: t.id, theme: t.theme, name: t.name, demo: t.demo, event: evName[t.cats[0]] || 'Pernikahan' }));
   const form = document.getElementById('order');
   const pick = document.getElementById('pickTheme');
   pick.innerHTML = designs.map((d, i) => '<label><input type="radio" name="design" value="' + d.id + '"' + (i === 0 ? ' checked' : '') + '><img src="../img/mock/' + d.id + '-1.webp" alt="" width="270" height="570" loading="lazy">' + d.name + '</label>').join('');
@@ -35,9 +29,6 @@
   }
   form.addEventListener('change', sync);
   sync();
-  const burger = document.querySelector('.burger');
-  if (burger) burger.onclick = () => { const open = document.body.classList.toggle('menu-open'); burger.setAttribute('aria-expanded', String(open)); };
-  document.querySelectorAll('[data-wa]').forEach((a) => { a.href = 'https://wa.me/' + cfg.wa + '?text=' + encodeURIComponent(a.dataset.wa); a.target = '_blank'; a.rel = 'noopener'; });
 
   document.getElementById('order').onsubmit = async (e) => {
     e.preventDefault();

@@ -68,5 +68,35 @@
   },
   "closing": "Sampai jumpa di tepi laut. Ini hanya contoh tampilan iTAP.",
   "design": "pantai",
-  "cover": "../undangan/img/talent/pantai.webp"
+  "cover": "../undangan/img/talent/pantai.webp",
+  "musicUrl": "../audio/undangan/gymnopedie-1.mp3",
+  "gifts": [
+    {
+      "bank": "BRI",
+      "number": "2222222222",
+      "holder": "Contoh Penerima"
+    },
+    {
+      "bank": "DANA",
+      "number": "081200000000",
+      "holder": "Contoh Penerima"
+    }
+  ],
+  "giftAddress": {
+    "name": "Contoh Penerima",
+    "address": "Jl. Contoh No. 1, Tanjung Pandan, Belitung",
+    "note": "Alamat contoh, bukan alamat sungguhan."
+  },
+  "schedule": [
+    {
+      "time": "15.00",
+      "title": "Pemberkatan",
+      "text": "Tepi pantai, contoh"
+    },
+    {
+      "time": "17.00",
+      "title": "Makan malam",
+      "text": "Tepi pantai, contoh"
+    }
+  ]
 }

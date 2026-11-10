@@ -1,0 +1,56 @@
+{
+  "slug": "demo-ultah",
+  "design": "ultah",
+  "theme": "pantai",
+  "package": "penuh",
+  "demo": true,
+  "eventType": "Ulang Tahun",
+  "title": "Ulang Tahun Kiara",
+  "kicker": "Ulang tahun ke-7",
+  "inviteLine": "Ayo datang dan bermain bersama",
+  "dateLabel": "Sabtu, 20 Maret 2027",
+  "hosts": [
+    {
+      "role": "Yang berulang tahun",
+      "name": "Kiara Putri",
+      "detail": "Putri Bapak Andi & Ibu Rina, contoh"
+    }
+  ],
+  "countdownTo": "2027-03-20T15:00:00+07:00",
+  "events": [
+    {
+      "name": "Pesta ulang tahun",
+      "start": "20270320T150000",
+      "end": "20270320T170000",
+      "timeLabel": "15.00–17.00 WIB",
+      "place": "Rumah, contoh",
+      "address": "Tanjung Pandan, Belitung",
+      "maps": "https://www.google.com/maps/search/?api=1&query=Tanjung+Pandan+Belitung"
+    }
+  ],
+  "schedule": [
+    {
+      "time": "15.00",
+      "title": "Pesta ulang tahun",
+      "text": "Rumah, contoh"
+    }
+  ],
+  "story": [],
+  "gallery": [],
+  "streamUrl": "",
+  "gift": {
+    "bank": "BRI",
+    "number": "4444444444",
+    "holder": "Contoh Penerima",
+    "qris": ""
+  },
+  "gifts": [
+    {
+      "bank": "BRI",
+      "number": "4444444444",
+      "holder": "Contoh Penerima"
+    }
+  ],
+  "closing": "Terima kasih sudah datang. Ini hanya contoh tampilan iTAP.",
+  "musicUrl": "../audio/undangan/gymnopedie-1.mp3"
+}

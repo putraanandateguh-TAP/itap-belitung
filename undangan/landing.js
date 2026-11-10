@@ -1,47 +1,35 @@
 (function () {
   const cfg = window.ITAP_UNDANGAN;
   const rp = (n) => 'Rp' + Number(n || 0).toLocaleString('id-ID');
-  const wa = (text) => 'https://wa.me/' + cfg.wa + '?text=' + encodeURIComponent(text);
+  const wa = window.ITAP_TEMA.wa;
   const $ = (id) => document.getElementById(id);
 
-  // Desain katalog. "theme" = gaya dasar di sistem (melayu/emas/pantai/islami), "id" = varian foto & warna.
-  // rating: isi angka 1-5 hanya dari ulasan pembeli sungguhan. Selama kosong, kartu memakai label.
-  const themes = [
-    { id: 'melayu', theme: 'melayu', name: 'Melayu Belitong', cats: ['pernikahan'], demo: 'demo-melayu', tag: 'Favorit', bg: '#f3e3d3', rating: null },
-    { id: 'emas', theme: 'emas', name: 'Putih Emas', cats: ['pernikahan'], demo: 'demo-emas', tag: 'Elegan', bg: '#efe8dc', rating: null },
-    { id: 'pantai', theme: 'pantai', name: 'Pantai Tanjung', cats: ['pernikahan'], demo: 'demo-pantai', tag: 'Baru', bg: '#d9eeee', rating: null },
-    { id: 'hijab', theme: 'islami', name: 'Syar\u2019i Hijau', cats: ['pernikahan'], demo: 'demo-hijab', tag: 'Baru', bg: '#e1ede5', rating: null },
-    { id: 'khitanan', theme: 'islami', name: 'Khitanan Ceria', cats: ['khitanan'], demo: 'demo-khitanan', tag: 'Baru', bg: '#e4eadf', rating: null },
-    { id: 'islami', theme: 'islami', name: 'Aqiqah Lembut', cats: ['aqiqah'], demo: 'demo-islami', tag: 'Baru', bg: '#e6ece6', rating: null }
-  ];
-  const cats = [
-    ['semua', 'Semua', '✨'], ['pernikahan', 'Pernikahan', '💍'], ['khitanan', 'Khitanan', '🕌'], ['aqiqah', 'Aqiqah', '👶'],
-    ['ultah', 'Ulang Tahun', '🎂'], ['wisuda', 'Wisuda', '🎓'], ['syukuran', 'Syukuran', '🍚'], ['kantor', 'Acara Kantor', '🏢'], ['lain', 'Acara Lain', '🎉']
-  ];
-  const minPrice = Math.min.apply(null, cfg.packages.filter((p) => p.price > 0).map((p) => p.price));
-  const stars = (n) => '<span class="stars" aria-label="Rating ' + n + ' dari 5">' + '★★★★★'.slice(0, Math.round(n)) + '<i>' + '★★★★★'.slice(Math.round(n)) + '</i></span>';
-
-  function themeCard(t) {
-    return '<article class="tcard"><div class="tshot" style="background:' + t.bg + '"><span class="tag">' + t.tag + '</span>'
-      + '<div class="phone a"><img src="img/mock/' + t.id + '-2.webp" alt="" loading="lazy" width="270" height="570"></div>'
-      + '<div class="phone b"><img src="img/mock/' + t.id + '-1.webp" alt="Pratinjau tema ' + t.name + '" loading="lazy" width="270" height="570"></div></div>'
-      + '<div class="tbody"><p class="tprice">Mulai ' + rp(minPrice) + '</p><h3>' + t.name + '</h3>'
-      + (t.rating ? stars(t.rating) : '<span class="stars muted-stars" title="Belum ada ulasan">Tema asli iTAP</span>')
-      + '<div class="tbtn"><a class="btn out xs" href="../u/?s=' + t.demo + '&to=Tamu+Undangan" target="_blank" rel="noopener">👁 Preview</a><a class="btn xs" href="pesan/?tema=' + t.id + '">Gunakan Tema</a></div></div></article>';
-  }
-  function customCard(label) {
-    return '<article class="tcard custom"><div class="tshot cbox"><span>🎨</span><p>Tema ' + label + ' sedang disiapkan</p></div><div class="tbody"><p class="tprice">Harga ikut paket</p><h3>Tema custom</h3><span class="stars muted-stars">Desain sesuai acaramu</span><div class="tbtn"><a class="btn xs wide" href="' + wa('Halo iTAP, saya ingin undangan ' + label + ' dengan tema custom.') + '" target="_blank" rel="noopener">Minta via WhatsApp</a></div></div></article>';
-  }
+  const T = window.ITAP_TEMA;
+  const themes = T.themes;
+  const cats = [['semua', 'Semua', '✨']].concat(T.cats);
   function paintGrid(cat) {
-    const list = cat === 'semua' ? themes : themes.filter((t) => t.cats.includes(cat));
+    const list = cat === 'semua' ? themes.slice(0, 8) : themes.filter((t) => t.cats.includes(cat));
     const label = (cats.find((c) => c[0] === cat) || [, 'acara'])[1].toLowerCase();
-    $('tgrid').innerHTML = list.map(themeCard).join('') + (list.length ? '' : customCard(label));
+    $('tgrid').innerHTML = list.map(T.card).join('') + (cat !== 'semua' ? T.customCard(label) : '');
     document.querySelectorAll('.cat').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.cat === cat)));
   }
   $('cats').innerHTML = cats.map((c) => '<button type="button" role="tab" class="cat" data-cat="' + c[0] + '"><span class="ci">' + c[2] + '</span>' + c[1] + '</button>').join('');
   $('cats').addEventListener('click', (e) => { const b = e.target.closest('.cat'); if (b) paintGrid(b.dataset.cat); });
   document.querySelectorAll('[data-scroll]').forEach((b) => b.onclick = () => $('cats').scrollBy({ left: 240 * Number(b.dataset.scroll), behavior: 'smooth' }));
   paintGrid('semua');
+
+  // Akordeon contoh per kelompok acara
+  const groups = [
+    ['Acara keluarga', ['pernikahan', 'khitanan', 'aqiqah', 'ultah']],
+    ['Pendidikan & prestasi', ['wisuda']],
+    ['Syukuran & acara lain', ['syukuran', 'lainnya']]
+  ];
+  const catName = (c) => (T.cats.find((x) => x[0] === c) || [, c])[1];
+  $('acc').innerHTML = groups.map((g, gi) => '<details' + (gi === 0 ? ' open' : '') + '><summary>' + g[0] + '</summary><ul>' + g[1].map((c) => {
+    const list = themes.filter((t) => t.cats.includes(c));
+    return list.map((t) => '<li><a href="../u/?s=' + t.demo + '&to=Tamu+Undangan" target="_blank" rel="noopener">Contoh undangan ' + catName(c).toLowerCase() + ' · ' + T.esc(t.name) + ' <span aria-hidden="true">↗</span></a></li>').join('')
+      || '<li><a href="' + T.wa('Halo iTAP, saya ingin undangan ' + catName(c).toLowerCase() + '.') + '" target="_blank" rel="noopener">Undangan ' + catName(c).toLowerCase() + ' · minta lewat admin <span aria-hidden="true">↗</span></a></li>';
+  }).join('') + '</ul></details>').join('');
 
   // Harga
   const featRows = (p) => [
@@ -81,11 +69,7 @@
   let wi = 0;
   if (!matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(() => { const r = $('rot'); r.classList.add('out'); setTimeout(() => { wi = (wi + 1) % words.length; r.textContent = words[wi]; r.classList.remove('out'); }, 250); }, 2400);
 
-  // Menu, WhatsApp, tip
-  const burger = document.querySelector('.burger');
-  burger.onclick = () => { const open = document.body.classList.toggle('menu-open'); burger.setAttribute('aria-expanded', String(open)); };
-  $('menu').addEventListener('click', (e) => { if (e.target.tagName === 'A') { document.body.classList.remove('menu-open'); burger.setAttribute('aria-expanded', 'false'); } });
-  document.querySelectorAll('[data-wa]').forEach((a) => { a.href = wa(a.dataset.wa); a.target = '_blank'; a.rel = 'noopener'; });
+  // Tip WhatsApp
   const tip = $('waTip');
   if (!sessionStorage.getItem('itap_wa_tip')) setTimeout(() => tip.classList.add('on'), 2500);
   $('waTipX').onclick = () => { tip.classList.remove('on'); sessionStorage.setItem('itap_wa_tip', '1'); };

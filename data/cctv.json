@@ -1,5 +1,5 @@
 {
- "diperbarui": "2026-11-11 06:26 WIB",
+ "diperbarui": "2026-11-12 23:51 WIB",
  "sumber": "https://cctv.belitung.go.id/",
  "items": [
   {
@@ -188,7 +188,7 @@
    "wilayah": "Tanjungpandan",
    "kategori": "Persimpangan",
    "portal": "https://cctv.belitung.go.id/?page=detail&id=12",
-   "live": false,
+   "live": true,
    "yt": null
   },
   {

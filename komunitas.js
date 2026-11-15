@@ -70,7 +70,7 @@
 
   function renderAkun() {
     if (!user) {
-      return '<div class="card"><h2>Masuk</h2><p class="mu sm">Satu akun iTAP untuk belanja, jual beli, ulasan, dan kirim kabar. Masuk dengan email + kata sandi atau tautan email.</p><p><a class="cta" href="akun/">Masuk Pengunjung</a> <a class="cta" style="background:var(--navy)" href="akun/?peran=admin">Masuk Admin / Owner</a></p><p class="mu sm"><a href="privasi.html">Privasi dan ketentuan</a></p></div>';
+      return '<div class="card"><p class="mu sm">Satu akun iTAP untuk belanja, jual beli, ulasan, dan kirim kabar. Masuk dengan email + kata sandi atau tautan email.</p><p><a class="cta" href="akun/">Masuk Pengunjung</a> <a class="cta" style="background:var(--navy)" href="akun/?peran=admin">Masuk Admin / Owner</a></p><p class="mu sm"><a href="privasi.html">Privasi dan ketentuan</a></p></div>';
     }
     return '<div class="card"><h2>Akun</h2><p class="mu sm">' + esc(user.email || '') + (profile && profile.role === 'admin' ? ' · admin' : '') + '</p><p><a class="cta" href="akun/">' + (profile && profile.role === 'admin' ? 'Buka dasbor Owner' : 'Buka dasbor akun') + '</a></p><form id="profile-form" class="cm-form"><label>Nama<input name="name" maxlength="60" required value="' + esc(profile && profile.display_name) + '"></label><label>WhatsApp<input name="phone" inputmode="numeric" placeholder="08…" value="' + esc(profile && profile.phone) + '"></label><button class="cta" type="submit">Simpan profil</button></form><p><button type="button" id="signout">Keluar</button> <button type="button" id="delete-account">Hapus akun</button></p><p id="auth-note" class="mu sm" role="status">' + esc(notice) + '</p><p class="mu sm"><a href="privasi.html">Privasi dan ketentuan</a></p></div>';
   }

@@ -1,0 +1,55 @@
+/* satam-tema.css v2: mengikuti tangkapan layar aplikasi Satam (hero biru baja, kartu 28px, tombol navy datar, layanan dalam satu kartu putih). Dimuat SETELAH style.css. */
+:root{--sat-grad:linear-gradient(160deg,#7391b4 0%,#4a688c 48%,#37587f 100%);--sat-pill:#dcecfb;--sat-r:28px}
+.satam-hero{background:var(--sat-grad);color:#fff;border-radius:var(--sat-r);padding:20px 16px 22px;margin:4px 0 16px}
+@media(max-width:640px){.satam-hero{margin:-6px calc(50% - 50vw) 16px;padding:20px calc(50vw - 50%) 22px;border-radius:0 0 var(--sat-r) var(--sat-r)}}
+.satam-hero .eyebrow{color:rgba(255,255,255,.78)}
+.satam-hero h1{color:#fff;margin:4px 0 0}
+.satam-hero h1 span{color:#a9d4ff}
+.satam-hero .wxboard{margin-top:14px}
+.satam-hero .wxmain{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.4);box-shadow:none;color:#fff;border-radius:22px}
+.satam-hero .wxmain #greet{color:#cfe3ff}
+.satam-hero .wxmain small{color:rgba(255,255,255,.78)}
+.satam-hero .chips-info>*{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.5);color:#fff;border-radius:20px;box-shadow:none}
+.satam-hero .chips-info *{color:inherit}
+.askbar{border-radius:var(--sat-r);padding:10px 10px 10px 18px;box-shadow:0 8px 28px rgba(22,81,175,.14)}
+.askbar button{background:linear-gradient(135deg,#1651af,#1c8fd1)}
+.home-grid,.menu-list.home-grid{background:#fff;border-radius:var(--sat-r);padding:14px 8px;gap:4px 0;box-shadow:0 6px 24px rgba(15,42,68,.07)}
+.home-grid a{background:none;border:0;box-shadow:none;min-height:84px;gap:6px;border-radius:16px}
+.sat-h{margin:20px 0 0;font-size:1.25rem;color:var(--navy)}
+.sat-h small{display:block;margin-top:2px;font-size:.85rem;font-weight:400;color:var(--mu)}
+.home-grid{margin-bottom:18px}
+.home-grid b{font-size:1.9rem}
+.home-grid span{font-size:.78rem;color:var(--navy)}
+.panel>h2:first-child,.mgrp,.sat-h{position:relative;padding-left:14px}
+.panel>h2:first-child::before,.mgrp::before,.sat-h::before{content:"";position:absolute;left:0;top:.2em;bottom:.2em;width:5px;border-radius:4px;background:linear-gradient(#3177f0,#2647c8)}
+.cta,#push-btn,#pwa-inline{background:var(--navy);color:#fff;border:0;border-radius:18px;font-weight:700;min-height:44px;padding:11px 20px;box-shadow:none}
+.card{border-radius:var(--sat-r);border:0;box-shadow:0 6px 24px rgba(15,42,68,.07)}
+.price{color:#2862d0;font-weight:800}
+.bnav{left:0;right:0;bottom:0;height:auto;min-height:68px;border-radius:22px 22px 0 0;box-shadow:0 -6px 24px rgba(15,42,68,.08);border-top:0}
+.bnav a[aria-current="page"]{background:var(--sat-pill)!important;border-radius:20px}
+.bnav a[aria-current="page"]::before{display:none}
+.bnav-mid .bubble{background:linear-gradient(145deg,#1c6fd8,#0f4fb0);color:#fff;box-shadow:0 8px 16px rgba(22,81,175,.35)}
+/* daftar kabar dan judul bagian di beranda ala Satam */
+.sh>div{position:relative;padding-left:14px}
+.sh>div::before{content:"";position:absolute;left:0;top:.2em;bottom:.15em;width:5px;border-radius:4px;background:linear-gradient(#3177f0,#2647c8)}
+#beranda .sh .eyebrow{display:none}
+.sh h2{font-size:1.45rem;color:var(--navy)}
+.sh>a.more{border:0!important;background:none!important;box-shadow:none!important;color:#2862d0;font-weight:700;padding:0 4px}
+.fresh{background:#fff;border-radius:var(--sat-r);padding:6px 16px;gap:0;box-shadow:0 6px 24px rgba(15,42,68,.07)}
+.fresh-item{background:none;box-shadow:none;border-radius:0;padding:14px 0;gap:14px;align-items:flex-start;border-bottom:1px solid var(--line)}
+.fresh-item:last-child{border-bottom:0}
+.fresh-item img{width:96px;height:96px;border-radius:22px;box-shadow:0 6px 14px rgba(15,42,68,.14)}
+.fresh-item b{font-size:1rem}
+/* header halaman dalam berwarna lembut ala Satam (warna per halaman) */
+#berita,#jualbeli,#kabar,#akun,#chat,#cctv,#menu{--tint:#eaf2ff}
+#loker,#kelas,#produk{--tint:#fff4e3}
+#cuaca,#data{--tint:#e6f4ff}
+#sos{--tint:#ffeded}
+#transport{--tint:#eef1ff}
+#tersimpan{--tint:#e8f8f0}
+#ppob{--tint:#fdeef7}
+section[id]:not(#beranda):not(.card)>.sh:first-child,section[id]:not(#beranda):not(.card)>h2:first-child{background:var(--tint,#eaf2ff);border-radius:var(--sat-r);padding:20px 16px 18px;margin:0 0 16px}
+section[id]:not(#beranda):not(.card)>.sh:first-child>div{padding-left:0}
+section[id]:not(#beranda):not(.card)>.sh:first-child>div::before,section[id]:not(#beranda):not(.card)>h2:first-child::before{display:none}
+section[id]:not(#beranda):not(.card)>h2:first-child{padding-left:16px;font-size:1.5rem;color:var(--navy)}
+@media(max-width:640px){section[id]:not(#beranda):not(.card)>.sh:first-child,section[id]:not(#beranda):not(.card)>h2:first-child{margin:-6px calc(50% - 50vw) 16px;padding-left:calc(50vw - 50%);padding-right:calc(50vw - 50%);border-radius:0 0 var(--sat-r) var(--sat-r)}}

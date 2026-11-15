@@ -16,6 +16,4 @@ alter table public.push_state enable row level security;
 grant usage on schema public to anon, authenticated;
 revoke all on public.push_subscriptions from anon, authenticated;
 grant insert on public.push_subscriptions to anon, authenticated;
--- ON CONFLICT (endpoint) di push.js butuh izin SELECT pada kolom endpoint. Tanpa kebijakan SELECT, RLS tetap membuat GET kosong.
-grant select (endpoint) on public.push_subscriptions to anon, authenticated;
 revoke all on public.push_state from anon, authenticated;

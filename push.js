@@ -17,11 +17,11 @@
           if (p !== 'granted') { say('Izin notifikasi ditolak. Ubah di pengaturan browser.'); return; }
           return reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: toKey(key) }).then(function (s) {
             var j = s.toJSON();
-            return fetch(base + '/rest/v1/push_subscriptions?on_conflict=endpoint', {
+            return fetch(base + '/rest/v1/push_subscriptions', {
               method: 'POST',
-              headers: { apikey: cfg.SUPABASE_ANON_KEY, 'Content-Type': 'application/json', Prefer: 'resolution=ignore-duplicates,return=minimal' },
+              headers: { apikey: cfg.SUPABASE_ANON_KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
               body: JSON.stringify({ endpoint: j.endpoint, p256dh: j.keys.p256dh, auth: j.keys.auth })
-            }).then(function (r) { if (!r.ok) throw new Error('simpan'); label(true); say('Aktif. Kamu akan dapat peringatan cuaca ekstrem, gelombang tinggi, dan gempa dekat Belitung.'); });
+            }).then(function (r) { if (!r.ok && r.status !== 409) throw new Error('simpan'); label(true); say('Aktif. Kamu akan dapat peringatan cuaca ekstrem, gelombang tinggi, dan gempa dekat Belitung.'); });
           });
         });
       });

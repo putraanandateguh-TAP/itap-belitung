@@ -1,13 +1,13 @@
 // iTAP Belitung — service worker situs utama.
 // Naikkan VER tiap rilis aset. Cache lama itap-* dihapus saat aktivasi.
 // localStorage / IndexedDB (termasuk data kasir) tidak disentuh.
-const VER = 'itap-v72';
+const VER = 'itap-v73';
 const SCOPE = new URL('./', self.location).pathname;
 const LIVE = /^data\/(harga-pangan|keuangan|ppob-harga|berita|loker)\.json$/;
 const PRECACHE = [
   'index.html',
   'offline.html',
-  'style.css',
+  'style.css','satam-tema.css?v=2',
   'app.js',
   'views.js',
   'data.js',
@@ -212,4 +212,16 @@ self.addEventListener('fetch', (event) => {
       return new Response('Offline', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
     }
   })());
+});
+
+// Web Push: peringatan cuaca & gempa (fungsi supabase/functions/push-alert).
+self.addEventListener('push', (e) => {
+  let d = {}; try { d = e.data ? e.data.json() : {}; } catch (_) {}
+  e.waitUntil(self.registration.showNotification(String(d.title || 'iTAP Belitung').slice(0, 80), {
+    body: String(d.body || '').slice(0, 200), icon: 'icons/icon-192.png', badge: 'icons/icon-192.png', tag: d.tag || 'itap-alert', data: { url: './' }
+  }));
+});
+self.addEventListener('notificationclick', (e) => {
+  e.notification.close();
+  e.waitUntil(self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((l) => (l[0] && 'focus' in l[0]) ? l[0].focus() : self.clients.openWindow('./')));
 });

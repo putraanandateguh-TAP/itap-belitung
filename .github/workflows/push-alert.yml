@@ -1,0 +1,13 @@
+name: Peringatan cuaca & gempa
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Panggil fungsi push-alert
+        env:
+          PUSH_CRON_SECRET: ${{ secrets.PUSH_CRON_SECRET }}
+        run: curl -fsS -X POST "https://mmtxxztkezbuissxembl.supabase.co/functions/v1/push-alert" -H "x-cron-secret: $PUSH_CRON_SECRET"

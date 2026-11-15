@@ -3,5 +3,6 @@
 window.ITAP_CONFIG = {
   SUPABASE_URL: 'https://mmtxxztkezbuissxembl.supabase.co',
   SUPABASE_ANON_KEY: 'sb_publishable__1FyoGH0-q564WInyZZBQg_YP0SIYt4',
-  AI_FUNCTION: 'chat'
+  AI_FUNCTION: 'chat',
+  VAPID_PUBLIC_KEY: 'BPJImlqKFd2wfy85ayz1SAISfFKLZp10EPnl2oXjntj9SnAvN7sxRx7e35MFR1j1xzaur67UgIOf36PT0x314tY'
 };

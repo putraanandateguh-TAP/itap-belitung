@@ -3,7 +3,8 @@
 Kamera HLS dicek apakah playlist-nya ada; kamera YouTube dicek apakah siarannya sedang live.
 Kalau siaran YouTube lama sudah berhenti, dicari siaran "[LIVE] CCTV ..." terbaru di kanal
 Kominfo Belitung TV dengan nama yang cocok."""
-import json, re, urllib.request, datetime, html as H
+import json, re, os, urllib.request, datetime, html as H
+OUT = os.path.join(os.path.dirname(__file__), "..", "data", "cctv.json")
 PORTAL = 'https://cctv.belitung.go.id/'
 CHANNEL = 'https://www.youtube.com/channel/UCf4UarcBkJ9xFnmKeFLgTHw/streams'
 UA = 'Mozilla/5.0 (iTAP Belitung status check; +https://itapbelitung.my.id)'
@@ -47,7 +48,7 @@ def main():
         if live and 'cctv' in title.lower():
             cand.append((v, norm(title)))
     try:
-        prev = {x['id']: x for x in json.load(open('data/cctv.json'))['items']}
+        prev = {x['id']: x for x in json.load(open(OUT))['items']}
     except Exception:
         prev = {}
     out = []
@@ -86,7 +87,7 @@ def main():
         raise SystemExit('semua kamera terbaca mati, kemungkinan cek gagal; data lama dipertahankan')
     now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=7)))
     json.dump({'diperbarui': now.strftime('%Y-%m-%d %H:%M WIB'), 'sumber': PORTAL, 'items': out},
-              open('data/cctv.json', 'w'), ensure_ascii=False, indent=1)
+              open(OUT, 'w'), ensure_ascii=False, indent=1)
     print(sum(x['live'] for x in out), 'dari', len(out), 'kamera hidup')
 
 if __name__ == '__main__':

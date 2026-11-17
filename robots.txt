@@ -1,3 +1,4 @@
 User-agent: *
 Disallow: /admin/
+Disallow: /*.bak.html
 Sitemap: https://itapbelitung.my.id/sitemap.xml

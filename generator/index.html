@@ -140,7 +140,7 @@ async function callImg(prompt,ref){const key=$('key').value.trim(),m=$('imodel')
  let r=await fetch('https://generativelanguage.googleapis.com/v1beta/interactions',{method:'POST',headers:h,body:JSON.stringify({model:m,input:inp,response_format:{type:'image',aspect_ratio:ar}})});
  if(r.status==404||r.status==405){// fallback: generateContent (mis. Gemini Canvas)
   const parts=[{text:prompt}];if(ref)parts.push({inlineData:{mimeType:ref.mime,data:ref.data}});
-  r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${encodeURIComponent(key)}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts}],generationConfig:{responseModalities:['IMAGE'],imageConfig:{aspectRatio:ar}}})})}
+  r=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent`,{method:'POST',headers:{'Content-Type':'application/json','x-goog-api-key':key},body:JSON.stringify({contents:[{role:'user',parts}],generationConfig:{responseModalities:['IMAGE'],imageConfig:{aspectRatio:ar}}})})}
  const t=await r.text();if(!r.ok){const e=new Error(errMsg(r.status,t));throw e}
  const im=findImg(JSON.parse(t));if(!im)throw new Error(errMsg(0,t.includes('SAFETY')?'SAFETY':''));return im}
 async function genImg(i){if(!FULL){alert('🔒 Fitur FULL. Klik "Beli akses FULL" untuk membuka generate gambar.');return false}

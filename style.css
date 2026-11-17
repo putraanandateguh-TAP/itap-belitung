@@ -1,5 +1,5 @@
-:root{--navy:#082c50;--blue:#2163df;--cyan:#00b8da;--ink:#0f2a44;--mu:#66798c;--paper:#f3f6fb;--line:#e2e9f3;--gold:#e8a317;--r:18px;--sh:0 2px 8px rgba(15,42,68,.07)}
-*{box-sizing:border-box;margin:0}html,body{overflow-x:hidden;max-width:100%}img{max-width:100%;height:auto}body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--paper);color:var(--ink);line-height:1.5}a{color:inherit;text-decoration:none}
+:root{--navy:#082c50;--blue:#2163df;--cyan:#00b8da;--ink:#0f2a44;--mu:#5b6b7d;--paper:#f3f6fb;--line:#e2e9f3;--gold:#e8a317;--r:18px;--sh:0 2px 8px rgba(15,42,68,.07)}
+*{box-sizing:border-box;margin:0}html,body{overflow-x:hidden;max-width:100%}img{max-width:100%;height:auto}:focus-visible{outline:2px solid var(--blue);outline-offset:2px}body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--paper);color:var(--ink);line-height:1.5}a{color:inherit;text-decoration:none}
 .w{max-width:1200px;margin:auto;padding:0 16px}section{margin:18px 0}h1{font-size:clamp(1.7rem,4.5vw,2.6rem);line-height:1.15}h1 span{color:var(--blue)}h2{font-size:1.45rem}h3{font-size:1.05rem;margin:4px 0}
 .top{background:var(--navy);color:#cfe0f5;font-size:.8rem}.top .w{display:flex;justify-content:space-between;padding:6px 16px}
 .hd{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}.hd>.w{display:flex;align-items:center;gap:10px;height:62px}
@@ -56,7 +56,7 @@ footer{background:var(--navy);color:#cfe0f5;padding:36px 0 90px;margin-top:40px}
 
 .wclock{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 16px;margin-bottom:12px;padding:12px 16px}.wc-t{font-size:1.8rem;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:.5px}.wc-t b{font-size:.9rem;color:#1d5fd8;margin-left:4px}.wc-d{font-size:1rem;opacity:.8}@media(max-width:480px){.wc-t{font-size:1.5rem}.wc-d{font-size:.92rem;width:100%}}
 
-.price .was{font-size:.85rem;font-weight:600;color:#888;margin-right:4px}.price .off{display:inline-block;background:#e11d48;color:#fff;font-size:.75rem;font-weight:800;padding:2px 7px;border-radius:999px;vertical-align:middle}.promo{margin:-4px 0 8px;color:#e11d48!important;font-weight:600}
+.price .was{font-size:.85rem;font-weight:600;color:#6b7280;margin-right:4px}.price .off{display:inline-block;background:#e11d48;color:#fff;font-size:.75rem;font-weight:800;padding:2px 7px;border-radius:999px;vertical-align:middle}.promo{margin:-4px 0 8px;color:#e11d48!important;font-weight:600}
 .db{margin-bottom:14px}.db h3{margin-bottom:8px}.src{font-size:.75rem;color:var(--mu);margin-top:10px}.src a{text-decoration:underline}
 .kv{padding-left:18px}.kv li{margin:5px 0;font-size:.92rem}.kv b{color:var(--navy);margin-right:6px}
 .wq{width:100%;padding:10px 14px;border:1px solid var(--line);border-radius:99px;margin:4px 0 10px;font-size:.95rem}
@@ -332,7 +332,7 @@ code[data-apk-sha]{display:block;max-width:100%;overflow-wrap:anywhere;word-brea
 #ulasan-produk[hidden],#ulasan-kedai[hidden],#kabar-warga[hidden]{display:none}#kabar-warga{margin-bottom:12px}#ulasan-kedai .rv-row .rv{box-shadow:none}
 /* Layar ala portal (satam-layar.js) */
 .askbar{display:flex;align-items:center;gap:8px;margin:12px 0 4px;background:#fff;border:1px solid var(--line);border-radius:99px;padding:6px 6px 6px 16px;box-shadow:0 8px 22px #082c5014}
-.askbar input{flex:1;min-width:0;border:0;outline:0;font-size:1rem;background:transparent;padding:8px 0}
+.askbar input{flex:1;min-width:0;border:0;font-size:1rem;background:transparent;padding:8px 0}
 .askbar button{width:42px;height:42px;border-radius:99px;border:0;background:linear-gradient(135deg,var(--blue),var(--navy));color:#fff;font-size:1rem;cursor:pointer}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .home-grid a span{font-size:.74rem;line-height:1.15}

@@ -24,7 +24,12 @@ export async function GET(req: Request) {
         displayName: (data.user.user_metadata?.full_name as string | undefined)
           ?? (data.user.user_metadata?.display_name as string | undefined) ?? null,
       }).onConflictDoNothing();
-    } catch { /* profil dibuat saat login berikutnya */ }
+    } catch (e) {
+      // SEC-01: jangan telan error pembuatan profil — log agar kegagalan
+      // terlihat; profil dibuat ulang saat login berikutnya. Tanpa log ini,
+      // jendela eskalasi SEC-01 (profil belum ada) tidak terdeteksi.
+      console.error("auth/callback: gagal membuat profil", e);
+    }
   }
   return NextResponse.redirect(new URL(next, url.origin));
 }

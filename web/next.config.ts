@@ -7,9 +7,19 @@ import type { NextConfig } from "next";
 // framing (clickjacking), object/embed, base-uri injection, dan
 // connect/fetch ke host di luar 'self' + Supabase. Gambar: lokal +
 // Supabase Storage saja (tidak ada host gambar eksternal di kode).
+//
+// 'unsafe-eval' HANYA di development: webpack dev memakai eval untuk
+// source map/HMR — tanpa ini hydration mati di `npm run dev` (terbukti:
+// 14 tes E2E interaktif gagal di dev, 16/16 lolos di base tanpa CSP).
+// Di production (`next start`, Vercel) eval TIDAK diizinkan — dan E2E CI
+// berjalan melawan production build, jadi CSP ketatlah yang diuji.
+const isDev = process.env.NODE_ENV !== "production";
+const scriptSrc = isDev
+  ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
+  : "script-src 'self' 'unsafe-inline'";
 const csp = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline'",
+  scriptSrc,
   "style-src 'self' 'unsafe-inline'",
   "img-src 'self' data: blob: https://*.supabase.co",
   "font-src 'self' data:",

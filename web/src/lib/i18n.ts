@@ -920,7 +920,7 @@ const id = {
 
   "produk.title": "Produk Digital iTAP",
   "produk.subtitle": "Harga dari situs iTAP (Nov 2026). Pembelian lewat WhatsApp admin — pesanan dikonfirmasi setelah pembayaran dicek di mutasi, bukan dari screenshot.",
-  "produk.catalogNote": "Halaman ini hanya katalog. Tidak ada kolom kode akses dan tidak ada validasi lisensi di sini — sistem lisensi client-side lama sengaja tidak dibawa (temuan audit K1). Validasi lisensi server-side adalah keputusan terpisah.",
+  "produk.catalogNote": "Katalog produk digital. Lisensi FULL divalidasi di server (Supabase Edge Function) — status di bawah ini diambil dari server, bukan dari perangkat Anda.",
   "produk.buyViaWa": "Beli {name} via WhatsApp",
   "produk.classTitle": "Kelas Kreator AI",
   "produk.registerViaWa": "Daftar {name} via WhatsApp",
@@ -2167,7 +2167,7 @@ export const dict: Record<Lang, typeof id> = {
 
     "produk.title": "iTAP Digital Products",
     "produk.subtitle": "Prices from the iTAP site (Nov 2026). Purchase via the admin's WhatsApp — orders are confirmed after payment is checked in the statement, not from a screenshot.",
-    "produk.catalogNote": "This page is a catalog only. There is no access-code field and no license validation here — the old client-side license system was deliberately left out (audit finding K1). Server-side license validation is a separate decision.",
+    "produk.catalogNote": "Digital product catalog. FULL licenses are validated on the server (Supabase Edge Function) — the status below comes from the server, not from your device.",
     "produk.buyViaWa": "Buy {name} via WhatsApp",
     "produk.classTitle": "AI Creator Class",
     "produk.registerViaWa": "Register for {name} via WhatsApp",

@@ -1,13 +1,16 @@
 // Halaman konten iTAP: Produk Digital — #28 Kartu Produk Digital.
-// KATALOG SAJA. TIDAK ada validasi lisensi di build ini (temuan audit K1:
-// sistem lisensi client-side situs lama cacat kritis — tidak dibawa ke sini).
-// Pembelian lewat WhatsApp admin; TIDAK ada kolom "masukkan kode akses".
+// KATALOG + status/aktivasi lisensi server-side (migrasi 0007, PR #29).
+// Kode lisensi divalidasi Edge Function Supabase (validate-license);
+// frontend hanya menampilkan entitlement dari server — TIDAK ADA
+// pemeriksaan hash / flag localStorage di halaman ini (temuan audit K1).
+// Pembelian lewat WhatsApp admin. Teks antarmuka bilingual (i18n, PR #30).
 import type { Metadata } from "next";
 import Image from "next/image";
 import { listProducts, listServices } from "@/lib/data";
 import { WA_NUMBER } from "@/lib/seed-data";
 import { formatRupiah } from "@/lib/format";
 import { Badge, Banner } from "@/components/ui";
+import { LicenseSection } from "@/components/license-section";
 import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 
@@ -33,6 +36,8 @@ export default async function ProdukPage() {
       <Banner tone="info">
         {t(lang, "produk.catalogNote")}
       </Banner>
+
+      <LicenseSection />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {products.map((p) => (

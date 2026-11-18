@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createListing, listListings } from "@/lib/marketplace";
-import { checkRateLimit, errorToResponse, getSessionProfile, requireSession } from "@/lib/api";
+import { checkRateLimit, errorToResponse, requireSession } from "@/lib/api";
 import { listingSchema, parseJsonBody } from "@/lib/validation";
 
 // GET /api/listings — daftar penawaran publik (ringkasan). §3.6 / F03.

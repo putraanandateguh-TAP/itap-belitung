@@ -4,7 +4,7 @@
 // -> kolom perubahan memakai catatan sumber ("Harga tetap / baru").
 import type { Metadata } from "next";
 import { getDailyPrices } from "@/lib/data";
-import { formatDateWIB, formatRupiah } from "@/lib/format";
+import { formatRupiah } from "@/lib/format";
 import { Badge } from "@/components/ui";
 
 export const metadata: Metadata = {

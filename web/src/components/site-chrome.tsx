@@ -5,7 +5,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LogOut, Menu, Search, User, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { signOut, useSession } from "@/lib/session-client";
 import { CHANNELS } from "@/lib/seed-data";
 

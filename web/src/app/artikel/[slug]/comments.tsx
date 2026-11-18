@@ -9,7 +9,7 @@ import { Banner, Button, TextArea } from "@/components/ui";
 import { formatDateWIB } from "@/lib/format";
 
 export function CommentSection({ slug, initialComments }: { slug: string; initialComments: Comment[] }) {
-  const [comments, setComments] = useState(initialComments);
+  const [comments] = useState(initialComments);
   const [text, setText] = useState("");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");

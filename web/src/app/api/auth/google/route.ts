@@ -5,7 +5,7 @@ import { createSupabaseServer } from "@/lib/supabase/server";
 // POST /api/auth/google — login Google (Supabase Auth OAuth, aplikasi
 // Google Cloud milik Teguh — P3). Mengembalikan URL OAuth untuk redirect.
 // JANGAN pernah memakai OAuth client milik aplikasi lain.
-export async function POST(req: Request) {
+export async function POST() {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
     return NextResponse.json({ error: "Supabase belum dikonfigurasi (P1)." }, { status: 503 });
   }

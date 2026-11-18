@@ -4,7 +4,6 @@
 import type { Metadata } from "next";
 import { getMarketRates } from "@/lib/data";
 import { formatNumber, formatRupiah } from "@/lib/format";
-import { Badge } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Kurs, IHSG & Emas",

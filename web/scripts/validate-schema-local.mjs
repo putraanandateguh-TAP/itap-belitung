@@ -1,20 +1,32 @@
-// Validasi lokal schema.sql memakai PGlite (Postgres in-process, dev-only).
+// Validasi lokal migrasi Drizzle memakai PGlite (Postgres in-process, dev-only).
 // BUKAN pengganti migrasi di Supabase sungguhan: Supabase menyediakan skema
-// `auth` (auth.users, auth.uid()) secara native; di sini kita membuat stub
-// minimal agar file migrasi bisa dieksekusi end-to-end dan trigger/fungsi
-// bisa diuji. Jalankan: `node scripts/validate-schema-local.mjs`
-// Keluar 0 = schema.sql dieksekusi penuh tanpa error + uji trigger lolos.
-import { readFileSync } from "node:fs";
+// `auth` (auth.users, auth.uid()) dan `storage` secara native; di sini kita
+// membuat stub minimal agar file migrasi bisa dieksekusi end-to-end dan
+// trigger/fungsi bisa diuji. Jalankan: `node scripts/validate-schema-local.mjs`
+// Keluar 0 = migrasi dieksekusi penuh tanpa error + uji trigger lolos.
+//
+// DIPERBAIKI workstream D (2026-11-18): dulu membaca `replica/schema.sql`
+// yang TIDAK ada di repo (hanya ada di VM lokal) sehingga script ini gagal
+// di mesin lain dan tidak bisa jalan di CI. Kini membaca migrasi Drizzle
+// yang terlacak di `web/drizzle/0001–0004.sql` (0001 ≈ schema lama; 0004
+// menambahkan kolom kategori M3).
+import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import { PGlite } from "@electric-sql/pglite";
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..");
-const rawSql = readFileSync(path.join(root, "replica/schema.sql"), "utf8");
+const drizzleDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../drizzle");
+const migrationFiles = readdirSync(drizzleDir)
+  .filter((f) => /^\d{4}_.*\.sql$/.test(f))
+  .sort();
+if (migrationFiles.length === 0) throw new Error(`Tidak ada migrasi di ${drizzleDir}`);
+const rawSql = migrationFiles
+  .map((f) => `-- migrasi: ${f}\n` + readFileSync(path.join(drizzleDir, f), "utf8"))
+  .join("\n");
 // PGlite tidak menyediakan ekstensi pgcrypto/pg_trgm; Supabase menyediakannya
 // secara native (dan gen_random_uuid() adalah fungsi inti PG13+). Untuk
 // validasi lokal, lewati baris `create extension` + indeks trigram — keduanya
-// tetap ada di schema.sql dan jalan di Supabase.
+// tetap ada di migrasi dan jalan di Supabase.
 const sql = rawSql
   .split("\n")
   .filter((l) => !/^\s*create extension/i.test(l) && !/gin_trgm_ops/.test(l))
@@ -28,12 +40,17 @@ function check(name, ok, detail = "") {
 }
 
 try {
-  // Stub skema auth Supabase (di Supabase asli ini sudah ada).
+  // Stub skema auth + storage Supabase (di Supabase asli keduanya sudah ada).
   await db.exec(`
     create schema if not exists auth;
     create table if not exists auth.users (id uuid primary key);
     create or replace function auth.uid() returns uuid language sql stable as
       $$ select current_setting('app.test_uid', true)::uuid $$;
+    create schema if not exists storage;
+    create table if not exists storage.buckets (id text primary key, name text, public boolean);
+    create table if not exists storage.objects (id uuid primary key default gen_random_uuid(), bucket_id text, name text);
+    create or replace function storage.foldername(name text) returns text[] language sql immutable as
+      $$ select string_to_array($1, '/') $$;
     do $$ begin
       if not exists (select 1 from pg_roles where rolname = 'anon') then create role anon; end if;
       if not exists (select 1 from pg_roles where rolname = 'authenticated') then create role authenticated; end if;
@@ -43,7 +60,7 @@ try {
   await db.exec(`select set_config('app.test_uid', '11111111-1111-1111-1111-111111111111', false)`);
 
   await db.exec(sql);
-  check("schema.sql dieksekusi penuh", true);
+  check(`migrasi drizzle dieksekusi penuh (${migrationFiles.join(", ")})`, true);
 
   const tables = await db.query(
     `select count(*)::int as n from information_schema.tables where table_schema='public' and table_type='BASE TABLE'`);
@@ -54,6 +71,27 @@ try {
   check("RLS aktif di 28 tabel", rls.rows[0].n === 28, `dapat ${rls.rows[0].n}`);
   const policies = await db.query(`select count(*)::int as n from pg_policies where schemaname='public'`);
   check("policy RLS dibuat", policies.rows[0].n >= 40, `dapat ${policies.rows[0].n}`);
+
+  // --- GRANT check (temuan uji nyata 2026-11-18, BUKAN teori) ---
+  // RLS tanpa GRANT = PostgREST mengembalikan 401 'permission denied' untuk
+  // anon di SEMUA tabel (articles, profiles, listings), meski 58 policy ada.
+  // Perbaikan pemilik: drizzle/0005_grants.sql (anon SELECT 13 tabel publik,
+  // authenticated-only 15 tabel) — sedang diterapkan via SQL Editor.
+  // Cek ini aktif hanya bila sudah ada migrasi *grants* di drizzle/, agar
+  // script tetap hijau di branch yang belum memuat 0005.
+  const hasGrantsMigration = migrationFiles.some((f) => /grant/i.test(f));
+  if (hasGrantsMigration) {
+    const grants = await db.query(
+      `select count(*)::int as n from information_schema.table_privileges
+       where table_schema='public' and grantee in ('anon', 'authenticated')`);
+    check("GRANT ke anon/authenticated ada", grants.rows[0].n > 0, `dapat ${grants.rows[0].n}`);
+    const anonTables = await db.query(
+      `select count(distinct table_name)::int as n from information_schema.table_privileges
+       where table_schema='public' and grantee='anon' and privilege_type='SELECT'`);
+    check("anon SELECT ≥1 tabel publik", anonTables.rows[0].n >= 1, `dapat ${anonTables.rows[0].n}`);
+  } else {
+    console.log("SKIP  GRANT ke anon/authenticated — belum ada migrasi *grants* di drizzle/ (lihat 0005_grants.sql)");
+  }
 
   // --- Uji trigger/fungsi (sebagai owner, RLS di-bypass — yang diuji logika DB) ---
   const U1 = "11111111-1111-1111-1111-111111111111";
@@ -110,7 +148,7 @@ try {
   try { await db.query(`update public.listings set status='aktif' where id='${old.rows[0].id}'`); } catch { restoreBlocked = true; }
   check("trigger: restore >14 hari ditolak", restoreBlocked);
 } catch (e) {
-  check("schema.sql dieksekusi penuh", false, e.message);
+  check("migrasi drizzle dieksekusi penuh", false, e.message);
 }
 
 await db.close();

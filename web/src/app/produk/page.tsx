@@ -3,7 +3,7 @@
 // sistem lisensi client-side situs lama cacat kritis — tidak dibawa ke sini).
 // Pembelian lewat WhatsApp admin; TIDAK ada kolom "masukkan kode akses".
 import type { Metadata } from "next";
-import { listProducts, listServices } from "@/lib/data";
+import { listProducts } from "@/lib/data";
 import { WA_NUMBER } from "@/lib/seed-data";
 import { formatRupiah } from "@/lib/format";
 import { Badge, Banner } from "@/components/ui";

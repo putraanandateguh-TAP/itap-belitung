@@ -12,7 +12,6 @@
 // BELUM ada di schema.sql; tambahkan saat P2 dikerjakan (lihat backend.md).
 // Di bawah ini hanya pengiriman Meta-nya; verifikasi kode dilakukan route
 // /api/auth/whatsapp-otp/verify setelah tabel itu ada.
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 Deno.serve(async (req) => {
   const token = Deno.env.get("META_WHATSAPP_TOKEN");

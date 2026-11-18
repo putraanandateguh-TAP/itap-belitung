@@ -16,10 +16,11 @@ import { getDb, isDbConfigured } from "./db";
 import * as t from "./db/schema";
 import { can, getCurrentProfile, isAdmin, type SessionProfile } from "./auth";
 import * as seed from "./data-seed";
+import type { Lang } from "./i18n";
 export { channelLabel } from "./labels";
 import type {
   Article, Category, Channel, Comment, Contribution, ContributionPoint,
-  ContributorDashboard, DailyPrices, InfoSubmission, JobListing, Kedai, MarketRates,
+  ContributionRevision, ContributorDashboard, DailyPrices, InfoSubmission, JobListing, Kedai, MarketRates,
   ModerationWord, Paginated, Report,
 } from "./types";
 import { applySensor, checkModerationWords } from "./moderation";
@@ -63,7 +64,9 @@ function toArticle(row: ArticleRow, categorySlug?: string): Article {
     title_id: row.titleId,
     title_en: row.titleEn,
     body_id: splitParas(row.bodyId),
-    body_en: row.bodyEn ? splitParas(row.bodyEn) : null,
+    // bodyEn "" (hasil seed body_en []) = isi terjemahan kosong, BUKAN
+    // belum diterjemahkan (null). splitParas("") -> [].
+    body_en: row.bodyEn == null ? null : splitParas(row.bodyEn),
     gallery,
     location_name: row.locationName ?? "",
     location_lat: row.locationLat,
@@ -198,16 +201,17 @@ export async function getFeatured(): Promise<Article | null> {
 }
 
 /** Nama kategori dari id (uuid DB / slug seed). Async karena butuh DB. */
-export async function categoryName(id: string): Promise<string> {
-  if (useSeed()) return seed.categoryName(id);
+export async function categoryName(id: string, lang: Lang = "id"): Promise<string> {
+  if (useSeed()) return seed.categoryName(id, lang);
   try {
     const db = getDb();
     const rows = await db.select().from(t.categories).where(eq(t.categories.id, id)).limit(1);
-    if (rows[0]) return rows[0].nameId;
+    if (rows[0]) return lang === "en" && rows[0].nameEn ? rows[0].nameEn : rows[0].nameId;
     const bySlug = await db.select().from(t.categories).where(eq(t.categories.slug, id)).limit(1);
-    return bySlug[0]?.nameId ?? id;
+    if (bySlug[0]) return lang === "en" && bySlug[0].nameEn ? bySlug[0].nameEn : bySlug[0].nameId;
+    return id;
   } catch {
-    return seed.categoryName(id);
+    return seed.categoryName(id, lang);
   }
 }
 
@@ -382,7 +386,7 @@ function slugify(s: string): string {
 }
 
 export async function createContribution(data: Partial<Contribution>, ctx?: Ctx): Promise<Contribution> {
-  if (useSeed()) return seed.createContribution(data);
+  if (useSeed()) return seed.createContribution(data, ctx);
   const profile = await ctxProfile(ctx);
   if (!can(profile, "contribution.create")) {
     throw new Error("FORBIDDEN: hanya kontributor yang bisa membuat draf.");
@@ -425,11 +429,20 @@ export async function updateContribution(id: string, data: Partial<Contribution>
   if (data.location_name !== undefined) patch.locationName = data.location_name || null;
   if (data.source !== undefined) patch.source = data.source || null;
   const updated = await db.update(t.articles).set(patch).where(eq(t.articles.id, id)).returning();
+  // Catat revisi (dengan snapshot isi) supaya riwayat revisi punya bahan diff.
+  await db.insert(t.articleRevisions).values({
+    articleId: id, editorId: profile!.id,
+    changes: {
+      kind: "edit",
+      snapshot: { title_id: updated[0].titleId, body_id: updated[0].bodyId },
+    },
+    note: "Draf diubah oleh penulis.",
+  });
   return toContribution(updated[0]);
 }
 
 export async function submitContribution(id: string, ctx?: Ctx): Promise<Contribution | null> {
-  if (useSeed()) return seed.submitContribution(id);
+  if (useSeed()) return seed.submitContribution(id, ctx);
   const db = getDb();
   const rows = await db.select().from(t.articles).where(eq(t.articles.id, id)).limit(1);
   if (!rows[0]) return null;
@@ -438,22 +451,67 @@ export async function submitContribution(id: string, ctx?: Ctx): Promise<Contrib
     throw new Error("FORBIDDEN: hanya pemilik draf yang bisa mengirim ke redaksi.");
   }
   if (rows[0].status !== "draft") return toContribution(rows[0]);
+  const snapshot = { title_id: rows[0].titleId, body_id: rows[0].bodyId };
+  // Persetujuan otomatis: kontributor terverifikasi + auto_approve aktif
+  // langsung terbit saat submit (bukan masuk antrean review).
+  const cps = await db.select().from(t.contributorProfiles)
+    .where(eq(t.contributorProfiles.userId, rows[0].authorId)).limit(1);
+  const autoApprove = cps[0]?.verificationStatus === "verified" && cps[0].autoApprove === true;
+  if (autoApprove) {
+    const updated = await db.update(t.articles).set({
+      status: "published", publishedAt: new Date(),
+    }).where(eq(t.articles.id, id)).returning();
+    await db.insert(t.articleRevisions).values({
+      articleId: id, editorId: profile!.id,
+      changes: { kind: "auto_approve", snapshot },
+      note: "Disetujui otomatis (kontributor terverifikasi + auto-approve aktif) dan diterbitkan.",
+    });
+    await db.execute(sql`select public.award_contribution_point(${updated[0].authorId}, 'article', ${id})`).catch(() => undefined);
+    return toContribution(updated[0]);
+  }
   const updated = await db.update(t.articles).set({ status: "review" }).where(eq(t.articles.id, id)).returning();
+  await db.insert(t.articleRevisions).values({
+    articleId: id, editorId: profile!.id,
+    changes: { kind: "submit", snapshot },
+    note: "Dikirim ke redaksi.",
+  });
   return toContribution(updated[0]);
 }
 
-export async function listContributionRevisions(id: string): Promise<{ at: string; by: string; changes: string }[]> {
+/** Ubah catatan perubahan (JSONB) jadi kalimat yang bisa dibaca. */
+function describeRevisionChanges(changes: unknown): string {
+  if (!changes || typeof changes !== "object") return "Revisi tercatat.";
+  const c = changes as Record<string, unknown>;
+  if (c.decision === "publish") return "Disetujui dan diterbitkan. +1 poin kontribusi.";
+  if (c.decision === "return") return "Dikembalikan ke kontributor (minta perbaikan).";
+  if (c.decision === "unpublish") return "Diturunkan dari terbit.";
+  if (c.kind === "submit") return "Dikirim ke redaksi.";
+  if (c.kind === "auto_approve") return "Disetujui otomatis (kontributor terverifikasi + auto-approve aktif) dan diterbitkan.";
+  if (c.kind === "edit") return "Draf diubah oleh penulis.";
+  if (c.kind === "create") return "Draf dibuat.";
+  const { snapshot: _s, ...rest } = c;
+  return JSON.stringify(rest);
+}
+
+export async function listContributionRevisions(id: string): Promise<ContributionRevision[]> {
   if (useSeed()) return seed.listContributionRevisions(id);
   const db = getDb();
   const rows = await db.select().from(t.articleRevisions)
     .where(eq(t.articleRevisions.articleId, id)).orderBy(desc(t.articleRevisions.createdAt));
   const profs = await db.select().from(t.profiles);
   const nameById = new Map(profs.map((p) => [p.id, p.displayName ?? p.email]));
-  return rows.map((r) => ({
-    at: r.createdAt.toISOString(),
-    by: r.editorId ? (nameById.get(r.editorId) ?? "Redaksi") : "Redaksi",
-    changes: r.note ?? JSON.stringify(r.changes ?? {}),
-  }));
+  return rows.map((r) => {
+    const changes = (r.changes ?? {}) as Record<string, unknown>;
+    const snap = changes.snapshot as { title_id?: unknown; body_id?: unknown } | undefined;
+    return {
+      at: r.createdAt.toISOString(),
+      by: r.editorId ? (nameById.get(r.editorId) ?? "Redaksi") : "Redaksi",
+      changes: r.note ?? describeRevisionChanges(changes),
+      snapshot: typeof snap?.title_id === "string" && typeof snap?.body_id === "string"
+        ? { title_id: snap.title_id, body_id: snap.body_id }
+        : null,
+    };
+  });
 }
 
 // --- 3.5 CMS / redaksi / moderasi (F11, F08) ---------------------------------
@@ -484,7 +542,10 @@ export async function reviewArticle(
   if (!updated[0]) throw new Error("NOT_FOUND: artikel tidak ditemukan.");
   await db.insert(t.articleRevisions).values({
     articleId: id, editorId: profile!.id,
-    changes: { decision, from: "review" },
+    changes: {
+      decision, from: "review",
+      snapshot: { title_id: updated[0].titleId, body_id: updated[0].bodyId },
+    },
     note: note || null,
   });
   if (decision === "publish") {
@@ -518,6 +579,60 @@ export async function listAdminContributors(): Promise<{ id: string; name: strin
     auto_approve: cpById.get(p.id)?.autoApprove ?? false,
     points: cpById.get(p.id)?.pointsTotal ?? 0,
   }));
+}
+
+/** Ubah verifikasi/auto-approve kontributor (dipakai PATCH admin). */
+export async function updateContributor(
+  id: string,
+  patch: { verification_status?: "unverified" | "pending" | "verified"; auto_approve?: boolean },
+  ctx?: Ctx,
+): Promise<{ id: string; name: string; email: string; verified: boolean; auto_approve: boolean; points: number } | null> {
+  if (useSeed()) return seed.setContributorPatch(id, patch);
+  const profile = await ctxProfile(ctx);
+  if (!can(profile, "contributor.manage")) {
+    throw new Error("FORBIDDEN: kelola kontributor hanya redaksi.");
+  }
+  const db = getDb();
+  const values: Partial<typeof t.contributorProfiles.$inferInsert> = {};
+  if (patch.verification_status !== undefined) values.verificationStatus = patch.verification_status;
+  if (patch.auto_approve !== undefined) values.autoApprove = patch.auto_approve;
+  const updated = await db.insert(t.contributorProfiles).values({
+    userId: id, ...values,
+  }).onConflictDoUpdate({ target: t.contributorProfiles.userId, set: values }).returning();
+  const profs = await db.select().from(t.profiles).where(eq(t.profiles.id, id)).limit(1);
+  return {
+    id,
+    name: profs[0]?.displayName ?? profs[0]?.email ?? id,
+    email: profs[0]?.email ?? "",
+    verified: updated[0].verificationStatus === "verified",
+    auto_approve: updated[0].autoApprove,
+    points: updated[0].pointsTotal,
+  };
+}
+
+/** Kirim info warga (calon referensi AI) — masuk antrean kurasi redaksi. */
+export async function createInfoSubmission(text: string, ctx?: Ctx): Promise<InfoSubmission> {
+  if (useSeed()) return seed.createInfoSubmission(text, ctx);
+  const profile = await ctxProfile(ctx);
+  if (!can(profile, "info.submit")) {
+    throw new Error("FORBIDDEN: kirim info butuh email terverifikasi.");
+  }
+  const db = getDb();
+  // Penahanan otomatis kamus kata (F08): kata "sensor" disamarkan; kata
+  // "hold" menahan kiriman di antrean (status memang selalu pending).
+  const { applySensor, checkModerationWords } = await import("./moderation");
+  const check = await checkModerationWords(text);
+  const clean = check.match?.action === "sensor" ? await applySensor(text) : text;
+  const inserted = await db.insert(t.infoSubmissions).values({
+    userId: profile!.id, text: clean, status: "pending",
+  }).returning();
+  return {
+    id: inserted[0].id, user_id: inserted[0].userId,
+    user_name: profile!.displayName ?? profile!.email,
+    text: inserted[0].text, status: inserted[0].status,
+    curated_for_ai: inserted[0].curatedForAi,
+    created_at: inserted[0].createdAt.toISOString(),
+  };
 }
 
 export async function listReports(): Promise<Report[]> {

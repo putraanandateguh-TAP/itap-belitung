@@ -12,11 +12,44 @@ import {
   PRODUCTS, SERVICES,
 } from "./seed-data";
 import { articleWithOverride, store } from "./store";
+import type { Lang } from "./i18n";
 import type {
   Article, Category, Channel, Comment, Contribution, ContributionPoint,
-  ContributorDashboard, CultureCategory, CultureStory, DailyPrices, JobListing, Kedai, MarketRates,
+  ContributionRevision, ContributorDashboard, CultureCategory, CultureStory, DailyPrices, InfoSubmission, JobListing, Kedai, MarketRates,
   ModerationWord, Paginated, Report,
 } from "./types";
+
+/** Konteks pemanggil minimal untuk jalur seed (id + nama saja — seed tidak
+ * memeriksa izin; otorisasi penuh hanya di jalur DB nyata). */
+export type SeedCtx = { profile?: { id: string; displayName?: string | null; email?: string } | null };
+
+/** Riwayat revisi yang tercatat selama sesi seed berjalan (in-memory,
+ * hilang saat server restart — sama seperti semua tulis seed lainnya).
+ * Kunci: id kontribusi/artikel. */
+const revisionLog = new Map<string, ContributionRevision[]>();
+
+/** Override verifikasi/auto-approve kontributor seed (diubah lewat
+ * PATCH /api/admin/contributors — tersimpan selama sesi seed berjalan). */
+const contributorOverrides = new Map<string, { verified?: boolean; auto_approve?: boolean }>();
+
+/** Id unik berbasis waktu (monotonik dalam proses) — Date.now() mentah bisa
+ * bertabrakan bila dua tulis terjadi dalam 1 ms yang sama. */
+let lastMs = 0;
+function uniqueId(prefix: string): string {
+  const ms = Date.now();
+  lastMs = ms <= lastMs ? lastMs + 1 : ms;
+  return `${prefix}-${lastMs}`;
+}
+
+function snapshotOf(c: Contribution): { title_id: string; body_id: string } {
+  return { title_id: c.title_id, body_id: c.body_id };
+}
+
+function logRevision(id: string, entry: ContributionRevision): void {
+  const list = revisionLog.get(id) ?? [];
+  list.push(entry);
+  revisionLog.set(id, list);
+}
 
 const PER_PAGE = 9;
 
@@ -111,8 +144,10 @@ export function channelLabel(channel: Channel): string {
   return CHANNELS[channel];
 }
 
-export function categoryName(id: string): string {
-  return CATEGORIES.find((c) => c.id === id)?.name_id ?? id;
+export function categoryName(id: string, lang: Lang = "id"): string {
+  const c = CATEGORIES.find((c) => c.id === id);
+  if (!c) return id;
+  return lang === "en" && c.name_en ? c.name_en : c.name_id;
 }
 
 // --- 3.3 Komentar (F10) ------------------------------------------------------
@@ -180,9 +215,9 @@ export async function getContribution(id: string): Promise<Contribution | null> 
   return store.contributions.find((c) => c.id === id) ?? null;
 }
 
-export async function createContribution(data: Partial<Contribution>): Promise<Contribution> {
+export async function createContribution(data: Partial<Contribution>, ctx?: SeedCtx): Promise<Contribution> {
   const draft: Contribution = {
-    id: `c-${Date.now()}`,
+    id: uniqueId("c"),
     title_id: data.title_id ?? "Tanpa judul",
     title_en: data.title_en ?? "",
     body_id: data.body_id ?? "",
@@ -197,6 +232,10 @@ export async function createContribution(data: Partial<Contribution>): Promise<C
     updated_at: new Date().toISOString(),
   };
   store.contributions.unshift(draft);
+  logRevision(draft.id, {
+    at: draft.updated_at, by: ctx?.profile?.displayName ?? "Penulis",
+    changes: "Draf dibuat.", snapshot: snapshotOf(draft),
+  });
   return draft;
 }
 
@@ -205,26 +244,54 @@ export async function updateContribution(id: string, data: Partial<Contribution>
   if (!c) return null;
   if (c.status === "review") return c; // terkunci saat review (recon F09)
   Object.assign(c, data, { updated_at: new Date().toISOString() });
+  logRevision(id, {
+    at: c.updated_at, by: "Penulis",
+    changes: "Draf diubah oleh penulis.", snapshot: snapshotOf(c),
+  });
   return c;
 }
 
-export async function submitContribution(id: string): Promise<Contribution | null> {
+export async function submitContribution(id: string, ctx?: SeedCtx): Promise<Contribution | null> {
   const c = store.contributions.find((x) => x.id === id);
   if (!c || c.status !== "draft") return c ?? null;
+  const now = new Date().toISOString();
+  // Persetujuan otomatis: kontributor terverifikasi + auto_approve aktif
+  // langsung terbit saat submit (bukan masuk antrean review).
+  const me = ctx?.profile?.id ? (await listAdminContributors()).find((x) => x.id === ctx.profile!.id) : undefined;
+  if (me?.verified && me.auto_approve) {
+    c.status = "published";
+    c.updated_at = now;
+    logRevision(id, {
+      at: now, by: "Redaksi iTAP",
+      changes: "Disetujui otomatis (kontributor terverifikasi + auto-approve aktif) dan diterbitkan.",
+      snapshot: snapshotOf(c),
+    });
+    return c;
+  }
   c.status = "review";
-  c.updated_at = new Date().toISOString();
+  c.updated_at = now;
+  logRevision(id, {
+    at: now, by: ctx?.profile?.displayName ?? "Penulis",
+    changes: "Dikirim ke redaksi.", snapshot: snapshotOf(c),
+  });
   return c;
 }
 
-export async function listContributionRevisions(id: string): Promise<{ at: string; by: string; changes: string }[]> {
+export async function listContributionRevisions(id: string): Promise<ContributionRevision[]> {
   const c = store.contributions.find((x) => x.id === id);
-  if (!c) return [];
-  return [
-    { at: c.updated_at, by: "Penulis", changes: "Draf dibuat / terakhir diubah." },
+  const logged = revisionLog.get(id) ?? [];
+  if (!c) return [...logged].sort((a, b) => +new Date(b.at) - +new Date(a.at));
+  // Baris dasar (sintesis dari status seed — tanpa snapshot isi untuk
+  // versi lama, karena seed lama tidak menyimpannya). Bila sesi ini sudah
+  // mencatat "Draf dibuat." di log, baris dasar draf tidak diduplikasi.
+  const hasCreateLog = logged.some((r) => r.changes === "Draf dibuat.");
+  const baseline: ContributionRevision[] = [
+    ...(hasCreateLog ? [] : [{ at: c.updated_at, by: "Penulis", changes: "Draf dibuat / terakhir diubah.", snapshot: null } as ContributionRevision]),
     ...(c.status === "published"
-      ? [{ at: "2026-11-13T10:00:00+07:00", by: "Redaksi iTAP", changes: "Disetujui dan diterbitkan. +1 poin kontribusi." }]
+      ? [{ at: "2026-11-13T10:00:00+07:00", by: "Redaksi iTAP", changes: "Disetujui dan diterbitkan. +1 poin kontribusi.", snapshot: snapshotOf(c) }]
       : []),
   ];
+  return [...logged, ...baseline].sort((a, b) => +new Date(b.at) - +new Date(a.at));
 }
 
 // --- 3.5 CMS / redaksi / moderasi (F11, F08) ---------------------------------
@@ -240,6 +307,17 @@ export async function reviewArticle(
 ): Promise<void> {
   const status = decision === "publish" ? "published" : decision === "unpublish" ? "unpublished" : "returned";
   store.articleOverrides.set(id, { status, note: note || null });
+  const c = store.contributions.find((x) => x.id === id);
+  const art = !c ? ARTICLES.find((a) => a.id === id) : undefined;
+  const snapshot = c ? snapshotOf(c)
+    : art ? { title_id: art.title_id, body_id: art.body_id.join("\n\n") } : null;
+  logRevision(id, {
+    at: new Date().toISOString(), by: "Redaksi iTAP",
+    changes: note || (decision === "publish" ? "Disetujui dan diterbitkan. +1 poin kontribusi."
+      : decision === "return" ? "Dikembalikan ke kontributor (minta perbaikan)."
+      : "Diturunkan dari terbit."),
+    snapshot,
+  });
 }
 
 export async function createCategory(channel: Channel, name_id: string, name_en: string): Promise<Category> {
@@ -250,10 +328,30 @@ export async function createCategory(channel: Channel, name_id: string, name_en:
 }
 
 export async function listAdminContributors(): Promise<{ id: string; name: string; email: string; verified: boolean; auto_approve: boolean; points: number }[]> {
-  return [
+  const base = [
     { id: "u-dian", name: "Dian (Kontributor Demo)", email: "dian@contoh.id", verified: true, auto_approve: false, points: 2 },
     { id: "u-budi", name: "Budi (Kontributor Demo)", email: "budi@contoh.id", verified: false, auto_approve: false, points: 0 },
   ];
+  return base.map((c) => {
+    const o = contributorOverrides.get(c.id);
+    return o ? { ...c, verified: o.verified ?? c.verified, auto_approve: o.auto_approve ?? c.auto_approve } : c;
+  });
+}
+
+/** Ubah verifikasi/auto-approve kontributor seed (dipakai PATCH admin di
+ * mode seed — tersimpan selama sesi berjalan, hilang saat restart). */
+export async function setContributorPatch(
+  id: string, patch: { verification_status?: "unverified" | "pending" | "verified"; auto_approve?: boolean },
+): Promise<{ id: string; name: string; email: string; verified: boolean; auto_approve: boolean; points: number } | null> {
+  const list = await listAdminContributors();
+  const row = list.find((x) => x.id === id);
+  if (!row) return null;
+  const prev = contributorOverrides.get(id) ?? {};
+  contributorOverrides.set(id, {
+    verified: patch.verification_status !== undefined ? patch.verification_status === "verified" : (prev.verified ?? row.verified),
+    auto_approve: patch.auto_approve !== undefined ? patch.auto_approve : (prev.auto_approve ?? row.auto_approve),
+  });
+  return (await listAdminContributors()).find((x) => x.id === id) ?? null;
 }
 
 export async function listReports(): Promise<Report[]> {
@@ -296,6 +394,20 @@ export async function deleteModerationWord(id: string): Promise<void> {
 }
 
 // --- Info warga (kurasi redaksi, S22) -----------------------------------------
+
+export async function createInfoSubmission(text: string, ctx?: SeedCtx): Promise<InfoSubmission> {
+  const row = {
+    id: uniqueId("is"),
+    user_id: ctx?.profile?.id ?? "u-contoh",
+    user_name: ctx?.profile?.displayName ?? "Warga",
+    text,
+    status: "pending" as const,
+    curated_for_ai: false,
+    created_at: new Date().toISOString(),
+  };
+  store.infoSubmissions.unshift(row);
+  return row;
+}
 
 export async function listInfoSubmissions(status?: string) {
   const rows = store.infoSubmissions;

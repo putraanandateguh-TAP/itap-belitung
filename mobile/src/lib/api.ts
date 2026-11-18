@@ -21,6 +21,10 @@ export const NOT_CONFIGURED = new ApiError(
 );
 
 async function authHeaders(): Promise<Record<string, string>> {
+  // Mode seed (P1 belum ada): tidak ada client Supabase — permintaan anonim.
+  // Tanpa guard ini `supabase.auth` melempar TypeError di dalam try request()
+  // dan SEMUA panggilan API gagal sebagai "NETWORK" sebelum menyentuh jaringan.
+  if (!supabase) return {};
   const { data } = await supabase.auth.getSession();
   const token = data.session?.access_token;
   return token ? { Authorization: `Bearer ${token}` } : {};
@@ -118,7 +122,7 @@ export const endpoints = {
     ),
   cultureStory: (slug: string) => api.get<CultureStory>(`/api/culture/${encodeURIComponent(slug)}`),
   listings: (q?: string, page = 1) =>
-    api.get<Listing[]>(
+    api.get<Paginated<Listing>>(
       `/api/listings?${new URLSearchParams({
         ...(q ? { q } : {}),
         page: String(page),

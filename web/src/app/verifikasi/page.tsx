@@ -1,13 +1,25 @@
 // S11 Verifikasi email & WhatsApp — OTP 6 kotak (email via Supabase Auth +
 // SMTP Resend P5; WhatsApp via Meta P2 — belum tersedia, lihat banner).
 // TIDAK ada lagi kode demo yang tampil di halaman.
+//
+// Alur tautan verifikasi signup: pengguna mengklik tautan konfirmasi di
+// email — Supabase mengarahkan ke /verifikasi dengan token sesi di fragment
+// URL (#access_token, aliran implicit) atau ?code= (PKCE). Token fragment
+// ditukar eksplisit via setSession — browser client @supabase/ssr memaksa
+// flowType "pkce" sehingga deteksi otomatis implicit ditolak. Halaman lalu
+// menampilkan status berhasil dan mengarahkan ke /pengaturan (pola yang
+// sama seperti penanganan tautan reset di /masuk, dengan setSession ini).
+// Alur kode OTP 6 digit tidak berubah.
 "use client";
 
 import { Suspense, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { createSupabaseBrowser } from "@/lib/supabase/client";
 import { Banner, Button } from "@/components/ui";
+import { useLanguage } from "@/components/language-provider";
 
 function VerifikasiForm() {
+  const { t, lang } = useLanguage();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [email, setEmail] = useState(searchParams.get("email") ?? "");
@@ -17,6 +29,9 @@ function VerifikasiForm() {
   const [cooldown, setCooldown] = useState(0);
   const [channel, setChannel] = useState<"email" | "whatsapp">("email");
   const [busy, setBusy] = useState(false);
+  const [linkVerified, setLinkVerified] = useState(false);
+  const [checkingLink, setCheckingLink] = useState(false);
+  const handledLinkRef = useRef(false);
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
@@ -24,6 +39,73 @@ function VerifikasiForm() {
     const t = setTimeout(() => setCooldown((c) => c - 1), 1000);
     return () => clearTimeout(t);
   }, [cooldown]);
+
+  // Tangani kedatangan dari tautan verifikasi email Supabase: ?code=,
+  // #access_token, atau ?error= (tautan kedaluwarsa / sudah dipakai).
+  useEffect(() => {
+    if (handledLinkRef.current) return;
+    handledLinkRef.current = true;
+    const hashParams = new URLSearchParams(window.location.hash.slice(1));
+    const linkError = searchParams.get("error") ?? hashParams.get("error");
+    if (linkError) {
+      setError("Tautan verifikasi tidak valid atau sudah kedaluwarsa. Minta kode baru lewat tombol kirim ulang di bawah.");
+      return;
+    }
+    const code = searchParams.get("code");
+    const hasFragmentToken = hashParams.has("access_token");
+    if (!code && !hasFragmentToken) return;
+    setCheckingLink(true);
+    (async () => {
+      try {
+        const supabase = createSupabaseBrowser();
+        if (code) {
+          const { error: exErr } = await supabase.auth.exchangeCodeForSession(code);
+          if (exErr) {
+            setError("Tautan verifikasi tidak valid atau sudah kedaluwarsa. Minta kode baru lewat tombol kirim ulang di bawah.");
+            setCheckingLink(false);
+            return;
+          }
+        }
+        // Sesi dari fragment (#access_token) TIDAK terdeteksi otomatis oleh
+        // browser client: @supabase/ssr memaksa flowType "pkce", sehingga
+        // deteksi implicit ditolak ("Not a valid PKCE flow url."). Tukar token
+        // fragment secara eksplisit via setSession — pola yang sama dipakai
+        // skrip uji E2E (cookieFromFragmentTokens).
+        let { data } = await supabase.auth.getSession();
+        let user = data.session?.user;
+        if (!user && hasFragmentToken) {
+          const accessToken = hashParams.get("access_token");
+          const refreshToken = hashParams.get("refresh_token");
+          if (accessToken && refreshToken) {
+            const { data: setData, error: setErr } = await supabase.auth.setSession({
+              access_token: accessToken,
+              refresh_token: refreshToken,
+            });
+            if (!setErr) user = setData.session?.user ?? undefined;
+          }
+        }
+        if (!user?.email_confirmed_at) {
+          setError("Tautan verifikasi tidak valid atau sudah kedaluwarsa. Minta kode baru lewat tombol kirim ulang di bawah.");
+          setCheckingLink(false);
+          return;
+        }
+        // Bersihkan token dari URL agar tidak ikut tersalin / tersimpan di riwayat.
+        if (window.location.hash || code) {
+          const next = user.email ? `/verifikasi?email=${encodeURIComponent(user.email)}` : "/verifikasi";
+          window.history.replaceState(null, "", next);
+        }
+        if (user.email) setEmail(user.email);
+        setCheckingLink(false);
+        setLinkVerified(true);
+        setNotice("Email terverifikasi. Mengalihkan ke pengaturan…");
+        setTimeout(() => router.push("/pengaturan"), 1500);
+      } catch {
+        setError("Tautan verifikasi tidak valid atau sudah kedaluwarsa. Minta kode baru lewat tombol kirim ulang di bawah.");
+        setCheckingLink(false);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     inputs.current[0]?.focus();
@@ -53,11 +135,11 @@ function VerifikasiForm() {
 
   async function resend() {
     if (channel === "whatsapp") {
-      setNotice("Verifikasi WhatsApp belum tersedia — butuh akun Meta WhatsApp Business + template OTP yang disetujui (P2).");
+      setNotice(t("verifikasi.waUnavailable"));
       return;
     }
     if (!/^\S+@\S+\.\S+$/.test(email)) {
-      setError("Masukkan alamat email yang valid dulu.");
+      setError(t("verifikasi.invalidEmail"));
       return;
     }
     setCooldown(60);
@@ -68,22 +150,22 @@ function VerifikasiForm() {
       body: JSON.stringify({ email }),
     });
     const data = await res.json().catch(() => ({}));
-    setNotice(res.ok ? (data.message ?? "Kode baru dikirim ke emailmu.") : (data.error ?? "Tidak bisa mengirim kode."));
+    setNotice(res.ok ? (data.message ?? t("verifikasi.codeSent")) : (data.error ?? t("verifikasi.sendFailed")));
   }
 
   async function verify(e: React.FormEvent) {
     e.preventDefault();
     const code = digits.join("");
     if (code.length < 6) {
-      setError("Masukkan 6 digit kode verifikasi.");
+      setError(t("verifikasi.codeShort"));
       return;
     }
     if (channel === "whatsapp") {
-      setError("Verifikasi WhatsApp belum tersedia (P2). Verifikasi email dulu.");
+      setError(t("verifikasi.waUnavailableVerify"));
       return;
     }
     if (!/^\S+@\S+\.\S+$/.test(email)) {
-      setError("Masukkan alamat email yang menerima kode.");
+      setError(t("verifikasi.emailInvalid2"));
       return;
     }
     setBusy(true);
@@ -95,11 +177,11 @@ function VerifikasiForm() {
         body: JSON.stringify({ email, token: code }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error ?? "Kode tidak cocok, coba lagi.");
-      setNotice("Email terverifikasi. Lanjut verifikasi WhatsApp bila ingin berjualan nanti (Fase 2).");
+      if (!res.ok) throw new Error(data.error ?? t("verifikasi.codeWrong"));
+      setNotice(t("verifikasi.emailVerified"));
       setTimeout(() => router.push("/pengaturan"), 1200);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Verifikasi gagal.");
+      setError(err instanceof Error ? err.message : t("verifikasi.failed"));
     } finally {
       setBusy(false);
     }
@@ -107,19 +189,35 @@ function VerifikasiForm() {
 
   return (
     <div className="mx-auto max-w-md py-10">
-      <h1 className="text-xl font-bold text-ink">Verifikasi akun</h1>
+      <h1 className="text-xl font-bold text-ink">{t("verifikasi.title")}</h1>
       <p className="mt-1 text-sm text-muted">
-        Kami mengirim kode 6 digit ke email dan (untuk penjual) WhatsApp kamu. Kode berlaku singkat — minta kirim ulang bila kedaluwarsa.
+        {t("verifikasi.subtitle")}
       </p>
 
       <div className="mt-4">
         <Banner tone="info">
-          Kode verifikasi dikirim ke emailmu (SMTP Resend). Verifikasi WhatsApp memakai OTP Meta — butuh akun WhatsApp Business + template disetujui (P2); gerbang ini aktif penuh di Fase 2 (marketplace).
+          {t("verifikasi.banner")}
         </Banner>
       </div>
 
+      {checkingLink && <p className="mt-6 text-sm text-muted">Memverifikasi tautan…</p>}
+      {linkVerified && (
+        <div className="mt-6">
+          <Banner tone="success">Email terverifikasi. Mengalihkan ke pengaturan…</Banner>
+          <p className="mt-4 text-sm text-muted">
+            Bila tidak dialihkan otomatis,{" "}
+            <button type="button" onClick={() => router.push("/pengaturan")} className="font-semibold text-accent hover:underline focus-visible:outline-2 focus-visible:outline-accent">
+              lanjut ke pengaturan
+            </button>
+            .
+          </p>
+        </div>
+      )}
+
+      {!linkVerified && (
+      <>
       <div className="mt-6 flex flex-col gap-2">
-        <label htmlFor="verif-email" className="text-sm font-semibold text-ink">Email yang menerima kode</label>
+        <label htmlFor="verif-email" className="text-sm font-semibold text-ink">{t("verifikasi.emailLabel")}</label>
         <input
           id="verif-email"
           type="email"
@@ -130,7 +228,7 @@ function VerifikasiForm() {
         />
       </div>
 
-      <div role="group" aria-label="Pilih saluran verifikasi" className="mt-6 inline-flex rounded-md border border-line bg-canvas p-0.5">
+      <div role="group" aria-label={t("verifikasi.channelLabel")} className="mt-6 inline-flex rounded-md border border-line bg-canvas p-0.5">
         {(["email", "whatsapp"] as const).map((c) => (
           <button
             key={c}
@@ -146,7 +244,7 @@ function VerifikasiForm() {
 
       <form onSubmit={verify} className="mt-6 flex flex-col gap-4">
         <fieldset>
-          <legend className="text-sm font-semibold text-ink">Kode verifikasi 6 digit ({channel === "email" ? "email" : "WhatsApp"})</legend>
+          <legend className="text-sm font-semibold text-ink">{t("verifikasi.codeLabel")} ({channel === "email" ? "email" : "WhatsApp"})</legend>
           <div className="mt-2 flex gap-2" onPaste={onPaste}>
             {digits.map((d, i) => (
               <input
@@ -154,7 +252,7 @@ function VerifikasiForm() {
                 ref={(el) => { inputs.current[i] = el; }}
                 inputMode="numeric"
                 autoComplete={i === 0 ? "one-time-code" : "off"}
-                aria-label={`Digit ke-${i + 1} dari 6`}
+                aria-label={t("verifikasi.digit", { n: i + 1 })}
                 value={d}
                 onChange={(e) => setDigit(i, e.target.value)}
                 onKeyDown={(e) => onKeyDown(i, e)}
@@ -165,22 +263,24 @@ function VerifikasiForm() {
         </fieldset>
         {error && <p role="alert" className="text-sm text-danger">{error}</p>}
         {notice && <Banner tone="success">{notice}</Banner>}
-        <Button type="submit" size="lg" className="w-full" loading={busy}>Verifikasi</Button>
+        <Button type="submit" size="lg" className="w-full" loading={busy}>{t("verifikasi.verify")}</Button>
       </form>
 
       <p className="mt-4 text-center text-sm text-muted">
         {cooldown > 0 ? (
-          <>Kirim ulang dalam {cooldown} detik.</>
+          <>{t("verifikasi.resendIn", { seconds: cooldown })}</>
         ) : (
           <button
             type="button"
             onClick={resend}
             className="font-semibold text-accent hover:underline focus-visible:outline-2 focus-visible:outline-accent"
           >
-            Kirim ulang kode
+            {t("verifikasi.sendCode")}
           </button>
         )}
       </p>
+      </>
+      )}
     </div>
   );
 }

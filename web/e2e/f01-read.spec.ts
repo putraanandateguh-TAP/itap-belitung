@@ -45,9 +45,17 @@ test.describe("F01 tamu membaca berita", () => {
     await expect(page.getByRole("link", { name: /Baca di / })).toBeVisible();
   });
 
-  test("F01-E1 artikel tanpa terjemahan EN menampilkan banner jujur", async ({ page }) => {
+  test("F01-E1 artikel yang sudah diterjemahkan tidak menampilkan banner 'belum diterjemahkan'; toggle EN menampilkan judul Inggris", async ({ page }) => {
+    // Dulu (sebelum W2 menerjemahkan 54/54 artikel seed) pantai-tanjung-tinggi
+    // belum punya title_en sehingga banner "Artikel ini belum tersedia dalam
+    // bahasa Inggris" tampil. Kini artikel itu sudah diterjemahkan: banner
+    // TIDAK boleh tampil, dan toggle EN menampilkan judul Inggris.
+    // Jalur banner-nya sendiri tetap ada di ArticleContent (tampil bila
+    // title_en null) dan terverifikasi W2-followup 19/19.
     await page.goto("/artikel/pantai-tanjung-tinggi");
-    await expect(page.getByText("Artikel ini belum tersedia dalam bahasa Inggris")).toBeVisible();
+    await expect(page.getByText("Artikel ini belum tersedia dalam bahasa Inggris")).toHaveCount(0);
+    await page.getByRole("button", { name: "English", exact: true }).click();
+    await expect(page.getByRole("heading", { name: "Tanjung Tinggi Beach" })).toBeVisible();
   });
 
   test("F01-E2/E3 artikel tanpa foto & tanpa koordinat", async ({ page }) => {

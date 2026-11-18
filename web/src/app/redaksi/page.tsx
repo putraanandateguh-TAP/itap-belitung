@@ -7,11 +7,14 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { RequireRole } from "@/components/require-role";
+import { RevisionHistory } from "@/components/revision-history";
 import { useSession } from "@/lib/session-client";
 import { Banner, Button, EmptyState, Field, SelectInput, StatusBadge, TextArea, TextInput } from "@/components/ui";
 import type { Article, BlockEntry, Category, Comment, InfoSubmission, ModerationWord, Report } from "@/lib/types";
 import { channelLabel } from "@/lib/labels";
 import { formatDateWIB } from "@/lib/format";
+import { useLanguage } from "@/components/language-provider";
+import { listingCategoryName } from "@/lib/i18n";
 
 type Tab = "konten" | "kategori" | "kontributor" | "laporan" | "kata" | "komentar" | "penawaran" | "info" | "blokir";
 
@@ -20,17 +23,14 @@ type ReportAction = "hidden" | "dismissed" | "reviewed" | "unblock" | "disable_l
 interface ContributorRow { id: string; name: string; email: string; verified: boolean; auto_approve: boolean; points: number }
 interface AdminListingRow { id: string; title: string; price_cents: number; status: string; seller_id: string; category: string; created_at: string }
 
-const targetLabel = (t: Report["target_type"]) =>
-  t === "listing" ? "Penawaran" : t === "account" ? "Akun" : "Komentar";
-
-async function postJson(url: string, body: unknown): Promise<{ ok: boolean; message: string }> {
+async function postJson(url: string, body: unknown, fallback: string): Promise<{ ok: boolean; message: string }> {
   const res = await fetch(url, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(body),
   });
   const data = await res.json().catch(() => ({}));
-  if (!res.ok) return { ok: false, message: (data as { error?: string }).error ?? "Gagal menyimpan." };
+  if (!res.ok) return { ok: false, message: (data as { error?: string }).error ?? fallback };
   return { ok: true, message: "" };
 }
 
@@ -41,6 +41,7 @@ function ReviewModal({
   onClose: () => void;
   onDone: () => void;
 }) {
+  const { lang, t } = useLanguage();
   const [decision, setDecision] = useState<"publish" | "unpublish" | "return">("publish");
   const [note, setNote] = useState("");
   const [saving, setSaving] = useState(false);
@@ -65,7 +66,7 @@ function ReviewModal({
       onDone();
       onClose();
     } catch {
-      setError("Tidak bisa menyimpan keputusan. Coba lagi.");
+      setError(t("redaksi.saveFailed"));
     } finally {
       setSaving(false);
     }
@@ -74,32 +75,32 @@ function ReviewModal({
   return (
     <div role="dialog" aria-modal="true" aria-labelledby="review-title" className="fixed inset-0 z-50 flex items-end justify-center bg-surface-dark-deep/50 sm:items-center">
       <div className="w-full max-w-xl rounded-lg bg-canvas p-6 shadow-pop">
-        <h2 id="review-title" className="text-lg font-semibold text-ink">Tinjau: {article.title_id}</h2>
-        <p className="mt-1 text-sm text-muted">{channelLabel(article.channel)} · {formatDateWIB(article.published_at)} · {article.views} dibaca</p>
+        <h2 id="review-title" className="text-lg font-semibold text-ink">{t("redaksi.reviewTitle", { title: article.title_id })}</h2>
+        <p className="mt-1 text-sm text-muted">{channelLabel(article.channel, lang)} · {formatDateWIB(article.published_at, lang)} · {article.views} {t("common.reads")}</p>
         <fieldset className="mt-4">
-          <legend className="text-sm font-semibold text-ink">Keputusan redaksi</legend>
+          <legend className="text-sm font-semibold text-ink">{t("redaksi.decision")}</legend>
           <div className="mt-2 flex flex-col gap-2">
             {([
-              ["publish", "Terbitkan"],
-              ["return", "Kembalikan ke kontributor (minta perbaikan)"],
-              ["unpublish", "Turunkan dari terbit"],
-            ] as const).map(([v, label]) => (
+              ["publish", "redaksi.publish"],
+              ["return", "redaksi.return"],
+              ["unpublish", "redaksi.unpublish"],
+            ] as const).map(([v, key]) => (
               <label key={v} className="flex items-center gap-2 text-sm text-ink">
                 <input type="radio" name="decision" value={v} checked={decision === v} onChange={() => setDecision(v)} className="size-4 accent-[#2563EB]" />
-                {label}
+                {t(key)}
               </label>
             ))}
           </div>
         </fieldset>
         <div className="mt-4">
-          <Field label="Catatan untuk kontributor" id="catatan" hint="Catatan tampil di dasbor kontributor bila dikembalikan.">
-            <TextArea id="catatan" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Contoh: tambahkan sumber untuk klaim tahun berdirinya." />
+          <Field label={t("redaksi.decisionNote")} id="catatan" hint={t("redaksi.decisionNoteHint")}>
+            <TextArea id="catatan" value={note} onChange={(e) => setNote(e.target.value)} placeholder={t("redaksi.decisionNotePlaceholder")} />
           </Field>
         </div>
         {error && <p role="alert" className="mt-2 text-sm text-danger">{error}</p>}
         <div className="mt-5 flex gap-2">
-          <Button onClick={save} loading={saving}>Simpan keputusan</Button>
-          <Button variant="secondary" onClick={onClose}>Batalkan</Button>
+          <Button onClick={save} loading={saving}>{t("redaksi.saveDecision")}</Button>
+          <Button variant="secondary" onClick={onClose}>{t("common.cancel")}</Button>
         </div>
       </div>
     </div>
@@ -108,6 +109,9 @@ function ReviewModal({
 
 function RedaksiContent() {
   const { session } = useSession();
+  const { lang, t } = useLanguage();
+  const targetName = (tt: Report["target_type"]) =>
+    tt === "listing" ? t("redaksi.targetOffer") : tt === "account" ? t("redaksi.targetAccount") : t("redaksi.targetComment");
   const isSuperadmin = session?.role === "superadmin";
   const [tab, setTab] = useState<Tab>("konten");
   const [articles, setArticles] = useState<Article[]>([]);
@@ -125,6 +129,7 @@ function RedaksiContent() {
   const [myBlocks, setMyBlocks] = useState<BlockEntry[]>([]);
   const [allBlocks, setAllBlocks] = useState<BlockEntry[]>([]);
   const [reviewTarget, setReviewTarget] = useState<Article | null>(null);
+  const [historyTarget, setHistoryTarget] = useState<Article | null>(null);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -174,7 +179,7 @@ function RedaksiContent() {
       if (Array.isArray(mb)) setMyBlocks(mb as BlockEntry[]);
       if (Array.isArray(ab)) setAllBlocks(ab as BlockEntry[]);
     } catch {
-      setError("Sebagian data redaksi gagal dimuat.");
+      setError(t("redaksi.loadFailed"));
     } finally {
       setLoading(false);
     }
@@ -204,11 +209,11 @@ function RedaksiContent() {
     });
     if (res.ok) {
       setNewCatName("");
-      setNotice("Kategori baru ditambahkan.");
+      setNotice(t("redaksi.addCategoryOk"));
       loadAll();
     } else {
       const data = await res.json().catch(() => ({}));
-      setError((data as { error?: string }).error ?? "Tidak bisa menambah kategori.");
+      setError((data as { error?: string }).error ?? t("redaksi.addCategoryFailed"));
     }
   }
 
@@ -223,18 +228,18 @@ function RedaksiContent() {
       loadAll();
     } else {
       const data = await res.json().catch(() => ({}));
-      setError((data as { error?: string }).error ?? "Tidak bisa mengubah kontributor.");
+      setError((data as { error?: string }).error ?? t("redaksi.contributorFailed"));
     }
   }
 
   async function reportAction(id: string, action: ReportAction) {
     await run(
-      postJson(`/api/admin/reports/${id}/action`, { action }),
-      action === "hidden" ? "Materi disembunyikan dan laporan ditutup."
-      : action === "disable_listing" ? "Penawaran dinonaktifkan dan laporan ditandai sudah ditinjau."
-      : action === "unblock" ? "Blokir atas akun itu dibuka dan laporan ditandai sudah ditinjau."
-      : action === "dismissed" ? "Laporan ditolak."
-      : "Laporan ditandai sudah ditinjau.",
+      postJson(`/api/admin/reports/${id}/action`, { action }, t("redaksi.genericSaveFailed")),
+      action === "hidden" ? t("redaksi.reportHidden")
+      : action === "disable_listing" ? t("redaksi.reportDisabled")
+      : action === "unblock" ? t("redaksi.reportUnblocked")
+      : action === "dismissed" ? t("redaksi.reportDismissed")
+      : t("redaksi.reportReviewed"),
     );
   }
 
@@ -242,8 +247,8 @@ function RedaksiContent() {
     e.preventDefault();
     if (!newWord.trim()) return;
     await run(
-      postJson("/api/admin/moderation-words", { word: newWord.trim(), action: newWordAction }),
-      `Kata “${newWord.trim()}” ditambahkan ke kamus (aksi: ${newWordAction === "hold" ? "tahan" : "sensor"}).`,
+      postJson("/api/admin/moderation-words", { word: newWord.trim(), action: newWordAction }, t("redaksi.genericSaveFailed")),
+      t("redaksi.wordAdded", { word: newWord.trim(), action: newWordAction === "hold" ? t("redaksi.wordActionHold") : t("redaksi.wordActionCensor") }),
     );
     setNewWord("");
   }
@@ -258,9 +263,9 @@ function RedaksiContent() {
           body: JSON.stringify({ word: editWord.word.trim(), action: editWord.action }),
         });
         const data = await res.json().catch(() => ({}));
-        return res.ok ? { ok: true, message: "" } : { ok: false, message: (data as { error?: string }).error ?? "Gagal mengubah kata." };
+        return res.ok ? { ok: true, message: "" } : { ok: false, message: (data as { error?: string }).error ?? t("redaksi.wordEditFailed") };
       })(),
-      "Kata moderasi diubah.",
+      t("redaksi.wordChanged"),
     );
     setEditWord(null);
   }
@@ -270,54 +275,53 @@ function RedaksiContent() {
       (async () => {
         const res = await fetch(`/api/admin/moderation-words/${id}`, { method: "DELETE" });
         const data = await res.json().catch(() => ({}));
-        return res.ok ? { ok: true, message: "" } : { ok: false, message: (data as { error?: string }).error ?? "Gagal menghapus kata." };
+        return res.ok ? { ok: true, message: "" } : { ok: false, message: (data as { error?: string }).error ?? t("redaksi.wordDeleteFailed") };
       })(),
-      "Kata dihapus dari kamus.",
+      t("redaksi.wordDeleted"),
     );
     setConfirmDeleteWord(null);
   }
 
-  const tabs: { id: Tab; label: string }[] = [
-    { id: "konten", label: "Konten" },
-    { id: "kategori", label: "Kategori" },
-    { id: "kontributor", label: "Kontributor" },
-    { id: "laporan", label: "Laporan" },
-    { id: "kata", label: "Kata moderasi" },
-    { id: "komentar", label: "Komentar tertunda" },
-    { id: "penawaran", label: "Penawaran" },
-    { id: "info", label: "Info warga" },
-    { id: "blokir", label: "Blokir" },
+  const tabs: { id: Tab; key: string }[] = [
+    { id: "konten", key: "redaksi.tabContent" },
+    { id: "kategori", key: "redaksi.tabCategories" },
+    { id: "kontributor", key: "redaksi.tabContributors" },
+    { id: "laporan", key: "redaksi.tabReports" },
+    { id: "kata", key: "redaksi.tabWords" },
+    { id: "komentar", key: "redaksi.tabComments" },
+    { id: "penawaran", key: "redaksi.tabListings" },
+    { id: "info", key: "redaksi.tabInfo" },
+    { id: "blokir", key: "redaksi.tabBlock" },
   ];
 
   return (
     <div className="flex flex-col gap-6 py-8">
       <div>
-        <h1 className="text-xl font-bold text-ink">Ruang Redaksi</h1>
-        <p className="mt-1 text-sm text-muted">Kelola konten, kategori, kontributor, dan moderasi portal iTAP.</p>
+        <h1 className="text-xl font-bold text-ink">{t("redaksi.title")}</h1>
+        <p className="mt-1 text-sm text-muted">{t("redaksi.subtitle")}</p>
       </div>
       {seedMode && (
         <Banner tone="warning">
-          Mode seed — database belum live (P1): laporan, kata, dan komentar di halaman ini adalah data contoh.
-          Putusan tersimpan sementara di server dan hilang saat restart; penindakan materi nyata butuh database live.
+          {t("redaksi.seedBanner")}
         </Banner>
       )}
       {notice && <Banner tone="success">{notice}</Banner>}
       {error && <p role="alert" className="text-sm text-danger">{error}</p>}
 
-      <div role="tablist" aria-label="Bagian redaksi" className="flex flex-wrap gap-1 border-b border-line">
-        {tabs.map((t) => (
+      <div role="tablist" aria-label={t("redaksi.tabs")} className="flex flex-wrap gap-1 border-b border-line">
+        {tabs.map((tb) => (
           <button
-            key={t.id}
+            key={tb.id}
             type="button"
             role="tab"
-            aria-selected={tab === t.id}
-            onClick={() => setTab(t.id)}
-            className={`h-10 px-4 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent ${tab === t.id ? "border-b-2 border-accent text-accent" : "text-muted"}`}
+            aria-selected={tab === tb.id}
+            onClick={() => setTab(tb.id)}
+            className={`h-10 px-4 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent ${tab === tb.id ? "border-b-2 border-accent text-accent" : "text-muted"}`}
           >
-            {t.label}
-            {t.id === "laporan" && reports.some((r) => r.status === "open") && <span className="ml-1 rounded-full bg-danger-soft px-2 py-0.5 text-xs font-semibold text-danger">{reports.filter((r) => r.status === "open").length}</span>}
-            {t.id === "komentar" && pendingComments.length > 0 && <span className="ml-1 rounded-full bg-danger-soft px-2 py-0.5 text-xs font-semibold text-danger">{pendingComments.length}</span>}
-            {t.id === "info" && infoSubs.some((s) => s.status === "pending") && <span className="ml-1 rounded-full bg-danger-soft px-2 py-0.5 text-xs font-semibold text-danger">{infoSubs.filter((s) => s.status === "pending").length}</span>}
+            {t(tb.key)}
+            {tb.id === "laporan" && reports.some((r) => r.status === "open") && <span className="ml-1 rounded-full bg-danger-soft px-2 py-0.5 text-xs font-semibold text-danger">{reports.filter((r) => r.status === "open").length}</span>}
+            {tb.id === "komentar" && pendingComments.length > 0 && <span className="ml-1 rounded-full bg-danger-soft px-2 py-0.5 text-xs font-semibold text-danger">{pendingComments.length}</span>}
+            {tb.id === "info" && infoSubs.some((s) => s.status === "pending") && <span className="ml-1 rounded-full bg-danger-soft px-2 py-0.5 text-xs font-semibold text-danger">{infoSubs.filter((s) => s.status === "pending").length}</span>}
           </button>
         ))}
       </div>
@@ -325,76 +329,94 @@ function RedaksiContent() {
       {loading && <div aria-busy="true"><div className="skeleton h-64 w-full" /></div>}
 
       {!loading && tab === "konten" && (
-        <section aria-label="Tabel konten">
+        <section aria-label={t("redaksi.tableContent")}>
           <div className="mb-3 flex gap-2">
-            <label htmlFor="status-filter" className="sr-only">Filter status</label>
+            <label htmlFor="status-filter" className="sr-only">{t("redaksi.filterStatus")}</label>
             <select id="status-filter" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="h-10 rounded-md border border-line-input bg-canvas px-3 text-base">
-              <option value="semua">Semua status</option>
-              <option value="published">Terbit</option>
-              <option value="review">Menunggu tinjauan</option>
-              <option value="draft">Draf</option>
-              <option value="returned">Dikembalikan</option>
-              <option value="unpublished">Ditayangkan turun</option>
+              <option value="semua">{t("redaksi.allStatuses")}</option>
+              <option value="published">{t("ui.statusPublished")}</option>
+              <option value="review">{t("ui.statusReview")}</option>
+              <option value="draft">{t("ui.statusDraft")}</option>
+              <option value="returned">{t("ui.statusReturned")}</option>
+              <option value="unpublished">{t("ui.statusUnpublished")}</option>
             </select>
           </div>
           {articles.length === 0 ? (
-            <EmptyState title="Belum ada kiriman yang menunggu tinjauan." desc="Ubah filter status untuk melihat konten lain." />
+            <EmptyState title={t("redaksi.noPending")} desc={t("redaksi.noPendingDesc")} />
           ) : (
             <div className="overflow-x-auto rounded-lg border border-line bg-canvas" tabIndex={0} role="region" aria-label="Tabel konten">
               <table className="w-full text-left text-sm">
                 <thead>
                   <tr className="border-b border-line bg-surface text-xs uppercase text-muted">
-                    <th scope="col" className="px-4 py-3">Judul</th>
-                    <th scope="col" className="px-4 py-3">Kanal</th>
-                    <th scope="col" className="px-4 py-3">Status</th>
-                    <th scope="col" className="px-4 py-3">Dibaca</th>
-                    <th scope="col" className="px-4 py-3">Aksi</th>
+                    <th scope="col" className="px-4 py-3">{t("redaksi.colTitle")}</th>
+                    <th scope="col" className="px-4 py-3">{t("redaksi.colChannel")}</th>
+                    <th scope="col" className="px-4 py-3">{t("redaksi.colStatus")}</th>
+                    <th scope="col" className="px-4 py-3">{t("redaksi.colViews")}</th>
+                    <th scope="col" className="px-4 py-3">{t("redaksi.colActions")}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {articles.slice(0, 20).map((a) => (
                     <tr key={a.id} className="border-b border-line last:border-0">
                       <td className="max-w-xs px-4 py-3 font-semibold text-ink">{a.title_id}</td>
-                      <td className="px-4 py-3 text-muted">{channelLabel(a.channel)}</td>
+                      <td className="px-4 py-3 text-muted">{channelLabel(a.channel, lang)}</td>
                       <td className="px-4 py-3"><StatusBadge status={a.status} /></td>
-                      <td className="px-4 py-3 text-muted">{a.views.toLocaleString("id-ID")}</td>
+                      <td className="px-4 py-3 text-muted">{a.views.toLocaleString(lang === "en" ? "en-US" : "id-ID")}</td>
                       <td className="px-4 py-3">
-                        <Button variant="ghost" size="sm" onClick={() => setReviewTarget(a)}>
-                          Tinjau {a.title_id.slice(0, 24)}…
-                        </Button>
+                        <div className="flex flex-wrap gap-2">
+                          <Button variant="ghost" size="sm" onClick={() => setReviewTarget(a)}>
+                            {t("redaksi.review", { title: a.title_id.slice(0, 24) })}
+                          </Button>
+                          <Button variant="ghost" size="sm" onClick={() => setHistoryTarget(historyTarget?.id === a.id ? null : a)} aria-expanded={historyTarget?.id === a.id}>
+                            {historyTarget?.id === a.id ? t("redaksi.closeHistory") : t("redaksi.history")}
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-              <p className="px-4 py-3 text-xs text-muted">Menampilkan {Math.min(articles.length, 20)} dari {articles.length} artikel.</p>
+              <p className="px-4 py-3 text-xs text-muted">{t("redaksi.showing", { shown: Math.min(articles.length, 20), total: articles.length })}</p>
             </div>
+          )}
+          {historyTarget && (
+            <section aria-labelledby="riwayat-redaksi-title" className="mt-4">
+              <div className="flex items-center justify-between gap-2">
+                <h2 id="riwayat-redaksi-title" className="text-base font-semibold text-ink">
+                  {t("redaksi.historyTitle", { title: historyTarget.title_id })}
+                </h2>
+                <Button size="sm" variant="ghost" onClick={() => setHistoryTarget(null)}>{t("common.close")}</Button>
+              </div>
+              <div className="mt-3">
+                <RevisionHistory contributionId={historyTarget.id} title={historyTarget.title_id} />
+              </div>
+            </section>
           )}
         </section>
       )}
 
       {!loading && tab === "kategori" && (
-        <section aria-label="Kelola kategori" className="flex flex-col gap-6">
+        <section aria-label={t("redaksi.manageCategories")} className="flex flex-col gap-6">
           <form onSubmit={addCategory} className="flex flex-wrap items-end gap-3 rounded-lg border border-line bg-canvas p-4">
-            <Field label="Nama kategori baru" id="kat-baru">
-              <TextInput id="kat-baru" value={newCatName} onChange={(e) => setNewCatName(e.target.value)} placeholder="Contoh: Pantai Tersembunyi" />
+            <Field label={t("redaksi.newCategory")} id="kat-baru">
+              <TextInput id="kat-baru" value={newCatName} onChange={(e) => setNewCatName(e.target.value)} placeholder={t("redaksi.catPlaceholder")} />
             </Field>
-            <Field label="Kanal" id="kat-kanal">
+            <Field label={t("redaksi.channel")} id="kat-kanal">
               <select id="kat-kanal" value={newCatChannel} onChange={(e) => setNewCatChannel(e.target.value)} className="h-10 rounded-md border border-line-input bg-canvas px-3 text-base">
-                <option value="berita">Berita</option>
-                <option value="kuliner">Kuliner</option>
-                <option value="wisata">Wisata</option>
-                <option value="sejarah">Sejarah</option>
-                <option value="budaya">Budaya</option>
-                <option value="legenda">Legenda</option>
+                <option value="berita">{channelLabel("berita", lang)}</option>
+                <option value="kuliner">{channelLabel("kuliner", lang)}</option>
+                <option value="wisata">{channelLabel("wisata", lang)}</option>
+                <option value="sejarah">{channelLabel("sejarah", lang)}</option>
+                <option value="budaya">{channelLabel("budaya", lang)}</option>
+                <option value="legenda">{channelLabel("legenda", lang)}</option>
               </select>
             </Field>
-            <Button type="submit">Tambah kategori</Button>
+            <Button type="submit">{t("redaksi.addCategory")}</Button>
           </form>
           <ul className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {categories.map((c) => (
               <li key={c.id} className="rounded-lg border border-line bg-canvas px-4 py-3 text-sm">
-                <span className="font-semibold text-ink">{c.name_id}</span> <span className="text-muted">· {channelLabel(c.channel)} · /{c.slug}</span>
+                <span className="font-semibold text-ink">{lang === "en" && c.name_en ? c.name_en : c.name_id}</span> <span className="text-muted">· {channelLabel(c.channel, lang)} · /{c.slug}</span>
               </li>
             ))}
           </ul>
@@ -402,17 +424,17 @@ function RedaksiContent() {
       )}
 
       {!loading && tab === "kontributor" && (
-        <section aria-label="Kelola kontributor">
+        <section aria-label={t("redaksi.manageContributors")}>
           <div className="overflow-x-auto rounded-lg border border-line bg-canvas" tabIndex={0} role="region" aria-label="Tabel kontributor">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-line bg-surface text-xs uppercase text-muted">
-                  <th scope="col" className="px-4 py-3">Nama</th>
-                  <th scope="col" className="px-4 py-3">Email</th>
-                  <th scope="col" className="px-4 py-3">Terverifikasi</th>
-                  <th scope="col" className="px-4 py-3">Auto-approve</th>
-                  <th scope="col" className="px-4 py-3">Poin</th>
-                  <th scope="col" className="px-4 py-3">Aksi</th>
+                  <th scope="col" className="px-4 py-3">{t("redaksi.colName")}</th>
+                  <th scope="col" className="px-4 py-3">{t("redaksi.colEmail")}</th>
+                  <th scope="col" className="px-4 py-3">{t("redaksi.colVerified")}</th>
+                  <th scope="col" className="px-4 py-3">{t("redaksi.colAuto")}</th>
+                  <th scope="col" className="px-4 py-3">{t("redaksi.colPoints")}</th>
+                  <th scope="col" className="px-4 py-3">{t("redaksi.colActions")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -420,16 +442,16 @@ function RedaksiContent() {
                   <tr key={c.id} className="border-b border-line last:border-0">
                     <td className="px-4 py-3 font-semibold text-ink">{c.name}</td>
                     <td className="px-4 py-3 text-muted">{c.email}</td>
-                    <td className="px-4 py-3">{c.verified ? <span className="font-semibold text-success">Ya</span> : <span className="text-warning">Belum</span>}</td>
-                    <td className="px-4 py-3">{c.auto_approve ? "Aktif" : "Tidak aktif"}</td>
+                    <td className="px-4 py-3">{c.verified ? <span className="font-semibold text-success">{t("redaksi.yes")}</span> : <span className="text-warning">{t("redaksi.no")}</span>}</td>
+                    <td className="px-4 py-3">{c.auto_approve ? t("redaksi.active") : t("redaksi.inactive")}</td>
                     <td className="px-4 py-3 text-muted">{c.points}</td>
                     <td className="px-4 py-3">
                       <div className="flex flex-wrap gap-2">
-                        <Button size="sm" variant="secondary" onClick={() => contributorPatch(c.id, { verification_status: c.verified ? "unverified" : "verified" }, c.verified ? "Verifikasi kontributor dicabut." : "Kontributor diverifikasi.")}>
-                          {c.verified ? "Cabut verifikasi" : "Verifikasi"}
+                        <Button size="sm" variant="secondary" onClick={() => contributorPatch(c.id, { verification_status: c.verified ? "unverified" : "verified" }, c.verified ? t("redaksi.unverifiedMsg") : t("redaksi.verifiedMsg"))}>
+                          {c.verified ? t("redaksi.revokeVerify") : t("redaksi.verify")}
                         </Button>
-                        <Button size="sm" variant="ghost" onClick={() => contributorPatch(c.id, { auto_approve: !c.auto_approve }, c.auto_approve ? "Auto-approve dimatikan." : "Auto-approve diaktifkan.")}>
-                          {c.auto_approve ? "Matikan auto-approve" : "Aktifkan auto-approve"}
+                        <Button size="sm" variant="ghost" onClick={() => contributorPatch(c.id, { auto_approve: !c.auto_approve }, c.auto_approve ? t("redaksi.autoOff") : t("redaksi.autoOn"))}>
+                          {c.auto_approve ? t("redaksi.disableAuto") : t("redaksi.enableAuto")}
                         </Button>
                       </div>
                     </td>
@@ -442,42 +464,42 @@ function RedaksiContent() {
       )}
 
       {!loading && tab === "laporan" && (
-        <section aria-label="Antrean laporan" className="flex flex-col gap-4">
+        <section aria-label={t("redaksi.reportQueue")} className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-2">
-            <label htmlFor="laporan-filter" className="sr-only">Filter status laporan</label>
+            <label htmlFor="laporan-filter" className="sr-only">{t("redaksi.filterReports")}</label>
             <select id="laporan-filter" value={reportFilter} onChange={(e) => setReportFilter(e.target.value)} className="h-10 rounded-md border border-line-input bg-canvas px-3 text-base">
-              <option value="semua">Semua status</option>
-              <option value="open">Terbuka</option>
-              <option value="reviewed">Sudah ditinjau</option>
-              <option value="hidden">Disembunyikan</option>
-              <option value="dismissed">Ditolak</option>
+              <option value="semua">{t("redaksi.allStatuses")}</option>
+              <option value="open">{t("ui.statusOpen")}</option>
+              <option value="reviewed">{t("ui.statusReviewed")}</option>
+              <option value="hidden">{t("ui.statusHidden")}</option>
+              <option value="dismissed">{t("ui.statusDismissed")}</option>
             </select>
-            <p className="text-sm text-muted">Sembunyikan menindak materinya (penawaran dinonaktifkan, komentar ditolak); buka blokir menghapus blokir atas akun yang dilaporkan.</p>
+            <p className="text-sm text-muted">{t("redaksi.reportHint")}</p>
           </div>
           {reports.length === 0 ? (
-            <EmptyState title="Tidak ada laporan." desc="Laporan dari pembaca (konten atau akun) akan muncul di sini." />
+            <EmptyState title={t("redaksi.noReports")} desc={t("redaksi.noReportsDesc")} />
           ) : (
             <ul className="flex flex-col gap-3">
               {reports.map((r) => (
                 <li key={r.id} className="rounded-lg border border-line bg-canvas p-4">
-                  <p className="font-semibold text-ink">{targetLabel(r.target_type)}: {r.target_label}</p>
-                  <p className="mt-1 text-sm text-muted">Pelapor: {r.reporter} · {formatDateWIB(r.created_at)}</p>
-                  <p className="mt-1 text-sm text-ink">Alasan: {r.reason}</p>
+                  <p className="font-semibold text-ink">{targetName(r.target_type)}: {r.target_label}</p>
+                  <p className="mt-1 text-sm text-muted">{t("redaksi.reporter")}: {r.reporter} · {formatDateWIB(r.created_at, lang)}</p>
+                  <p className="mt-1 text-sm text-ink">{t("redaksi.reason")}: {r.reason}</p>
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     <StatusBadge status={r.status} />
                     {r.status === "open" && (
                       <>
                         {(r.target_type === "listing" || r.target_type === "comment") && (
-                          <Button size="sm" variant="secondary" onClick={() => reportAction(r.id, "hidden")}>Sembunyikan materi</Button>
+                          <Button size="sm" variant="secondary" onClick={() => reportAction(r.id, "hidden")}>{t("redaksi.hideMaterial")}</Button>
                         )}
                         {r.target_type === "listing" && (
-                          <Button size="sm" variant="secondary" onClick={() => reportAction(r.id, "disable_listing")}>Nonaktifkan penawaran</Button>
+                          <Button size="sm" variant="secondary" onClick={() => reportAction(r.id, "disable_listing")}>{t("redaksi.disableListing")}</Button>
                         )}
                         {r.target_type === "account" && (
-                          <Button size="sm" variant="secondary" onClick={() => reportAction(r.id, "unblock")}>Buka blokir akun</Button>
+                          <Button size="sm" variant="secondary" onClick={() => reportAction(r.id, "unblock")}>{t("redaksi.unblockAccount")}</Button>
                         )}
-                        <Button size="sm" variant="secondary" onClick={() => reportAction(r.id, "reviewed")}>Tandai sudah ditinjau</Button>
-                        <Button size="sm" variant="ghost" onClick={() => reportAction(r.id, "dismissed")}>Tolak laporan</Button>
+                        <Button size="sm" variant="secondary" onClick={() => reportAction(r.id, "reviewed")}>{t("redaksi.markReviewed")}</Button>
+                        <Button size="sm" variant="ghost" onClick={() => reportAction(r.id, "dismissed")}>{t("redaksi.dismissReport")}</Button>
                       </>
                     )}
                   </div>
@@ -489,42 +511,41 @@ function RedaksiContent() {
       )}
 
       {!loading && tab === "kata" && (
-        <section aria-label="Kamus kata moderasi" className="flex flex-col gap-4">
+        <section aria-label={t("redaksi.wordsTitle")} className="flex flex-col gap-4">
           <p className="text-sm text-muted">
-            Kamus kata dikelola superadmin. Kata beraksi “tahan” menahan materi baru (komentar/kiriman tetap di antrean, penawaran tidak tampil) sampai redaksi meninjau;
-            kata beraksi “sensor” disamarkan otomatis sebelum tampil. {isSuperadmin ? "" : "Akunmu bukan superadmin — kamus hanya bisa dibaca di sini."}
+            {t("redaksi.wordsDesc")} {isSuperadmin ? "" : t("redaksi.wordsReadOnly")}
           </p>
           {isSuperadmin && (
             <form onSubmit={addWord} className="flex flex-wrap items-end gap-3 rounded-lg border border-line bg-canvas p-4">
-              <Field label="Kata atau frasa baru" id="kata-baru">
-                <TextInput id="kata-baru" value={newWord} onChange={(e) => setNewWord(e.target.value)} placeholder="Contoh: tautan-penipuan" />
+              <Field label={t("redaksi.newWord")} id="kata-baru">
+                <TextInput id="kata-baru" value={newWord} onChange={(e) => setNewWord(e.target.value)} placeholder={t("redaksi.wordPlaceholder")} />
               </Field>
-              <Field label="Aksi" id="kata-aksi">
+              <Field label={t("redaksi.wordAction")} id="kata-aksi">
                 <SelectInput id="kata-aksi" value={newWordAction} onChange={(e) => setNewWordAction(e.target.value as "sensor" | "hold")}>
-                  <option value="hold">Tahan ke antrean</option>
-                  <option value="sensor">Sensor (samarkan)</option>
+                  <option value="hold">{t("redaksi.actionHold")}</option>
+                  <option value="sensor">{t("redaksi.censor")}</option>
                 </SelectInput>
               </Field>
-              <Button type="submit">Tambah kata</Button>
+              <Button type="submit">{t("redaksi.addWord")}</Button>
             </form>
           )}
           {words.length === 0 ? (
-            <EmptyState title="Kamus masih kosong." desc="Tambahkan kata pertama yang perlu ditahan atau disensor." />
+            <EmptyState title={t("redaksi.wordsEmpty")} desc={t("redaksi.wordsEmptyDesc")} />
           ) : (
             <ul className="flex flex-col gap-2">
               {words.map((w) => (
                 <li key={w.id} className="rounded-lg border border-line bg-canvas px-4 py-3 text-sm">
                   {editWord?.id === w.id ? (
                     <span className="flex flex-wrap items-center gap-2">
-                      <label htmlFor={`edit-kata-${w.id}`} className="sr-only">Ubah kata</label>
+                      <label htmlFor={`edit-kata-${w.id}`} className="sr-only">{t("redaksi.editWord")}</label>
                       <TextInput id={`edit-kata-${w.id}`} value={editWord.word} onChange={(e) => setEditWord({ ...editWord, word: e.target.value })} />
-                      <label htmlFor={`edit-aksi-${w.id}`} className="sr-only">Ubah aksi</label>
+                      <label htmlFor={`edit-aksi-${w.id}`} className="sr-only">{t("redaksi.editAction")}</label>
                       <SelectInput id={`edit-aksi-${w.id}`} value={editWord.action} onChange={(e) => setEditWord({ ...editWord, action: e.target.value as "sensor" | "hold" })}>
-                        <option value="hold">Tahan ke antrean</option>
-                        <option value="sensor">Sensor (samarkan)</option>
+                        <option value="hold">{t("redaksi.actionHold")}</option>
+                        <option value="sensor">{t("redaksi.censor")}</option>
                       </SelectInput>
-                      <Button size="sm" onClick={saveEditWord}>Simpan</Button>
-                      <Button size="sm" variant="ghost" onClick={() => setEditWord(null)}>Batalkan</Button>
+                      <Button size="sm" onClick={saveEditWord}>{t("redaksi.save")}</Button>
+                      <Button size="sm" variant="ghost" onClick={() => setEditWord(null)}>{t("common.cancel")}</Button>
                     </span>
                   ) : (
                     <span className="flex flex-wrap items-center justify-between gap-2">
@@ -534,14 +555,14 @@ function RedaksiContent() {
                       </span>
                       {isSuperadmin && (
                         <span className="flex gap-2">
-                          <Button size="sm" variant="secondary" onClick={() => setEditWord({ id: w.id, word: w.word, action: w.action })}>Ubah</Button>
+                          <Button size="sm" variant="secondary" onClick={() => setEditWord({ id: w.id, word: w.word, action: w.action })}>{t("redaksi.edit")}</Button>
                           {confirmDeleteWord === w.id ? (
                             <>
-                              <Button size="sm" variant="danger" onClick={() => deleteWord(w.id)}>Yakin hapus?</Button>
-                              <Button size="sm" variant="ghost" onClick={() => setConfirmDeleteWord(null)}>Batalkan</Button>
+                              <Button size="sm" variant="danger" onClick={() => deleteWord(w.id)}>{t("redaksi.confirmDelete")}</Button>
+                              <Button size="sm" variant="ghost" onClick={() => setConfirmDeleteWord(null)}>{t("common.cancel")}</Button>
                             </>
                           ) : (
-                            <Button size="sm" variant="ghost" onClick={() => setConfirmDeleteWord(w.id)}>Hapus</Button>
+                            <Button size="sm" variant="ghost" onClick={() => setConfirmDeleteWord(w.id)}>{t("redaksi.delete")}</Button>
                           )}
                         </span>
                       )}
@@ -555,58 +576,58 @@ function RedaksiContent() {
       )}
 
       {!loading && tab === "komentar" && (
-        <section aria-label="Komentar tertunda" className="flex flex-col gap-3">
+        <section aria-label={t("redaksi.pendingComments")} className="flex flex-col gap-3">
           {pendingComments.length === 0 ? (
-            <EmptyState title="Tidak ada komentar tertunda." desc="Komentar baru dari pembaca menunggu persetujuan di sini." />
+            <EmptyState title={t("redaksi.noPendingComments")} desc={t("redaksi.noPendingCommentsDesc")} />
           ) : (
             <ul className="flex flex-col gap-3">
               {pendingComments.map((c) => (
                 <li key={c.id} className="rounded-lg border border-line bg-canvas p-4">
-                  <p className="text-sm font-semibold text-ink">{c.author_name} <span className="font-normal text-muted">· {formatDateWIB(c.created_at)}</span></p>
+                  <p className="text-sm font-semibold text-ink">{c.author_name} <span className="font-normal text-muted">· {formatDateWIB(c.created_at, lang)}</span></p>
                   <p className="mt-1 text-base text-ink">{c.text}</p>
-                  <p className="mt-1 text-xs text-muted">Di artikel: {c.article_slug}</p>
+                  <p className="mt-1 text-xs text-muted">{t("redaksi.onArticle")}: {c.article_slug}</p>
                   <div className="mt-3 flex gap-2">
-                    <Button size="sm" onClick={() => run(postJson(`/api/admin/comments/${c.id}/review`, { decision: "approved" }), "Komentar disetujui dan tampil di artikel.")}>Setujui</Button>
-                    <Button size="sm" variant="secondary" onClick={() => run(postJson(`/api/admin/comments/${c.id}/review`, { decision: "rejected" }), "Komentar ditolak.")}>Tolak</Button>
+                    <Button size="sm" onClick={() => run(postJson(`/api/admin/comments/${c.id}/review`, { decision: "approved" }, t("redaksi.genericSaveFailed")), t("redaksi.commentApproved"))}>{t("redaksi.approve")}</Button>
+                    <Button size="sm" variant="secondary" onClick={() => run(postJson(`/api/admin/comments/${c.id}/review`, { decision: "rejected" }, t("redaksi.genericSaveFailed")), t("redaksi.commentRejected"))}>{t("redaksi.reject")}</Button>
                   </div>
                 </li>
               ))}
             </ul>
           )}
-          <p className="text-sm text-muted">Label sentimen AI hanya membantu redaksi — tidak menyetujui atau menolak kritik secara otomatis (recon F10). AI belum aktif di fase ini.</p>
+          <p className="text-sm text-muted">{t("redaksi.aiNote")}</p>
         </section>
       )}
 
       {!loading && tab === "penawaran" && (
-        <section aria-label="Penawaran untuk moderasi" className="flex flex-col gap-4">
+        <section aria-label={t("redaksi.listingsModeration")} className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-2">
-            <label htmlFor="penawaran-filter" className="sr-only">Filter status penawaran</label>
+            <label htmlFor="penawaran-filter" className="sr-only">{t("redaksi.filterListings")}</label>
             <select id="penawaran-filter" value={listingFilter} onChange={(e) => setListingFilter(e.target.value)} className="h-10 rounded-md border border-line-input bg-canvas px-3 text-base">
-              <option value="semua">Semua status</option>
-              <option value="aktif">Aktif</option>
-              <option value="dinonaktifkan">Dinonaktifkan</option>
-              <option value="terjual">Terjual</option>
-              <option value="dihapus">Dihapus</option>
+              <option value="semua">{t("redaksi.allStatuses")}</option>
+              <option value="aktif">{t("ui.statusAktif")}</option>
+              <option value="dinonaktifkan">{t("ui.statusDinonaktifkan")}</option>
+              <option value="terjual">{t("ui.statusTerjual")}</option>
+              <option value="dihapus">{t("ui.statusDihapus")}</option>
             </select>
-            <p className="text-sm text-muted">Penawaran yang ditahan kamus kata muncul di sini sebagai “Dinonaktifkan” — aktifkan lagi setelah ditinjau.</p>
+            <p className="text-sm text-muted">{t("redaksi.listingsHint")}</p>
           </div>
           {listings.length === 0 ? (
-            <EmptyState title="Tidak ada penawaran." desc="Penawaran marketplace yang butuh moderasi muncul di sini." />
+            <EmptyState title={t("redaksi.noListings")} desc={t("redaksi.noListingsDesc")} />
           ) : (
             <ul className="flex flex-col gap-3">
               {listings.map((l) => (
                 <li key={l.id} className="rounded-lg border border-line bg-canvas p-4">
                   <p className="font-semibold text-ink">{l.title}</p>
                   <p className="mt-1 text-sm text-muted">
-                    Rp{(l.price_cents / 100).toLocaleString("id-ID")} · {l.category} · Penjual {l.seller_id.slice(0, 8)} · {formatDateWIB(l.created_at)}
+                    Rp{(l.price_cents / 100).toLocaleString(lang === "en" ? "en-US" : "id-ID")} · {listingCategoryName(l.category, lang)} · {t("trust.seller")} {l.seller_id.slice(0, 8)} · {formatDateWIB(l.created_at, lang)}
                   </p>
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     <StatusBadge status={l.status} />
                     {l.status === "aktif" && (
-                      <Button size="sm" variant="secondary" onClick={() => run(postJson(`/api/admin/listings/${l.id}/action`, { action: "disable" }), "Penawaran dinonaktifkan.")}>Nonaktifkan</Button>
+                      <Button size="sm" variant="secondary" onClick={() => run(postJson(`/api/admin/listings/${l.id}/action`, { action: "disable" }, t("redaksi.genericSaveFailed")), t("redaksi.listingDisabled"))}>{t("redaksi.disable")}</Button>
                     )}
                     {l.status === "dinonaktifkan" && (
-                      <Button size="sm" onClick={() => run(postJson(`/api/admin/listings/${l.id}/action`, { action: "activate" }), "Penawaran diaktifkan lagi.")}>Aktifkan lagi</Button>
+                      <Button size="sm" onClick={() => run(postJson(`/api/admin/listings/${l.id}/action`, { action: "activate" }, t("redaksi.genericSaveFailed")), t("redaksi.listingActivated"))}>{t("redaksi.activate")}</Button>
                     )}
                   </div>
                 </li>
@@ -617,32 +638,32 @@ function RedaksiContent() {
       )}
 
       {!loading && tab === "info" && (
-        <section aria-label="Kurasi info warga" className="flex flex-col gap-4">
+        <section aria-label={t("redaksi.infoCuration")} className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-2">
-            <label htmlFor="info-filter" className="sr-only">Filter status kiriman</label>
+            <label htmlFor="info-filter" className="sr-only">{t("redaksi.filterInfo")}</label>
             <select id="info-filter" value={infoFilter} onChange={(e) => setInfoFilter(e.target.value)} className="h-10 rounded-md border border-line-input bg-canvas px-3 text-base">
-              <option value="pending">Menunggu kurasi</option>
-              <option value="approved">Disetujui</option>
-              <option value="rejected">Ditolak</option>
-              <option value="semua">Semua</option>
+              <option value="pending">{t("redaksi.infoPending")}</option>
+              <option value="approved">{t("ui.statusApproved")}</option>
+              <option value="rejected">{t("ui.statusRejected")}</option>
+              <option value="semua">{t("common.all")}</option>
             </select>
-            <p className="text-sm text-muted">Hanya kiriman yang disetujui yang jadi referensi AI iTAP.</p>
+            <p className="text-sm text-muted">{t("redaksi.infoHint")}</p>
           </div>
           {infoSubs.length === 0 ? (
-            <EmptyState title="Tidak ada kiriman info warga." desc="Kiriman dari warga yang menunggu kurasi muncul di sini." />
+            <EmptyState title={t("redaksi.noInfo")} desc={t("redaksi.noInfoDesc")} />
           ) : (
             <ul className="flex flex-col gap-3">
               {infoSubs.map((s) => (
                 <li key={s.id} className="rounded-lg border border-line bg-canvas p-4">
-                  <p className="text-sm font-semibold text-ink">{s.user_name} <span className="font-normal text-muted">· {formatDateWIB(s.created_at)}</span></p>
+                  <p className="text-sm font-semibold text-ink">{s.user_name} <span className="font-normal text-muted">· {formatDateWIB(s.created_at, lang)}</span></p>
                   <p className="mt-1 text-base text-ink">{s.text}</p>
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     <StatusBadge status={s.status} />
-                    {s.curated_for_ai && <span className="text-xs font-semibold text-success">Referensi AI</span>}
+                    {s.curated_for_ai && <span className="text-xs font-semibold text-success">{t("redaksi.aiReference")}</span>}
                     {s.status === "pending" && (
                       <>
-                        <Button size="sm" onClick={() => run(postJson(`/api/admin/info-submissions/${s.id}/review`, { decision: "approved" }), "Kiriman disetujui dan jadi referensi AI.")}>Setujui</Button>
-                        <Button size="sm" variant="secondary" onClick={() => run(postJson(`/api/admin/info-submissions/${s.id}/review`, { decision: "rejected" }), "Kiriman ditolak.")}>Tolak</Button>
+                        <Button size="sm" onClick={() => run(postJson(`/api/admin/info-submissions/${s.id}/review`, { decision: "approved" }, t("redaksi.genericSaveFailed")), t("redaksi.infoApproved"))}>{t("redaksi.approve")}</Button>
+                        <Button size="sm" variant="secondary" onClick={() => run(postJson(`/api/admin/info-submissions/${s.id}/review`, { decision: "rejected" }, t("redaksi.genericSaveFailed")), t("redaksi.infoRejected"))}>{t("redaksi.reject")}</Button>
                       </>
                     )}
                   </div>
@@ -654,32 +675,32 @@ function RedaksiContent() {
       )}
 
       {!loading && tab === "blokir" && (
-        <section aria-label="Kelola blokir akun" className="flex flex-col gap-6">
+        <section aria-label={t("redaksi.tabBlock")} className="flex flex-col gap-6">
           <div>
-            <h2 className="text-base font-semibold text-ink">Akun yang saya blokir</h2>
+            <h2 className="text-base font-semibold text-ink">{t("redaksi.myBlocks")}</h2>
             {myBlocks.length === 0 ? (
-              <p className="mt-2 text-sm text-muted">Kamu belum memblokir akun siapa pun.</p>
+              <p className="mt-2 text-sm text-muted">{t("settings.noBlocked")}</p>
             ) : (
               <ul className="mt-2 flex flex-col gap-2">
                 {myBlocks.map((b) => (
                   <li key={b.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-line bg-canvas px-4 py-3 text-sm">
-                    <span><span className="font-semibold text-ink">{b.blocked_name}</span> <span className="text-muted">· diblokir {formatDateWIB(b.created_at)}</span></span>
-                    <Button size="sm" variant="secondary" onClick={() => run(postJson(`/api/users/${b.blocked_id}/unblock`, {}), `Blokir atas ${b.blocked_name} dibuka.`)}>Buka blokir</Button>
+                    <span><span className="font-semibold text-ink">{b.blocked_name}</span> <span className="text-muted">· {t("redaksi.blockedOn")} {formatDateWIB(b.created_at, lang)}</span></span>
+                    <Button size="sm" variant="secondary" onClick={() => run(postJson(`/api/users/${b.blocked_id}/unblock`, {}, t("redaksi.genericSaveFailed")), t("redaksi.unblocked", { name: b.blocked_name }))}>{t("settings.unblock")}</Button>
                   </li>
                 ))}
               </ul>
             )}
           </div>
           <div>
-            <h2 className="text-base font-semibold text-ink">Semua blokir di portal (redaksi)</h2>
+            <h2 className="text-base font-semibold text-ink">{t("redaksi.allBlocks")}</h2>
             {allBlocks.length === 0 ? (
-              <p className="mt-2 text-sm text-muted">Belum ada blokir di portal.</p>
+              <p className="mt-2 text-sm text-muted">{t("redaksi.noBlocks")}</p>
             ) : (
               <ul className="mt-2 flex flex-col gap-2">
                 {allBlocks.map((b) => (
                   <li key={b.id} className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-line bg-canvas px-4 py-3 text-sm">
-                    <span><span className="font-semibold text-ink">{b.blocked_name}</span> <span className="text-muted">diblokir oleh {b.blocker_name} · {formatDateWIB(b.created_at)}</span></span>
-                    <Button size="sm" variant="secondary" onClick={() => run(postJson(`/api/users/${b.blocked_id}/unblock`, {}), `Blokir atas ${b.blocked_name} dibuka.`)}>Buka blokir</Button>
+                    <span><span className="font-semibold text-ink">{b.blocked_name}</span> <span className="text-muted">{t("redaksi.blockedBy")} {b.blocker_name} · {formatDateWIB(b.created_at, lang)}</span></span>
+                    <Button size="sm" variant="secondary" onClick={() => run(postJson(`/api/users/${b.blocked_id}/unblock`, {}, t("redaksi.genericSaveFailed")), t("redaksi.unblocked", { name: b.blocked_name }))}>{t("settings.unblock")}</Button>
                   </li>
                 ))}
               </ul>
@@ -688,14 +709,15 @@ function RedaksiContent() {
         </section>
       )}
 
-      {reviewTarget && <ReviewModal article={reviewTarget} onClose={() => setReviewTarget(null)} onDone={() => { setNotice("Keputusan redaksi disimpan."); loadAll(); }} />}
+      {reviewTarget && <ReviewModal article={reviewTarget} onClose={() => setReviewTarget(null)} onDone={() => { setNotice(t("redaksi.decisionSaved")); loadAll(); }} />}
     </div>
   );
 }
 
 export default function RedaksiPage() {
+  const { t } = useLanguage();
   return (
-    <RequireRole roles={["admin_portal", "superadmin"]} title="Ruang Redaksi">
+    <RequireRole roles={["admin_portal", "superadmin"]} title={t("redaksi.title")}>
       <RedaksiContent />
     </RequireRole>
   );

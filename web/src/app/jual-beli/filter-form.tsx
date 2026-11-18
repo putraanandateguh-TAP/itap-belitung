@@ -5,6 +5,7 @@
 import { useRouter } from "next/navigation";
 import { Button, TextInput } from "@/components/ui";
 import type { ListingSort } from "@/lib/marketplace";
+import { useLanguage } from "@/components/language-provider";
 
 export function ListingFilterForm({
   current,
@@ -16,11 +17,12 @@ export function ListingFilterForm({
   sortLabels: Record<ListingSort, string>;
 }) {
   const router = useRouter();
+  const { t } = useLanguage();
   return (
     <form
       method="get"
       role="search"
-      aria-label="Filter penawaran"
+      aria-label={t("market.filterOffers")}
       className="flex flex-col gap-3 rounded-lg border border-line bg-canvas p-4 md:flex-row md:items-end"
       onSubmit={(e) => {
         e.preventDefault();
@@ -36,23 +38,23 @@ export function ListingFilterForm({
       }}
     >
       <div className="flex flex-1 flex-col gap-1">
-        <label htmlFor="filter-q" className="text-sm font-semibold text-ink">Cari penawaran</label>
-        <TextInput id="filter-q" name="q" type="search" defaultValue={current.q} placeholder="Mis. sepeda, kulkas, motor…" />
+        <label htmlFor="filter-q" className="text-sm font-semibold text-ink">{t("market.searchOffers")}</label>
+        <TextInput id="filter-q" name="q" type="search" defaultValue={current.q} placeholder={t("market.searchPlaceholder")} />
       </div>
       <div className="flex flex-col gap-1">
-        <label htmlFor="filter-category" className="text-sm font-semibold text-ink">Kategori</label>
+        <label htmlFor="filter-category" className="text-sm font-semibold text-ink">{t("market.category")}</label>
         <select
           id="filter-category"
           name="category"
           defaultValue={current.category}
           className="h-10 rounded-md border border-line-input bg-canvas px-3 text-base text-ink focus:border-accent focus:outline-2 focus:outline-accent"
         >
-          <option value="">Semua kategori</option>
+          <option value="">{t("market.allCategories")}</option>
           {categories.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
         </select>
       </div>
       <div className="flex flex-col gap-1">
-        <label htmlFor="filter-sort" className="text-sm font-semibold text-ink">Urutkan</label>
+        <label htmlFor="filter-sort" className="text-sm font-semibold text-ink">{t("market.sort")}</label>
         <select
           id="filter-sort"
           name="sort"
@@ -64,7 +66,7 @@ export function ListingFilterForm({
           ))}
         </select>
       </div>
-      <Button type="submit">Terapkan</Button>
+      <Button type="submit">{t("market.apply")}</Button>
     </form>
   );
 }

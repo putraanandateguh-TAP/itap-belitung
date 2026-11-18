@@ -9,7 +9,10 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Button } from "./ui";
+import { useLanguage } from "@/components/language-provider";
 
+// Nilai alasan dikirim apa adanya ke API (tetap Bahasa Indonesia) —
+// yang diterjemahkan hanya label yang tampil.
 export const REPORT_REASONS = [
   "Barang tidak sesuai deskripsi",
   "Harga menyesatkan",
@@ -18,6 +21,15 @@ export const REPORT_REASONS = [
   "Konten tidak pantas atau menyinggung",
   "Lainnya",
 ] as const;
+
+export const REPORT_REASON_KEYS: Record<(typeof REPORT_REASONS)[number], string> = {
+  "Barang tidak sesuai deskripsi": "report.reasonMismatch",
+  "Harga menyesatkan": "report.reasonPrice",
+  "Penipuan atau mencurigakan": "report.reasonFraud",
+  "Barang terlarang": "report.reasonForbidden",
+  "Konten tidak pantas atau menyinggung": "report.reasonInappropriate",
+  "Lainnya": "report.reasonOther",
+};
 
 export function ReportBlockModal({
   targetType,
@@ -47,6 +59,7 @@ export function ReportBlockModal({
   const [busy, setBusy] = useState<"report" | "block" | null>(null);
   const [error, setError] = useState<string | null>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const { t } = useLanguage();
 
   useEffect(() => {
     closeRef.current?.focus();
@@ -71,12 +84,12 @@ export function ReportBlockModal({
       });
       if (!res.ok) {
         const data = await res.json().catch(() => null);
-        throw new Error(data?.error ?? `Laporan gagal (HTTP ${res.status}).`);
+        throw new Error(data?.error ?? t("report.reportFailedHttp", { status: res.status }));
       }
-      onDone?.("Laporan terkirim. Redaksi akan meninjaunya.");
+      onDone?.(t("report.sent"));
       onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Laporan gagal terkirim.");
+      setError(e instanceof Error ? e.message : t("report.sendFailed"));
     } finally {
       setBusy(null);
     }
@@ -90,12 +103,12 @@ export function ReportBlockModal({
       const res = await fetch(`/api/users/${blockedUserId}/block`, { method: "POST" });
       if (!res.ok) {
         const data = await res.json().catch(() => null);
-        throw new Error(data?.error ?? `Blokir gagal (HTTP ${res.status}).`);
+        throw new Error(data?.error ?? t("report.blockFailedHttp", { status: res.status }));
       }
-      onDone?.("Akun diblokir. Kamu tidak akan lagi melihat penawarannya di chat ini.");
+      onDone?.(t("report.blocked"));
       onClose();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Blokir gagal.");
+      setError(e instanceof Error ? e.message : t("report.blockFailed"));
     } finally {
       setBusy(null);
     }
@@ -109,61 +122,59 @@ export function ReportBlockModal({
     >
       <div role="dialog" aria-modal="true" aria-labelledby="report-title" className="w-full max-w-md rounded-lg bg-canvas p-5 shadow-pop">
         <div className="flex items-start justify-between gap-3">
-          <h2 id="report-title" className="text-lg font-bold text-ink">Laporkan atau blokir</h2>
+          <h2 id="report-title" className="text-lg font-bold text-ink">{t("report.title")}</h2>
           <button
             ref={closeRef}
             type="button"
             onClick={onClose}
-            aria-label="Tutup"
+            aria-label={t("common.close")}
             className="rounded-md px-2 py-1 text-xl text-muted hover:bg-surface focus-visible:outline-2 focus-visible:outline-accent"
           >
             ✕
           </button>
         </div>
         <p className="mt-1 text-sm text-muted">
-          Target: <span className="font-semibold text-ink">{targetLabel}</span>. Laporan ditinjau redaksi;
-          identitas pelapor tidak ditampilkan ke pihak yang dilaporkan.
+          {t("report.targetNote", { label: targetLabel })}
         </p>
 
         <div className="mt-4 flex flex-col gap-3">
           <div className="flex flex-col gap-1">
-            <label htmlFor="report-reason" className="text-sm font-semibold text-ink">Alasan laporan</label>
+            <label htmlFor="report-reason" className="text-sm font-semibold text-ink">{t("report.reason")}</label>
             <select
               id="report-reason"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               className="h-10 w-full rounded-md border border-line-input bg-canvas px-3 text-base text-ink focus:border-accent focus:outline-2 focus:outline-accent"
             >
-              {REPORT_REASONS.map((r) => <option key={r} value={r}>{r}</option>)}
+              {REPORT_REASONS.map((r) => <option key={r} value={r}>{t(REPORT_REASON_KEYS[r])}</option>)}
             </select>
           </div>
           <div className="flex flex-col gap-1">
-            <label htmlFor="report-detail" className="text-sm font-semibold text-ink">Penjelasan (opsional)</label>
+            <label htmlFor="report-detail" className="text-sm font-semibold text-ink">{t("report.detail")}</label>
             <textarea
               id="report-detail"
               rows={3}
               maxLength={1000}
               value={detail}
               onChange={(e) => setDetail(e.target.value)}
-              placeholder="Ceritakan singkat apa yang kamu temukan."
+              placeholder={t("report.detailPlaceholder")}
               className="w-full rounded-md border border-line-input bg-canvas px-3 py-2 text-base text-ink placeholder:text-muted focus:border-accent focus:outline-2 focus:outline-accent"
             />
           </div>
           {error && <p role="alert" className="text-sm text-danger">{error}</p>}
           <Button variant="danger" loading={busy === "report"} onClick={submitReport}>
-            Kirim laporan
+            {t("report.send")}
           </Button>
         </div>
 
         {blockedUserId && (
           <div className="mt-5 border-t border-line pt-4">
-            <h3 className="text-sm font-semibold text-ink">Blokir akun</h3>
+            <h3 className="text-sm font-semibold text-ink">{t("report.block")}</h3>
             <p className="mt-1 text-sm text-muted">
-              Blokir {blockedUserLabel ?? "akun ini"} agar ia tidak bisa lagi menghubungimu lewat chat.
-              Blokir bisa dibuka lagi oleh redaksi bila diperlukan.
+              {t("report.blockNote", { who: blockedUserLabel ?? t("report.blockThis") })}
             </p>
             <Button variant="secondary" loading={busy === "block"} onClick={submitBlock} className="mt-3">
-              Blokir akun ini
+              {t("report.blockThis")}
             </Button>
           </div>
         )}

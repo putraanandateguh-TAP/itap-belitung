@@ -1,11 +1,13 @@
 // #Kartu listing — ringkasan penawaran publik (S07/S08, S14, S15, S17).
+"use client";
 // Foto dari bucket listing-photos; tanpa foto tampil placeholder jujur
 // (bukan gambar karangan). Harga dari price_cents (sen) -> Rupiah.
 import Link from "next/link";
 import { ImageOff } from "lucide-react";
 import { Badge, StatusBadge } from "./ui";
+import { useLanguage } from "@/components/language-provider";
+import { listingCategoryName } from "@/lib/i18n";
 import {
-  LISTING_CATEGORY_LABELS,
   formatListingPrice,
   listingPhotoUrl,
   type MarketplaceListing,
@@ -13,6 +15,7 @@ import {
 import { formatDateWIB } from "@/lib/format";
 
 export function ListingCard({ listing }: { listing: MarketplaceListing }) {
+  const { lang, t } = useLanguage();
   const photo = listing.photos?.[0];
   const photoUrl = photo ? listingPhotoUrl(photo.storage_path) : null;
   return (
@@ -20,11 +23,11 @@ export function ListingCard({ listing }: { listing: MarketplaceListing }) {
       <Link href={`/jual-beli/${listing.id}`} className="block focus-visible:outline-2 focus-visible:outline-accent" aria-label={`${listing.title} — ${formatListingPrice(listing.price_cents)}`}>
         {photoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={photoUrl} alt={`Foto ${listing.title}`} className="aspect-video w-full object-cover" loading="lazy" />
+          <img src={photoUrl} alt={t("market.photoAlt", { title: listing.title })} className="aspect-video w-full object-cover" loading="lazy" />
         ) : (
-          <span className="flex aspect-video w-full flex-col items-center justify-center gap-1 bg-surface text-muted" aria-label="Belum ada foto">
+          <span className="flex aspect-video w-full flex-col items-center justify-center gap-1 bg-surface text-muted" aria-label={t("market.noPhoto")}>
             <ImageOff className="size-8" aria-hidden="true" />
-            <span className="text-xs font-medium">Belum ada foto</span>
+            <span className="text-xs font-medium">{t("market.noPhoto")}</span>
           </span>
         )}
       </Link>
@@ -39,18 +42,18 @@ export function ListingCard({ listing }: { listing: MarketplaceListing }) {
         </div>
         <p className="text-lg font-bold text-ink">{formatListingPrice(listing.price_cents)}</p>
         <p className="text-sm text-muted">
-          {listing.category ? `${LISTING_CATEGORY_LABELS[listing.category as keyof typeof LISTING_CATEGORY_LABELS] ?? listing.category} · ` : ""}
-          {listing.location_name ?? "Lokasi tidak dicantumkan"} · {formatDateWIB(listing.created_at)}
+          {listing.category ? `${listingCategoryName(listing.category, lang)} · ` : ""}
+          {listing.location_name ?? t("market.locationNotListed")} · {formatDateWIB(listing.created_at, lang)}
         </p>
         <p className="flex items-center gap-2 text-xs text-muted">
-          <span>{listing.views.toLocaleString("id-ID")} dilihat</span>
+          <span>{listing.views.toLocaleString(lang === "en" ? "en-US" : "id-ID")} {t("common.views")}</span>
           <span aria-hidden="true">·</span>
-          <span>{listing.saves_count.toLocaleString("id-ID")} disimpan</span>
+          <span>{listing.saves_count.toLocaleString(lang === "en" ? "en-US" : "id-ID")} {t("market.saved")}</span>
           <span aria-hidden="true">·</span>
-          <span>{listing.likes_count.toLocaleString("id-ID")} disukai</span>
+          <span>{listing.likes_count.toLocaleString(lang === "en" ? "en-US" : "id-ID")} {t("market.liked")}</span>
         </p>
         {listing.bookmark_type && (
-          <p><Badge tone="info">{listing.bookmark_type === "save" ? "Disimpan" : "Disukai"}</Badge></p>
+          <p><Badge tone="info">{listing.bookmark_type === "save" ? t("market.savedBadge") : t("market.likedBadge")}</Badge></p>
         )}
       </div>
     </article>

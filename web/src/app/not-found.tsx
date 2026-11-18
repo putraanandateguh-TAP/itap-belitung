@@ -1,16 +1,20 @@
+"use client";
+
 import Link from "next/link";
 import { ButtonLink } from "@/components/ui";
+import { useLanguage } from "@/components/language-provider";
 
 export default function NotFound() {
+  const { t } = useLanguage();
   return (
     <div className="flex flex-col items-center gap-3 py-24 text-center">
-      <h1 className="text-xl font-bold text-ink">Halaman tidak ditemukan (404)</h1>
+      <h1 className="text-xl font-bold text-ink">{t("notFound.title")}</h1>
       <p className="max-w-md text-sm text-muted">
-        Alamat yang kamu buka tidak ada di portal ini. Mungkin tautannya sudah berubah, atau artikelnya belum diterbitkan.
+        {t("notFound.desc")}
       </p>
-      <ButtonLink href="/">Kembali ke beranda</ButtonLink>
+      <ButtonLink href="/">{t("notFound.backHome")}</ButtonLink>
       <Link href="/cari" className="text-sm font-semibold text-accent hover:underline">
-        Cari konten lain
+        {t("notFound.searchOther")}
       </Link>
     </div>
   );

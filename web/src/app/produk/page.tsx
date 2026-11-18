@@ -8,6 +8,8 @@ import { listProducts, listServices } from "@/lib/data";
 import { WA_NUMBER } from "@/lib/seed-data";
 import { formatRupiah } from "@/lib/format";
 import { Badge, Banner } from "@/components/ui";
+import { getServerLang } from "@/lib/i18n-server";
+import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Produk Digital iTAP",
@@ -16,6 +18,7 @@ export const metadata: Metadata = {
 
 export default async function ProdukPage() {
   const products = await listProducts();
+  const lang = await getServerLang();
   // Poster kelas AI Content Creator: kelas yang cocok di data adalah K1
   // (Kelas K1 — Kreator Video AI Lokal); nama + harga dari data, bukan karangan.
   const kelasK1 = (await listServices()).find((s) => s.id === "kelas-k1");
@@ -23,12 +26,12 @@ export default async function ProdukPage() {
   return (
     <div className="flex flex-col gap-6 py-8">
       <header>
-        <h1 className="text-xl font-bold text-ink">Produk Digital iTAP</h1>
-        <p className="mt-1 text-sm text-muted">Harga dari situs iTAP (Nov 2026). Pembelian lewat WhatsApp admin — pesanan dikonfirmasi setelah pembayaran dicek di mutasi, bukan dari screenshot.</p>
+        <h1 className="text-xl font-bold text-ink">{t(lang, "produk.title")}</h1>
+        <p className="mt-1 text-sm text-muted">{t(lang, "produk.subtitle")}</p>
       </header>
 
       <Banner tone="info">
-        Halaman ini hanya katalog. Tidak ada kolom kode akses dan tidak ada validasi lisensi di sini — sistem lisensi client-side lama sengaja tidak dibawa (temuan audit K1). Validasi lisensi server-side adalah keputusan terpisah.
+        {t(lang, "produk.catalogNote")}
       </Banner>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -51,7 +54,7 @@ export default async function ProdukPage() {
               rel="noopener noreferrer"
               className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-on-accent hover:bg-accent-dark focus-visible:outline-2 focus-visible:outline-accent"
             >
-              Beli {p.name} via WhatsApp
+              {t(lang, "produk.buyViaWa", { name: p.name })}
             </a>
           </article>
         ))}
@@ -60,7 +63,7 @@ export default async function ProdukPage() {
       {/* Kelas Kreator AI — poster asli kelas AI Content Creator (K1). */}
       {kelasK1 && (
         <section aria-labelledby="kelas-ai-title" className="mt-2">
-          <h2 id="kelas-ai-title" className="text-lg font-semibold text-ink">Kelas Kreator AI</h2>
+          <h2 id="kelas-ai-title" className="text-lg font-semibold text-ink">{t(lang, "produk.classTitle")}</h2>
           <article className="mt-3 overflow-hidden rounded-lg border border-line bg-canvas shadow-card">
             <Image
               src="/images/ai-content-creator.webp"
@@ -86,20 +89,20 @@ export default async function ProdukPage() {
                   rel="noopener noreferrer"
                   className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-on-accent hover:bg-accent-dark focus-visible:outline-2 focus-visible:outline-accent"
                 >
-                  Daftar {kelasK1.name} via WhatsApp
+                  {t(lang, "produk.registerViaWa", { name: kelasK1.name })}
                 </a>
                 <a
                   href="/jasa"
                   className="inline-flex h-10 items-center justify-center rounded-md border border-line bg-canvas px-4 text-sm font-semibold text-ink hover:bg-surface-alt focus-visible:outline-2 focus-visible:outline-accent"
                 >
-                  Lihat semua kelas &amp; jasa
+                  {t(lang, "produk.viewAllServices")}
                 </a>
               </div>
             </div>
           </article>
         </section>
       )}
-      <p className="text-sm text-muted">Butuh bantuan memilih? Lihat juga <a href="/jasa" className="font-semibold text-accent hover:underline">jasa iTAP</a> — website, chatbot, video AI, dan kelas kreator.</p>
+      <p className="text-sm text-muted">{t(lang, "produk.helpNote")}<a href="/jasa" className="font-semibold text-accent hover:underline">{t(lang, "produk.servicesLink")}</a>{t(lang, "produk.helpNoteSuffix")}</p>
     </div>
   );
 }

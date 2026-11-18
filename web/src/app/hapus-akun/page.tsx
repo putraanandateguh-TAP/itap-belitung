@@ -9,8 +9,10 @@ import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/session-client";
 import { RequireRole } from "@/components/require-role";
 import { Banner, Button, Field, TextInput } from "@/components/ui";
+import { useLanguage } from "@/components/language-provider";
 
 function DeleteAccountForm() {
+  const { t } = useLanguage();
   const router = useRouter();
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
@@ -32,7 +34,7 @@ function DeleteAccountForm() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (confirm.trim().toUpperCase() !== "HAPUS") {
-      setError("Ketik HAPUS (huruf besar) untuk mengonfirmasi.");
+      setError(t("hapus.typeDelete"));
       return;
     }
     setBusy(true);
@@ -44,10 +46,10 @@ function DeleteAccountForm() {
         body: JSON.stringify({ confirm: "HAPUS" }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error ?? "Penghapusan akun gagal.");
+      if (!res.ok) throw new Error(data.error ?? t("hapus.failed"));
       router.push("/?deleted=1");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Penghapusan akun gagal.");
+      setError(err instanceof Error ? err.message : t("hapus.failed"));
     } finally {
       setBusy(false);
     }
@@ -55,41 +57,39 @@ function DeleteAccountForm() {
 
   return (
     <div className="mx-auto max-w-xl py-10">
-      <h1 className="text-xl font-bold text-ink">Hapus akun</h1>
+      <h1 className="text-xl font-bold text-ink">{t("hapus.title")}</h1>
       {configured === false && (
         <div className="mt-4">
           <Banner tone="warning">
-            Penghapusan akun belum bisa dijalankan: backend Supabase dan Edge Function hapus-akun belum dikonfigurasi (P1).
-            Akun dan datamu aman — tombol hapus di bawah nonaktif sampai backend live. Verifikasi end-to-end (profil + Storage + Auth user hilang)
-            baru bisa dilakukan setelah proyek Supabase dibuat dan Edge Function di-deploy.
+            {t("hapus.notConfigured")}
           </Banner>
         </div>
       )}
       <div className="mt-4">
         <Banner tone="error">
-          Tindakan ini tidak bisa dibatalkan. Akun <strong>{session?.email}</strong> dan semua data terkait akan dihapus.
+          {t("hapus.warning", { account: session?.email ?? "" })}
         </Banner>
       </div>
       <section aria-labelledby="hapus-apa" className="mt-6 rounded-lg border border-line bg-canvas p-4">
-        <h2 id="hapus-apa" className="text-lg font-semibold text-ink">Yang ikut terhapus</h2>
+        <h2 id="hapus-apa" className="text-lg font-semibold text-ink">{t("hapus.whatDeleted")}</h2>
         <ul className="mt-2 list-disc pl-5 text-sm text-muted">
-          <li>Profil, peran, dan titik lokasi</li>
-          <li>Kontribusi, draf, dan kiriman (termasuk yang sudah terbit atas namamu)</li>
-          <li>Tanggapan (komentar) dan poin kontribusi</li>
-          <li>Riwayat revisi artikel</li>
-          <li>Penawaran marketplace, percakapan, bookmark (Fase 2)</li>
-          <li>Sesi login dan registrasi push di perangkat</li>
-          <li>Foto yang kamu unggah di Storage</li>
+          <li>{t("hapus.itemProfile")}</li>
+          <li>{t("hapus.itemContrib")}</li>
+          <li>{t("hapus.itemComments")}</li>
+          <li>{t("hapus.itemHistory")}</li>
+          <li>{t("hapus.itemMarket")}</li>
+          <li>{t("hapus.itemSessions")}</li>
+          <li>{t("hapus.itemPhotos")}</li>
         </ul>
       </section>
       <form onSubmit={submit} className="mt-6 flex flex-col gap-4">
-        <Field label="Ketik HAPUS untuk mengonfirmasi" id="konfirmasi-hapus" hint="Tulis HAPUS dengan huruf besar.">
+        <Field label={t("hapus.confirmLabel")} id="konfirmasi-hapus" hint={t("hapus.confirmHint")}>
           <TextInput id="konfirmasi-hapus" value={confirm} onChange={(e) => setConfirm(e.target.value)} placeholder="HAPUS" autoComplete="off" error={!!error} />
         </Field>
         {error && <p role="alert" className="text-sm text-danger">{error}</p>}
         <div className="flex gap-3">
-          <Button type="submit" variant="danger" size="lg" loading={busy} disabled={configured === false}>Hapus akun saya</Button>
-          <Button type="button" variant="secondary" size="lg" onClick={() => router.push("/pengaturan")}>Batalkan</Button>
+          <Button type="submit" variant="danger" size="lg" loading={busy} disabled={configured === false}>{t("hapus.deleteAccount")}</Button>
+          <Button type="button" variant="secondary" size="lg" onClick={() => router.push("/pengaturan")}>{t("common.cancel")}</Button>
         </div>
       </form>
     </div>
@@ -97,8 +97,9 @@ function DeleteAccountForm() {
 }
 
 export default function HapusAkunPage() {
+  const { t } = useLanguage();
   return (
-    <RequireRole roles={["reader", "contributor", "admin_portal", "superadmin"]} title="Hapus akun">
+    <RequireRole roles={["reader", "contributor", "admin_portal", "superadmin"]} title={t("hapus.title")}>
       <DeleteAccountForm />
     </RequireRole>
   );

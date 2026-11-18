@@ -11,6 +11,8 @@ import { formatDateWIB } from "@/lib/format";
 import { Banner, ButtonLink, EmptyState, StatusBadge } from "@/components/ui";
 import { SellerTrustBox } from "@/components/seller-trust";
 import { ListingActions } from "./actions";
+import { getServerLang } from "@/lib/i18n-server";
+import { t, LISTING_CATEGORY_NAMES_EN } from "@/lib/i18n";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
@@ -24,6 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function ListingDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
+  const lang = await getServerLang();
   const profile = await getCurrentProfile();
   const listing = await getListing(id, profile);
   if (!listing) notFound();
@@ -36,10 +39,10 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
     <div className="flex flex-col gap-6 py-8">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-medium uppercase tracking-widest text-accent">Jual Beli · {listing.category ? (LISTING_CATEGORY_LABELS[listing.category as keyof typeof LISTING_CATEGORY_LABELS] ?? listing.category) : "Penawaran"}</p>
+          <p className="text-xs font-medium uppercase tracking-widest text-accent">{t(lang, "nav.marketplace")} · {listing.category ? (lang === "en" ? LISTING_CATEGORY_NAMES_EN[listing.category] ?? listing.category : LISTING_CATEGORY_LABELS[listing.category as keyof typeof LISTING_CATEGORY_LABELS] ?? listing.category) : t(lang, "market.offer")}</p>
           <h1 className="mt-1 max-w-3xl text-xl font-bold text-ink md:text-display">{listing.title}</h1>
           <p className="mt-1 text-sm text-muted">
-            {listing.location_name ?? "Lokasi tidak dicantumkan"} · dipasang {formatDateWIB(listing.created_at)} · {listing.views.toLocaleString("id-ID")} dilihat
+            {listing.location_name ?? t(lang, "market.locationNotListed")} · {t(lang, "market.posted")} {formatDateWIB(listing.created_at, lang)} · {listing.views.toLocaleString(lang === "en" ? "en-US" : "id-ID")} {t(lang, "common.views")}
           </p>
         </div>
         <StatusBadge status={listing.status} />
@@ -54,14 +57,14 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
               <img key={p.storage_path} src={url} alt={`Foto ${listing.title}`} className="aspect-video w-full rounded-lg border border-line object-cover" loading="lazy" />
             ) : (
               <p key={p.storage_path} className="rounded-lg border border-line bg-canvas p-4 text-sm text-muted">
-                Foto tersimpan di Storage (bucket listing-photos). Pratinjau gambar menyusul setelah Supabase (P1) aktif.
+                {t(lang, "market.photoStorageNote")}
               </p>
             );
           })}
         </div>
       ) : (
         <div className="rounded-lg border border-line bg-surface p-8 text-center text-sm text-muted">
-          Penawaran ini belum dilengkapi foto.
+          {t(lang, "market.noPhotoDetail")}
         </div>
       )}
 
@@ -69,22 +72,22 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
 
       {isFull ? (
         <section aria-labelledby="deskripsi-title" className="rounded-lg border border-line bg-canvas p-5">
-          <h2 id="deskripsi-title" className="text-lg font-semibold text-ink">Deskripsi</h2>
-          <p className="mt-2 whitespace-pre-wrap text-base text-ink">{listing.description || "Penjual tidak menulis deskripsi."}</p>
+          <h2 id="deskripsi-title" className="text-lg font-semibold text-ink">{t(lang, "market.description")}</h2>
+          <p className="mt-2 whitespace-pre-wrap text-base text-ink">{listing.description || t(lang, "market.noDescription")}</p>
         </section>
       ) : (
         <Banner tone="info">
-          Deskripsi lengkap hanya terlihat setelah masuk dan email terverifikasi.{" "}
-          <a href="/masuk" className="font-semibold underline">Masuk / daftar</a> lalu verifikasi email di{" "}
-          <a href="/verifikasi" className="font-semibold underline">halaman verifikasi</a>.
+          {t(lang, "market.descriptionHidden")}{" "}
+          <a href="/masuk" className="font-semibold underline">{t(lang, "market.signInSignUp")}</a> {t(lang, "market.verifyEmailAt")}{" "}
+          <a href="/verifikasi" className="font-semibold underline">{t(lang, "market.verificationPage")}</a>.
         </Banner>
       )}
 
       {isFull && listing.seller_contact ? (
         <section aria-labelledby="kontak-title" className="rounded-lg border border-line bg-canvas p-5">
-          <h2 id="kontak-title" className="text-lg font-semibold text-ink">Kontak penjual</h2>
-          <p className="mt-2 text-base text-ink">Nomor penjual: <span className="font-semibold">{listing.seller_contact}</span></p>
-          <p className="mt-1 text-sm text-muted">Nomor ini hanya terlihat oleh pembeli terverifikasi. Jangan bagikan kode apa pun kepada penjual.</p>
+          <h2 id="kontak-title" className="text-lg font-semibold text-ink">{t(lang, "market.sellerContact")}</h2>
+          <p className="mt-2 text-base text-ink">{t(lang, "market.sellerNumber")}: <span className="font-semibold">{listing.seller_contact}</span></p>
+          <p className="mt-1 text-sm text-muted">{t(lang, "market.numberNote")}</p>
           {listing.location_lat != null && listing.location_lng != null && (
             <p className="mt-3">
               <a
@@ -93,16 +96,16 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
                 rel="noreferrer"
                 className="font-semibold text-accent underline focus-visible:outline-2 focus-visible:outline-accent"
               >
-                Lihat titik penjual di Google Maps
+                {t(lang, "market.viewSellerMap")}
               </a>
             </p>
           )}
         </section>
       ) : isFull ? (
-        <Banner tone="warning">Penjual belum mencantumkan nomor kontak. Gunakan tombol chat di bawah untuk menghubunginya.</Banner>
+        <Banner tone="warning">{t(lang, "market.noContact")}</Banner>
       ) : (
         <Banner tone="warning">
-          Kontak dan titik lokasi penjual disembunyikan untuk pengunjung. Masuk dan verifikasi email untuk melihatnya.
+          {t(lang, "market.contactHidden")}
         </Banner>
       )}
 
@@ -120,16 +123,15 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
       <ListingActions listingId={listing.id} sellerId={listing.seller_id} isOwner={isOwner} loggedIn={Boolean(profile)} />
 
       <p className="text-sm text-muted">
-        Kesepakatan dan pembayaran diatur langsung antara penjual dan pembeli — tanpa perantara dan tanpa
-        escrow. iTAP bukan pihak dalam transaksi. Bertemulah di tempat ramai dan periksa barang sebelum membayar.
+        {t(lang, "market.agreementNote")}
       </p>
       {!isFull && (
         <div>
-          <ButtonLink href="/masuk" variant="secondary">Masuk untuk melihat detail lengkap</ButtonLink>
+          <ButtonLink href="/masuk" variant="secondary">{t(lang, "market.signInFull")}</ButtonLink>
         </div>
       )}
       {listing.status === "terjual" && (
-        <EmptyState title="Penawaran ini sudah terjual." desc="Barang terjual hilang dari daftar setelah 24 jam." />
+        <EmptyState title={t(lang, "market.sold")} desc={t(lang, "market.soldDesc")} />
       )}
     </div>
   );

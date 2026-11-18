@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { Bookmark, Flag, Heart, MessageCircle } from "lucide-react";
 import { Button, ButtonLink } from "@/components/ui";
 import { REPORT_REASONS, ReportBlockModal } from "@/components/report-modal";
+import { useLanguage } from "@/components/language-provider";
 
 export function ListingActions({
   listingId,
@@ -20,6 +21,7 @@ export function ListingActions({
   loggedIn: boolean;
 }) {
   const router = useRouter();
+  const { t } = useLanguage();
   const [saved, setSaved] = useState(false);
   const [liked, setLiked] = useState(false);
   const [busy, setBusy] = useState<string | null>(null);
@@ -40,12 +42,12 @@ export function ListingActions({
       });
       if (!res.ok) {
         const data = await res.json().catch(() => null);
-        throw new Error(data?.error ?? `Gagal (HTTP ${res.status}).`);
+        throw new Error(data?.error ?? t("actions.failedHttp", { status: res.status }));
       }
       if (type === "save") setSaved(!on); else setLiked(!on);
-      setNotice(on ? "Dibatalkan." : type === "save" ? "Penawaran disimpan — lihat di Tersimpan." : "Penawaran disukai.");
+      setNotice(on ? t("actions.cancelled") : type === "save" ? t("actions.offerSaved") : t("actions.offerLiked"));
     } catch (e) {
-      setNotice(e instanceof Error ? e.message : "Gagal menyimpan.");
+      setNotice(e instanceof Error ? e.message : t("actions.saveFailed"));
     } finally {
       setBusy(null);
     }
@@ -61,10 +63,10 @@ export function ListingActions({
         body: JSON.stringify({ listing_id: listingId }),
       });
       const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error ?? `Gagal membuka chat (HTTP ${res.status}).`);
+      if (!res.ok) throw new Error(data?.error ?? t("actions.chatFailedHttp", { status: res.status }));
       router.push(`/chat/${data.id}`);
     } catch (e) {
-      setNotice(e instanceof Error ? e.message : "Gagal membuka chat.");
+      setNotice(e instanceof Error ? e.message : t("actions.chatFailed"));
     } finally {
       setBusy(null);
     }
@@ -73,14 +75,14 @@ export function ListingActions({
   if (!loggedIn) {
     return (
       <div className="flex flex-wrap gap-2">
-        <ButtonLink href="/masuk">Masuk untuk menyimpan atau chat penjual</ButtonLink>
+        <ButtonLink href="/masuk">{t("actions.loginToInteract")}</ButtonLink>
       </div>
     );
   }
   if (isOwner) {
     return (
       <div className="flex flex-wrap gap-2">
-        <ButtonLink href="/akun/penawaranku">Kelola di Penawaranku</ButtonLink>
+        <ButtonLink href="/akun/penawaranku">{t("actions.manageMine")}</ButtonLink>
       </div>
     );
   }
@@ -89,19 +91,19 @@ export function ListingActions({
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap gap-2">
         <Button variant="secondary" loading={busy === "save"} onClick={() => toggleBookmark("save")} aria-pressed={saved}>
-          <Bookmark className="size-4" aria-hidden="true" /> {saved ? "Tersimpan" : "Simpan"}
+          <Bookmark className="size-4" aria-hidden="true" /> {saved ? t("actions.saved") : t("actions.save")}
         </Button>
         <Button variant="secondary" loading={busy === "like"} onClick={() => toggleBookmark("like")} aria-pressed={liked}>
-          <Heart className="size-4" aria-hidden="true" /> {liked ? "Disukai" : "Suka"}
+          <Heart className="size-4" aria-hidden="true" /> {liked ? t("actions.liked") : t("actions.like")}
         </Button>
         <Button loading={busy === "chat"} onClick={startChat}>
-          <MessageCircle className="size-4" aria-hidden="true" /> Mulai chat dengan penjual
+          <MessageCircle className="size-4" aria-hidden="true" /> {t("actions.chatSeller")}
         </Button>
         <Button variant="ghost" onClick={() => setReportReason("Barang tidak sesuai deskripsi")}>
-          <Flag className="size-4" aria-hidden="true" /> Laporkan
+          <Flag className="size-4" aria-hidden="true" /> {t("actions.report")}
         </Button>
         <Button variant="ghost" onClick={() => setReportReason("Penipuan atau mencurigakan")}>
-          <Flag className="size-4" aria-hidden="true" /> Laporkan penipuan
+          <Flag className="size-4" aria-hidden="true" /> {t("actions.reportFraud")}
         </Button>
       </div>
       {notice && <p role="status" className="text-sm text-muted">{notice}</p>}
@@ -109,9 +111,9 @@ export function ListingActions({
         <ReportBlockModal
           targetType="listing"
           targetId={listingId}
-          targetLabel="penawaran ini"
+          targetLabel={t("actions.reportThis")}
           blockedUserId={sellerId}
-          blockedUserLabel="penjual ini"
+          blockedUserLabel={t("actions.reportSeller")}
           initialReason={reportReason}
           onClose={() => setReportReason(null)}
           onDone={(msg) => setNotice(msg)}

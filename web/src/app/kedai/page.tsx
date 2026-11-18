@@ -7,6 +7,8 @@ import { Clock, MapPin } from "lucide-react";
 import { getKedai } from "@/lib/data";
 import { formatRupiah } from "@/lib/format";
 import { Badge } from "@/components/ui";
+import { getServerLang } from "@/lib/i18n-server";
+import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Kedai Bakso Aci iTAP",
@@ -26,6 +28,7 @@ const MENU_PHOTOS: Record<string, { src: string; width: number; height: number }
 
 export default async function KedaiPage() {
   const kedai = await getKedai();
+  const lang = await getServerLang();
 
   return (
     <div className="flex flex-col gap-6 py-8">
@@ -48,7 +51,7 @@ export default async function KedaiPage() {
             height={1536}
             className="h-28 w-auto"
           />
-          <p className="mt-3 text-xs font-medium uppercase tracking-widest text-accent">Dari dapur iTAP</p>
+          <p className="mt-3 text-xs font-medium uppercase tracking-widest text-accent">{t(lang, "kedai.fromKitchen")}</p>
           <h1 className="mt-2 text-xl font-bold text-ink">{kedai.name}</h1>
           <p className="mt-2 flex items-start gap-2 text-sm text-muted">
             <MapPin className="mt-0.5 size-4 shrink-0" aria-hidden="true" /> {kedai.address}
@@ -58,20 +61,20 @@ export default async function KedaiPage() {
           </p>
           <div className="mt-4 flex flex-wrap gap-2">
             <a href={kedai.maps_url} target="_blank" rel="noopener noreferrer" className="inline-flex h-10 items-center rounded-md bg-surface-dark px-4 text-sm font-semibold text-ink-on-dark hover:opacity-90 focus-visible:outline-2 focus-visible:outline-accent">
-              Rute ke kedai
+              {t(lang, "kedai.route")}
             </a>
             <a href={kedai.grabfood_url} target="_blank" rel="noopener noreferrer" className="inline-flex h-10 items-center rounded-md bg-success px-4 text-sm font-semibold text-on-accent hover:opacity-90 focus-visible:outline-2 focus-visible:outline-accent">
-              Pesan di GrabFood
+              {t(lang, "kedai.orderGrab")}
             </a>
             <a href={kedai.gofood_url} target="_blank" rel="noopener noreferrer" className="inline-flex h-10 items-center rounded-md bg-danger px-4 text-sm font-semibold text-on-accent hover:opacity-90 focus-visible:outline-2 focus-visible:outline-accent">
-              Pesan di GoFood
+              {t(lang, "kedai.orderGo")}
             </a>
           </div>
         </div>
       </header>
 
       <section aria-labelledby="menu-title">
-        <h2 id="menu-title" className="text-lg font-semibold text-ink">Menu Kedai</h2>
+        <h2 id="menu-title" className="text-lg font-semibold text-ink">{t(lang, "kedai.menu")}</h2>
         <figure className="mt-3 overflow-hidden rounded-lg border border-line bg-surface">
           <Image
             src="/images/kedai/menu-board.webp"
@@ -81,7 +84,7 @@ export default async function KedaiPage() {
             className="mx-auto w-full max-w-xl object-cover"
           />
           <figcaption className="border-t border-line bg-canvas px-4 py-2 text-center text-xs text-muted">
-            Papan menu Kedai I&amp;T — Baso Aci Daging Cincang Rp18.000 ditambahkan per keputusan 18 Nov 2026
+            {t(lang, "kedai.menuBoardCaption")}
           </figcaption>
         </figure>
         <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -92,7 +95,7 @@ export default async function KedaiPage() {
               {photo && (
                 <Image
                   src={photo.src}
-                  alt={`Foto ${m.name}`}
+                  alt={t(lang, "kedai.photoAlt", { name: m.name })}
                   width={photo.width}
                   height={photo.height}
                   className="aspect-[4/5] w-full object-cover"
@@ -101,15 +104,15 @@ export default async function KedaiPage() {
               <div className="flex flex-col gap-2 p-4 pt-2">
               <div className="flex items-center gap-2">
                 <h3 className="text-base font-semibold text-ink">{m.name}</h3>
-                {m.isExample && <Badge tone="example">Contoh</Badge>}
-                {!m.available && <Badge tone="sold">Habis</Badge>}
+                {m.isExample && <Badge tone="example">{t(lang, "kedai.example")}</Badge>}
+                {!m.available && <Badge tone="sold">{t(lang, "kedai.soldOut")}</Badge>}
               </div>
               <p className="flex-1 text-sm text-muted">{m.desc}</p>
-              <p className="text-sm text-muted">Kategori: {m.category}</p>
+              <p className="text-sm text-muted">{t(lang, "kedai.category")}: {m.category}</p>
               {m.price ? (
                 <p className="text-lg font-bold text-ink">{formatRupiah(m.price)}</p>
               ) : (
-                <p className="text-sm font-semibold text-muted">Harga menyusul — cek GrabFood/GoFood</p>
+                <p className="text-sm font-semibold text-muted">{t(lang, "kedai.priceComing")}</p>
               )}
               </div>
             </li>

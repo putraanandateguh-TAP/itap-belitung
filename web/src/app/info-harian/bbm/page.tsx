@@ -7,6 +7,8 @@ import type { Metadata } from "next";
 import { getDailySnapshot } from "@/lib/daily";
 import { DailyStamp } from "@/components/daily-ui";
 import { EmptyState } from "@/components/ui";
+import { getServerLang } from "@/lib/i18n-server";
+import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Harga BBM Belitung",
@@ -15,25 +17,26 @@ export const metadata: Metadata = {
 
 export default async function BbmPage() {
   const snap = await getDailySnapshot("fuel");
+  const lang = await getServerLang();
   return (
     <div className="flex flex-col gap-6 py-8">
       <header>
-        <h1 className="text-xl font-bold text-ink">Harga BBM</h1>
-        <p className="mt-1 text-sm text-muted">Harga BBM Pertamina yang berlaku di Belitung.</p>
+        <h1 className="text-xl font-bold text-ink">{t(lang, "info.fuelTitle")}</h1>
+        <p className="mt-1 text-sm text-muted">{t(lang, "info.fuelDesc")}</p>
         {snap && <DailyStamp fetchedAt={snap.fetched_at} asOfDate={snap.as_of} />}
       </header>
 
       {!snap && (
         <EmptyState
-          title="Harga BBM belum tersedia"
-          desc="Pertamina mempublikasikan harga BBM hanya sebagai halaman web, tanpa API publik yang stabil untuk diambil otomatis. iTAP tidak menampilkan harga perkiraan. Silakan periksa harga resmi di situs Pertamina atau SPBU terdekat."
+          title={t(lang, "info.fuelEmpty")}
+          desc={t(lang, "info.fuelUnavailableDesc")}
         />
       )}
 
       {snap && (
         <EmptyState
-          title="Harga BBM belum bisa dibaca"
-          desc="Cache harga sudah tersimpan, tapi bentuk datanya belum dikenali halaman ini. Redaksi sudah mencatatnya lewat cron daily-info-fetch."
+          title={t(lang, "info.fuelUnreadable")}
+          desc={t(lang, "info.fuelUnreadableDesc")}
         />
       )}
     </div>

@@ -7,11 +7,14 @@ import { notFound } from "next/navigation";
 import { getCultureStory } from "@/lib/daily";
 import { Badge, Banner } from "@/components/ui";
 import { cultureLabel } from "@/lib/labels";
+import { getServerLang } from "@/lib/i18n-server";
+import { t } from "@/lib/i18n";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const story = await getCultureStory(slug);
-  if (!story) return { title: "Cerita tidak ditemukan" };
+  const lang = await getServerLang();
+  if (!story) return { title: t(lang, "budaya.notFound") };
   return {
     title: `${story.title} — Budaya Belitung`,
     description: story.body.split("\n\n")[0]?.slice(0, 160),
@@ -22,15 +25,16 @@ export default async function BudayaDetailPage({ params }: { params: Promise<{ s
   const { slug } = await params;
   const story = await getCultureStory(slug);
   if (!story) notFound();
+  const lang = await getServerLang();
   const paragraphs = story.body.split("\n\n").filter(Boolean);
   return (
     <div className="flex flex-col gap-6 py-8">
       <header>
-        <Badge tone="info">{cultureLabel(story.category)}</Badge>
+        <Badge tone="info">{cultureLabel(story.category, lang)}</Badge>
         <h1 className="mt-2 text-xl font-bold text-ink">{story.title}</h1>
         <p className="mt-1 text-sm text-muted">
           <Link href="/budaya" className="font-semibold text-accent hover:underline focus-visible:outline-2 focus-visible:outline-accent">
-            ← Semua cerita budaya
+            {t(lang, "budaya.allStories")}
           </Link>
         </p>
       </header>
@@ -42,19 +46,18 @@ export default async function BudayaDetailPage({ params }: { params: Promise<{ s
       </article>
 
       <section aria-labelledby="lirik-title" className="rounded-lg border border-line bg-canvas p-4 shadow-card md:p-6">
-        <h2 id="lirik-title" className="text-base font-bold text-ink">Lirik</h2>
+        <h2 id="lirik-title" className="text-base font-bold text-ink">{t(lang, "budaya.lyrics")}</h2>
         {story.lyrics ? (
           <pre className="mt-3 whitespace-pre-wrap font-sans text-base leading-relaxed text-ink">{story.lyrics}</pre>
         ) : (
           <p className="mt-2 text-sm text-muted">
-            Lirik belum tersedia untuk cerita ini — tidak ada lirik dari sumber nyata yang
-            bisa ditampilkan, dan iTAP tidak mengarang lirik.
+            {t(lang, "budaya.noLyrics")}
           </p>
         )}
       </section>
 
       <section aria-labelledby="sumber-title">
-        <h2 id="sumber-title" className="text-base font-bold text-ink">Sumber bacaan</h2>
+        <h2 id="sumber-title" className="text-base font-bold text-ink">{t(lang, "budaya.sources")}</h2>
         {story.sources.length > 0 ? (
           <ul className="mt-2 flex flex-col gap-1 text-sm text-muted">
             {story.sources.map((s) => (
@@ -62,14 +65,14 @@ export default async function BudayaDetailPage({ params }: { params: Promise<{ s
             ))}
           </ul>
         ) : (
-          <p className="mt-2 text-sm text-muted">Belum ada sumber bacaan yang tercatat untuk cerita ini.</p>
+          <p className="mt-2 text-sm text-muted">{t(lang, "budaya.noSources")}</p>
         )}
       </section>
 
       <Banner tone="info">
-        Versi lengkap sebagai artikel kanal Budaya:{" "}
+        {t(lang, "budaya.fullVersion")}{" "}
         <Link href={`/artikel/${story.slug}`} className="font-semibold text-accent-dark hover:underline focus-visible:outline-2 focus-visible:outline-accent">
-          baca di kanal Budaya
+          {t(lang, "budaya.readInChannel")}
         </Link>
         .
       </Banner>

@@ -1,6 +1,6 @@
 // Proxy asisten. Kunci model hanya ada di secret fungsi, tidak di browser.
 // Secret: GEMINI_API_KEY (wajib), GEMINI_MODEL (opsional), RATE_SALT (opsional).
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.119.0';
 
 const LIMIT_USER = 12;
 const LIMIT_IP = 30;
@@ -70,20 +70,29 @@ Deno.serve(async (req) => {
   ].join('\n');
   let text = '';
   for (const model of models) {
-    const ai = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(model) + ':generateContent',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
-        body: JSON.stringify({
-          contents: [{ role: 'user', parts: [{ text: prompt }] }],
-          // Jatah token longgar supaya mode "berpikir" tidak menghabiskannya sebelum jawaban keluar.
-          generationConfig: model.startsWith('gemini-2.5')
-            ? { maxOutputTokens: 1024, temperature: 0.4, thinkingConfig: { thinkingBudget: 0 } }
-            : { maxOutputTokens: 2048, temperature: 0.4 }
-        })
-      }
-    );
+    let ai: Response;
+    try {
+      // Batas waktu per model: Gemini yang menggantung tidak boleh menahan
+      // fungsi sampai limit eksekusi; gagal -> lanjut ke model cadangan.
+      ai = await fetch(
+        'https://generativelanguage.googleapis.com/v1beta/models/' + encodeURIComponent(model) + ':generateContent',
+        {
+          method: 'POST',
+          signal: AbortSignal.timeout(60000),
+          headers: { 'Content-Type': 'application/json', 'x-goog-api-key': key },
+          body: JSON.stringify({
+            contents: [{ role: 'user', parts: [{ text: prompt }] }],
+            // Jatah token longgar supaya mode "berpikir" tidak menghabiskannya sebelum jawaban keluar.
+            generationConfig: model.startsWith('gemini-2.5')
+              ? { maxOutputTokens: 1024, temperature: 0.4, thinkingConfig: { thinkingBudget: 0 } }
+              : { maxOutputTokens: 2048, temperature: 0.4 }
+          })
+        }
+      );
+    } catch (e) {
+      console.error('gemini fetch gagal', model, String(e).slice(0, 200));
+      continue;
+    }
     if (!ai.ok) {
       console.error('gemini', model, ai.status, (await ai.text()).slice(0, 300));
       continue;

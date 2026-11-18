@@ -361,3 +361,65 @@ export const kedaiMenuItems = pgTable("kedai_menu_items", {
 // - profiles.language_pref in ('id','en'); devices.platform in ('android','ios','web')
 // - views/saves/likes/points >= 0; ai_feedback.vote in (-1, 1)
 // - daily_info_snapshots.source in (...); chat_threads.buyer <> seller; blocks no-self
+// - licenses: max_devices >= 1; license_audit_log.action in (...)
+//   (migrasi 0004_license_server_side.sql — validasi lisensi server-side)
+
+// ---------- Lisensi FULL server-side (Workstream B, migrasi 0004) ----------
+// Hash/salt TIDAK PERNAH dibaca client (RLS deny) — hanya Edge Function
+// service-role. Drizzle di sini hanya cerminan skema untuk query admin.
+export const licenseProduct = pgEnum("license_product", ["generator", "kasir"]);
+export const licensePlan = pgEnum("license_plan", ["lifetime", "monthly", "quarterly", "yearly"]);
+export const licenseStatus = pgEnum("license_status", ["active", "revoked", "expired"]);
+export const licenseOrigin = pgEnum("license_origin", ["issued", "legacy"]);
+
+export const licenses = pgTable("licenses", {
+  id: id(),
+  lookupHash: text("lookup_hash").notNull().unique(),
+  salt: text("salt").notNull(),
+  codeHash: text("code_hash").notNull(),
+  product: licenseProduct("product").notNull(),
+  plan: licensePlan("plan").notNull(),
+  status: licenseStatus("status").notNull().default("active"),
+  origin: licenseOrigin("origin").notNull().default("issued"),
+  legacyCodeHash: text("legacy_code_hash"),
+  expiresAt: timestamp("expires_at", { withTimezone: true }),
+  maxDevices: integer("max_devices").notNull().default(3),
+  buyerName: text("buyer_name"),
+  buyerContact: text("buyer_contact"),
+  issuedBy: uuid("issued_by"),
+  revokedAt: timestamp("revoked_at", { withTimezone: true }),
+  revokedBy: uuid("revoked_by"),
+  revokeReason: text("revoke_reason"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+});
+
+export const licenseActivations = pgTable("license_activations", {
+  id: id(),
+  licenseId: uuid("license_id").notNull(),
+  userId: uuid("user_id").notNull(),
+  deviceHash: text("device_hash").notNull(),
+  deviceLabel: text("device_label"),
+  lastSeenAt: timestamp("last_seen_at", { withTimezone: true }).notNull().defaultNow(),
+  revokedAt: timestamp("revoked_at", { withTimezone: true }),
+  createdAt: createdAt(),
+});
+
+export const licenseAuditLog = pgTable("license_audit_log", {
+  id: id(),
+  licenseId: uuid("license_id"),
+  userId: uuid("user_id"),
+  action: text("action").notNull(),
+  deviceHash: text("device_hash"),
+  ipHash: text("ip_hash"),
+  reason: text("reason"),
+  createdAt: createdAt(),
+});
+
+export const licenseAttempts = pgTable("license_attempts", {
+  id: id(),
+  lookupHash: text("lookup_hash").notNull(),
+  ipHash: text("ip_hash").notNull(),
+  success: boolean("success").notNull().default(false),
+  createdAt: createdAt(),
+});

@@ -36,6 +36,7 @@
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
     "db:validate": "node scripts/validate-schema-local.mjs",
+    "test:license": "node --test tests/license.test.ts",
     "test:rls": "node --experimental-strip-types tests/rls-check.ts 2>/dev/null || npx tsx tests/rls-check.ts"
   },
   "version": "0.1.0"

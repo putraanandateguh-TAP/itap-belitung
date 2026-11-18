@@ -46,6 +46,7 @@ table{width:100%;border-collapse:collapse;background:#fff;border-radius:var(--r)
 </main></div>
 <script>
 const $=s=>document.querySelector(s),rp=n=>'Rp'+Number(n||0).toLocaleString('id-ID'),LS='itap-ppob-markup';
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 $('#tgl').textContent=new Date().toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
 function show(){const h=(location.hash||'#dashboard').slice(1);document.querySelectorAll('main section').forEach(s=>s.classList.toggle('on',s.id===h));document.querySelectorAll('#nav a').forEach(a=>a.classList.toggle('on',a.hash==='#'+h))}
 addEventListener('hashchange',show);show();
@@ -54,7 +55,7 @@ const key=r=>[r.k,r.s,r.n].join('|');
 function flat(j){const o=[];for(const k in j){const v=j[k];for(const a in v){if(typeof v[a]==='object')for(const n in v[a])o.push({k,s:a,n,m:+v[a][n]});else o.push({k,s:'',n:a,m:+v[a]})}}return o}
 function render(){const tb=$('#tb');$('#nprod').textContent=rows.length;
  if(!rows.length){tb.innerHTML='<tr><td colspan="6" class="empty">Belum ada produk. Daftar harga belum diisi.</td></tr>';return}
- tb.innerHTML=rows.map((r,i)=>{const mk=M[key(r)]||0;return `<tr><td><input value="${r.k}" onchange="ed(${i},'k',this.value)"></td><td><input value="${r.s}" onchange="ed(${i},'s',this.value)"></td><td><input type="number" value="${r.n}" onchange="ed(${i},'n',this.value)"></td><td><input type="number" value="${r.m||''}" onchange="ed(${i},'m',+this.value)"></td><td><input type="number" value="${mk||''}" onchange="mk(${i},+this.value)"></td><td><b>${rp((r.m||0)+mk)}</b></td></tr>`}).join('')}
+ tb.innerHTML=rows.map((r,i)=>{const mk=M[key(r)]||0;return `<tr><td><input value="${esc(r.k)}" onchange="ed(${i},'k',this.value)"></td><td><input value="${esc(r.s)}" onchange="ed(${i},'s',this.value)"></td><td><input type="number" value="${esc(r.n)}" onchange="ed(${i},'n',this.value)"></td><td><input type="number" value="${r.m||''}" onchange="ed(${i},'m',+this.value)"></td><td><input type="number" value="${mk||''}" onchange="mk(${i},+this.value)"></td><td><b>${rp((r.m||0)+mk)}</b></td></tr>`}).join('')}
 function ed(i,f,v){rows[i][f]=v;save();render()}
 function mk(i,v){M[key(rows[i])]=v;save();render()}
 function save(){localStorage.setItem(LS,JSON.stringify(M));localStorage.setItem(LS+'-rows',JSON.stringify(rows))}

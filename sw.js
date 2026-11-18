@@ -1,7 +1,7 @@
 // iTAP Belitung — service worker situs utama.
 // Naikkan VER tiap rilis aset. Cache lama itap-* dihapus saat aktivasi.
 // localStorage / IndexedDB (termasuk data kasir) tidak disentuh.
-const VER = 'itap-v74';
+const VER = 'itap-v75';
 const SCOPE = new URL('./', self.location).pathname;
 const LIVE = /^data\/(harga-pangan|keuangan|ppob-harga|berita|loker)\.json$/;
 const PRECACHE = [
@@ -112,7 +112,11 @@ function stripped(url) {
 
 async function precache() {
   const cache = await caches.open(VER);
-  await Promise.all(PRECACHE.map(async (path) => {
+  // Satu aset hilang/rusak tidak boleh menggagalkan seluruh install SW:
+  // tiap file dicoba sendiri-sendiri, yang gagal dicatat lalu dilewati.
+  // Hanya index.html dan offline.html yang kritis (tanpa keduanya SW
+  // tidak berguna saat offline) — kegagalan keduanya tetap menggagalkan.
+  const hasil = await Promise.allSettled(PRECACHE.map(async (path) => {
     const url = new URL(path, self.location);
     const res = await fetch(url, { cache: 'reload' });
     if (!res.ok) throw new Error('precache ' + path + ' ' + res.status);
@@ -120,6 +124,10 @@ async function precache() {
     if (path === 'index.html') await cache.put(new URL('./', self.location).href, res.clone());
     if (path === 'kasir/index.html') await cache.put(new URL('kasir/', self.location).href, res.clone());
   }));
+  const gagal = PRECACHE.filter((_, i) => hasil[i].status === 'rejected');
+  if (gagal.length) console.warn('[sw] precache dilewati (' + gagal.length + '):', gagal.join(', '));
+  const kritisGagal = gagal.filter((p) => p === 'index.html' || p === 'offline.html');
+  if (kritisGagal.length) throw new Error('precache kritis gagal: ' + kritisGagal.join(', '));
 }
 
 async function offlineResponse() {

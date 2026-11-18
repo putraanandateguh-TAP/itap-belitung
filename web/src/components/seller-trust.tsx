@@ -1,3 +1,5 @@
+"use client";
+
 // A4 (M8) — Kepercayaan marketplace tanpa escrow (entrepreneur.md).
 // Semua teks ditulis baru untuk iTAP. TIDAK ada klaim "terverifikasi"
 // umum: satu-satunya status verifikasi yang bisa dibaca lapisan aplikasi
@@ -12,6 +14,7 @@
 import { ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui";
 import { formatDateWIB } from "@/lib/format";
+import { useLanguage } from "@/components/language-provider";
 
 export function SellerTrustBox({
   whatsappVerified,
@@ -22,30 +25,29 @@ export function SellerTrustBox({
   since: string | null;
   activeListings: number;
 }) {
+  const { lang, t } = useLanguage();
   return (
     <section aria-labelledby="penjual-title" className="rounded-lg border border-line bg-canvas p-5">
-      <h2 id="penjual-title" className="text-lg font-semibold text-ink">Penjual</h2>
+      <h2 id="penjual-title" className="text-lg font-semibold text-ink">{t("trust.seller")}</h2>
       <div className="mt-3 flex flex-col gap-2 text-sm text-ink">
         {whatsappVerified ? (
           <p className="flex flex-wrap items-center gap-2">
-            <Badge tone="active"><ShieldCheck className="size-3.5" aria-hidden="true" /> WhatsApp terverifikasi</Badge>
-            <span className="text-muted">Nomor WhatsApp penjual sudah terverifikasi.</span>
+            <Badge tone="active"><ShieldCheck className="size-3.5" aria-hidden="true" /> {t("trust.waVerified")}</Badge>
+            <span className="text-muted">{t("trust.waVerifiedNote")}</span>
           </p>
         ) : (
           <p>
-            <Badge tone="example">Penjual belum terverifikasi WhatsApp</Badge>
+            <Badge tone="example">{t("trust.waNotVerified")}</Badge>
             <span className="mt-1 block text-muted">
-              Verifikasi WhatsApp penjual ini belum tercatat. Lebih berhati-hatilah: periksa barang sebelum membayar
-              dan jangan transfer sebelum bertemu.
+              {t("trust.waNotVerifiedNote")}
             </span>
           </p>
         )}
         <p className="text-muted">
-          Bergabung sejak {since ? formatDateWIB(since) : "tidak tercatat"} · {activeListings} penawaran aktif
+          {since ? t("trust.joinedSince", { date: formatDateWIB(since, lang), count: activeListings }) : t("trust.joinedUnknown")}
         </p>
         <p className="text-muted">
-          iTAP tidak menyediakan pembayaran atau rekening penampung — kesepakatan dan pembayaran diatur langsung
-          kedua pihak. Baca panduan transaksi aman di chat sebelum membayar.
+          {t("trust.noEscrowNote")}
         </p>
       </div>
     </section>
@@ -54,19 +56,20 @@ export function SellerTrustBox({
 
 /** Panduan transaksi aman + checklist sebelum COD — tampil di ruang chat. */
 export function SafeTradeGuide() {
+  const { t } = useLanguage();
   return (
     <details className="rounded-lg border border-line bg-surface p-4">
       <summary className="cursor-pointer text-sm font-semibold text-ink focus-visible:outline-2 focus-visible:outline-accent">
-        Panduan transaksi aman &amp; checklist sebelum COD
+        {t("trust.safeGuide")}
       </summary>
       <ul className="mt-3 flex list-disc flex-col gap-1.5 pl-5 text-sm text-ink">
-        <li>Bertemu di tempat ramai dan terang, sebaiknya siang hari. Ajak teman bila memungkinkan.</li>
-        <li>Periksa barang sampai puas sebelum membayar — coba nyalakan, cek kelengkapan dan kondisi fisiknya.</li>
-        <li>Jangan transfer atau DP sebelum melihat barang. iTAP tidak menyediakan pembayaran atau rekening penampung.</li>
-        <li>Jangan pernah bagikan kode OTP, kata sandi, atau kode verifikasi apa pun — penjual asli tidak pernah memintanya.</li>
-        <li>Harga jauh di bawah pasaran, penjual mendesak, atau diminta pindah ke aplikasi lain adalah tanda waspada.</li>
-        <li>Simpan bukti chat dan bukti pembayaran bila sudah membayar.</li>
-        <li>Bila menemukan penipuan, pakai tombol “Laporkan penipuan” di atas — laporan ditinjau redaksi.</li>
+        <li>{t("trust.guideA")}</li>
+        <li>{t("trust.guideB")}</li>
+        <li>{t("trust.guideC")}</li>
+        <li>{t("trust.guideD")}</li>
+        <li>{t("trust.guideE")}</li>
+        <li>{t("trust.guideF")}</li>
+        <li>{t("trust.guideG")}</li>
       </ul>
     </details>
   );

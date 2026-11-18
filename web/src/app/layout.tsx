@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { siteUrl } from "@/lib/site-url";
 import { SiteFooter, SiteHeader } from "@/components/site-chrome";
+import { LanguageProvider } from "@/components/language-provider";
+import { getServerLang } from "@/lib/i18n-server";
+import { t } from "@/lib/i18n";
 import "./globals.css";
 
 
@@ -34,22 +37,25 @@ export const metadata: Metadata = {
 // jalan). Default tampil — situs ini masih mode seed.
 const showDemoBanner = process.env.NEXT_PUBLIC_DEMO_BANNER !== "false";
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const lang = await getServerLang();
   return (
-    <html lang="id">
+    <html lang={lang}>
       <body>
-        {showDemoBanner && (
-          <div role="region" aria-label="Pemberitahuan">
-            <p className="bg-surface-dark-deep px-4 py-1 text-center text-xs text-muted-on-dark">
-              Versi demo (M0–M3): data masih seed/palsu, belum terhubung ke database. Lihat README.
-            </p>
-          </div>
-        )}
-        <SiteHeader />
-        <main id="konten" className="mx-auto min-h-[60vh] w-full max-w-[1200px] px-4">
-          {children}
-        </main>
-        <SiteFooter />
+        <LanguageProvider initialLang={lang}>
+          {showDemoBanner && (
+            <div role="region" aria-label={t(lang, "layout.demoBannerAria")}>
+              <p className="bg-surface-dark-deep px-4 py-1 text-center text-xs text-muted-on-dark">
+                {t(lang, "layout.demoBanner")}
+              </p>
+            </div>
+          )}
+          <SiteHeader />
+          <main id="konten" className="mx-auto min-h-[60vh] w-full max-w-[1200px] px-4">
+            {children}
+          </main>
+          <SiteFooter />
+        </LanguageProvider>
       </body>
     </html>
   );

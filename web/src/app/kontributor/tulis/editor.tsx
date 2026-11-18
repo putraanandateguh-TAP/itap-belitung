@@ -10,6 +10,8 @@ import type { Category, Channel, Contribution } from "@/lib/types";
 import { CHANNELS } from "@/lib/seed-data";
 import { RequireRole } from "@/components/require-role";
 import { Banner, Button, Field, SelectInput, TextArea, TextInput } from "@/components/ui";
+import { useLanguage } from "@/components/language-provider";
+import { channelLabel } from "@/lib/labels";
 
 interface EditorProps {
   contributionId?: string;
@@ -28,6 +30,7 @@ function insertAround(textarea: HTMLTextAreaElement | null, before: string, afte
 }
 
 function EditorForm({ contributionId }: EditorProps) {
+  const { t, lang } = useLanguage();
   const router = useRouter();
   const [tab, setTab] = useState<"id" | "en">("id");
   const [titleId, setTitleId] = useState("");
@@ -58,14 +61,14 @@ function EditorForm({ contributionId }: EditorProps) {
     fetch(`/api/contributions/${contributionId}`)
       .then((r) => (r.ok ? r.json() : null))
       .then((c: Contribution | null) => {
-        if (!c) { setError("Kiriman tidak ditemukan."); return; }
+        if (!c) { setError(t("tulis.notFound")); return; }
         setTitleId(c.title_id); setTitleEn(c.title_en);
         setBodyId(c.body_id); setBodyEn(c.body_en);
         setChannel(c.channel); setCategoryId(c.category_id);
         setLocation(c.location_name); setSource(c.source);
         setStatus(c.status);
       })
-      .catch(() => setError("Gagal memuat kiriman."))
+      .catch(() => setError(t("tulis.loadFailed")))
       .finally(() => setLoaded(true));
   }, [contributionId]);
 
@@ -77,8 +80,8 @@ function EditorForm({ contributionId }: EditorProps) {
 
   async function save(draft: boolean) {
     setError(""); setNotice("");
-    if (!titleId.trim()) { setError("Judul bahasa Indonesia wajib diisi."); return; }
-    if (!bodyId.trim()) { setError("Isi bahasa Indonesia wajib diisi."); return; }
+    if (!titleId.trim()) { setError(t("tulis.titleRequired")); return; }
+    if (!bodyId.trim()) { setError(t("tulis.bodyRequired")); return; }
     setSaving(true);
     try {
       const payload = {
@@ -93,18 +96,18 @@ function EditorForm({ contributionId }: EditorProps) {
       });
       if (!res.ok) {
         const j = await res.json().catch(() => ({}));
-        throw new Error(j.error ?? "gagal menyimpan");
+        throw new Error(j.error ?? t("common.saveFailed"));
       }
       const saved = await res.json();
       setSavedAt(new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Jakarta" }));
       if (draft) {
-        setNotice("Draft tersimpan.");
+        setNotice(t("tulis.saved"));
         if (!contributionId) router.replace(`/kontributor/tulis/${saved.id}`);
       } else {
-        setNotice("Draft tersimpan — lanjutkan ke pengiriman bila sudah siap.");
+        setNotice(t("tulis.draftSavedContinue"));
       }
     } catch (e) {
-      setError(e instanceof Error ? `Tidak bisa menyimpan: ${e.message}` : "Tidak bisa menyimpan draf.");
+      setError(e instanceof Error ? t("tulis.saveFailedPrefix", { msg: e.message }) : t("tulis.saveDraftFailed"));
     } finally {
       setSaving(false);
     }
@@ -112,17 +115,23 @@ function EditorForm({ contributionId }: EditorProps) {
 
   async function submit() {
     if (!contributionId) {
-      setError("Simpan draf dulu sebelum mengirim ke redaksi.");
+      setError(t("tulis.submitFirst"));
       return;
     }
     setSaving(true);
     try {
       const res = await fetch(`/api/contributions/${contributionId}/submit`, { method: "POST" });
-      if (!res.ok) throw new Error("gagal mengirim");
-      setStatus("review");
-      setNotice("Kirimanmu sudah dikirim ke redaksi. Artikel terkunci sampai ada keputusan redaksi.");
+      if (!res.ok) throw new Error(t("tulis.submitFailed"));
+      const saved = (await res.json()) as { status?: string };
+      if (saved.status === "published") {
+        setStatus("published");
+        setNotice(t("tulis.publishedAuto"));
+      } else {
+        setStatus("review");
+        setNotice(t("tulis.sentNote"));
+      }
     } catch {
-      setError("Tidak bisa mengirim ke redaksi sekarang. Coba lagi.");
+      setError(t("tulis.submitFailed"));
     } finally {
       setSaving(false);
     }
@@ -135,139 +144,139 @@ function EditorForm({ contributionId }: EditorProps) {
   return (
     <div className="flex flex-col gap-6 py-8">
       <div>
-        <h1 className="text-xl font-bold text-ink">{contributionId ? "Ubah kiriman" : "Tulis cerita baru"}</h1>
+        <h1 className="text-xl font-bold text-ink">{contributionId ? t("tulis.editTitle") : t("tulis.newTitle")}</h1>
         <p className="mt-1 text-sm text-muted">
-          Tulis dalam bahasa Indonesia; terjemahan Inggris boleh menyusul. Kiriman ditinjau redaksi sebelum terbit.
-          {savedAt && <span aria-live="polite"> Draft tersimpan · {savedAt}</span>}
+          {t("tulis.intro")}
+          {savedAt && <span aria-live="polite"> {t("tulis.savedAt", { time: savedAt })}</span>}
         </p>
       </div>
 
       {locked && (
         <Banner tone="warning">
-          Kiriman ini sedang ditinjau redaksi dan terkunci — perubahan berikutnya ditinjau ulang. Tunggu keputusan redaksi (terbit / catatan / minta perbaikan).
+          {t("tulis.lockedBanner")}
         </Banner>
       )}
       {error && <Banner tone="error">{error}</Banner>}
       {notice && <Banner tone="success">{notice}</Banner>}
 
       {/* #09 Tab ID/EN */}
-      <div role="tablist" aria-label="Bahasa artikel" className="flex gap-1 border-b border-line">
-        {(["id", "en"] as const).map((t) => (
+      <div role="tablist" aria-label={t("tulis.langAria")} className="flex gap-1 border-b border-line">
+        {(["id", "en"] as const).map((langCode) => (
           <button
-            key={t}
+            key={langCode}
             type="button"
             role="tab"
-            aria-selected={tab === t}
-            onClick={() => setTab(t)}
-            className={`h-10 px-4 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent ${tab === t ? "border-b-2 border-accent text-accent" : "text-muted"}`}
+            aria-selected={tab === langCode}
+            onClick={() => setTab(langCode)}
+            className={`h-10 px-4 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent ${tab === langCode ? "border-b-2 border-accent text-accent" : "text-muted"}`}
           >
-            {t === "id" ? "Bahasa Indonesia" : "English"}
-            {t === "en" && enMissing && <span className="ml-2 rounded-full bg-warning-soft px-2 py-0.5 text-xs font-semibold text-warning">Belum diterjemahkan</span>}
+            {langCode === "id" ? "Bahasa Indonesia" : "English"}
+            {langCode === "en" && enMissing && <span className="ml-2 rounded-full bg-warning-soft px-2 py-0.5 text-xs font-semibold text-warning">{t("tulis.enMissingBadge")}</span>}
           </button>
         ))}
       </div>
       {tab === "en" && enMissing && (
         <Banner tone="info">
-          Versi Inggris belum diisi — artikel tetap bisa dikirim dalam bahasa Indonesia. Pembaca akan melihat penjelasan ini di halaman artikel.
+          {t("tulis.enMissingBanner")}
         </Banner>
       )}
 
       <div className="grid gap-6 lg:grid-cols-3">
         <div className="flex flex-col gap-4 lg:col-span-2">
-          <Field label={tab === "id" ? "Judul (Indonesia)" : "Judul (English)"} id="judul">
+          <Field label={tab === "id" ? t("tulis.titleLabel") : t("tulis.titleEnLabel")} id="judul">
             <TextInput
               id="judul"
               value={tab === "id" ? titleId : titleEn}
               onChange={(e) => (tab === "id" ? setTitleId(e.target.value) : setTitleEn(e.target.value))}
-              placeholder={tab === "id" ? "Contoh: Pantai Tanjung Tinggi di Sore Hari" : "Contoh: Tanjung Tinggi Beach in the Afternoon"}
+              placeholder={tab === "id" ? t("tulis.titleIdPh") : t("tulis.titleEnPh")}
               disabled={locked}
             />
           </Field>
 
           {/* #15 Toolbar format */}
           <div>
-            <span id="toolbar-label" className="text-sm font-semibold text-ink">Isi artikel ({tab === "id" ? "Indonesia" : "English"})</span>
+            <span id="toolbar-label" className="text-sm font-semibold text-ink">{tab === "id" ? t("tulis.bodyLabel") : t("tulis.bodyEnLabel")}</span>
             <div role="toolbar" aria-labelledby="toolbar-label" className="mt-1 flex flex-wrap gap-1 rounded-t-md border border-b-0 border-line-input bg-surface p-1">
               {[
-                { label: "Tebal", icon: <Bold className="size-4" aria-hidden="true" />, fn: () => insertAround(bodyRef.current, "**", "**", bodyValue, setBodyValue) },
-                { label: "Miring", icon: <Italic className="size-4" aria-hidden="true" />, fn: () => insertAround(bodyRef.current, "_", "_", bodyValue, setBodyValue) },
-                { label: "Subjudul", icon: <Heading2 className="size-4" aria-hidden="true" />, fn: () => insertAround(bodyRef.current, "## ", "", bodyValue, setBodyValue) },
-                { label: "Daftar", icon: <List className="size-4" aria-hidden="true" />, fn: () => insertAround(bodyRef.current, "- ", "", bodyValue, setBodyValue) },
-                { label: "Tautan", icon: <Link2 className="size-4" aria-hidden="true" />, fn: () => insertAround(bodyRef.current, "[", "](https://)", bodyValue, setBodyValue) },
+                { label: t("tulis.bold"), icon: <Bold className="size-4" aria-hidden="true" />, fn: () => insertAround(bodyRef.current, "**", "**", bodyValue, setBodyValue) },
+                { label: t("tulis.italic"), icon: <Italic className="size-4" aria-hidden="true" />, fn: () => insertAround(bodyRef.current, "_", "_", bodyValue, setBodyValue) },
+                { label: t("tulis.heading"), icon: <Heading2 className="size-4" aria-hidden="true" />, fn: () => insertAround(bodyRef.current, "## ", "", bodyValue, setBodyValue) },
+                { label: t("tulis.list"), icon: <List className="size-4" aria-hidden="true" />, fn: () => insertAround(bodyRef.current, "- ", "", bodyValue, setBodyValue) },
+                { label: t("tulis.link"), icon: <Link2 className="size-4" aria-hidden="true" />, fn: () => insertAround(bodyRef.current, "[", "](https://)", bodyValue, setBodyValue) },
               ].map((b) => (
                 <button key={b.label} type="button" aria-label={b.label} aria-pressed={false} onClick={b.fn} disabled={locked} className="flex size-9 items-center justify-center rounded-md text-ink hover:bg-surface-alt focus-visible:outline-2 focus-visible:outline-accent disabled:opacity-50">
                   {b.icon}
                 </button>
               ))}
-              <span className="ml-auto self-center pr-2 text-xs text-muted">Format: tebal, miring, subjudul, daftar, tautan.</span>
+              <span className="ml-auto self-center pr-2 text-xs text-muted">{t("tulis.formatHint")}</span>
             </div>
             <TextArea
               ref={bodyRef as never}
               id="isi"
-              aria-label={tab === "id" ? "Isi artikel bahasa Indonesia" : "Isi artikel bahasa Inggris"}
+              aria-label={tab === "id" ? t("tulis.bodyLabel") : t("tulis.bodyEnLabel")}
               value={bodyValue}
               onChange={(e) => setBodyValue(e.target.value)}
-              placeholder="Tulis ceritamu di sini… Satu ide per paragraf."
+              placeholder={t("tulis.bodyPh")}
               disabled={locked}
               className="rounded-t-none"
             />
-            <p aria-live="polite" className="mt-1 text-sm text-muted">{savedAt ? `Draft tersimpan · ${savedAt}` : "Belum tersimpan"}</p>
+            <p aria-live="polite" className="mt-1 text-sm text-muted">{savedAt ? t("tulis.savedAt", { time: savedAt }) : t("tulis.notSaved")}</p>
           </div>
 
           <div className="flex flex-wrap gap-2">
             <Button onClick={() => setPreview((v) => !v)} variant="secondary" aria-pressed={preview}>
-              {preview ? "Tutup pratinjau" : "Pratinjau"}
+              {preview ? t("tulis.closePreview") : t("tulis.preview")}
             </Button>
-            <Button onClick={() => save(true)} loading={saving} disabled={locked}>Simpan draft</Button>
+            <Button onClick={() => save(true)} loading={saving} disabled={locked}>{t("tulis.saveDraft")}</Button>
             <Button onClick={submit} variant="secondary" loading={saving} disabled={locked || !contributionId}>
-              Kirim ke redaksi
+              {t("tulis.submit")}
             </Button>
           </div>
 
           {preview && (
-            <section aria-label="Pratinjau artikel" className="rounded-lg border border-line bg-canvas p-6">
-              <h2 className="text-xl font-bold text-ink">{titleId || "Tanpa judul"}</h2>
-              <p className="mt-1 text-sm text-muted">{location || "Belitung"} · {CHANNELS[channel]}</p>
+            <section aria-label={t("tulis.previewAria")} className="rounded-lg border border-line bg-canvas p-6">
+              <h2 className="text-xl font-bold text-ink">{titleId || t("tulis.noTitle")}</h2>
+              <p className="mt-1 text-sm text-muted">{location || "Belitung"} · {channelLabel(channel, lang)}</p>
               <div className="mt-4 flex flex-col gap-3">
                 {bodyId.split(/\n+/).filter(Boolean).map((p, i) => <p key={i} className="text-base leading-7 text-ink">{p}</p>)}
-                {bodyId.trim() === "" && <p className="text-sm text-muted">Isi masih kosong.</p>}
+                {bodyId.trim() === "" && <p className="text-sm text-muted">{t("tulis.emptyBody")}</p>}
               </div>
             </section>
           )}
         </div>
 
-        <aside className="flex flex-col gap-4" aria-label="Pengaturan artikel">
+        <aside className="flex flex-col gap-4" aria-label={t("tulis.settingsAria")}>
           <div className="rounded-lg border border-line bg-canvas p-4">
-            <Field label="Kanal" id="kanal">
+            <Field label={t("tulis.channel")} id="kanal">
               <SelectInput id="kanal" value={channel} onChange={(e) => { setChannel(e.target.value as Channel); setCategoryId(""); }} disabled={locked}>
-                {(Object.keys(CHANNELS) as Channel[]).map((c) => <option key={c} value={c}>{CHANNELS[c]}</option>)}
+                {(Object.keys(CHANNELS) as Channel[]).map((c) => <option key={c} value={c}>{channelLabel(c, lang)}</option>)}
               </SelectInput>
             </Field>
             <div className="mt-3">
-              <Field label="Kategori" id="kategori">
+              <Field label={t("tulis.category")} id="kategori">
                 <SelectInput id="kategori" value={categoryId} onChange={(e) => setCategoryId(e.target.value)} disabled={locked}>
-                  <option value="">Pilih kategori</option>
-                  {channelCategories.map((c) => <option key={c.id} value={c.id}>{c.name_id}</option>)}
+                  <option value="">{t("tulis.chooseCategory")}</option>
+                  {channelCategories.map((c) => <option key={c.id} value={c.id}>{lang === "en" && c.name_en ? c.name_en : c.name_id}</option>)}
                 </SelectInput>
               </Field>
             </div>
             <div className="mt-3">
-              <Field label="Lokasi" id="lokasi" hint="Nama tempat, contoh: Sijuk, Belitung.">
-                <TextInput id="lokasi" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Sijuk, Belitung" disabled={locked} />
+              <Field label={t("tulis.location")} id="lokasi" hint={t("tulis.locationHint")}>
+                <TextInput id="lokasi" value={location} onChange={(e) => setLocation(e.target.value)} placeholder={t("tulis.locationPh")} disabled={locked} />
               </Field>
             </div>
             <div className="mt-3">
-              <Field label="Sumber" id="sumber" hint="Sumber bacaan atau narasumber, bila ada.">
-                <TextInput id="sumber" value={source} onChange={(e) => setSource(e.target.value)} placeholder="Wawancara / arsip iTAP" disabled={locked} />
+              <Field label={t("tulis.source")} id="sumber" hint={t("tulis.sourceHint")}>
+                <TextInput id="sumber" value={source} onChange={(e) => setSource(e.target.value)} placeholder={t("tulis.sourcePh")} disabled={locked} />
               </Field>
             </div>
           </div>
 
           <div className="rounded-lg border border-line bg-canvas p-4">
-            <h2 className="text-base font-semibold text-ink">Galeri foto</h2>
-            <p className="mt-1 text-sm text-muted">Foto dikompresi sebelum diunggah dan metadata lokasi dibuang (privasi). Maks 5 foto di demo.</p>
+            <h2 className="text-base font-semibold text-ink">{t("tulis.gallery")}</h2>
+            <p className="mt-1 text-sm text-muted">{t("tulis.galleryNote")}</p>
             <label htmlFor="foto" className="mt-3 inline-flex h-10 cursor-pointer items-center gap-2 rounded-md border border-line bg-canvas px-4 text-sm font-semibold text-ink hover:bg-surface focus-visible:outline-2 focus-visible:outline-accent">
-              <ImagePlus className="size-4" aria-hidden="true" /> Pilih foto
+              <ImagePlus className="size-4" aria-hidden="true" /> {t("tulis.choosePhoto")}
             </label>
             <input
               id="foto"
@@ -283,17 +292,17 @@ function EditorForm({ contributionId }: EditorProps) {
             />
             {photos.length > 0 && (
               <ul className="mt-3 flex flex-col gap-1 text-sm text-muted">
-                {photos.map((p) => <li key={p}>• {p} <span className="text-xs">(demo: nama file saja, belum diunggah)</span></li>)}
+                {photos.map((p) => <li key={p}>• {p} <span className="text-xs">{t("tulis.demoPhotoNote")}</span></li>)}
               </ul>
             )}
-            {photos.length === 0 && <p className="mt-3 text-sm text-muted">Belum ada foto.</p>}
+            {photos.length === 0 && <p className="mt-3 text-sm text-muted">{t("tulis.noPhotos")}</p>}
           </div>
 
           <div className="rounded-lg border border-line bg-canvas p-4">
-            <h2 className="text-base font-semibold text-ink">Bantuan terjemahan</h2>
-            <p className="mt-1 text-sm text-muted">Belum ada terjemahan Inggris? Redaksi bisa membantu — kirim dulu versi Indonesianya, lalu minta bantuan di dasbor kontributor.</p>
-            <Button variant="ghost" size="sm" className="mt-2" onClick={() => setNotice("Permintaan bantuan terjemahan dicatat (demo). Redaksi akan menghubungimu setelah artikel dikirim.")}>
-              Minta bantuan terjemahan
+            <h2 className="text-base font-semibold text-ink">{t("tulis.helpTitle")}</h2>
+            <p className="mt-1 text-sm text-muted">{t("tulis.helpText")}</p>
+            <Button variant="ghost" size="sm" className="mt-2" onClick={() => setNotice(t("tulis.helpRequestNote"))}>
+              {t("tulis.askHelp")}
             </Button>
           </div>
         </aside>
@@ -303,8 +312,9 @@ function EditorForm({ contributionId }: EditorProps) {
 }
 
 export default function EditorPage({ contributionId }: EditorProps) {
+  const { t } = useLanguage();
   return (
-    <RequireRole roles={["contributor", "admin_portal", "superadmin"]} title="Editor kontributor">
+    <RequireRole roles={["contributor", "admin_portal", "superadmin"]} title={t("tulis.title")}>
       <EditorForm contributionId={contributionId} />
     </RequireRole>
   );

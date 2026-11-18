@@ -10,16 +10,16 @@ import Link from "next/link";
 import { BookmarkPlus, Flag, Mic, Send, ThumbsDown, ThumbsUp } from "lucide-react";
 import { Banner, Button, EmptyState, TextArea } from "@/components/ui";
 import type { AiItinerary, AiMessage } from "@/lib/ai";
+import { useLanguage } from "@/components/language-provider";
 
-const UNAVAILABLE_TEXT =
-  "AI iTAP belum tersedia — butuh kunci Gemini (Fase 3, P3). " +
-  "Sampai kunci itu ada, halaman ini tidak bisa menjawab pertanyaan apa pun.";
+// UNAVAILABLE_TEXT now comes from the i18n dictionary (ai.unavailable).
 
 function newId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
 export function AiChat() {
+  const { t, lang } = useLanguage();
   const [messages, setMessages] = useState<AiMessage[]>([]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
@@ -86,16 +86,16 @@ export function AiChat() {
       } else if (res.status === 501) {
         setMessages((m) => [
           ...m,
-          { id: newId(), role: "system", text: UNAVAILABLE_TEXT, unavailable: true },
+          { id: newId(), role: "system", text: t("ai.unavailable"), unavailable: true },
         ]);
       } else {
-        const err = (data as { error?: string }).error ?? "Gagal bertanya ke AI iTAP.";
+        const err = (data as { error?: string }).error ?? t("ai.askFailed");
         setMessages((m) => [...m, { id: newId(), role: "system", text: err }]);
       }
     } catch {
       setMessages((m) => [
         ...m,
-        { id: newId(), role: "system", text: "Gagal terhubung ke server. Periksa koneksi lalu coba lagi." },
+        { id: newId(), role: "system", text: t("ai.connectFailed") },
       ]);
     } finally {
       setBusy(false);
@@ -104,7 +104,7 @@ export function AiChat() {
 
   const sendFeedback = async (msg: AiMessage, vote: "up" | "down", reason?: string) => {
     if (!msg.conversationId) {
-      setFeedbackNote("Umpan balik belum bisa disimpan — jawaban ini belum punya id percakapan dari server.");
+      setFeedbackNote(t("ai.feedbackNoConv"));
       return;
     }
     try {
@@ -119,12 +119,12 @@ export function AiChat() {
         setReportFor(null);
         setReportReason("");
       } else if (res.status === 501) {
-        setFeedbackNote("Umpan balik belum bisa disimpan — AI iTAP belum tersedia (butuh kunci Gemini, P3).");
+        setFeedbackNote(t("ai.feedbackUnavailable"));
       } else {
-        setFeedbackNote("Umpan balik gagal dikirim. Coba lagi nanti.");
+        setFeedbackNote(t("ai.feedbackFailed"));
       }
     } catch {
-      setFeedbackNote("Umpan balik gagal dikirim. Periksa koneksi lalu coba lagi.");
+      setFeedbackNote(t("ai.feedbackFailedConn"));
     }
   };
 
@@ -134,45 +134,43 @@ export function AiChat() {
       const res = await fetch("/api/ai/itineraries", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: "Rencana perjalanan dari AI iTAP", days: msg.itineraryDays }),
+        body: JSON.stringify({ title: t("ai.itinTitle"), days: msg.itineraryDays }),
       });
       if (res.ok) {
         const data: unknown = await res.json();
         setItineraries((list) => [data as AiItinerary, ...list]);
-        setSaveNote("Rencana perjalanan tersimpan.");
+        setSaveNote(t("ai.itinSaved"));
       } else if (res.status === 501) {
-        setSaveNote("Rencana belum bisa disimpan — AI iTAP belum tersedia (butuh kunci Gemini, P3).");
+        setSaveNote(t("ai.itinSaveUnavailable"));
       } else {
-        setSaveNote("Rencana gagal disimpan. Coba lagi nanti.");
+        setSaveNote(t("ai.itinSaveFailed"));
       }
     } catch {
-      setSaveNote("Rencana gagal disimpan. Periksa koneksi lalu coba lagi.");
+      setSaveNote(t("ai.itinSaveFailedConn"));
     }
   };
 
   return (
     <div className="flex flex-col gap-6 py-8">
       <header>
-        <h1 className="text-xl font-bold text-ink">AI iTAP</h1>
+        <h1 className="text-xl font-bold text-ink">{t("ai.title")}</h1>
         <p className="mt-1 text-sm text-muted">
-          Tanya apa saja tentang Belitung — pantai, kuliner, sejarah, jadwal, dan rencana perjalanan.
-          Jawaban hanya dari konten iTAP yang dikurasi dan info harian, disertai sumber.
+          {t("ai.subtitle")}
         </p>
       </header>
 
       <Banner tone="warning">
-        <strong>Jawaban AI bisa keliru, periksa kembali informasi penting.</strong>
-        {" "}Jadwal, harga, dan cuaca bisa berubah — cek sumber aslinya sebelum berangkat.
-        Bila AI tidak tahu, ia akan menjawab tidak tahu daripada mengarang.
+        <strong>{t("ai.warning")}</strong>
+        {" "}{t("ai.warning2")}
       </Banner>
 
       <section aria-labelledby="chat-title" className="flex flex-col gap-4">
-        <h2 id="chat-title" className="text-lg font-semibold text-ink">Percakapan</h2>
+        <h2 id="chat-title" className="text-lg font-semibold text-ink">{t("ai.conversation")}</h2>
 
         {messages.length === 0 ? (
           <EmptyState
-            title="Tanya apa saja tentang Belitung"
-            desc="Contoh: pantai yang cocok untuk keluarga, atau rencana perjalanan 2 hari dari Tanjung Pandan."
+            title={t("ai.emptyTitle")}
+            desc={t("ai.emptyDesc")}
           />
         ) : (
           <ol className="flex flex-col gap-3" aria-live="polite">
@@ -191,7 +189,7 @@ export function AiChat() {
 
                 {m.role === "assistant" && m.sources && m.sources.length > 0 && (
                   <div className="mt-3 border-t border-line pt-2">
-                    <p className="text-xs font-semibold text-muted">Sumber:</p>
+                    <p className="text-xs font-semibold text-muted">{t("ai.sources")}:</p>
                     <ul className="mt-1 flex flex-col gap-1">
                       {m.sources.map((s) => (
                         <li key={s.href}>
@@ -207,33 +205,33 @@ export function AiChat() {
                 {m.role === "assistant" && m.itineraryDays && (
                   <div className="mt-3">
                     <Button variant="secondary" size="sm" onClick={() => void saveItinerary(m)}>
-                      <BookmarkPlus className="size-4" aria-hidden="true" /> Simpan rencana perjalanan ini
+                      <BookmarkPlus className="size-4" aria-hidden="true" /> {t("ai.saveItinerary")}
                     </Button>
                   </div>
                 )}
 
                 {m.role === "assistant" && (
                   <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-line pt-2">
-                    <span className="text-xs text-muted">Apakah jawaban ini membantu?</span>
+                    <span className="text-xs text-muted">{t("ai.helpfulQ")}</span>
                     <button
                       type="button"
                       onClick={() => void sendFeedback(m, "up")}
                       disabled={voted[m.id] === "up"}
-                      aria-label="Jawaban membantu"
+                      aria-label={t("ai.helpfulYes")}
                       aria-pressed={voted[m.id] === "up"}
                       className={`inline-flex h-8 items-center gap-1 rounded-md border px-2 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent disabled:opacity-50 ${voted[m.id] === "up" ? "border-accent bg-surface text-accent" : "border-line bg-canvas text-ink hover:bg-surface"}`}
                     >
-                      <ThumbsUp className="size-4" aria-hidden="true" /> Ya
+                      <ThumbsUp className="size-4" aria-hidden="true" /> {t("common.yes")}
                     </button>
                     <button
                       type="button"
                       onClick={() => void sendFeedback(m, "down")}
                       disabled={voted[m.id] === "down"}
-                      aria-label="Jawaban tidak membantu"
+                      aria-label={t("ai.helpfulNo")}
                       aria-pressed={voted[m.id] === "down"}
                       className={`inline-flex h-8 items-center gap-1 rounded-md border px-2 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent disabled:opacity-50 ${voted[m.id] === "down" ? "border-accent bg-surface text-accent" : "border-line bg-canvas text-ink hover:bg-surface"}`}
                     >
-                      <ThumbsDown className="size-4" aria-hidden="true" /> Tidak
+                      <ThumbsDown className="size-4" aria-hidden="true" /> {t("common.no")}
                     </button>
                     <button
                       type="button"
@@ -241,7 +239,7 @@ export function AiChat() {
                       aria-expanded={reportFor === m.id}
                       className="inline-flex h-8 items-center gap-1 rounded-md px-2 text-sm font-semibold text-danger hover:bg-surface focus-visible:outline-2 focus-visible:outline-accent"
                     >
-                      <Flag className="size-4" aria-hidden="true" /> Laporkan jawaban salah
+                      <Flag className="size-4" aria-hidden="true" /> {t("ai.reportWrong")}
                     </button>
                   </div>
                 )}
@@ -255,18 +253,18 @@ export function AiChat() {
                     }}
                   >
                     <label htmlFor={`alasan-${m.id}`} className="text-sm font-semibold text-ink">
-                      Apa yang salah dari jawaban ini?
+                      {t("ai.whatWrong")}
                     </label>
                     <TextArea
                       id={`alasan-${m.id}`}
                       value={reportReason}
                       onChange={(e) => setReportReason(e.target.value)}
-                      placeholder="Contoh: harga sudah berubah, nama tempat salah…"
+                      placeholder={t("ai.reportPlaceholder")}
                     />
                     <div className="flex gap-2">
-                      <Button size="sm" type="submit">Kirim laporan</Button>
+                      <Button size="sm" type="submit">{t("ai.sendReport")}</Button>
                       <Button size="sm" variant="secondary" onClick={() => { setReportFor(null); setReportReason(""); }}>
-                        Batal
+                        {t("common.cancel")}
                       </Button>
                     </div>
                   </form>
@@ -292,49 +290,49 @@ export function AiChat() {
           }}
         >
           <label htmlFor="ai-input" className="text-sm font-semibold text-ink">
-            Pertanyaanmu
+            {t("ai.questionLabel")}
           </label>
           <TextArea
             id="ai-input"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Tulis pertanyaan tentang Belitung…"
+            placeholder={t("ai.questionPh")}
             rows={3}
             disabled={busy}
           />
           <div className="flex flex-wrap items-center gap-2">
             <Button type="submit" loading={busy} disabled={!input.trim()}>
-              <Send className="size-4" aria-hidden="true" /> {busy ? "Menunggu jawaban…" : "Tanya AI iTAP"}
+              <Send className="size-4" aria-hidden="true" /> {busy ? t("ai.waiting") : t("ai.ask")}
             </Button>
             <button
               type="button"
               disabled
-              title="Input suara belum tersedia di versi web ini — tulis pertanyaanmu."
-              aria-label="Input suara (belum tersedia)"
+              title={t("ai.voiceNote")}
+              aria-label={t("ai.voiceUnavailable")}
               className="inline-flex h-10 items-center gap-2 rounded-md border border-line bg-canvas px-3 text-sm font-semibold text-muted opacity-60"
             >
-              <Mic className="size-4" aria-hidden="true" /> Suara (belum tersedia)
+              <Mic className="size-4" aria-hidden="true" /> {t("ai.voiceUnavailable")}
             </button>
           </div>
           <p className="text-xs text-muted">
-            Input suara belum tersedia di versi web ini. Pertanyaan tersimpan sementara ±10 menit.
+            {t("ai.voiceNote")}
           </p>
         </form>
       </section>
 
       <section aria-labelledby="rencana-title" className="flex flex-col gap-3">
-        <h2 id="rencana-title" className="text-lg font-semibold text-ink">Rencana perjalanan tersimpan</h2>
+        <h2 id="rencana-title" className="text-lg font-semibold text-ink">{t("ai.savedItineraries")}</h2>
         {itinLoading ? (
           <div aria-busy="true"><div className="skeleton h-24 w-full" /></div>
         ) : itinUnavailable ? (
           <EmptyState
-            title="Belum ada rencana tersimpan."
-            desc="Rencana perjalanan per hari dibuat dari jawaban AI iTAP — dan AI iTAP belum tersedia sampai kunci Gemini (Fase 3, P3) ada."
+            title={t("ai.noItineraries")}
+            desc={t("ai.noItinerariesDesc")}
           />
         ) : itineraries.length === 0 ? (
           <EmptyState
-            title="Belum ada rencana tersimpan."
-            desc="Rencana dibuat dari jawaban AI: tanya rencana perjalanan, lalu simpan per hari dari jawaban itu."
+            title={t("ai.noItineraries")}
+            desc={t("ai.noItinerariesDesc2")}
           />
         ) : (
           <ul className="grid gap-3 sm:grid-cols-2">
@@ -344,7 +342,7 @@ export function AiChat() {
                   {it.title}
                 </Link>
                 <p className="mt-1 text-sm text-muted">
-                  {it.days.length} hari · dibuat {new Date(it.created_at).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
+                  {t("ai.days", { count: it.days.length })} · {t("ai.created")} {new Date(it.created_at).toLocaleDateString(lang === "en" ? "en-GB" : "id-ID", { day: "numeric", month: "long", year: "numeric" })}
                 </p>
               </li>
             ))}

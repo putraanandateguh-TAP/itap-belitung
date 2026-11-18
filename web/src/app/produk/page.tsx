@@ -1,9 +1,9 @@
 // Halaman konten iTAP: Produk Digital — #28 Kartu Produk Digital.
-// KATALOG + status/aktivasi lisensi server-side (migrasi 0007).
+// KATALOG + status/aktivasi lisensi server-side (migrasi 0007, PR #29).
 // Kode lisensi divalidasi Edge Function Supabase (validate-license);
 // frontend hanya menampilkan entitlement dari server — TIDAK ADA
 // pemeriksaan hash / flag localStorage di halaman ini (temuan audit K1).
-// Pembelian lewat WhatsApp admin.
+// Pembelian lewat WhatsApp admin. Teks antarmuka bilingual (i18n, PR #30).
 import type { Metadata } from "next";
 import Image from "next/image";
 import { listProducts, listServices } from "@/lib/data";
@@ -11,6 +11,8 @@ import { WA_NUMBER } from "@/lib/seed-data";
 import { formatRupiah } from "@/lib/format";
 import { Badge, Banner } from "@/components/ui";
 import { LicenseSection } from "@/components/license-section";
+import { getServerLang } from "@/lib/i18n-server";
+import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Produk Digital iTAP",
@@ -19,6 +21,7 @@ export const metadata: Metadata = {
 
 export default async function ProdukPage() {
   const products = await listProducts();
+  const lang = await getServerLang();
   // Poster kelas AI Content Creator: kelas yang cocok di data adalah K1
   // (Kelas K1 — Kreator Video AI Lokal); nama + harga dari data, bukan karangan.
   const kelasK1 = (await listServices()).find((s) => s.id === "kelas-k1");
@@ -26,12 +29,12 @@ export default async function ProdukPage() {
   return (
     <div className="flex flex-col gap-6 py-8">
       <header>
-        <h1 className="text-xl font-bold text-ink">Produk Digital iTAP</h1>
-        <p className="mt-1 text-sm text-muted">Harga dari situs iTAP (Nov 2026). Pembelian lewat WhatsApp admin — pesanan dikonfirmasi setelah pembayaran dicek di mutasi, bukan dari screenshot.</p>
+        <h1 className="text-xl font-bold text-ink">{t(lang, "produk.title")}</h1>
+        <p className="mt-1 text-sm text-muted">{t(lang, "produk.subtitle")}</p>
       </header>
 
       <Banner tone="info">
-        Katalog produk digital. Lisensi FULL divalidasi di server (Supabase Edge Function) — status di bawah ini diambil dari server, bukan dari perangkat Anda.
+        {t(lang, "produk.catalogNote")}
       </Banner>
 
       <LicenseSection />
@@ -56,7 +59,7 @@ export default async function ProdukPage() {
               rel="noopener noreferrer"
               className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-on-accent hover:bg-accent-dark focus-visible:outline-2 focus-visible:outline-accent"
             >
-              Beli {p.name} via WhatsApp
+              {t(lang, "produk.buyViaWa", { name: p.name })}
             </a>
           </article>
         ))}
@@ -65,7 +68,7 @@ export default async function ProdukPage() {
       {/* Kelas Kreator AI — poster asli kelas AI Content Creator (K1). */}
       {kelasK1 && (
         <section aria-labelledby="kelas-ai-title" className="mt-2">
-          <h2 id="kelas-ai-title" className="text-lg font-semibold text-ink">Kelas Kreator AI</h2>
+          <h2 id="kelas-ai-title" className="text-lg font-semibold text-ink">{t(lang, "produk.classTitle")}</h2>
           <article className="mt-3 overflow-hidden rounded-lg border border-line bg-canvas shadow-card">
             <Image
               src="/images/ai-content-creator.webp"
@@ -91,20 +94,20 @@ export default async function ProdukPage() {
                   rel="noopener noreferrer"
                   className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-on-accent hover:bg-accent-dark focus-visible:outline-2 focus-visible:outline-accent"
                 >
-                  Daftar {kelasK1.name} via WhatsApp
+                  {t(lang, "produk.registerViaWa", { name: kelasK1.name })}
                 </a>
                 <a
                   href="/jasa"
                   className="inline-flex h-10 items-center justify-center rounded-md border border-line bg-canvas px-4 text-sm font-semibold text-ink hover:bg-surface-alt focus-visible:outline-2 focus-visible:outline-accent"
                 >
-                  Lihat semua kelas &amp; jasa
+                  {t(lang, "produk.viewAllServices")}
                 </a>
               </div>
             </div>
           </article>
         </section>
       )}
-      <p className="text-sm text-muted">Butuh bantuan memilih? Lihat juga <a href="/jasa" className="font-semibold text-accent hover:underline">jasa iTAP</a> — website, chatbot, video AI, dan kelas kreator.</p>
+      <p className="text-sm text-muted">{t(lang, "produk.helpNote")}<a href="/jasa" className="font-semibold text-accent hover:underline">{t(lang, "produk.servicesLink")}</a>{t(lang, "produk.helpNoteSuffix")}</p>
     </div>
   );
 }

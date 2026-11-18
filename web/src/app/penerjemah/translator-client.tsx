@@ -28,6 +28,7 @@ import {
   type TranslationEntry,
 } from "@/lib/ai";
 import { channelLabel } from "@/lib/labels";
+import { useLanguage } from "@/components/language-provider";
 
 import type { Channel } from "@/lib/types";
 
@@ -73,6 +74,7 @@ function LanguageChips({
 }
 
 export function TranslatorClient({ queue }: { queue: TranslationQueueItem[] }) {
+  const { t, lang } = useLanguage();
   const [from, setFrom] = useState("id");
   const [to, setTo] = useState("en");
   const [text, setText] = useState("");
@@ -90,7 +92,7 @@ export function TranslatorClient({ queue }: { queue: TranslationQueueItem[] }) {
 
   const translate = async () => {
     if (!text.trim()) {
-      setMessage("Tulis dulu teks yang mau diterjemahkan.");
+      setMessage(t("translator.emptyText"));
       return;
     }
     setBusy(true);
@@ -107,7 +109,7 @@ export function TranslatorClient({ queue }: { queue: TranslationQueueItem[] }) {
       if (res.ok) {
         const d = data as { translation: string; source?: string };
         setResult(d.translation);
-        setResultSource(d.source === "kamus-lokal" ? "Kamus lokal iTAP" : "Bahasa sama");
+        setResultSource(d.source === "kamus-lokal" ? t("translator.localDict") : t("translator.sameLang"));
         setHistory(
           addTranslationHistory({
             sourceText: text.trim(),
@@ -118,17 +120,14 @@ export function TranslatorClient({ queue }: { queue: TranslationQueueItem[] }) {
           }),
         );
       } else if (res.status === 501) {
-        setMessage(
-          "Penerjemah belum tersedia untuk teks ini — butuh kunci Gemini (Fase 3, P3). " +
-            "Kamus lokal di server hanya berisi padanan istilah kategori Indonesia–English dari konten iTAP.",
-        );
+        setMessage(t("translator.unavailable"));
       } else if (res.status === 401) {
-        setMessage("Masuk dulu untuk memakai penerjemah.");
+        setMessage(t("translator.loginFirst"));
       } else {
-        setMessage((data as { error?: string }).error ?? "Gagal menerjemahkan.");
+        setMessage((data as { error?: string }).error ?? t("translator.translateFailed"));
       }
     } catch {
-      setMessage("Gagal terhubung ke server. Periksa koneksi lalu coba lagi.");
+      setMessage(t("translator.connectFailed"));
     } finally {
       setBusy(false);
     }
@@ -162,15 +161,15 @@ export function TranslatorClient({ queue }: { queue: TranslationQueueItem[] }) {
     <div className="rounded-lg border border-line bg-canvas p-4 shadow-card">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h2 className="text-sm font-semibold text-ink">
-          Hasil · {languageLabel(from)} → {languageLabel(to)}
+          {t("translator.resultLabel")} · {languageLabel(from)} → {languageLabel(to)}
         </h2>
         <div className="flex flex-wrap items-center gap-2">
           {resultSource && <Badge tone="active">{resultSource}</Badge>}
           <Button variant="secondary" size="sm" onClick={() => void copyResult()}>
-            <Copy className="size-4" aria-hidden="true" /> {copied ? "Disalin" : "Salin hasil"}
+            <Copy className="size-4" aria-hidden="true" /> {copied ? t("translator.copied") : t("translator.copyResult")}
           </Button>
           <Button variant="secondary" size="sm" onClick={() => setFullscreen(true)}>
-            <Expand className="size-4" aria-hidden="true" /> Layar penuh
+            <Expand className="size-4" aria-hidden="true" /> {t("translator.fullscreen")}
           </Button>
         </div>
       </div>
@@ -181,56 +180,54 @@ export function TranslatorClient({ queue }: { queue: TranslationQueueItem[] }) {
   return (
     <div className="flex flex-col gap-6 py-8">
       <header>
-        <h1 className="text-xl font-bold text-ink">Penerjemah</h1>
+        <h1 className="text-xl font-bold text-ink">{t("translator.title")}</h1>
         <p className="mt-1 text-sm text-muted">
-          Terjemah 9 bahasa: Belitung, Indonesia, English, Melayu, Mandarin, Jepang, Korea, Belanda, Jerman.
+          {t("translator.subtitle")}
         </p>
       </header>
 
       <Banner tone="info">
-        Kamus lokal di server hanya berisi padanan istilah kategori Indonesia–English dari konten iTAP
-        (mis. “Kuliner Lokal” → “Local Food”). Teks lain butuh kunci Gemini (Fase 3, P3) — sampai saat
-        itu penerjemah menjawab jujur “belum tersedia”, bukan mengarang terjemahan.
+        {t("translator.banner")}
       </Banner>
 
       <section aria-labelledby="terjemah-title" className="flex flex-col gap-4">
-        <h2 id="terjemah-title" className="sr-only">Terjemahkan teks</h2>
-        <LanguageChips id="dari" label="Dari" value={from} onChange={setFrom} />
+        <h2 id="terjemah-title" className="sr-only">{t("translator.translateText")}</h2>
+        <LanguageChips id="dari" label={t("translator.from")} value={from} onChange={setFrom} />
         <div>
           <Button variant="secondary" size="sm" onClick={swap}>
-            <ArrowLeftRight className="size-4" aria-hidden="true" /> Tukar bahasa
+            <ArrowLeftRight className="size-4" aria-hidden="true" /> {t("translator.swap")}
           </Button>
         </div>
-        <LanguageChips id="ke" label="Ke" value={to} onChange={setTo} />
+        <LanguageChips id="ke" label={t("translator.to")} value={to} onChange={setTo} />
 
-        <Field label="Teks" id="teks" hint="Ketik atau tempel teks yang mau diterjemahkan.">
+        <Field label={t("translator.textLabel")} id="teks" hint={t("translator.textHint")}>
           <TextArea
             id="teks"
             value={text}
             onChange={(e) => setText(e.target.value)}
-            placeholder="Tulis teks di sini…"
+            placeholder={t("translator.textPh")}
             rows={4}
           />
         </Field>
 
         <div className="flex flex-wrap items-center gap-2">
           <Button onClick={() => void translate()} loading={busy} disabled={!text.trim()}>
-            Terjemahkan
+            {t("translator.translate")}
           </Button>
           <button
             type="button"
             disabled
-            title="Input suara dan foto belum tersedia di versi ini."
-            aria-label="Input suara atau foto (belum tersedia)"
+            title={t("translator.voicePhotoNote")}
+            aria-label={t("translator.voicePhoto")}
             className="inline-flex h-10 items-center gap-2 rounded-md border border-line bg-canvas px-3 text-sm font-semibold text-muted opacity-60"
           >
             <Mic className="size-4" aria-hidden="true" />
             <Camera className="size-4" aria-hidden="true" />
-            Suara / Foto (belum tersedia)
+            {t("translator.voicePhoto")}
           </button>
         </div>
         <p className="text-xs text-muted">
-          Input suara dan foto belum tersedia di versi ini. Mikrofon hanya dipakai saat dipilih — dan belum ada pilihannya.
+          {t("translator.voicePhotoNote")}
         </p>
 
         {message && <Banner tone="warning">{message}</Banner>}
@@ -241,15 +238,15 @@ export function TranslatorClient({ queue }: { queue: TranslationQueueItem[] }) {
         <div
           role="dialog"
           aria-modal="true"
-          aria-label="Hasil terjemahan layar penuh"
+          aria-label={t("translator.fullscreenResult")}
           className="fixed inset-0 z-50 flex flex-col gap-4 overflow-y-auto bg-canvas p-6"
         >
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-bold text-ink">
-              Hasil · {languageLabel(from)} → {languageLabel(to)}
+              {t("translator.resultLabel")} · {languageLabel(from)} → {languageLabel(to)}
             </h2>
             <Button variant="secondary" size="sm" onClick={() => setFullscreen(false)}>
-              <X className="size-4" aria-hidden="true" /> Tutup
+              <X className="size-4" aria-hidden="true" /> {t("translator.close")}
             </Button>
           </div>
           {resultSource && <Badge tone="active">{resultSource}</Badge>}
@@ -261,7 +258,7 @@ export function TranslatorClient({ queue }: { queue: TranslationQueueItem[] }) {
       <section aria-labelledby="riwayat-title" className="flex flex-col gap-3">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 id="riwayat-title" className="text-lg font-semibold text-ink">
-            Riwayat (perangkat ini, maks {TRANSLATION_HISTORY_MAX})
+            {t("translator.history", { max: TRANSLATION_HISTORY_MAX })}
           </h2>
           {history.length > 0 && (
             <Button
@@ -272,17 +269,17 @@ export function TranslatorClient({ queue }: { queue: TranslationQueueItem[] }) {
                 setHistory([]);
               }}
             >
-              <Trash2 className="size-4" aria-hidden="true" /> Hapus riwayat
+              <Trash2 className="size-4" aria-hidden="true" /> {t("translator.clearHistory")}
             </Button>
           )}
         </div>
         <p className="text-sm text-muted">
-          Riwayat hanya tersimpan di perangkat ini, bukan di server — dan terhapus saat akun dihapus.
+          {t("translator.historyNote")}
         </p>
         {history.length === 0 ? (
           <EmptyState
-            title="Belum ada riwayat."
-            desc="Hasil terjemahan yang berhasil akan tersimpan di perangkat ini (maks 20, yang lama terhapus otomatis)."
+            title={t("translator.noHistory")}
+            desc={t("translator.noHistoryDesc")}
           />
         ) : (
           <ul className="flex flex-col gap-2">
@@ -294,19 +291,19 @@ export function TranslatorClient({ queue }: { queue: TranslationQueueItem[] }) {
                 <div className="mt-2 flex flex-wrap items-center gap-2">
                   <span className="text-xs text-muted">
                     {languageLabel(h.from)} → {languageLabel(h.to)} ·{" "}
-                    {new Date(h.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
+                    {new Date(h.createdAt).toLocaleDateString(lang === "en" ? "en-GB" : "id-ID", { day: "numeric", month: "short", year: "numeric" })}
                   </span>
                   <button
                     type="button"
                     onClick={() => markFavorite(h)}
                     aria-pressed={h.favorite}
-                    aria-label={h.favorite ? "Lepas dari favorit" : "Tandai favorit"}
+                    aria-label={h.favorite ? t("translator.unfavorite") : t("translator.favoriteBtn")}
                     className={`inline-flex h-8 items-center gap-1 rounded-md border px-2 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent ${
                       h.favorite ? "border-accent bg-surface text-accent" : "border-line bg-canvas text-ink hover:bg-surface"
                     }`}
                   >
                     <Star className={`size-4 ${h.favorite ? "fill-current" : ""}`} aria-hidden="true" />
-                    {h.favorite ? "Favorit" : "Favoritkan"}
+                    {h.favorite ? t("translator.favorite") : t("translator.favoriteBtn")}
                   </button>
                   <button
                     type="button"
@@ -315,12 +312,12 @@ export function TranslatorClient({ queue }: { queue: TranslationQueueItem[] }) {
                       setFrom(h.from);
                       setTo(h.to);
                       setResult(h.result);
-                      setResultSource("Riwayat perangkat");
+                      setResultSource(t("translator.historySource"));
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
                     className="inline-flex h-8 items-center rounded-md px-2 text-sm font-semibold text-accent hover:bg-surface focus-visible:outline-2 focus-visible:outline-accent"
                   >
-                    Pakai lagi
+                    {t("translator.reuse")}
                   </button>
                 </div>
               </li>
@@ -331,22 +328,21 @@ export function TranslatorClient({ queue }: { queue: TranslationQueueItem[] }) {
 
       <section aria-labelledby="antrean-title" className="flex flex-col gap-3">
         <h2 id="antrean-title" className="text-lg font-semibold text-ink">
-          Antrean terjemahan artikel
+          {t("translator.queue")}
         </h2>
         <p className="text-sm text-muted">
-          Artikel iTAP yang belum punya terjemahan English. Kontributor bisa membantu menerjemahkan —
-          draf terjemahan dibantu AI (setelah kunci Gemini ada) tetap harus diperiksa manusia sebelum terbit.
+          {t("translator.queueDesc")}
         </p>
         {queue.length === 0 ? (
           <EmptyState
-            title="Semua artikel sudah punya terjemahan English."
-            desc="Tidak ada artikel yang menunggu terjemahan saat ini."
+            title={t("translator.queueAllDone")}
+            desc={t("translator.queueAllDoneDesc")}
           />
         ) : (
           <>
             <p className="text-sm text-ink">
-              <strong>{queue.length} artikel</strong> menunggu terjemahan English
-              {queue.length > shownQueue.length ? ` — menampilkan ${shownQueue.length} pertama.` : "."}
+              <strong>{t("translator.queueCount", { count: queue.length })}</strong>
+              {queue.length > shownQueue.length ? t("translator.queueShowing", { shown: shownQueue.length }) : "."}
             </p>
             <ul className="flex flex-col gap-2">
               {shownQueue.map((a) => (
@@ -355,15 +351,14 @@ export function TranslatorClient({ queue }: { queue: TranslationQueueItem[] }) {
                     <Link href={`/artikel/${a.slug}`} className="font-semibold text-accent hover:underline focus-visible:outline-2 focus-visible:outline-accent">
                       {a.title_id}
                     </Link>
-                    <p className="text-xs text-muted">{channelLabel(a.channel)}</p>
+                    <p className="text-xs text-muted">{channelLabel(a.channel, lang)}</p>
                   </div>
-                  <Badge tone="review">Belum diterjemahkan</Badge>
+                  <Badge tone="review">{t("translator.notTranslated")}</Badge>
                 </li>
               ))}
             </ul>
             <p className="text-sm text-muted">
-              Lihat daftar lengkap di <Link href="/redaksi" className="font-semibold text-accent hover:underline focus-visible:outline-2 focus-visible:outline-accent">Redaksi</Link> —
-              atau bantu terjemahkan lewat <Link href="/kontributor" className="font-semibold text-accent hover:underline focus-visible:outline-2 focus-visible:outline-accent">Kontributor</Link>.
+              {t("translator.queueListPre")}<Link href="/redaksi" className="font-semibold text-accent hover:underline focus-visible:outline-2 focus-visible:outline-accent">{t("nav.editorial")}</Link>{t("translator.queueListMid")}<Link href="/kontributor" className="font-semibold text-accent hover:underline focus-visible:outline-2 focus-visible:outline-accent">{t("kontributor.dashboard")}</Link>.
             </p>
           </>
         )}

@@ -7,6 +7,8 @@ import type { Metadata } from "next";
 import { getDailySnapshot } from "@/lib/daily";
 import { DailyStamp } from "@/components/daily-ui";
 import { EmptyState } from "@/components/ui";
+import { getServerLang } from "@/lib/i18n-server";
+import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Jadwal Pesawat & Kapal Belitung",
@@ -15,25 +17,26 @@ export const metadata: Metadata = {
 
 export default async function TransportPage() {
   const snap = await getDailySnapshot("transport");
+  const lang = await getServerLang();
   return (
     <div className="flex flex-col gap-6 py-8">
       <header>
-        <h1 className="text-xl font-bold text-ink">Pesawat &amp; Kapal</h1>
-        <p className="mt-1 text-sm text-muted">Jadwal penerbangan &amp; kapal dari dan ke Belitung (Bandara H.A.S. Hanandjoeddin &amp; Pelabuhan Tanjung Pandan).</p>
+        <h1 className="text-xl font-bold text-ink">{t(lang, "info.transportTitle")}</h1>
+        <p className="mt-1 text-sm text-muted">{t(lang, "info.transportDescLong")}</p>
         {snap && <DailyStamp fetchedAt={snap.fetched_at} asOfDate={snap.as_of} />}
       </header>
 
       {!snap && (
         <EmptyState
-          title="Jadwal pesawat & kapal belum tersedia"
-          desc="Belum ada sumber publik yang stabil untuk jadwal pesawat dan kapal Belitung — jadwal berubah-ubah dan tersebar di maskapai serta operator kapal. iTAP tidak menampilkan jadwal perkiraan. Silakan periksa langsung ke maskapai atau operator kapal untuk jadwal hari ini."
+          title={t(lang, "info.transportEmpty")}
+          desc={t(lang, "info.transportUnavailableDesc")}
         />
       )}
 
       {snap && (
         <EmptyState
-          title="Jadwal pesawat & kapal belum bisa dibaca"
-          desc="Cache jadwal sudah tersimpan, tapi bentuk datanya belum dikenali halaman ini. Redaksi sudah mencatatnya lewat cron daily-info-fetch."
+          title={t(lang, "info.transportUnreadable")}
+          desc={t(lang, "info.transportUnreadableDesc")}
         />
       )}
     </div>

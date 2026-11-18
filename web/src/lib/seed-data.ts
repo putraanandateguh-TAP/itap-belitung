@@ -139,12 +139,15 @@ export const ARTICLES: Article[] = [
     "channel": "wisata",
     "category_id": "pantai-pulau",
     "title_id": "Pantai Tanjung Tinggi",
-    "title_en": null,
+    "title_en": "Tanjung Tinggi Beach",
     "body_id": [
       "Pantai ikonik dengan batu granit raksasa di Sijuk, Belitung. Lokasi syuting film Laskar Pelangi.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "An iconic beach with giant granite boulders in Sijuk, Belitung. Filming location of the movie Laskar Pelangi.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Sijuk, Belitung",
     "location_lat": null,
@@ -164,12 +167,15 @@ export const ARTICLES: Article[] = [
     "channel": "wisata",
     "category_id": "pantai-pulau",
     "title_id": "Pantai Tanjung Kelayang",
-    "title_en": null,
+    "title_en": "Tanjung Kelayang Beach",
     "body_id": [
       "Titik keberangkatan utama island hopping ke Pulau Lengkuas, Batu Berlayar, dan Pulau Burung. Kawasan KEK pariwisata.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "The main departure point for island hopping to Lengkuas Island, Batu Berlayar, and Burung Island. A tourism special economic zone (KEK).",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -189,12 +195,15 @@ export const ARTICLES: Article[] = [
     "channel": "wisata",
     "category_id": "pantai-pulau",
     "title_id": "Pulau Lengkuas",
-    "title_en": null,
+    "title_en": "Lengkuas Island",
     "body_id": [
       "Pulau kecil dengan mercusuar peninggalan Belanda (abad ke-19) yang bisa dinaiki; spot snorkeling populer.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A small island with a Dutch-era lighthouse (19th century) that visitors can climb; a popular snorkeling spot.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -214,12 +223,15 @@ export const ARTICLES: Article[] = [
     "channel": "wisata",
     "category_id": "pantai-pulau",
     "title_id": "Pulau Batu Berlayar",
-    "title_en": null,
+    "title_en": "Batu Berlayar Island",
     "body_id": [
       "Gugusan batu granit yang bentuknya menyerupai layar perahu, disinggahi saat island hopping.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A cluster of granite rocks shaped like a boat's sail, visited during island hopping.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -239,12 +251,15 @@ export const ARTICLES: Article[] = [
     "channel": "wisata",
     "category_id": "pantai-pulau",
     "title_id": "Pulau Burung",
-    "title_en": null,
+    "title_en": "Burung Island",
     "body_id": [
       "Pulau dengan batu granit besar yang menyerupai kepala burung.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "An island with a large granite rock resembling a bird's head.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -264,12 +279,15 @@ export const ARTICLES: Article[] = [
     "channel": "wisata",
     "category_id": "pantai-pulau",
     "title_id": "Pulau Kepayang",
-    "title_en": null,
+    "title_en": "Kepayang Island",
     "body_id": [
       "Pulau kecil yang dikenal dengan kegiatan konservasi penyu.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A small island known for its sea turtle conservation activities.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -289,12 +307,15 @@ export const ARTICLES: Article[] = [
     "channel": "wisata",
     "category_id": "alam",
     "title_id": "Danau Kaolin",
-    "title_en": null,
+    "title_en": "Kaolin Lake",
     "body_id": [
       "Danau bekas tambang kaolin berair biru-toska dengan tanah putih, dekat Tanjung Pandan (arah bandara).",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A former kaolin mine lake with turquoise-blue water and white soil, near Tanjung Pandan (towards the airport).",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Tanjung Pandan, Belitung",
     "location_lat": null,
@@ -314,12 +335,15 @@ export const ARTICLES: Article[] = [
     "channel": "wisata",
     "category_id": "alam",
     "title_id": "Bukit Peramun",
-    "title_en": null,
+    "title_en": "Peramun Hill",
     "body_id": [
       "Hutan kemasyarakatan di Air Selumar, Sijuk, dengan trekking ke puncak bukit granit; dikenal ada tarsius (pelilean).",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A community forest in Air Selumar, Sijuk, with trekking to the top of a granite hill; known for its tarsiers (pelilean).",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Sijuk, Belitung",
     "location_lat": null,
@@ -339,12 +363,15 @@ export const ARTICLES: Article[] = [
     "channel": "wisata",
     "category_id": "pantai-pulau",
     "title_id": "Pantai Tanjung Pendam",
-    "title_en": null,
+    "title_en": "Tanjung Pendam Beach",
     "body_id": [
       "Pantai kota di Tanjung Pandan, tempat santai menikmati matahari terbenam.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A town beach in Tanjung Pandan, a relaxing place to enjoy the sunset.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Tanjung Pandan, Belitung",
     "location_lat": null,
@@ -364,12 +391,15 @@ export const ARTICLES: Article[] = [
     "channel": "wisata",
     "category_id": "sejarah-budaya",
     "title_id": "Replika SD Muhammadiyah Gantong",
-    "title_en": null,
+    "title_en": "Replica of SD Muhammadiyah Gantong",
     "body_id": [
       "Replika sekolah Laskar Pelangi di Gantong, Belitung Timur.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A replica of the Laskar Pelangi school in Gantong, East Belitung.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Gantong, Belitung Timur",
     "location_lat": null,
@@ -389,12 +419,15 @@ export const ARTICLES: Article[] = [
     "channel": "wisata",
     "category_id": "sejarah-budaya",
     "title_id": "Museum Kata Andrea Hirata",
-    "title_en": null,
+    "title_en": "Andrea Hirata Word Museum",
     "body_id": [
       "Museum sastra di Gantong, Belitung Timur, didirikan penulis Laskar Pelangi, Andrea Hirata.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A literature museum in Gantong, East Belitung, founded by Laskar Pelangi author Andrea Hirata.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Gantong, Belitung Timur",
     "location_lat": null,
@@ -414,12 +447,15 @@ export const ARTICLES: Article[] = [
     "channel": "wisata",
     "category_id": "sejarah-budaya",
     "title_id": "Kampung Ahok & Rumah Keluarga Ahok",
-    "title_en": null,
+    "title_en": "Ahok Village & the Ahok Family Home",
     "body_id": [
       "Destinasi di Gantong, Belitung Timur, terkait mantan Gubernur DKI Basuki Tjahaja Purnama.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A destination in Gantong, East Belitung, linked to former Jakarta Governor Basuki Tjahaja Purnama.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Gantong, Belitung Timur",
     "location_lat": null,
@@ -439,12 +475,15 @@ export const ARTICLES: Article[] = [
     "channel": "wisata",
     "category_id": "sejarah-budaya",
     "title_id": "Vihara Dewi Kwan Im",
-    "title_en": null,
+    "title_en": "Dewi Kwan Im Temple",
     "body_id": [
       "Vihara tua di Burung Mandi, Belitung Timur, menghadap laut.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "An old temple in Burung Mandi, East Belitung, facing the sea.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung Timur",
     "location_lat": null,
@@ -464,12 +503,15 @@ export const ARTICLES: Article[] = [
     "channel": "wisata",
     "category_id": "pantai-pulau",
     "title_id": "Pantai Serdang & Pantai Burung Mandi",
-    "title_en": null,
+    "title_en": "Serdang Beach & Burung Mandi Beach",
     "body_id": [
       "Pantai-pantai di Belitung Timur, dekat Manggar.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "Beaches in East Belitung, near Manggar.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Manggar, Belitung Timur",
     "location_lat": null,
@@ -489,12 +531,15 @@ export const ARTICLES: Article[] = [
     "channel": "wisata",
     "category_id": "sejarah-budaya",
     "title_id": "Open Pit Nam Salu",
-    "title_en": null,
+    "title_en": "Nam Salu Open Pit",
     "body_id": [
       "Bekas tambang timah bawah tanah/terbuka di Kelapa Kampit, Belitung Timur; situs geopark.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A former underground/open-pit tin mine in Kelapa Kampit, East Belitung; a geopark site.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung Timur",
     "location_lat": null,
@@ -514,12 +559,15 @@ export const ARTICLES: Article[] = [
     "channel": "wisata",
     "category_id": "sejarah-budaya",
     "title_id": "Geopark Belitong",
-    "title_en": null,
+    "title_en": "Belitong Geopark",
     "body_id": [
       "Belitong ditetapkan UNESCO Global Geopark pada 2021, dengan banyak geosite granit, pesisir, dan bekas tambang.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "Belitong was designated a UNESCO Global Geopark in 2021, with many granite, coastal, and former-mine geosites.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -539,12 +587,15 @@ export const ARTICLES: Article[] = [
     "channel": "kuliner",
     "category_id": "kuliner-lokal",
     "title_id": "Mie Belitung",
-    "title_en": null,
+    "title_en": "Belitung Noodles",
     "body_id": [
       "Mie kuning dengan kuah kental manis gurih dari kaldu udang, disajikan dengan udang, kentang, timun, emping. Warung legendaris: Mie Atep di Tanjung Pandan.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "Yellow noodles in a thick, sweet-savoury shrimp broth, served with shrimp, potato, cucumber, and emping crackers. Legendary stall: Mie Atep in Tanjung Pandan.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Tanjung Pandan, Belitung",
     "location_lat": null,
@@ -564,12 +615,15 @@ export const ARTICLES: Article[] = [
     "channel": "kuliner",
     "category_id": "kuliner-lokal",
     "title_id": "Gangan",
-    "title_en": null,
+    "title_en": "Gangan",
     "body_id": [
       "Sup ikan kuah kuning (kunyit) asam pedas khas Belitung, sering pakai ikan ketarap atau kakap dan nanas.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A Belitung fish soup in a yellow (turmeric), sour-spicy broth, often made with ketarap or snapper and pineapple.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -589,12 +643,15 @@ export const ARTICLES: Article[] = [
     "channel": "kuliner",
     "category_id": "kuliner-lokal",
     "title_id": "Kopi Manggar & budaya warung kopi",
-    "title_en": null,
+    "title_en": "Manggar Coffee & the Coffee Stall Culture",
     "body_id": [
       "Manggar dijuluki 'Kota 1001 Warung Kopi'. Ngopi di warung kopi adalah tradisi sosial warga Belitung.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "Manggar is nicknamed the 'City of 1,001 Coffee Stalls'. Drinking coffee at a warung kopi is a social tradition of Belitung's people.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Manggar, Belitung Timur",
     "location_lat": null,
@@ -614,12 +671,15 @@ export const ARTICLES: Article[] = [
     "channel": "kuliner",
     "category_id": "kuliner-lokal",
     "title_id": "Bakso Aci iTAP",
-    "title_en": null,
+    "title_en": "iTAP Bakso Aci",
     "body_id": [
       "Kedai Bakso Aci iTAP, Jl. Permata VI Blok H25, Puri Kirana 3, Air Merbau, Tanjung Pandan 33414. Buka setiap hari 11.00–22.00 WIB. Pesan via GrabFood/GoFood.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "The iTAP Bakso Aci stall, Jl. Permata VI Blok H25, Puri Kirana 3, Air Merbau, Tanjung Pandan 33414. Open daily 11.00–22.00 WIB. Order via GrabFood/GoFood.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Tanjung Pandan, Belitung",
     "location_lat": null,
@@ -639,12 +699,15 @@ export const ARTICLES: Article[] = [
     "channel": "kuliner",
     "category_id": "kuliner-lokal",
     "title_id": "Martabak Bangka/Belitung (Hok Lo Pan)",
-    "title_en": null,
+    "title_en": "Bangka/Belitung Martabak (Hok Lo Pan)",
     "body_id": [
       "Martabak manis tebal khas Bangka Belitung, pengaruh kuliner Tionghoa.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A thick sweet martabak typical of Bangka Belitung, influenced by Chinese cuisine.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -664,12 +727,15 @@ export const ARTICLES: Article[] = [
     "channel": "kuliner",
     "category_id": "oleh-oleh",
     "title_id": "Kue Rintak & Kue Bingka",
-    "title_en": null,
+    "title_en": "Rintak & Bingka Cakes",
     "body_id": [
       "Kue tradisional: rintak (kue sagu kering) dan bingka (kue basah manis).",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "Traditional cakes: rintak (dry sago cake) and bingka (sweet moist cake).",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -689,12 +755,15 @@ export const ARTICLES: Article[] = [
     "channel": "kuliner",
     "category_id": "oleh-oleh",
     "title_id": "Kerupuk/Kemplang & Terasi Belitung",
-    "title_en": null,
+    "title_en": "Belitung Crackers/Kemplang & Shrimp Paste",
     "body_id": [
       "Oleh-oleh khas: kerupuk ikan/kemplang dan terasi.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "Typical souvenirs: fish crackers/kemplang and shrimp paste (terasi).",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -714,12 +783,15 @@ export const ARTICLES: Article[] = [
     "channel": "kuliner",
     "category_id": "kuliner-lokal",
     "title_id": "Sate Ikan & Seafood bakar",
-    "title_en": null,
+    "title_en": "Grilled Fish Satay & Seafood",
     "body_id": [
       "Hidangan laut segar mudah ditemukan di pesisir dan rumah makan di Tanjung Pandan.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "Fresh seafood dishes are easy to find along the coast and at restaurants in Tanjung Pandan.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Tanjung Pandan, Belitung",
     "location_lat": null,
@@ -739,12 +811,15 @@ export const ARTICLES: Article[] = [
     "channel": "sejarah",
     "category_id": "sejarah-timah",
     "title_id": "Timah Belitung",
-    "title_en": null,
+    "title_en": "Belitung Tin",
     "body_id": [
       "Belitung dikenal sebagai pulau timah. Penambangan besar dimulai era kolonial Belanda (perusahaan Billiton Maatschappij, sekitar 1860), lalu dilanjutkan PT Timah.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "Belitung is known as a tin island. Large-scale mining began in the Dutch colonial era (the Billiton Maatschappij company, around 1860), later continued by PT Timah.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -764,12 +839,15 @@ export const ARTICLES: Article[] = [
     "channel": "sejarah",
     "category_id": "kerajaan",
     "title_id": "Kerajaan Balok",
-    "title_en": null,
+    "title_en": "The Balok Kingdom",
     "body_id": [
       "Kerajaan lokal Belitung pada masa lalu (sekitar abad ke-17), dengan pusat di daerah Balok, Belitung Timur.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A local Belitung kingdom of the past (around the 17th century), centred in the Balok area, East Belitung.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung Timur",
     "location_lat": null,
@@ -789,12 +867,15 @@ export const ARTICLES: Article[] = [
     "channel": "sejarah",
     "category_id": "museum",
     "title_id": "Rumah Adat Belitung",
-    "title_en": null,
+    "title_en": "Belitung Traditional House",
     "body_id": [
       "Rumah panggung tradisional; replikanya ada di Tanjung Pandan dan dipakai untuk acara adat.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A traditional stilt house; a replica stands in Tanjung Pandan and is used for customary events.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Tanjung Pandan, Belitung",
     "location_lat": null,
@@ -814,12 +895,15 @@ export const ARTICLES: Article[] = [
     "channel": "sejarah",
     "category_id": "sejarah-timah",
     "title_id": "Museum Tanjung Pandan",
-    "title_en": null,
+    "title_en": "Tanjung Pandan Museum",
     "body_id": [
       "Museum yang menyimpan koleksi sejarah pertambangan timah, keramik, dan temuan kapal karam.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A museum holding collections on tin-mining history, ceramics, and shipwreck finds.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -839,12 +923,15 @@ export const ARTICLES: Article[] = [
     "channel": "sejarah",
     "category_id": "sejarah-timah",
     "title_id": "Kapal Karam Belitung (Batu Hitam)",
-    "title_en": null,
+    "title_en": "The Belitung Shipwreck (Batu Hitam)",
     "body_id": [
       "Kapal Arab abad ke-9 yang karam di perairan Belitung; ditemukan 1998 dengan ribuan keramik Dinasti Tang.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A 9th-century Arab ship that sank in Belitung waters; found in 1998 with thousands of Tang Dynasty ceramics.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -864,12 +951,15 @@ export const ARTICLES: Article[] = [
     "channel": "sejarah",
     "category_id": "museum",
     "title_id": "Pemekaran Belitung Timur",
-    "title_en": null,
+    "title_en": "The Creation of East Belitung Regency",
     "body_id": [
       "Kabupaten Belitung Timur (ibu kota Manggar) dimekarkan dari Kabupaten Belitung pada 2003.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "East Belitung Regency (capital Manggar) was split off from Belitung Regency in 2003.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Manggar, Belitung Timur",
     "location_lat": null,
@@ -889,12 +979,15 @@ export const ARTICLES: Article[] = [
     "channel": "legenda",
     "category_id": "cerita-rakyat",
     "title_id": "Legenda Batu Baginda",
-    "title_en": null,
+    "title_en": "The Legend of Batu Baginda",
     "body_id": [
       "Cerita rakyat tentang batu besar di Bukit Tebalu dan kisah cinta seorang putri dengan baginda raja.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A folktale about a great boulder on Tebalu Hill and the love story of a princess and a king.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -914,12 +1007,15 @@ export const ARTICLES: Article[] = [
     "channel": "legenda",
     "category_id": "cerita-rakyat",
     "title_id": "Legenda Batu Mentas",
-    "title_en": null,
+    "title_en": "The Legend of Batu Mentas",
     "body_id": [
       "Cerita rakyat terkait aliran sungai berbatu di Kelekak Usang, kawasan konservasi tarsius.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A folktale linked to the rocky stream at Kelekak Usang, a tarsier conservation area.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -939,12 +1035,15 @@ export const ARTICLES: Article[] = [
     "channel": "legenda",
     "category_id": "cerita-rakyat",
     "title_id": "Dukun Kampong",
-    "title_en": null,
+    "title_en": "Dukun Kampong",
     "body_id": [
       "Tokoh adat tradisional Belitung yang memimpin ritual dan menjaga hubungan dengan alam.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A traditional Belitung customary figure who leads rituals and maintains harmony with nature.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -964,12 +1063,15 @@ export const ARTICLES: Article[] = [
     "channel": "legenda",
     "category_id": "cerita-rakyat",
     "title_id": "Laskar Pelangi",
-    "title_en": null,
+    "title_en": "Laskar Pelangi",
     "body_id": [
       "Novel Andrea Hirata (2005) dan film (2008) yang mengangkat kisah sekolah sederhana di Gantong dan membuat Belitung terkenal.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "Andrea Hirata's novel (2005) and film (2008) telling the story of a humble school in Gantong, which made Belitung famous.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Gantong, Belitung Timur",
     "location_lat": null,
@@ -989,12 +1091,15 @@ export const ARTICLES: Article[] = [
     "channel": "budaya",
     "category_id": "upacara",
     "title_id": "Makan Bedulang",
-    "title_en": null,
+    "title_en": "Makan Bedulang",
     "body_id": [
       "Tradisi makan bersama empat orang mengelilingi dulang berisi nasi dan lauk, dengan tata krama tertentu (yang muda melayani yang tua).",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A tradition of four people eating together around a dulang (tray) of rice and side dishes, with set etiquette (the young serve the elders).",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -1014,12 +1119,15 @@ export const ARTICLES: Article[] = [
     "channel": "budaya",
     "category_id": "upacara",
     "title_id": "Maras Taun",
-    "title_en": null,
+    "title_en": "Maras Taun",
     "body_id": [
       "Pesta adat syukur panen padi khas Belitung, biasa disertai kue juadah dan kesenian.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A Belitung harvest thanksgiving festival, usually accompanied by juadah cakes and traditional arts.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -1039,12 +1147,15 @@ export const ARTICLES: Article[] = [
     "channel": "budaya",
     "category_id": "upacara",
     "title_id": "Buang Jong",
-    "title_en": null,
+    "title_en": "Buang Jong",
     "body_id": [
       "Upacara adat suku Sawang (suku laut) melepas perahu kecil ke laut sebagai persembahan.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A customary ceremony of the Sawang (sea people) in which a small boat is released into the sea as an offering.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -1064,12 +1175,15 @@ export const ARTICLES: Article[] = [
     "channel": "budaya",
     "category_id": "tari-musik",
     "title_id": "Seni Campak Belitung",
-    "title_en": null,
+    "title_en": "Belitung Campak Art",
     "body_id": [
       "Kesenian tari dan berbalas pantun diiringi musik tradisional.",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "A dance art form with exchanged pantun verses accompanied by traditional music.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -1089,12 +1203,15 @@ export const ARTICLES: Article[] = [
     "channel": "budaya",
     "category_id": "bahasa",
     "title_id": "Bahasa Melayu Belitung",
-    "title_en": null,
+    "title_en": "Belitung Malay Language",
     "body_id": [
       "Bahasa sehari-hari warga, dialek Melayu. Contoh: 'kamek'/'kite' (saya/kita).",
       "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
     ],
-    "body_en": null,
+    "body_en": [
+      "The everyday language of the people, a Malay dialect. Example: 'kamek'/'kite' (I/we).",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -1114,9 +1231,9 @@ export const ARTICLES: Article[] = [
     "channel": "berita",
     "category_id": "belitung",
     "title_id": "Peringati HUT Polairud ke-76, Polres Belitung Gelar Tabur Bunga untuk Mengenang Jasa Pahlawan",
-    "title_en": null,
+    "title_en": "Marking the 76th Anniversary of the Water Police, Belitung Police Hold Flower Scattering to Honour Fallen Heroes",
     "body_id": [],
-    "body_en": null,
+    "body_en": [],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -1136,9 +1253,9 @@ export const ARTICLES: Article[] = [
     "channel": "berita",
     "category_id": "belitung",
     "title_id": "PLN Diakui Jadi Tempat Kerja Terbaik di Indonesia dan Asia 2026",
-    "title_en": null,
+    "title_en": "PLN Recognised as One of the Best Workplaces in Indonesia and Asia 2026",
     "body_id": [],
-    "body_en": null,
+    "body_en": [],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -1158,9 +1275,9 @@ export const ARTICLES: Article[] = [
     "channel": "berita",
     "category_id": "belitung",
     "title_id": "Ketua KONI Beltim Ceritakan Perjuangan Atlet, Kamarudin Disebut Rutin Telepon hingga Tengah Malam",
-    "title_en": null,
+    "title_en": "East Belitung KONI Chief Tells of Athletes' Struggles; Kamarudin Said to Call Regularly Until Midnight",
     "body_id": [],
-    "body_en": null,
+    "body_en": [],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -1180,9 +1297,9 @@ export const ARTICLES: Article[] = [
     "channel": "berita",
     "category_id": "belitung",
     "title_id": "Kajari Beltim Kritik Bank Tanah, Sebut Kebijakan Minta Warga Bayar Lahan Berpotensi Memicu Konflik",
-    "title_en": null,
+    "title_en": "East Belitung Chief Prosecutor Criticises Land Bank, Says Policy Asking Residents to Pay for Land Could Spark Conflict",
     "body_id": [],
-    "body_en": null,
+    "body_en": [],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -1202,9 +1319,9 @@ export const ARTICLES: Article[] = [
     "channel": "berita",
     "category_id": "belitung",
     "title_id": "Pemda di Bangka Belitung Diminta Tingkatkan Antisipasi Banjir",
-    "title_en": null,
+    "title_en": "Local Governments in Bangka Belitung Urged to Step Up Flood Preparedness",
     "body_id": [],
-    "body_en": null,
+    "body_en": [],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -1224,11 +1341,13 @@ export const ARTICLES: Article[] = [
     "channel": "berita",
     "category_id": "bangka-belitung",
     "title_id": "Gubernur Hidayat Arsani dipercaya jadi Perwira Upacara Apel Akbar Satlinmas 2026 di Jawa Barat",
-    "title_en": null,
+    "title_en": "Governor Hidayat Arsani Entrusted as Ceremony Officer at the 2026 Satlinmas Grand Assembly in West Java",
     "body_id": [
       "Gubernur Bangka Belitung (Babel), Hidayat Arsani, mendapat kehormatan sekaligus kepercayaan untuk bertugas sebagai Perwira Upacara dalam Apel Akbar Satuan…"
     ],
-    "body_en": null,
+    "body_en": [
+      "The Governor of Bangka Belitung (Babel), Hidayat Arsani, was honoured and entrusted to serve as ceremony officer at the grand assembly of the Satuan…"
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -1248,11 +1367,13 @@ export const ARTICLES: Article[] = [
     "channel": "berita",
     "category_id": "bangka-belitung",
     "title_id": "Gala Dinner Apel Akbar Banten: Peran Hidayat Arsani dalam pembentukan Aslinmas mendapat apresiasi",
-    "title_en": null,
+    "title_en": "Banten Grand Assembly Gala Dinner: Hidayat Arsani's Role in Forming Aslinmas Earns Appreciation",
     "body_id": [
       "Gubernur Kepulauan Bangka Belitung (Babel), Hidayat Arsani, turut menghadiri rangkaian kegiatan Apel Akbar Satuan Perlindungan Masyarakat (Satlinmas)…"
     ],
-    "body_en": null,
+    "body_en": [
+      "The Governor of the Bangka Belitung Islands (Babel), Hidayat Arsani, attended a series of events at the grand assembly of the Community Protection Unit (Satlinmas)…"
+    ],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -1272,9 +1393,9 @@ export const ARTICLES: Article[] = [
     "channel": "berita",
     "category_id": "belitung",
     "title_id": "Kabupaten Belitung Peringkat ke-11 di Sumatra dalam Penilaian Kinerja Digitalisasi Daerah",
-    "title_en": null,
+    "title_en": "Belitung Regency Ranks 11th in Sumatra in Regional Digitalisation Performance Assessment",
     "body_id": [],
-    "body_en": null,
+    "body_en": [],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -1294,9 +1415,9 @@ export const ARTICLES: Article[] = [
     "channel": "berita",
     "category_id": "bangka-belitung",
     "title_id": "Dafam Resort Belitung Hadirkan Tiga Paket Pernikahan Eksklusif Bernuansa Romantis",
-    "title_en": null,
+    "title_en": "Dafam Resort Belitung Launches Three Exclusive Romantic Wedding Packages",
     "body_id": [],
-    "body_en": null,
+    "body_en": [],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -1316,9 +1437,9 @@ export const ARTICLES: Article[] = [
     "channel": "berita",
     "category_id": "belitung",
     "title_id": "DPRD Belitung Sahkan Perda SKT, Cegah Dokumen Tanah Ganda di Desa",
-    "title_en": null,
+    "title_en": "Belitung DPRD Passes SKT Regulation to Prevent Duplicate Land Documents in Villages",
     "body_id": [],
-    "body_en": null,
+    "body_en": [],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -1338,9 +1459,9 @@ export const ARTICLES: Article[] = [
     "channel": "berita",
     "category_id": "belitung",
     "title_id": "Terbongkar! Modus Arisan Fiktif di Belitung, Korban Rugi Rp106,2 Juta",
-    "title_en": null,
+    "title_en": "Exposed! Fake Arisan Scam in Belitung, Victims Lose Rp106.2 Million",
     "body_id": [],
-    "body_en": null,
+    "body_en": [],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -1360,9 +1481,9 @@ export const ARTICLES: Article[] = [
     "channel": "berita",
     "category_id": "bangka-belitung",
     "title_id": "DPRD Provinsi Bangka Belitung Resmi Umumkan Nama-nama yang Lulus Calon Anggota KPID",
-    "title_en": null,
+    "title_en": "Bangka Belitung Provincial DPRD Officially Announces Names of KPID Member Candidates Who Passed",
     "body_id": [],
-    "body_en": null,
+    "body_en": [],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -1382,9 +1503,9 @@ export const ARTICLES: Article[] = [
     "channel": "berita",
     "category_id": "bangka-belitung",
     "title_id": "BPBD Bangka Belitung Ingatkan Daerah Segera Tangani Titik Rawan Banjir",
-    "title_en": null,
+    "title_en": "Bangka Belitung Disaster Agency Urges Regions to Address Flood-Prone Spots Immediately",
     "body_id": [],
-    "body_en": null,
+    "body_en": [],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -1404,9 +1525,9 @@ export const ARTICLES: Article[] = [
     "channel": "berita",
     "category_id": "bangka-belitung",
     "title_id": "Harga Cabai Belitung Makin Pedas Tembus Rp93.750 per Kg, Lebih Mahal dari Rata-Rata Nasional",
-    "title_en": null,
+    "title_en": "Belitung Chilli Prices Soar to Rp93,750 per Kg, Above the National Average",
     "body_id": [],
-    "body_en": null,
+    "body_en": [],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,
@@ -1426,9 +1547,9 @@ export const ARTICLES: Article[] = [
     "channel": "berita",
     "category_id": "bangka-belitung",
     "title_id": "Bank Indonesia Perkuat Ketahanan Pangan Belitung melalui Digitalisasi Pertanian & Hilirisasi Produk Perikanan",
-    "title_en": null,
+    "title_en": "Bank Indonesia Strengthens Belitung Food Security Through Agricultural Digitalisation & Fisheries Product Downstreaming",
     "body_id": [],
-    "body_en": null,
+    "body_en": [],
     "gallery": [],
     "location_name": "Belitung",
     "location_lat": null,

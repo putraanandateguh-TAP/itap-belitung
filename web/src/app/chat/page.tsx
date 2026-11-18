@@ -11,9 +11,11 @@ import { useSession } from "@/lib/session-client";
 import { ButtonLink, EmptyState, StatusBadge } from "@/components/ui";
 import { formatListingPrice, type ThreadSummary } from "@/lib/listings";
 import { formatDateTimeWIB, formatRelativeWIB } from "@/lib/format";
+import { useLanguage } from "@/components/language-provider";
 
 export default function ChatInboxPage() {
   const { session, loading: sessionLoading } = useSession();
+  const { lang, t } = useLanguage();
   const [threads, setThreads] = useState<ThreadSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -24,10 +26,10 @@ export default function ChatInboxPage() {
     try {
       const res = await fetch("/api/me/threads", { cache: "no-store" });
       const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error ?? `Gagal memuat (HTTP ${res.status}).`);
+      if (!res.ok) throw new Error(data?.error ?? t("chat.loadFailedHttp", { status: res.status }));
       setThreads(Array.isArray(data) ? data : []);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Gagal memuat percakapan.");
+      setError(e instanceof Error ? e.message : t("chat.loadFailed"));
     } finally {
       setLoading(false);
     }
@@ -41,7 +43,7 @@ export default function ChatInboxPage() {
   if (!session) {
     return (
       <div className="py-8">
-        <EmptyState title="Masuk dulu untuk membuka chat." desc="Percakapan jual beli hanya tersedia setelah masuk." action={<ButtonLink href="/masuk">Masuk / daftar</ButtonLink>} titleAs="h1" />
+        <EmptyState title={t("chat.loginTitle")} desc={t("chat.loginDesc")} action={<ButtonLink href="/masuk">{t("common.signInSignUp")}</ButtonLink>} titleAs="h1" />
       </div>
     );
   }
@@ -49,34 +51,34 @@ export default function ChatInboxPage() {
   return (
     <div className="flex flex-col gap-6 py-8">
       <div>
-        <h1 className="text-xl font-bold text-ink">Chat jual beli</h1>
-        <p className="mt-1 text-sm text-muted">Percakapanmu dengan penjual dan pembeli. Nomor penjual tetap tersamar — kesepakatan diatur di dalam chat.</p>
+        <h1 className="text-xl font-bold text-ink">{t("chat.title")}</h1>
+        <p className="mt-1 text-sm text-muted">{t("chat.subtitle")}</p>
       </div>
       {error && <p role="alert" className="text-sm text-danger">{error}</p>}
 
       {threads.length === 0 ? (
         <EmptyState
-          title="Belum ada percakapan."
-          desc="Mulai chat dari tombol “Mulai chat dengan penjual” di halaman detail penawaran."
-          action={<ButtonLink href="/jual-beli">Jelajahi Jual Beli</ButtonLink>}
+          title={t("chat.noThreads")}
+          desc={t("chat.noThreadsDesc")}
+          action={<ButtonLink href="/jual-beli">{t("chat.exploreMarket")}</ButtonLink>}
         />
       ) : (
         <ul className="flex flex-col gap-3">
-          {threads.map((t) => (
-            <li key={t.id} className="rounded-lg border border-line bg-canvas">
-              <Link href={`/chat/${t.id}`} className="block p-4 focus-visible:outline-2 focus-visible:outline-accent">
+          {threads.map((th) => (
+            <li key={th.id} className="rounded-lg border border-line bg-canvas">
+              <Link href={`/chat/${th.id}`} className="block p-4 focus-visible:outline-2 focus-visible:outline-accent">
                 <span className="flex flex-wrap items-start justify-between gap-2">
-                  <span className="font-semibold text-ink">{t.listing_title}</span>
-                  <StatusBadge status={t.listing_status} />
+                  <span className="font-semibold text-ink">{th.listing_title}</span>
+                  <StatusBadge status={th.listing_status} />
                 </span>
                 <span className="mt-1 block text-sm text-muted">
-                  {formatListingPrice(t.listing_price_cents)} · {t.is_seller ? "Kamu penjual" : "Kamu pembeli"}
+                  {formatListingPrice(th.listing_price_cents)} · {th.is_seller ? t("chat.youSeller") : t("chat.youBuyer")}
                 </span>
                 <span className="mt-2 block truncate text-sm text-ink">
-                  {t.last_message_text ?? "Belum ada pesan — sapa dulu lawan bicaramu."}
+                  {th.last_message_text ?? t("chat.sayHello")}
                 </span>
                 <span className="mt-1 block text-xs text-muted">
-                  {t.last_message_at ? formatRelativeWIB(t.last_message_at) : formatDateTimeWIB(t.created_at)}
+                  {th.last_message_at ? formatRelativeWIB(th.last_message_at, lang) : formatDateTimeWIB(th.created_at, lang)}
                 </span>
               </Link>
             </li>

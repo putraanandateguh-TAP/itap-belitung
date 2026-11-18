@@ -13,10 +13,12 @@ import Link from "next/link";
 import { MapPin, X } from "lucide-react";
 import { useSession } from "@/lib/session-client";
 import { Banner, Button, ButtonLink, EmptyState, Field, SelectInput, TextArea, TextInput } from "@/components/ui";
-import { LISTING_CATEGORIES, LISTING_CATEGORY_LABELS } from "@/lib/listings";
+import { LISTING_CATEGORIES } from "@/lib/listings";
 import { UPLOAD_LIMITS, storagePath } from "@/lib/upload";
 import { compressListingPhoto, formatBytes, type CompressedPhoto } from "@/components/photo-compress";
 import { createSupabaseBrowser } from "@/lib/supabase/client";
+import { useLanguage } from "@/components/language-provider";
+import { listingCategoryName } from "@/lib/i18n";
 
 const SUPABASE_CONFIGURED = Boolean(
   (process.env.NEXT_PUBLIC_SUPABASE_URL ?? "").trim()
@@ -26,6 +28,7 @@ const SUPABASE_CONFIGURED = Boolean(
 export default function PasangPage() {
   const router = useRouter();
   const { session, loading } = useSession();
+  const { lang, t } = useLanguage();
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState<string>("lainnya");
@@ -47,9 +50,9 @@ export default function PasangPage() {
     return (
       <div className="py-8">
         <EmptyState
-          title="Masuk dulu untuk memasang penawaran."
-          desc="Penawaran dicatat atas nama akunmu."
-          action={<ButtonLink href="/masuk">Masuk / daftar</ButtonLink>}
+          title={t("pasang.loginTitle")}
+          desc={t("pasang.loginDesc")}
+          action={<ButtonLink href="/masuk">{t("common.signInSignUp")}</ButtonLink>}
           titleAs="h1"
         />
       </div>
@@ -66,13 +69,13 @@ export default function PasangPage() {
     setPhotoError(null);
     const remaining = UPLOAD_LIMITS.maxPhotosPerListing - photos.length;
     const picked = Array.from(files).slice(0, remaining);
-    if (files.length > remaining) setPhotoError(`Maksimal ${UPLOAD_LIMITS.maxPhotosPerListing} foto per penawaran.`);
+    if (files.length > remaining) setPhotoError(t("pasang.errMaxPhotos", { max: UPLOAD_LIMITS.maxPhotosPerListing }));
     for (const f of picked) {
       try {
         const c = await compressListingPhoto(f);
         setPhotos((prev) => [...prev, c]);
       } catch (e) {
-        setPhotoError(e instanceof Error ? e.message : "Foto gagal diproses.");
+        setPhotoError(e instanceof Error ? e.message : t("pasang.errPhoto"));
       }
     }
     if (fileRef.current) fileRef.current.value = "";
@@ -80,7 +83,7 @@ export default function PasangPage() {
 
   function fillGps() {
     if (!("geolocation" in navigator)) {
-      setError("Browser ini tidak mendukung pembacaan lokasi.");
+      setError(t("pasang.errGeoUnsupported"));
       return;
     }
     navigator.geolocation.getCurrentPosition(
@@ -89,7 +92,7 @@ export default function PasangPage() {
         setLng(String(pos.coords.longitude.toFixed(6)));
         setError(null);
       },
-      () => setError("Lokasi tidak bisa dibaca — periksa izin lokasi di browser, atau isi manual."),
+      () => setError(t("pasang.errGeoDenied")),
       { timeout: 10000 },
     );
   }
@@ -97,8 +100,8 @@ export default function PasangPage() {
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     const priceNum = Number(price.replace(/[^\d]/g, ""));
-    if (!title.trim() || title.trim().length < 3) { setError("Judul minimal 3 karakter."); return; }
-    if (!Number.isFinite(priceNum) || priceNum < 0) { setError("Harga tidak valid."); return; }
+    if (!title.trim() || title.trim().length < 3) { setError(t("pasang.errTitle")); return; }
+    if (!Number.isFinite(priceNum) || priceNum < 0) { setError(t("pasang.errPrice")); return; }
     setBusy(true);
     setError(null);
     setPhotoNote(null);
@@ -106,7 +109,7 @@ export default function PasangPage() {
       const latNum = lat.trim() ? Number(lat) : null;
       const lngNum = lng.trim() ? Number(lng) : null;
       if ((latNum !== null && !Number.isFinite(latNum)) || (lngNum !== null && !Number.isFinite(lngNum))) {
-        throw new Error("Koordinat tidak valid.");
+        throw new Error(t("pasang.errCoords"));
       }
       const res = await fetch("/api/listings", {
         method: "POST",
@@ -122,12 +125,12 @@ export default function PasangPage() {
         }),
       });
       const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error ?? `Gagal memasang penawaran (HTTP ${res.status}).`);
+      if (!res.ok) throw new Error(data?.error ?? t("pasang.errSubmitHttp", { status: res.status }));
       const listingId = data.id as string;
 
       if (photos.length > 0) {
         if (!SUPABASE_CONFIGURED) {
-          setPhotoNote("Penawaran terbit tanpa foto: penyimpanan foto (Supabase, P1) belum dikonfigurasi. Foto bisa ditambahkan nanti setelah P1 selesai.");
+          setPhotoNote(t("pasang.photoNoStorage"));
         } else {
           try {
             const supabase = createSupabaseBrowser();
@@ -143,15 +146,15 @@ export default function PasangPage() {
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ paths }),
             });
-            if (!pr.ok) setPhotoNote("Foto terunggah ke Storage, tetapi pencatatannya gagal — hubungi redaksi.");
+            if (!pr.ok) setPhotoNote(t("pasang.photoRecordFailed"));
           } catch (up) {
-            setPhotoNote(`Penawaran terbit, tetapi foto gagal diunggah: ${up instanceof Error ? up.message : "kesalahan upload"}.`);
+            setPhotoNote(t("pasang.photoUploadFailed", { reason: up instanceof Error ? up.message : "kesalahan upload" }));
           }
         }
       }
       router.push(`/jual-beli/${listingId}`);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Gagal memasang penawaran.");
+      setError(err instanceof Error ? err.message : t("pasang.errSubmit"));
     } finally {
       setBusy(false);
     }
@@ -160,69 +163,68 @@ export default function PasangPage() {
   return (
     <div className="flex flex-col gap-6 py-8">
       <div>
-        <h1 className="text-xl font-bold text-ink">Pasang penawaran</h1>
-        <p className="mt-1 text-sm text-muted">Jual barang atau jasa ke warga Belitung. Penawaran tampil di Jual Beli setelah terbit.</p>
+        <h1 className="text-xl font-bold text-ink">{t("pasang.title")}</h1>
+        <p className="mt-1 text-sm text-muted">{t("pasang.subtitle")}</p>
       </div>
 
       {!emailOk && (
         <Banner tone="warning">
-          Emailmu belum terverifikasi — penawaran belum bisa dipasang.{" "}
-          <Link href="/verifikasi" className="font-semibold underline">Verifikasi email</Link>
+          {t("pasang.emailNotVerified")}{" "}
+          <Link href="/verifikasi" className="font-semibold underline">{t("pasang.verifyEmail")}</Link>
         </Banner>
       )}
       {!rulesOk && (
         <Banner tone="warning">
-          Kamu belum menyetujui aturan marketplace.{" "}
-          <Link href="/jual-beli/aturan" className="font-semibold underline">Baca dan setujui aturan</Link>
+          {t("pasang.rulesNotAccepted")}{" "}
+          <Link href="/jual-beli/aturan" className="font-semibold underline">{t("pasang.readRules")}</Link>
         </Banner>
       )}
       <Banner tone="info">
-        Verifikasi WhatsApp belum tersedia (layanan OTP WhatsApp masih disiapkan) — saat ini cukup verifikasi email.
-        Nomor kontak dan titik lokasimu hanya terlihat oleh pembeli yang sudah masuk dan emailnya terverifikasi.
+        {t("pasang.waBanner")}
       </Banner>
 
       <form onSubmit={submit} className="flex max-w-2xl flex-col gap-4 rounded-lg border border-line bg-canvas p-5">
-        <Field label="Judul penawaran" id="listing-title" hint="Jelas dan singkat, mis. Sepeda lipat 20 inci kondisi baik.">
-          <TextInput id="listing-title" value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} placeholder="Judul penawaran" required disabled={!canSubmit} />
+        <Field label={t("pasang.titleLabel")} id="listing-title" hint={t("pasang.titleHint")}>
+          <TextInput id="listing-title" value={title} onChange={(e) => setTitle(e.target.value)} maxLength={120} placeholder={t("pasang.titlePlaceholder")} required disabled={!canSubmit} />
         </Field>
-        <Field label="Deskripsi" id="listing-desc" hint="Kondisi barang, kelengkapan, alasan dijual. Maks 5000 karakter.">
-          <TextArea id="listing-desc" value={description} onChange={(e) => setDescription(e.target.value)} maxLength={5000} placeholder="Ceritakan kondisi barangmu…" disabled={!canSubmit} />
+        <Field label={t("pasang.descLabel")} id="listing-desc" hint={t("pasang.descHint")}>
+          <TextArea id="listing-desc" value={description} onChange={(e) => setDescription(e.target.value)} maxLength={5000} placeholder={t("pasang.descPlaceholder")} disabled={!canSubmit} />
         </Field>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Kategori" id="listing-category">
+          <Field label={t("pasang.category")} id="listing-category">
             <SelectInput id="listing-category" value={category} onChange={(e) => setCategory(e.target.value)} disabled={!canSubmit}>
-              {LISTING_CATEGORIES.map((c) => <option key={c} value={c}>{LISTING_CATEGORY_LABELS[c]}</option>)}
+              {LISTING_CATEGORIES.map((c) => <option key={c} value={c}>{listingCategoryName(c, lang)}</option>)}
             </SelectInput>
           </Field>
-          <Field label="Harga (Rp)" id="listing-price" hint="Isi angka saja, tanpa titik atau koma. 0 berarti gratis.">
+          <Field label={t("pasang.price")} id="listing-price" hint={t("pasang.priceHint")}>
             <TextInput id="listing-price" inputMode="numeric" value={price} onChange={(e) => setPrice(e.target.value.replace(/[^\d]/g, ""))} placeholder="150000" required disabled={!canSubmit} />
           </Field>
         </div>
-        <Field label="Nama wilayah (opsional)" id="listing-location" hint="Mis. Tanjung Pandan, Manggar, Badau.">
-          <TextInput id="listing-location" value={locationName} onChange={(e) => setLocationName(e.target.value)} maxLength={160} placeholder="Tanjung Pandan" disabled={!canSubmit} />
+        <Field label={t("pasang.locationName")} id="listing-location" hint={t("pasang.locationHint")}>
+          <TextInput id="listing-location" value={locationName} onChange={(e) => setLocationName(e.target.value)} maxLength={160} placeholder={t("pasang.locationPlaceholder")} disabled={!canSubmit} />
         </Field>
         <fieldset className="flex flex-col gap-3 rounded-md border border-line p-4">
-          <legend className="px-1 text-sm font-semibold text-ink">Titik lokasi (opsional)</legend>
-          <p className="text-sm text-muted">Koordinat hanya disimpan bila kamu mengisinya. Titik dibuka sebagai tautan Google Maps untuk pembeli terverifikasi.</p>
+          <legend className="px-1 text-sm font-semibold text-ink">{t("pasang.locationLegend")}</legend>
+          <p className="text-sm text-muted">{t("pasang.locationDesc")}</p>
           <div className="grid gap-3 sm:grid-cols-2">
-            <Field label="Lintang" id="listing-lat">
+            <Field label={t("pasang.lat")} id="listing-lat">
               <TextInput id="listing-lat" inputMode="decimal" value={lat} onChange={(e) => setLat(e.target.value)} placeholder="-2.733333" disabled={!canSubmit} />
             </Field>
-            <Field label="Bujur" id="listing-lng">
+            <Field label={t("pasang.lng")} id="listing-lng">
               <TextInput id="listing-lng" inputMode="decimal" value={lng} onChange={(e) => setLng(e.target.value)} placeholder="107.666667" disabled={!canSubmit} />
             </Field>
           </div>
           <div>
             <Button type="button" variant="secondary" onClick={fillGps} disabled={!canSubmit}>
-              <MapPin className="size-4" aria-hidden="true" /> Isi dari GPS (sekali baca)
+              <MapPin className="size-4" aria-hidden="true" /> {t("pasang.fillGps")}
             </Button>
           </div>
         </fieldset>
 
         <fieldset className="flex flex-col gap-3 rounded-md border border-line p-4">
-          <legend className="px-1 text-sm font-semibold text-ink">Foto (opsional, maks {UPLOAD_LIMITS.maxPhotosPerListing})</legend>
+          <legend className="px-1 text-sm font-semibold text-ink">{t("pasang.photoLegend", { max: UPLOAD_LIMITS.maxPhotosPerListing })}</legend>
           <p className="text-sm text-muted">
-            Foto dikompresi di perangkatmu (target ≤1 MB, JPEG) dan metadata lokasi (EXIF) dibuang sebelum diunggah.
+            {t("pasang.photoDesc")}
           </p>
           <input
             ref={fileRef}
@@ -231,7 +233,7 @@ export default function PasangPage() {
             multiple
             disabled={!canSubmit || photos.length >= UPLOAD_LIMITS.maxPhotosPerListing}
             onChange={(e) => onPickFiles(e.target.files)}
-            aria-label="Pilih foto penawaran"
+            aria-label={t("pasang.photoLabel")}
             className="text-sm text-ink"
           />
           {photoError && <p role="alert" className="text-sm text-danger">{photoError}</p>}
@@ -240,11 +242,11 @@ export default function PasangPage() {
               {photos.map((p, i) => (
                 <li key={p.previewUrl} className="relative rounded-md border border-line bg-surface p-2">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={p.previewUrl} alt={`Pratinjau foto ${i + 1}: ${p.originalName}`} className="aspect-video w-full rounded object-cover" />
+                  <img src={p.previewUrl} alt={t("pasang.photoPreview", { n: i + 1, name: p.originalName })} className="aspect-video w-full rounded object-cover" />
                   <p className="mt-1 text-xs text-muted">{formatBytes(p.originalBytes)} → {formatBytes(p.compressedBytes)}</p>
                   <button
                     type="button"
-                    aria-label={`Hapus foto ${i + 1}`}
+                    aria-label={t("pasang.removePhoto", { n: i + 1 })}
                     onClick={() => setPhotos((prev) => prev.filter((_, j) => j !== i))}
                     className="absolute right-1 top-1 rounded-full bg-canvas p-1 text-ink shadow-sm focus-visible:outline-2 focus-visible:outline-accent"
                   >
@@ -259,10 +261,10 @@ export default function PasangPage() {
         {error && <p role="alert" className="text-sm text-danger">{error}</p>}
         {photoNote && <p role="status" className="text-sm text-warning">{photoNote}</p>}
         <div className="flex flex-wrap gap-2">
-          <Button type="submit" loading={busy} disabled={!canSubmit}>Pasang penawaran</Button>
-          <ButtonLink href="/jual-beli" variant="secondary">Batal</ButtonLink>
+          <Button type="submit" loading={busy} disabled={!canSubmit}>{t("pasang.submit")}</Button>
+          <ButtonLink href="/jual-beli" variant="secondary">{t("common.cancel")}</ButtonLink>
         </div>
-        {!canSubmit && <p className="text-sm text-muted">Tombol aktif setelah email terverifikasi dan aturan disetujui.</p>}
+        {!canSubmit && <p className="text-sm text-muted">{t("pasang.submitDisabled")}</p>}
       </form>
     </div>
   );

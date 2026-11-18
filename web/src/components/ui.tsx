@@ -3,9 +3,13 @@
 // #01 Tombol, #02 Kolom Input, #08 Pagination, #18 Badge Status,
 // #34 Toast, #35 Banner, #36 Status Kosong, #37 Skeleton,
 // #04 Switch, #05 Pemilih Bahasa, #38 Modal.
+// Client component: label status/paginasi mengikuti bahasa antarmuka aktif.
+"use client";
+
 import Link from "next/link";
 import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTMLAttributes } from "react";
 import { AlertTriangle, Info, Loader2, SearchX } from "lucide-react";
+import { useLanguage } from "@/components/language-provider";
 
 // --- #01 Tombol ---------------------------------------------------------------
 type ButtonVariant = "primary" | "secondary" | "ghost" | "danger" | "link";
@@ -140,30 +144,33 @@ export function Badge({ tone, children }: { tone: BadgeTone; children: ReactNode
 }
 
 export function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, { tone: BadgeTone; label: string }> = {
-    published: { tone: "active", label: "Terbit" },
-    draft: { tone: "draft", label: "Draf" },
-    review: { tone: "review", label: "Menunggu tinjauan" },
-    returned: { tone: "rejected", label: "Dikembalikan" },
-    unpublished: { tone: "sold", label: "Ditayangkan turun" },
-    approved: { tone: "active", label: "Disetujui" },
-    pending: { tone: "review", label: "Menunggu moderasi" },
-    rejected: { tone: "rejected", label: "Ditolak" },
-    open: { tone: "review", label: "Terbuka" },
-    hidden: { tone: "sold", label: "Disembunyikan" },
-    dismissed: { tone: "draft", label: "Ditolak" },
-    reviewed: { tone: "active", label: "Sudah ditinjau" },
-    aktif: { tone: "active", label: "Aktif" },
-    terjual: { tone: "sold", label: "Terjual" },
-    dinonaktifkan: { tone: "disabled", label: "Dinonaktifkan" },
-    dihapus: { tone: "sold", label: "Dihapus" },
+  const { t } = useLanguage();
+  const map: Record<string, { tone: BadgeTone; key: string }> = {
+    published: { tone: "active", key: "ui.statusPublished" },
+    draft: { tone: "draft", key: "ui.statusDraft" },
+    review: { tone: "review", key: "ui.statusReview" },
+    returned: { tone: "rejected", key: "ui.statusReturned" },
+    unpublished: { tone: "sold", key: "ui.statusUnpublished" },
+    approved: { tone: "active", key: "ui.statusApproved" },
+    pending: { tone: "review", key: "ui.statusPending" },
+    rejected: { tone: "rejected", key: "ui.statusRejected" },
+    open: { tone: "review", key: "ui.statusOpen" },
+    hidden: { tone: "sold", key: "ui.statusHidden" },
+    dismissed: { tone: "draft", key: "ui.statusDismissed" },
+    reviewed: { tone: "active", key: "ui.statusReviewed" },
+    aktif: { tone: "active", key: "ui.statusAktif" },
+    terjual: { tone: "sold", key: "ui.statusTerjual" },
+    dinonaktifkan: { tone: "disabled", key: "ui.statusDinonaktifkan" },
+    dihapus: { tone: "sold", key: "ui.statusDihapus" },
   };
-  const m = map[status] ?? { tone: "draft" as BadgeTone, label: status };
-  return <Badge tone={m.tone}>{m.label}</Badge>;
+  const m = map[status];
+  if (!m) return <Badge tone="draft">{status}</Badge>;
+  return <Badge tone={m.tone}>{t(m.key)}</Badge>;
 }
 
 // --- #35 Banner Peringatan ---------------------------------------------------------
 export function Banner({ tone = "info", children, onClose }: { tone?: "info" | "warning" | "error" | "success"; children: ReactNode; onClose?: () => void }) {
+  const { t } = useLanguage();
   const tones = {
     info: "bg-surface-alt text-ink",
     warning: "bg-warning-soft text-warning",
@@ -176,7 +183,7 @@ export function Banner({ tone = "info", children, onClose }: { tone?: "info" | "
       {tone === "info" ? <Info className="mt-0.5 size-5 shrink-0" aria-hidden="true" /> : <AlertTriangle className="mt-0.5 size-5 shrink-0" aria-hidden="true" />}
       <div className="flex-1">{children}</div>
       {onClose && (
-        <button type="button" onClick={onClose} aria-label="Tutup peringatan" className="rounded p-1 hover:opacity-70 focus-visible:outline-2 focus-visible:outline-accent">
+        <button type="button" onClick={onClose} aria-label={t("ui.closeWarning")} className="rounded p-1 hover:opacity-70 focus-visible:outline-2 focus-visible:outline-accent">
           ✕
         </button>
       )}
@@ -218,20 +225,21 @@ export function ArticleCardSkeleton() {
 
 // --- #08 Pagination ---------------------------------------------------------------------
 export function Pagination({ page, totalPages, baseHref }: { page: number; totalPages: number; baseHref: string }) {
+  const { t } = useLanguage();
   if (totalPages <= 1) return null;
   const href = (p: number) => `${baseHref}${baseHref.includes("?") ? "&" : "?"}page=${p}`;
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1).filter(
     (p) => p === 1 || p === totalPages || Math.abs(p - page) <= 1,
   );
   return (
-    <nav aria-label="Pagination" className="mt-8 flex items-center justify-center gap-2">
+    <nav aria-label={t("ui.pagination")} className="mt-8 flex items-center justify-center gap-2">
       {page > 1 ? (
         <Link href={href(page - 1)} className="flex h-10 items-center rounded-md border border-line bg-canvas px-3 text-sm font-semibold text-ink hover:bg-surface focus-visible:outline-2 focus-visible:outline-accent">
-          Sebelumnya
+          {t("ui.prev")}
         </Link>
       ) : (
         <span aria-disabled="true" className="flex h-10 items-center rounded-md border border-line bg-canvas px-3 text-sm font-semibold text-muted opacity-50">
-          Sebelumnya
+          {t("ui.prev")}
         </span>
       )}
       {pages.map((p) => (
@@ -246,11 +254,11 @@ export function Pagination({ page, totalPages, baseHref }: { page: number; total
       ))}
       {page < totalPages ? (
         <Link href={href(page + 1)} className="flex h-10 items-center rounded-md border border-line bg-canvas px-3 text-sm font-semibold text-ink hover:bg-surface focus-visible:outline-2 focus-visible:outline-accent">
-          Berikutnya
+          {t("ui.next")}
         </Link>
       ) : (
         <span aria-disabled="true" className="flex h-10 items-center rounded-md border border-line bg-canvas px-3 text-sm font-semibold text-muted opacity-50">
-          Berikutnya
+          {t("ui.next")}
         </span>
       )}
     </nav>
@@ -259,8 +267,9 @@ export function Pagination({ page, totalPages, baseHref }: { page: number; total
 
 // --- #05 Pemilih Bahasa (ID/EN) ------------------------------------------------------------
 export function LanguagePicker({ value, onChange }: { value: "id" | "en"; onChange: (v: "id" | "en") => void }) {
+  const { t } = useLanguage();
   return (
-    <div role="group" aria-label="Pilih bahasa antarmuka" className="inline-flex rounded-md border border-line bg-canvas p-0.5">
+    <div role="group" aria-label={t("settings.languagePicker")} className="inline-flex rounded-md border border-line bg-canvas p-0.5">
       {(["id", "en"] as const).map((lang) => (
         <button
           key={lang}

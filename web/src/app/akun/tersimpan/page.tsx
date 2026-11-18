@@ -7,10 +7,12 @@ import { useSession } from "@/lib/session-client";
 import { ButtonLink, EmptyState } from "@/components/ui";
 import { ListingCard } from "@/components/listing-card";
 import type { MarketplaceListing } from "@/lib/listings";
+import { useLanguage } from "@/components/language-provider";
 
 type Tab = "semua" | "save" | "like";
 
 export default function TersimpanPage() {
+  const { t } = useLanguage();
   const { session, loading: sessionLoading } = useSession();
   const [items, setItems] = useState<MarketplaceListing[]>([]);
   const [loading, setLoading] = useState(true);
@@ -23,10 +25,10 @@ export default function TersimpanPage() {
     try {
       const res = await fetch("/api/me/saved", { cache: "no-store" });
       const data = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(data?.error ?? `Gagal memuat (HTTP ${res.status}).`);
+      if (!res.ok) throw new Error(data?.error ?? t("common.loadFailedHttp", { status: res.status }));
       setItems(Array.isArray(data) ? data : []);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Gagal memuat tersimpan.");
+      setError(e instanceof Error ? e.message : t("akun.savedLoadFailed"));
     } finally {
       setLoading(false);
     }
@@ -40,7 +42,7 @@ export default function TersimpanPage() {
   if (!session) {
     return (
       <div className="py-8">
-        <EmptyState title="Masuk dulu untuk melihat yang tersimpan." desc="Daftar tersimpan hanya tersedia setelah masuk." action={<ButtonLink href="/masuk">Masuk / daftar</ButtonLink>} titleAs="h1" />
+        <EmptyState title={t("akun.savedLogin")} desc={t("akun.savedLoginDesc")} action={<ButtonLink href="/masuk">{t("auth.signInUp")}</ButtonLink>} titleAs="h1" />
       </div>
     );
   }
@@ -50,13 +52,13 @@ export default function TersimpanPage() {
   return (
     <div className="flex flex-col gap-6 py-8">
       <div>
-        <h1 className="text-xl font-bold text-ink">Tersimpan &amp; disukai</h1>
-        <p className="mt-1 text-sm text-muted">Penawaran yang kamu simpan atau sukai di marketplace.</p>
+        <h1 className="text-xl font-bold text-ink">{t("akun.savedTitle")}</h1>
+        <p className="mt-1 text-sm text-muted">{t("akun.savedDesc")}</p>
       </div>
       {error && <p role="alert" className="text-sm text-danger">{error}</p>}
 
-      <div role="tablist" aria-label="Filter tersimpan" className="flex gap-2">
-        {([["semua", "Semua"], ["save", "Disimpan"], ["like", "Disukai"]] as [Tab, string][]).map(([v, label]) => (
+      <div role="tablist" aria-label={t("akun.filterSaved")} className="flex gap-2">
+        {([["semua", t("akun.tabAll")], ["save", t("akun.tabSaved")], ["like", t("akun.tabLiked")]] as [Tab, string][]).map(([v, label]) => (
           <button
             key={v}
             type="button"
@@ -72,11 +74,11 @@ export default function TersimpanPage() {
 
       {shown.length === 0 ? (
         <EmptyState
-          title={items.length === 0 ? "Belum ada yang tersimpan." : "Tidak ada di tab ini."}
+          title={items.length === 0 ? t("akun.savedEmpty") : t("akun.noInTab")}
           desc={items.length === 0
-            ? "Simpan penawaran dari halaman Jual Beli atau detail penawaran — penawaran yang kamu simpan muncul di sini."
-            : "Coba tab lain."}
-          action={<ButtonLink href="/jual-beli">Jelajahi Jual Beli</ButtonLink>}
+            ? t("akun.savedEmptyDesc")
+            : t("akun.tryOtherTab")}
+          action={<ButtonLink href="/jual-beli">{t("akun.exploreMarket")}</ButtonLink>}
         />
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

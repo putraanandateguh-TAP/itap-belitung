@@ -74,6 +74,16 @@ export interface ContributionPoint {
   awarded_at: string;
 }
 
+/** Satu entri riwayat revisi artikel. `snapshot` berisi isi (judul + isi)
+ * pada saat revisi itu dicatat — null bila revisi lama tercatat sebelum
+ * snapshot disimpan (hanya catatan perubahan yang tersedia). */
+export interface ContributionRevision {
+  at: string;
+  by: string;
+  changes: string;
+  snapshot: { title_id: string; body_id: string } | null;
+}
+
 export interface ContributorDashboard {
   total_views: number;
   approved_count: number;

@@ -6,6 +6,8 @@ import { getDailySnapshot } from "@/lib/daily";
 import { parseWeatherPayload } from "@/lib/daily-parse";
 import { DailyEmpty, DailyStamp, DailyUnparsed } from "@/components/daily-ui";
 import { formatDateWIB } from "@/lib/format";
+import { getServerLang } from "@/lib/i18n-server";
+import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Cuaca Belitung — Prakiraan BMKG",
@@ -14,43 +16,44 @@ export const metadata: Metadata = {
 
 export default async function CuacaPage() {
   const snap = await getDailySnapshot("weather");
+  const lang = await getServerLang();
   return (
     <div className="flex flex-col gap-6 py-8">
       <header>
-        <h1 className="text-xl font-bold text-ink">Cuaca Tanjung Pandan</h1>
-        <p className="mt-1 text-sm text-muted">Prakiraan BMKG per jam. Sumber: api.bmkg.go.id.</p>
+        <h1 className="text-xl font-bold text-ink">{t(lang, "info.weatherTitle")}</h1>
+        <p className="mt-1 text-sm text-muted">{t(lang, "info.forecastSource")}</p>
         {snap && <DailyStamp fetchedAt={snap.fetched_at} asOfDate={snap.as_of} />}
       </header>
 
       {!snap && (
         <DailyEmpty
-          sourceName="Cuaca"
-          reason="cron daily-info-fetch belum pernah mengisi cache (butuh database Supabase live, P1)."
+          sourceName={t(lang, "info.weatherName")}
+          reason={t(lang, "info.emptyReason")}
         />
       )}
 
       {snap && (() => {
         const parsed = parseWeatherPayload(snap.payload);
-        if (!parsed) return <DailyUnparsed sourceName="Cuaca" />;
+        if (!parsed) return <DailyUnparsed sourceName={t(lang, "info.weatherName")} />;
         return (
           <div className="flex flex-col gap-6">
-            <p className="text-sm text-muted">Lokasi prakiraan: <span className="font-semibold text-ink">{parsed.location}</span></p>
+            <p className="text-sm text-muted">{t(lang, "info.forecastLocation")}: <span className="font-semibold text-ink">{parsed.location}</span></p>
             {parsed.days.map((day) => (
               <section key={day.date} aria-labelledby={`cuaca-${day.date}`}>
                 <h2 id={`cuaca-${day.date}`} className="text-base font-bold text-ink">
-                  {formatDateWIB(`${day.date}T00:00:00+07:00`)}
+                  {formatDateWIB(`${day.date}T00:00:00+07:00`, lang)}
                 </h2>
                 <div className="mt-2 overflow-x-auto rounded-lg border border-line bg-canvas" tabIndex={0} role="region" aria-label={`Prakiraan cuaca ${day.date}`}>
                   <table className="w-full text-left text-sm">
-                    <caption className="sr-only">Prakiraan cuaca per jam</caption>
+                    <caption className="sr-only">{t(lang, "info.hourlyForecast")}</caption>
                     <thead>
                       <tr className="border-b border-line bg-surface text-xs uppercase text-muted">
-                        <th scope="col" className="px-4 py-3">Jam (WIB)</th>
-                        <th scope="col" className="px-4 py-3">Cuaca</th>
-                        <th scope="col" className="px-4 py-3">Suhu</th>
-                        <th scope="col" className="px-4 py-3">Hujan</th>
-                        <th scope="col" className="px-4 py-3">Kelembapan</th>
-                        <th scope="col" className="px-4 py-3">Angin</th>
+                        <th scope="col" className="px-4 py-3">{t(lang, "info.hour")}</th>
+                        <th scope="col" className="px-4 py-3">{t(lang, "info.weather")}</th>
+                        <th scope="col" className="px-4 py-3">{t(lang, "info.temp")}</th>
+                        <th scope="col" className="px-4 py-3">{t(lang, "info.rain")}</th>
+                        <th scope="col" className="px-4 py-3">{t(lang, "info.humidity")}</th>
+                        <th scope="col" className="px-4 py-3">{t(lang, "info.wind")}</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -61,7 +64,7 @@ export default async function CuacaPage() {
                           <td className="px-4 py-3 text-ink">{it.temp !== null ? `${it.temp}°C` : "—"}</td>
                           <td className="px-4 py-3 text-ink">{it.rainMm !== null ? `${it.rainMm} mm` : "—"}</td>
                           <td className="px-4 py-3 text-ink">{it.humidity !== null ? `${it.humidity}%` : "—"}</td>
-                          <td className="px-4 py-3 text-ink">{it.windKmh !== null ? `${it.windKmh} km/jam ${it.windDir}` : "—"}</td>
+                          <td className="px-4 py-3 text-ink">{it.windKmh !== null ? `${it.windKmh} ${lang === "en" ? "km/h" : "km/jam"} ${it.windDir}` : "—"}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -70,8 +73,7 @@ export default async function CuacaPage() {
               </section>
             ))}
             <p className="text-xs text-muted">
-              Peringatan gelombang dan kekeringan belum tampil di halaman ini: endpoint prakiraan
-              BMKG yang dipakai hanya berisi prakiraan per jam. Peringatan resmi lihat kanal BMKG.
+              {t(lang, "info.waveNote")}
             </p>
           </div>
         );

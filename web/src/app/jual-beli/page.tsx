@@ -9,17 +9,19 @@ import { LISTING_CATEGORIES, LISTING_CATEGORY_LABELS } from "@/lib/listings";
 import { ListingCard } from "@/components/listing-card";
 import { Banner, ButtonLink, EmptyState, Pagination } from "@/components/ui";
 import { ListingFilterForm } from "./filter-form";
+import { getServerLang } from "@/lib/i18n-server";
+import { t, LISTING_CATEGORY_NAMES_EN } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Jual Beli Belitung",
   description: "Penawaran jual beli warga Belitung di iTAP: kendaraan, elektronik, rumah tangga, dan lainnya. Transaksi langsung antar pihak.",
 };
 
-const SORT_LABELS: Record<ListingSort, string> = {
-  terbaru: "Terbaru",
-  termurah: "Harga termurah",
-  termahal: "Harga termahal",
-  terpopuler: "Paling dilihat",
+const SORT_KEYS: Record<ListingSort, string> = {
+  terbaru: "market.sortNewest",
+  termurah: "market.sortCheapest",
+  termahal: "market.sortExpensive",
+  terpopuler: "market.sortPopular",
 };
 
 export default async function JualBeliPage({
@@ -35,7 +37,14 @@ export default async function JualBeliPage({
   const category = LISTING_CATEGORIES.includes(sp.category as (typeof LISTING_CATEGORIES)[number])
     ? sp.category!
     : "";
+  const lang = await getServerLang();
   const result = await listListings({ q: sp.q || undefined, category: category || undefined, sort, page });
+  const SORT_LABELS: Record<ListingSort, string> = {
+    terbaru: t(lang, SORT_KEYS.terbaru),
+    termurah: t(lang, SORT_KEYS.termurah),
+    termahal: t(lang, SORT_KEYS.termahal),
+    terpopuler: t(lang, SORT_KEYS.terpopuler),
+  };
 
   const baseHref = (() => {
     const p = new URLSearchParams();
@@ -49,43 +58,41 @@ export default async function JualBeliPage({
   return (
     <div className="flex flex-col gap-6 py-8">
       <section aria-labelledby="jual-beli-title" className="rounded-xl bg-surface-dark px-6 py-10 text-ink-on-dark">
-        <p className="text-xs font-medium uppercase tracking-widest text-accent-light">Marketplace · iTAP Belitung</p>
-        <h1 id="jual-beli-title" className="mt-2 text-xl font-bold md:text-display">Jual Beli Belitung</h1>
+        <p className="text-xs font-medium uppercase tracking-widest text-accent-light">{t(lang, "market.kicker")}</p>
+        <h1 id="jual-beli-title" className="mt-2 text-xl font-bold md:text-display">{t(lang, "market.title")}</h1>
         <p className="mt-2 max-w-xl text-base text-muted-on-dark">
-          Penawaran warga Belitung — dari kendaraan sampai jasa. Kesepakatan dan pembayaran diatur
-          langsung antara penjual dan pembeli; iTAP bukan pihak dalam transaksi.
+          {t(lang, "market.subtitle")}
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
-          <ButtonLink href="/jual-beli/pasang">Pasang penawaran</ButtonLink>
-          <ButtonLink href="/jual-beli/aturan" variant="secondary" className="bg-transparent text-ink-on-dark">Aturan marketplace</ButtonLink>
+          <ButtonLink href="/jual-beli/pasang">{t(lang, "market.postOffer")}</ButtonLink>
+          <ButtonLink href="/jual-beli/aturan" variant="secondary" className="bg-transparent text-ink-on-dark">{t(lang, "market.rules")}</ButtonLink>
         </div>
       </section>
 
       <Banner tone="info">
-        Detail kontak dan lokasi penjual hanya terlihat setelah masuk dan email terverifikasi.
-        Verifikasi WhatsApp belum tersedia — saat ini cukup verifikasi email.
+        {t(lang, "market.banner")}
       </Banner>
 
       <ListingFilterForm
         current={{ q: sp.q ?? "", category, sort }}
-        categories={LISTING_CATEGORIES.map((c) => ({ value: c, label: LISTING_CATEGORY_LABELS[c] }))}
+        categories={LISTING_CATEGORIES.map((c) => ({ value: c, label: lang === "en" ? LISTING_CATEGORY_NAMES_EN[c] : LISTING_CATEGORY_LABELS[c] }))}
         sortLabels={SORT_LABELS}
       />
 
       {result.items.length === 0 ? (
         <EmptyState
-          title="Belum ada penawaran di sini."
+          title={t(lang, "market.empty")}
           desc={
             result.total === 0
-              ? "Marketplace baru dibuka dan belum ada penawaran yang dipasang. Jadilah yang pertama memasang penawaran di Belitung."
-              : "Tidak ada penawaran yang cocok dengan filter ini. Coba ubah kata kunci atau kategori."
+              ? t(lang, "market.emptyAll")
+              : t(lang, "market.emptyFiltered")
           }
-          action={<ButtonLink href="/jual-beli/pasang">Pasang penawaran pertama</ButtonLink>}
+          action={<ButtonLink href="/jual-beli/pasang">{t(lang, "market.postFirst")}</ButtonLink>}
         />
       ) : (
         <>
           <p aria-live="polite" className="text-sm text-muted">
-            Menampilkan {result.items.length} dari {result.total} penawaran · halaman {result.page} dari {result.total_pages}
+            {t(lang, "market.showing", { shown: result.items.length, total: result.total, page: result.page, totalPages: result.total_pages })}
           </p>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {result.items.map((l) => <ListingCard key={l.id} listing={l} />)}

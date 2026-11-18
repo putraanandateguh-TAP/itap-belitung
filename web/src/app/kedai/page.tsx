@@ -43,7 +43,7 @@ export default async function KedaiPage() {
             <a href={kedai.maps_url} target="_blank" rel="noopener noreferrer" className="inline-flex h-10 items-center rounded-md bg-surface-dark px-4 text-sm font-semibold text-ink-on-dark hover:opacity-90 focus-visible:outline-2 focus-visible:outline-accent">
               Rute ke kedai
             </a>
-            <a href={kedai.grabfood_url} target="_blank" rel="noopener noreferrer" className="inline-flex h-10 items-center rounded-md bg-success-bright px-4 text-sm font-semibold text-on-accent hover:opacity-90 focus-visible:outline-2 focus-visible:outline-accent">
+            <a href={kedai.grabfood_url} target="_blank" rel="noopener noreferrer" className="inline-flex h-10 items-center rounded-md bg-success px-4 text-sm font-semibold text-on-accent hover:opacity-90 focus-visible:outline-2 focus-visible:outline-accent">
               Pesan di GrabFood
             </a>
             <a href={kedai.gofood_url} target="_blank" rel="noopener noreferrer" className="inline-flex h-10 items-center rounded-md bg-danger px-4 text-sm font-semibold text-on-accent hover:opacity-90 focus-visible:outline-2 focus-visible:outline-accent">

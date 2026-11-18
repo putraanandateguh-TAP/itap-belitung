@@ -1,9 +1,9 @@
-// F10 Komentar artikel — baca yang disetujui; tulis butuh masuk (demo).
+// F10 Komentar artikel — baca yang disetujui; tulis butuh masuk + email terverifikasi.
 // Kiriman baru masuk antrean moderasi (pending) dan tampil setelah disetujui.
 "use client";
 
 import { useState } from "react";
-import { getSession, setSession } from "@/lib/auth";
+import { useSession } from "@/lib/session-client";
 import type { Comment } from "@/lib/types";
 import { Banner, Button, TextArea } from "@/components/ui";
 import { formatDateWIB } from "@/lib/format";
@@ -14,7 +14,7 @@ export function CommentSection({ slug, initialComments }: { slug: string; initia
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [submitting, setSubmitting] = useState(false);
-  const session = typeof window !== "undefined" ? getSession() : null;
+  const { session } = useSession();
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -29,7 +29,7 @@ export function CommentSection({ slug, initialComments }: { slug: string; initia
       const res = await fetch(`/api/articles/${encodeURIComponent(slug)}/comments`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ text: text.trim(), author_name: session?.name ?? "Pembaca" }),
+        body: JSON.stringify({ text: text.trim() }),
       });
       if (!res.ok) throw new Error("gagal");
       setText("");
@@ -63,7 +63,7 @@ export function CommentSection({ slug, initialComments }: { slug: string; initia
       {session ? (
         <form onSubmit={submit} className="mt-4 flex flex-col gap-3 rounded-lg border border-line bg-surface p-4">
           <label htmlFor="komentar" className="text-sm font-semibold text-ink">
-            Tulis tanggapan sebagai {session.name}
+            Tulis tanggapan sebagai {session.displayName ?? session.email}
           </label>
           <TextArea id="komentar" value={text} onChange={(e) => setText(e.target.value)} placeholder="Tanggapanmu tentang artikel ini…" error={!!error} aria-describedby={error ? "komentar-error" : undefined} />
           {error && <p id="komentar-error" role="alert" className="text-sm text-danger">{error}</p>}
@@ -75,7 +75,7 @@ export function CommentSection({ slug, initialComments }: { slug: string; initia
       ) : (
         <div className="mt-4">
           <Banner tone="info">
-            Masuk dulu untuk menulis tanggapan. <a href="/masuk" className="font-semibold text-accent hover:underline">Masuk / daftar akun demo</a>
+            Masuk dulu untuk menulis tanggapan. <a href="/masuk" className="font-semibold text-accent-dark hover:underline">Masuk / daftar</a>
           </Banner>
         </div>
       )}

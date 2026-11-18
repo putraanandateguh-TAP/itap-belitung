@@ -1,11 +1,13 @@
 // S05 Detail artikel — galeri, isi berformat, lokasi, sumber, rekomendasi
 // terkait/lintas kanal, komentar (F10). SEO: canonical + metadata per artikel.
 import type { Metadata } from "next";
+import { siteUrl } from "@/lib/site-url";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ExternalLink, MapPin, Share2 } from "lucide-react";
 import { getArticle, getRelated, listComments } from "@/lib/data";
-import { categoryName, channelLabel } from "@/lib/data";
+import { categoryName } from "@/lib/data";
+import { channelLabel } from "@/lib/labels";
 import { ArticleCard, ArticleGallery } from "@/components/article-card";
 import { Badge, Banner } from "@/components/ui";
 import { formatDateWIB, formatViews } from "@/lib/format";
@@ -16,11 +18,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const article = await getArticle(slug);
   if (!article) return { title: "Artikel tidak ditemukan" };
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://itapbelitung.my.id";
   return {
     title: article.title_id,
     description: article.body_id[0]?.slice(0, 160) ?? article.title_id,
-    alternates: { canonical: `${siteUrl}/artikel/${article.slug}` },
+    alternates: { canonical: `${siteUrl()}/artikel/${article.slug}` },
     openGraph: {
       type: "article",
       title: article.title_id,
@@ -34,7 +35,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const { slug } = await params;
   const article = await getArticle(slug);
   if (!article || article.status !== "published") notFound();
-  const [related, comments] = await Promise.all([getRelated(slug), listComments(slug)]);
+  const [related, comments, categoryNameValue] = await Promise.all([getRelated(slug), listComments(slug), categoryName(article.category_id)]);
 
   return (
     <article className="mx-auto max-w-3xl py-8">
@@ -45,13 +46,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           {channelLabel(article.channel)}
         </Link>
         {" / "}
-        <span aria-current="page">{categoryName(article.category_id)}</span>
+        <span aria-current="page">{categoryNameValue}</span>
       </nav>
 
       <header className="mt-4">
         <div className="flex flex-wrap items-center gap-2">
           <Badge tone="info">{channelLabel(article.channel)}</Badge>
-          <Badge tone="draft">{categoryName(article.category_id)}</Badge>
+          <Badge tone="draft">{categoryNameValue}</Badge>
           {article.external && <Badge tone="draft">Agregasi media lain</Badge>}
         </div>
         <h1 className="mt-3 text-xl font-bold text-ink md:text-display">{article.title_id}</h1>

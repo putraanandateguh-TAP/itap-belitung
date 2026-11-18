@@ -1,6 +1,7 @@
 // S02/S03/S04 + kanal iTAP (sejarah/budaya/legenda): daftar kanal + filter +
 // pagination. Satu route dinamis [channel] — layout sama untuk semua kanal.
 import type { Metadata } from "next";
+import { siteUrl } from "@/lib/site-url";
 import { notFound } from "next/navigation";
 import { listArticles, listCategories } from "@/lib/data";
 import { CHANNELS } from "@/lib/seed-data";
@@ -26,11 +27,10 @@ export async function generateMetadata({ params }: { params: Promise<{ channel: 
   const { channel } = await params;
   const label = CHANNELS[channel as Channel];
   if (!label) return { title: "Kanal tidak ditemukan" };
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://itapbelitung.my.id";
   return {
     title: `${label} Belitung`,
     description: CHANNEL_DESCRIPTIONS[channel as Channel],
-    alternates: { canonical: `${siteUrl}/kanal/${channel}` },
+    alternates: { canonical: `${siteUrl()}/kanal/${channel}` },
   };
 }
 

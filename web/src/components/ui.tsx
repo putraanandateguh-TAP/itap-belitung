@@ -124,10 +124,10 @@ const badgeTones: Record<BadgeTone, string> = {
   active: "bg-success-soft text-success",
   sold: "bg-surface text-muted",
   disabled: "bg-warning-soft text-warning",
-  review: "bg-surface-alt text-accent",
+  review: "bg-surface-alt text-accent-dark",
   rejected: "bg-danger-soft text-danger",
   draft: "bg-surface text-muted",
-  info: "bg-surface-alt text-accent",
+  info: "bg-surface-alt text-accent-dark",
   example: "bg-warning-soft text-warning",
 };
 
@@ -181,11 +181,12 @@ export function Banner({ tone = "info", children, onClose }: { tone?: "info" | "
 }
 
 // --- #36 Status Kosong ---------------------------------------------------------------
-export function EmptyState({ title, desc, action }: { title: string; desc: string; action?: ReactNode }) {
+export function EmptyState({ title, desc, action, titleAs = "h2" }: { title: string; desc: string; action?: ReactNode; titleAs?: "h1" | "h2" }) {
+  const TitleTag = titleAs;
   return (
     <div className="flex flex-col items-center gap-2 rounded-lg border border-line bg-canvas px-4 py-12 text-center">
       <SearchX className="size-12 text-muted" aria-hidden="true" />
-      <h2 className="text-lg font-semibold text-ink">{title}</h2>
+      <TitleTag className="text-lg font-semibold text-ink">{title}</TitleTag>
       <p className="max-w-md text-sm text-muted">{desc}</p>
       {action && <div className="mt-2">{action}</div>}
     </div>
@@ -262,7 +263,7 @@ export function LanguagePicker({ value, onChange }: { value: "id" | "en"; onChan
           type="button"
           aria-pressed={value === lang}
           onClick={() => onChange(lang)}
-          className={`h-8 rounded-md px-3 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent ${value === lang ? "bg-surface-alt text-accent" : "text-muted"}`}
+          className={`h-8 rounded-md px-3 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent ${value === lang ? "bg-surface-alt text-accent-dark" : "text-muted"}`}
         >
           {lang === "id" ? "ID" : "EN"}
         </button>

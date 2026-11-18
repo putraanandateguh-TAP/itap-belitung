@@ -1,22 +1,22 @@
-// S11 Verifikasi email & WhatsApp — #03 Input OTP 6 kotak (email + WhatsApp).
-// DEMO: kode demo 123456 tampil di halaman; kode lain ditolak (state error),
-// kirim ulang memakai hitung mundur 60 detik.
+// S11 Verifikasi email & WhatsApp — OTP 6 kotak (email via Supabase Auth +
+// SMTP Resend P5; WhatsApp via Meta P2 — belum tersedia, lihat banner).
+// TIDAK ada lagi kode demo yang tampil di halaman.
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
-import { getSession, setSession } from "@/lib/auth";
+import { Suspense, useEffect, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Banner, Button } from "@/components/ui";
 
-const DEMO_CODE = "123456";
-
-export default function VerifikasiPage() {
+function VerifikasiForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const [email, setEmail] = useState(searchParams.get("email") ?? "");
   const [digits, setDigits] = useState<string[]>(["", "", "", "", "", ""]);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [cooldown, setCooldown] = useState(0);
   const [channel, setChannel] = useState<"email" | "whatsapp">("email");
+  const [busy, setBusy] = useState(false);
   const inputs = useRef<(HTMLInputElement | null)[]>([]);
 
   useEffect(() => {
@@ -51,22 +51,58 @@ export default function VerifikasiPage() {
     inputs.current[Math.min(text.length, 5)]?.focus();
   }
 
-  function verify(e: React.FormEvent) {
+  async function resend() {
+    if (channel === "whatsapp") {
+      setNotice("Verifikasi WhatsApp belum tersedia — butuh akun Meta WhatsApp Business + template OTP yang disetujui (P2).");
+      return;
+    }
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      setError("Masukkan alamat email yang valid dulu.");
+      return;
+    }
+    setCooldown(60);
+    setError("");
+    const res = await fetch("/api/auth/email-otp/send", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email }),
+    });
+    const data = await res.json().catch(() => ({}));
+    setNotice(res.ok ? (data.message ?? "Kode baru dikirim ke emailmu.") : (data.error ?? "Tidak bisa mengirim kode."));
+  }
+
+  async function verify(e: React.FormEvent) {
     e.preventDefault();
     const code = digits.join("");
     if (code.length < 6) {
       setError("Masukkan 6 digit kode verifikasi.");
       return;
     }
-    if (code !== DEMO_CODE) {
-      setError("Kode tidak cocok, coba lagi.");
+    if (channel === "whatsapp") {
+      setError("Verifikasi WhatsApp belum tersedia (P2). Verifikasi email dulu.");
       return;
     }
-    const s = getSession();
-    if (s) setSession({ ...s, verified: true });
+    if (!/^\S+@\S+\.\S+$/.test(email)) {
+      setError("Masukkan alamat email yang menerima kode.");
+      return;
+    }
+    setBusy(true);
     setError("");
-    setNotice(channel === "email" ? "Email terverifikasi. Lanjut verifikasi WhatsApp bila ingin berjualan nanti (Fase 2)." : "WhatsApp terverifikasi. Akunmu siap untuk marketplace (Fase 2).");
-    setTimeout(() => router.push("/pengaturan"), 1200);
+    try {
+      const res = await fetch("/api/auth/email-otp/verify", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ email, token: code }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error ?? "Kode tidak cocok, coba lagi.");
+      setNotice("Email terverifikasi. Lanjut verifikasi WhatsApp bila ingin berjualan nanti (Fase 2).");
+      setTimeout(() => router.push("/pengaturan"), 1200);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Verifikasi gagal.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
@@ -77,9 +113,21 @@ export default function VerifikasiPage() {
       </p>
 
       <div className="mt-4">
-        <Banner tone="warning">
-          Mode demo: tidak ada email/SMS yang benar-benar dikirim. Kode demo: <strong className="font-mono">{DEMO_CODE}</strong> (ditampilkan di sini hanya untuk demo).
+        <Banner tone="info">
+          Kode verifikasi dikirim ke emailmu (SMTP Resend). Verifikasi WhatsApp memakai OTP Meta — butuh akun WhatsApp Business + template disetujui (P2); gerbang ini aktif penuh di Fase 2 (marketplace).
         </Banner>
+      </div>
+
+      <div className="mt-6 flex flex-col gap-2">
+        <label htmlFor="verif-email" className="text-sm font-semibold text-ink">Email yang menerima kode</label>
+        <input
+          id="verif-email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="nama@contoh.id"
+          className="h-11 rounded-md border border-line-input bg-canvas px-3 text-base text-ink"
+        />
       </div>
 
       <div role="group" aria-label="Pilih saluran verifikasi" className="mt-6 inline-flex rounded-md border border-line bg-canvas p-0.5">
@@ -89,7 +137,7 @@ export default function VerifikasiPage() {
             type="button"
             aria-pressed={channel === c}
             onClick={() => { setChannel(c); setError(""); setNotice(""); }}
-            className={`h-10 rounded-md px-4 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent ${channel === c ? "bg-surface-alt text-accent" : "text-muted"}`}
+            className={`h-10 rounded-md px-4 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent ${channel === c ? "bg-surface-alt text-accent-dark" : "text-muted"}`}
           >
             {c === "email" ? "Email" : "WhatsApp"}
           </button>
@@ -117,7 +165,7 @@ export default function VerifikasiPage() {
         </fieldset>
         {error && <p role="alert" className="text-sm text-danger">{error}</p>}
         {notice && <Banner tone="success">{notice}</Banner>}
-        <Button type="submit" size="lg" className="w-full">Verifikasi</Button>
+        <Button type="submit" size="lg" className="w-full" loading={busy}>Verifikasi</Button>
       </form>
 
       <p className="mt-4 text-center text-sm text-muted">
@@ -126,16 +174,21 @@ export default function VerifikasiPage() {
         ) : (
           <button
             type="button"
-            onClick={() => { setCooldown(60); setError(""); setNotice("Demo: kode baru tidak benar-benar dikirim — kode demo tetap 123456."); }}
+            onClick={resend}
             className="font-semibold text-accent hover:underline focus-visible:outline-2 focus-visible:outline-accent"
           >
             Kirim ulang kode
           </button>
         )}
       </p>
-      <p className="mt-2 text-center text-xs text-muted">
-        Verifikasi WhatsApp memakai OTP Meta — butuh akun WhatsApp Business + template disetujui (P2). Gerbang ini aktif penuh di Fase 2 (marketplace).
-      </p>
     </div>
+  );
+}
+
+export default function VerifikasiPage() {
+  return (
+    <Suspense>
+      <VerifikasiForm />
+    </Suspense>
   );
 }

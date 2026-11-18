@@ -1,13 +1,22 @@
-// DATA LAYER PALSU (fake) — tanda tangan fungsi SAMA seperti API di
-// architecture.md §3, supaya replica-backend nanti tinggal mengganti
-// implementasi tanpa mengubah layar. TIDAK ada koneksi database di sini:
-// semua baca dari seed-data.ts, semua tulis ke store.ts (in-memory, hilang
-// saat server restart). Supabase (P1) BELUM ada.
-import {
-  ARTICLES, CATEGORIES, CHANNELS, DAILY_PRICES, JOBS, KEDAI, MARKET_RATES,
-  PRODUCTS, SERVICES,
-} from "./seed-data";
-import { articleWithOverride, store } from "./store";
+// DATA LAYER — implementasi NYATA (Supabase Postgres via Drizzle).
+// Tanda tangan fungsi SAMA seperti API di architecture.md §3 dan seperti
+// data layer palsu sebelumnya, supaya layar tidak berubah.
+//
+// Bila DATABASE_URL belum diisi (P1 belum dibuat), fungsi-fungsi di sini
+// memakai fallback seed sementara dari data-seed.ts (in-memory) agar situs
+// tetap bisa dibangun/dilihat — JANGAN jadikan ini permanen: set
+// ITAP_ALLOW_SEED_FALLBACK=false setelah P1 untuk mematikan fallback dan
+// memaksa error yang jelas. Lihat replica/backend.md.
+//
+// Otorisasi: baca publik difilter status di query (published/aktif/open);
+// tulis memakai `can()` dari lib/auth + konteks profil pemanggil (ctx).
+// RLS schema.sql adalah pertahanan kedua untuk akses langsung via client.
+import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
+import { getDb, isDbConfigured } from "./db";
+import * as t from "./db/schema";
+import { can, getCurrentProfile, isAdmin, type SessionProfile } from "./auth";
+import * as seed from "./data-seed";
+export { channelLabel } from "./labels";
 import type {
   Article, Category, Channel, Comment, Contribution, ContributionPoint,
   ContributorDashboard, DailyPrices, JobListing, Kedai, MarketRates,
@@ -16,51 +25,122 @@ import type {
 
 const PER_PAGE = 9;
 
+/** true bila DB tersambung (dan fallback seed tidak dimatikan paksa). */
+function useSeed(): boolean {
+  return !isDbConfigured() && process.env.ITAP_ALLOW_SEED_FALLBACK !== "false";
+}
+
+export type Ctx = { profile?: SessionProfile | null };
+async function ctxProfile(ctx?: Ctx): Promise<SessionProfile | null> {
+  if (ctx && "profile" in ctx) return ctx.profile ?? null;
+  try { return await getCurrentProfile(); } catch { return null; }
+}
+
 function paginate<T>(items: T[], page: number, perPage = PER_PAGE): Paginated<T> {
   const total = items.length;
   const total_pages = Math.max(1, Math.ceil(total / perPage));
   const safePage = Math.min(Math.max(1, page), total_pages);
+  return { items: items.slice((safePage - 1) * perPage, safePage * perPage), page: safePage, per_page: perPage, total, total_pages };
+}
+
+const splitParas = (s: string | null | undefined): string[] =>
+  (s ?? "").split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+const joinParas = (arr: string[] | string | null | undefined): string =>
+  Array.isArray(arr) ? arr.join("\n\n") : (arr ?? "");
+
+type ArticleRow = typeof t.articles.$inferSelect;
+
+function toArticle(row: ArticleRow, categorySlug?: string): Article {
+  const gallery = Array.isArray(row.gallery)
+    ? (row.gallery as { alt: string; caption: string }[])
+    : [];
   return {
-    items: items.slice((safePage - 1) * perPage, safePage * perPage),
-    page: safePage, per_page: perPage, total, total_pages,
+    id: row.id,
+    slug: row.slug,
+    channel: row.channel as Channel,
+    category_id: row.categoryId ?? categorySlug ?? "",
+    title_id: row.titleId,
+    title_en: row.titleEn,
+    body_id: splitParas(row.bodyId),
+    body_en: row.bodyEn ? splitParas(row.bodyEn) : null,
+    gallery,
+    location_name: row.locationName ?? "",
+    location_lat: row.locationLat,
+    location_lng: row.locationLng,
+    source: row.source ?? "",
+    source_url: row.sourceUrl,
+    external: row.external,
+    author_id: row.authorId,
+    status: row.status,
+    published_at: (row.publishedAt ?? row.createdAt).toISOString(),
+    views: row.views,
+    featured: false,
   };
 }
 
-function published(): Article[] {
-  return ARTICLES.map(articleWithOverride).filter((a) => a.status === "published");
+function toCategory(row: typeof t.categories.$inferSelect): Category {
+  return { id: row.id, channel: row.channel as Channel, name_id: row.nameId, name_en: row.nameEn ?? "", slug: row.slug };
+}
+
+async function categorySlugById(db: ReturnType<typeof getDb>, id: string | null): Promise<string> {
+  if (!id) return "";
+  const rows = await db.select().from(t.categories).where(eq(t.categories.id, id)).limit(1);
+  return rows[0]?.slug ?? id;
 }
 
 // --- 3.2 Portal & pencarian (F01, F02) -------------------------------------
 
 export async function listCategories(channel?: Channel): Promise<Category[]> {
-  const base = CATEGORIES.filter((c) => !channel || c.channel === channel);
-  const extra = store.categoriesExtra
-    .filter((c) => !channel || c.channel === channel)
-    .map((c) => ({ ...c, channel: c.channel as Channel }));
-  return [...base, ...extra];
+  if (useSeed()) return seed.listCategories(channel);
+  const db = getDb();
+  const rows = await db.select().from(t.categories)
+    .where(channel ? eq(t.categories.channel, channel) : undefined)
+    .orderBy(asc(t.categories.sortOrder), asc(t.categories.nameId));
+  return rows.map(toCategory);
 }
 
 export async function listArticles(opts: {
   channel?: Channel; category?: string; page?: number; perPage?: number;
 }): Promise<Paginated<Article>> {
-  let items = published();
-  if (opts.channel) items = items.filter((a) => a.channel === opts.channel);
-  if (opts.category) items = items.filter((a) => a.category_id === opts.category);
-  items = [...items].sort((a, b) => +new Date(b.published_at) - +new Date(a.published_at));
+  if (useSeed()) return seed.listArticles(opts);
+  const db = getDb();
+  const conds = [eq(t.articles.status, "published")];
+  if (opts.channel) conds.push(eq(t.articles.channel, opts.channel));
+  if (opts.category) conds.push(eq(t.articles.categoryId, opts.category));
+  const rows = await db.select().from(t.articles)
+    .where(and(...conds))
+    .orderBy(desc(t.articles.publishedAt), desc(t.articles.createdAt));
+  const cats = await db.select().from(t.categories);
+  const slugById = new Map(cats.map((c) => [c.id, c.slug]));
+  const items = rows.map((r) => toArticle(r, slugById.get(r.categoryId ?? "") ?? ""));
   return paginate(items, opts.page ?? 1, opts.perPage ?? PER_PAGE);
 }
 
 export async function getArticle(slug: string): Promise<Article | null> {
-  const found = ARTICLES.map(articleWithOverride).find((a) => a.slug === slug);
-  return found ?? null;
+  if (useSeed()) return seed.getArticle(slug);
+  const db = getDb();
+  const rows = await db.select().from(t.articles).where(eq(t.articles.slug, slug)).limit(1);
+  const row = rows[0];
+  if (!row) return null;
+  // View counter atomic (arsitektur §2.10) — hanya untuk artikel published.
+  if (row.status === "published") {
+    await db.execute(sql`select public.increment_article_views(${row.id})`).catch(() => undefined);
+    row.views += 1;
+  }
+  return toArticle(row, await categorySlugById(db, row.categoryId));
 }
 
 export async function getRelated(slug: string, limit = 4): Promise<Article[]> {
+  if (useSeed()) return seed.getRelated(slug, limit);
   const article = await getArticle(slug);
   if (!article) return [];
-  const same = published().filter((a) => a.slug !== slug && a.channel === article.channel);
-  const cross = published().filter((a) => a.slug !== slug && a.channel !== article.channel);
-  return [...same, ...cross].slice(0, limit);
+  const db = getDb();
+  const rows = await db.select().from(t.articles)
+    .where(and(eq(t.articles.status, "published"), sql`${t.articles.id} <> ${article.id}`))
+    .orderBy(desc(t.articles.publishedAt)).limit(limit * 2);
+  const same = rows.filter((r) => r.channel === article.channel);
+  const cross = rows.filter((r) => r.channel !== article.channel);
+  return [...same, ...cross].slice(0, limit).map((r) => toArticle(r));
 }
 
 export async function searchArticles(opts: {
@@ -68,226 +148,516 @@ export async function searchArticles(opts: {
   sort?: "terbaru" | "terpopuler" | "banyak-dicari";
   from?: string; to?: string; page?: number;
 }): Promise<Paginated<Article>> {
-  const q = opts.q.trim().toLowerCase();
-  let items = published();
+  if (useSeed()) return seed.searchArticles(opts);
+  const db = getDb();
+  const q = opts.q.trim();
+  const conds = [eq(t.articles.status, "published")];
   if (q) {
-    items = items.filter((a) =>
-      `${a.title_id} ${a.body_id.join(" ")} ${a.location_name} ${a.source}`
-        .toLowerCase().includes(q),
-    );
+    // Full-text 'simple' (tanpa stemmer ID — keterbatasan arsitektur §4)
+    // + fallback ILIKE judul agar kata parsial tetap ketemu.
+    conds.push(sql`(
+      to_tsvector('simple', coalesce(${t.articles.titleId}, '') || ' ' || coalesce(${t.articles.bodyId}, ''))
+        @@ plainto_tsquery('simple', ${q})
+      or ${t.articles.titleId} ilike ${"%" + q + "%"}
+    )`);
   }
-  if (opts.channel) items = items.filter((a) => a.channel === opts.channel);
-  if (opts.category) items = items.filter((a) => a.category_id === opts.category);
-  if (opts.from) items = items.filter((a) => a.published_at >= opts.from!);
-  if (opts.to) items = items.filter((a) => a.published_at <= opts.to!);
-  if (opts.sort === "terpopuler" || opts.sort === "banyak-dicari") {
-    items = [...items].sort((a, b) => b.views - a.views);
-  } else {
-    items = [...items].sort((a, b) => +new Date(b.published_at) - +new Date(a.published_at));
-  }
-  return paginate(items, opts.page ?? 1);
+  if (opts.channel) conds.push(eq(t.articles.channel, opts.channel));
+  if (opts.category) conds.push(eq(t.articles.categoryId, opts.category));
+  if (opts.from) conds.push(sql`${t.articles.publishedAt} >= ${opts.from}::timestamptz`);
+  if (opts.to) conds.push(sql`${t.articles.publishedAt} <= ${opts.to}::timestamptz`);
+  const order = opts.sort === "terpopuler" || opts.sort === "banyak-dicari"
+    ? desc(t.articles.views)
+    : desc(t.articles.publishedAt);
+  const rows = await db.select().from(t.articles).where(and(...conds)).orderBy(order);
+  return paginate(rows.map((r) => toArticle(r)), opts.page ?? 1);
 }
 
 export async function getPopular(limit = 5): Promise<Article[]> {
-  return [...published()].sort((a, b) => b.views - a.views).slice(0, limit);
+  if (useSeed()) return seed.getPopular(limit);
+  const db = getDb();
+  const rows = await db.select().from(t.articles)
+    .where(eq(t.articles.status, "published"))
+    .orderBy(desc(t.articles.views)).limit(limit);
+  return rows.map((r) => toArticle(r));
 }
 
 export async function getLatest(limit = 6): Promise<Article[]> {
-  return [...published()]
-    .sort((a, b) => +new Date(b.published_at) - +new Date(a.published_at))
-    .slice(0, limit);
+  if (useSeed()) return seed.getLatest(limit);
+  const db = getDb();
+  const rows = await db.select().from(t.articles)
+    .where(eq(t.articles.status, "published"))
+    .orderBy(desc(t.articles.publishedAt)).limit(limit);
+  return rows.map((r) => toArticle(r));
 }
 
 export async function getFeatured(): Promise<Article | null> {
-  const items = published().filter((a) => a.featured && !a.external);
-  return items[0] ?? (await getLatest(1))[0] ?? null;
+  if (useSeed()) return seed.getFeatured();
+  const latest = await getLatest(1);
+  return latest[0] ?? null;
 }
 
-export function channelLabel(channel: Channel): string {
-  return CHANNELS[channel];
-}
-
-export function categoryName(id: string): string {
-  return CATEGORIES.find((c) => c.id === id)?.name_id ?? id;
+/** Nama kategori dari id (uuid DB / slug seed). Async karena butuh DB. */
+export async function categoryName(id: string): Promise<string> {
+  if (useSeed()) return seed.categoryName(id);
+  try {
+    const db = getDb();
+    const rows = await db.select().from(t.categories).where(eq(t.categories.id, id)).limit(1);
+    if (rows[0]) return rows[0].nameId;
+    const bySlug = await db.select().from(t.categories).where(eq(t.categories.slug, id)).limit(1);
+    return bySlug[0]?.nameId ?? id;
+  } catch {
+    return seed.categoryName(id);
+  }
 }
 
 // --- 3.3 Komentar (F10) ------------------------------------------------------
 
+function toComment(
+  row: typeof t.comments.$inferSelect,
+  authorName: string,
+  articleSlug: string,
+): Comment {
+  return {
+    id: row.id, article_id: row.articleId, article_slug: articleSlug,
+    author_name: authorName, text: row.text, status: row.status,
+    created_at: row.createdAt.toISOString(),
+  };
+}
+
 export async function listComments(slug: string): Promise<Comment[]> {
-  return store.comments
-    .filter((c) => c.article_slug === slug && c.status === "approved")
-    .sort((a, b) => +new Date(b.created_at) - +new Date(a.created_at));
+  if (useSeed()) return seed.listComments(slug);
+  const db = getDb();
+  const arts = await db.select().from(t.articles).where(eq(t.articles.slug, slug)).limit(1);
+  if (!arts[0]) return [];
+  const rows = await db.select().from(t.comments)
+    .where(and(eq(t.comments.articleId, arts[0].id), eq(t.comments.status, "approved")))
+    .orderBy(desc(t.comments.createdAt));
+  const profs = await db.select().from(t.profiles);
+  const nameById = new Map(profs.map((p) => [p.id, p.displayName ?? p.email]));
+  return rows.map((r) => toComment(r, nameById.get(r.userId) ?? "Pembaca", slug));
 }
 
 export async function listPendingComments(): Promise<Comment[]> {
-  return store.comments.filter((c) => c.status === "pending");
+  if (useSeed()) return seed.listPendingComments();
+  const db = getDb();
+  const rows = await db.select().from(t.comments)
+    .where(eq(t.comments.status, "pending")).orderBy(desc(t.comments.createdAt));
+  const arts = await db.select().from(t.articles);
+  const slugById = new Map(arts.map((a) => [a.id, a.slug]));
+  const profs = await db.select().from(t.profiles);
+  const nameById = new Map(profs.map((p) => [p.id, p.displayName ?? p.email]));
+  return rows.map((r) => toComment(r, nameById.get(r.userId) ?? "Pembaca", slugById.get(r.articleId) ?? ""));
 }
 
-export async function addComment(slug: string, authorName: string, text: string): Promise<Comment> {
-  const article = await getArticle(slug);
-  const comment: Comment = {
-    id: `k-${Date.now()}`, article_id: article?.id ?? slug, article_slug: slug,
-    author_name: authorName, text, status: "pending",
-    created_at: new Date().toISOString(),
-  };
-  store.comments.push(comment);
-  return comment;
+export async function addComment(
+  slug: string, _authorName: string, text: string, ctx?: Ctx,
+): Promise<Comment> {
+  if (useSeed()) return seed.addComment(slug, _authorName, text);
+  const profile = await ctxProfile(ctx);
+  if (!can(profile, "comment.create")) {
+    throw new Error("UNAUTHORIZED: komentar butuh login + email terverifikasi.");
+  }
+  const db = getDb();
+  const arts = await db.select().from(t.articles).where(eq(t.articles.slug, slug)).limit(1);
+  if (!arts[0]) throw new Error("NOT_FOUND: artikel tidak ditemukan.");
+  const inserted = await db.insert(t.comments).values({
+    articleId: arts[0].id, userId: profile!.id, text: text.trim(), status: "pending",
+  }).returning();
+  return toComment(inserted[0], profile!.displayName ?? profile!.email, slug);
 }
 
-export async function moderateComment(id: string, decision: "approved" | "rejected"): Promise<void> {
-  const c = store.comments.find((x) => x.id === id);
-  if (c) c.status = decision;
+export async function moderateComment(id: string, decision: "approved" | "rejected", ctx?: Ctx): Promise<void> {
+  if (useSeed()) return seed.moderateComment(id, decision);
+  const profile = await ctxProfile(ctx);
+  if (!can(profile, "article.review")) {
+    throw new Error("FORBIDDEN: moderasi komentar hanya redaksi.");
+  }
+  const db = getDb();
+  await db.update(t.comments).set({ status: decision }).where(eq(t.comments.id, id));
 }
 
 // --- 3.4 Kontributor (F09) ---------------------------------------------------
 
-export async function getContributorDashboard(): Promise<ContributorDashboard> {
-  const subs = store.contributions;
+function toContribution(row: ArticleRow): Contribution {
+  return {
+    id: row.id,
+    title_id: row.titleId,
+    title_en: row.titleEn ?? "",
+    body_id: joinParas(splitParas(row.bodyId)),
+    body_en: row.bodyEn ?? "",
+    channel: row.channel as Channel,
+    category_id: row.categoryId ?? "",
+    location_name: row.locationName ?? "",
+    source: row.source ?? "",
+    status: row.status,
+    views: row.views,
+    note_from_editor: null,
+    updated_at: row.updatedAt.toISOString(),
+  };
+}
+
+export async function getContributorDashboard(ctx?: Ctx): Promise<ContributorDashboard> {
+  if (useSeed()) return seed.getContributorDashboard();
+  const profile = await ctxProfile(ctx);
+  if (!profile) throw new Error("UNAUTHORIZED: masuk dulu.");
+  const db = getDb();
+  const subs = await db.select().from(t.articles)
+    .where(eq(t.articles.authorId, profile.id)).orderBy(desc(t.articles.updatedAt));
+  const points = await listPoints(profile.id);
   return {
     total_views: subs.reduce((s, c) => s + c.views, 0),
     approved_count: subs.filter((c) => c.status === "published").length,
     pending_count: subs.filter((c) => c.status === "review").length,
     draft_count: subs.filter((c) => c.status === "draft").length,
-    points_total: (await listPoints()).reduce((s, p) => s + p.points, 0),
-    submissions: subs,
+    points_total: points.reduce((s, p) => s + p.points, 0),
+    submissions: subs.map(toContribution),
   };
 }
 
-export async function listPoints(): Promise<ContributionPoint[]> {
-  return [
-    { id: "p-1", source_type: "article", source_id: "c-1", source_title: "Mie Belitung di Warung Legendaris Tanjung Pandan", points: 1, awarded_at: "2026-11-13T10:00:00+07:00" },
-    { id: "p-2", source_type: "article", source_id: "kb-17", source_title: "Gangan", points: 1, awarded_at: "2026-11-10T09:00:00+07:00" },
-  ];
+export async function listPoints(userId?: string, ctx?: Ctx): Promise<ContributionPoint[]> {
+  if (useSeed()) return seed.listPoints();
+  const profile = userId ? null : await ctxProfile(ctx);
+  const uid = userId ?? profile?.id;
+  if (!uid) return [];
+  const db = getDb();
+  const rows = await db.select().from(t.contributionPoints)
+    .where(eq(t.contributionPoints.userId, uid)).orderBy(desc(t.contributionPoints.awardedAt));
+  const arts = await db.select().from(t.articles);
+  const titleById = new Map(arts.map((a) => [a.id, a.titleId]));
+  return rows.map((r) => ({
+    id: r.id, source_type: r.sourceType, source_id: r.sourceId,
+    source_title: titleById.get(r.sourceId) ?? r.sourceId,
+    points: r.points, awarded_at: r.awardedAt.toISOString(),
+  }));
 }
 
-export async function listContributions(): Promise<Contribution[]> {
-  return store.contributions;
+export async function listContributions(ctx?: Ctx): Promise<Contribution[]> {
+  if (useSeed()) return seed.listContributions();
+  const profile = await ctxProfile(ctx);
+  if (!profile) throw new Error("UNAUTHORIZED: masuk dulu.");
+  const db = getDb();
+  const rows = await db.select().from(t.articles)
+    .where(eq(t.articles.authorId, profile.id)).orderBy(desc(t.articles.updatedAt));
+  return rows.map(toContribution);
 }
 
-export async function getContribution(id: string): Promise<Contribution | null> {
-  return store.contributions.find((c) => c.id === id) ?? null;
+export async function getContribution(id: string, ctx?: Ctx): Promise<Contribution | null> {
+  if (useSeed()) return seed.getContribution(id);
+  const db = getDb();
+  const rows = await db.select().from(t.articles).where(eq(t.articles.id, id)).limit(1);
+  if (!rows[0]) return null;
+  const profile = await ctxProfile(ctx);
+  // Baca kiriman sendiri: pemilik boleh baca dalam status apa pun (termasuk
+  // review); admin boleh baca semua. Bukan pemilik + bukan admin = 403.
+  if (!profile || (profile.id !== rows[0].authorId && !isAdmin(profile))) {
+    throw new Error("FORBIDDEN: bukan kirimanmu.");
+  }
+  return toContribution(rows[0]);
 }
 
-export async function createContribution(data: Partial<Contribution>): Promise<Contribution> {
-  const draft: Contribution = {
-    id: `c-${Date.now()}`,
-    title_id: data.title_id ?? "Tanpa judul",
-    title_en: data.title_en ?? "",
-    body_id: data.body_id ?? "",
-    body_en: data.body_en ?? "",
-    channel: data.channel ?? "wisata",
-    category_id: data.category_id ?? "pantai-pulau",
-    location_name: data.location_name ?? "",
-    source: data.source ?? "",
+function slugify(s: string): string {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "").slice(0, 120) || "tanpa-judul";
+}
+
+export async function createContribution(data: Partial<Contribution>, ctx?: Ctx): Promise<Contribution> {
+  if (useSeed()) return seed.createContribution(data);
+  const profile = await ctxProfile(ctx);
+  if (!can(profile, "contribution.create")) {
+    throw new Error("FORBIDDEN: hanya kontributor yang bisa membuat draf.");
+  }
+  const db = getDb();
+  const slug = `${slugify(data.title_id ?? "tanpa-judul")}-${Date.now().toString(36)}`;
+  const inserted = await db.insert(t.articles).values({
+    authorId: profile!.id,
+    categoryId: data.category_id || null,
+    channel: (data.channel ?? "wisata") as Channel,
+    slug,
+    titleId: data.title_id ?? "Tanpa judul",
+    titleEn: data.title_en ?? null,
+    bodyId: joinParas(data.body_id),
+    bodyEn: data.body_en ?? null,
+    gallery: [],
+    locationName: data.location_name ?? null,
+    source: data.source ?? null,
     status: "draft",
-    views: 0,
-    note_from_editor: null,
-    updated_at: new Date().toISOString(),
-  };
-  store.contributions.unshift(draft);
-  return draft;
+  }).returning();
+  return toContribution(inserted[0]);
 }
 
-export async function updateContribution(id: string, data: Partial<Contribution>): Promise<Contribution | null> {
-  const c = store.contributions.find((x) => x.id === id);
-  if (!c) return null;
-  if (c.status === "review") return c; // terkunci saat review (recon F09)
-  Object.assign(c, data, { updated_at: new Date().toISOString() });
-  return c;
+export async function updateContribution(id: string, data: Partial<Contribution>, ctx?: Ctx): Promise<Contribution | null> {
+  if (useSeed()) return seed.updateContribution(id, data);
+  const db = getDb();
+  const rows = await db.select().from(t.articles).where(eq(t.articles.id, id)).limit(1);
+  if (!rows[0]) return null;
+  const profile = await ctxProfile(ctx);
+  if (!can(profile, "contribution.edit", { ownerId: rows[0].authorId, status: rows[0].status })) {
+    throw new Error("FORBIDDEN: kiriman terkunci saat ditinjau atau bukan milikmu.");
+  }
+  const patch: Partial<typeof t.articles.$inferInsert> = {};
+  if (data.title_id !== undefined) patch.titleId = data.title_id;
+  if (data.title_en !== undefined) patch.titleEn = data.title_en || null;
+  if (data.body_id !== undefined) patch.bodyId = joinParas(data.body_id);
+  if (data.body_en !== undefined) patch.bodyEn = data.body_en || null;
+  if (data.channel !== undefined) patch.channel = data.channel;
+  if (data.category_id !== undefined) patch.categoryId = data.category_id || null;
+  if (data.location_name !== undefined) patch.locationName = data.location_name || null;
+  if (data.source !== undefined) patch.source = data.source || null;
+  const updated = await db.update(t.articles).set(patch).where(eq(t.articles.id, id)).returning();
+  return toContribution(updated[0]);
 }
 
-export async function submitContribution(id: string): Promise<Contribution | null> {
-  const c = store.contributions.find((x) => x.id === id);
-  if (!c || c.status !== "draft") return c ?? null;
-  c.status = "review";
-  c.updated_at = new Date().toISOString();
-  return c;
+export async function submitContribution(id: string, ctx?: Ctx): Promise<Contribution | null> {
+  if (useSeed()) return seed.submitContribution(id);
+  const db = getDb();
+  const rows = await db.select().from(t.articles).where(eq(t.articles.id, id)).limit(1);
+  if (!rows[0]) return null;
+  const profile = await ctxProfile(ctx);
+  if (!can(profile, "contribution.submit", { ownerId: rows[0].authorId, status: rows[0].status })) {
+    throw new Error("FORBIDDEN: hanya pemilik draf yang bisa mengirim ke redaksi.");
+  }
+  if (rows[0].status !== "draft") return toContribution(rows[0]);
+  const updated = await db.update(t.articles).set({ status: "review" }).where(eq(t.articles.id, id)).returning();
+  return toContribution(updated[0]);
 }
 
 export async function listContributionRevisions(id: string): Promise<{ at: string; by: string; changes: string }[]> {
-  const c = store.contributions.find((x) => x.id === id);
-  if (!c) return [];
-  return [
-    { at: c.updated_at, by: "Penulis", changes: "Draf dibuat / terakhir diubah." },
-    ...(c.status === "published"
-      ? [{ at: "2026-11-13T10:00:00+07:00", by: "Redaksi iTAP", changes: "Disetujui dan diterbitkan. +1 poin kontribusi." }]
-      : []),
-  ];
+  if (useSeed()) return seed.listContributionRevisions(id);
+  const db = getDb();
+  const rows = await db.select().from(t.articleRevisions)
+    .where(eq(t.articleRevisions.articleId, id)).orderBy(desc(t.articleRevisions.createdAt));
+  const profs = await db.select().from(t.profiles);
+  const nameById = new Map(profs.map((p) => [p.id, p.displayName ?? p.email]));
+  return rows.map((r) => ({
+    at: r.createdAt.toISOString(),
+    by: r.editorId ? (nameById.get(r.editorId) ?? "Redaksi") : "Redaksi",
+    changes: r.note ?? JSON.stringify(r.changes ?? {}),
+  }));
 }
 
 // --- 3.5 CMS / redaksi / moderasi (F11, F08) ---------------------------------
 
 export async function listAdminArticles(filter?: string): Promise<Article[]> {
-  let items = ARTICLES.map(articleWithOverride);
-  if (filter && filter !== "semua") items = items.filter((a) => a.status === filter);
-  return [...items].sort((a, b) => +new Date(b.published_at) - +new Date(a.published_at));
+  if (useSeed()) return seed.listAdminArticles(filter);
+  const db = getDb();
+  const rows = await db.select().from(t.articles)
+    .where(filter && filter !== "semua" ? eq(t.articles.status, filter as Article["status"]) : undefined)
+    .orderBy(desc(t.articles.createdAt));
+  return rows.map((r) => toArticle(r));
 }
 
 export async function reviewArticle(
-  id: string, decision: "publish" | "unpublish" | "return", note: string,
+  id: string, decision: "publish" | "unpublish" | "return", note: string, ctx?: Ctx,
 ): Promise<void> {
+  if (useSeed()) return seed.reviewArticle(id, decision, note);
+  const profile = await ctxProfile(ctx);
+  if (!can(profile, "article.review")) {
+    throw new Error("FORBIDDEN: putusan redaksi hanya admin portal / superadmin.");
+  }
   const status = decision === "publish" ? "published" : decision === "unpublish" ? "unpublished" : "returned";
-  store.articleOverrides.set(id, { status, note: note || null });
+  const db = getDb();
+  const updated = await db.update(t.articles).set({
+    status,
+    publishedAt: decision === "publish" ? new Date() : undefined,
+  }).where(eq(t.articles.id, id)).returning();
+  if (!updated[0]) throw new Error("NOT_FOUND: artikel tidak ditemukan.");
+  await db.insert(t.articleRevisions).values({
+    articleId: id, editorId: profile!.id,
+    changes: { decision, from: "review" },
+    note: note || null,
+  });
+  if (decision === "publish") {
+    // 1 poin per karya disetujui — idempotent via fungsi DB (arsitektur §2.5).
+    await db.execute(sql`select public.award_contribution_point(${updated[0].authorId}, 'article', ${id})`).catch(() => undefined);
+  }
 }
 
-export async function createCategory(channel: Channel, name_id: string, name_en: string): Promise<Category> {
-  const slug = name_id.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-  const cat = { id: `cat-${Date.now()}`, channel, name_id, name_en, slug };
-  store.categoriesExtra.push(cat);
-  return cat;
+export async function createCategory(channel: Channel, name_id: string, name_en: string, ctx?: Ctx): Promise<Category> {
+  if (useSeed()) return seed.createCategory(channel, name_id, name_en);
+  const profile = await ctxProfile(ctx);
+  if (!can(profile, "category.manage")) {
+    throw new Error("FORBIDDEN: kelola kategori hanya redaksi.");
+  }
+  const db = getDb();
+  const inserted = await db.insert(t.categories).values({
+    channel, nameId: name_id, nameEn: name_en || null, slug: slugify(name_id),
+  }).returning();
+  return toCategory(inserted[0]);
 }
 
 export async function listAdminContributors(): Promise<{ id: string; name: string; email: string; verified: boolean; auto_approve: boolean; points: number }[]> {
-  return [
-    { id: "u-dian", name: "Dian (Kontributor Demo)", email: "dian@contoh.id", verified: true, auto_approve: false, points: 2 },
-    { id: "u-budi", name: "Budi (Kontributor Demo)", email: "budi@contoh.id", verified: false, auto_approve: false, points: 0 },
-  ];
+  if (useSeed()) return seed.listAdminContributors();
+  const db = getDb();
+  const profs = await db.select().from(t.profiles).where(eq(t.profiles.role, "contributor"));
+  const cps = await db.select().from(t.contributorProfiles);
+  const cpById = new Map(cps.map((c) => [c.userId, c]));
+  return profs.map((p) => ({
+    id: p.id, name: p.displayName ?? p.email, email: p.email,
+    verified: (cpById.get(p.id)?.verificationStatus ?? "unverified") === "verified",
+    auto_approve: cpById.get(p.id)?.autoApprove ?? false,
+    points: cpById.get(p.id)?.pointsTotal ?? 0,
+  }));
 }
 
 export async function listReports(): Promise<Report[]> {
-  return store.reports;
+  if (useSeed()) return seed.listReports();
+  const db = getDb();
+  const rows = await db.select().from(t.reports).orderBy(desc(t.reports.createdAt));
+  const profs = await db.select().from(t.profiles);
+  const nameById = new Map(profs.map((p) => [p.id, p.displayName ?? p.email]));
+  return rows.map((r) => ({
+    id: r.id, target_type: r.targetType,
+    target_label: `${r.targetType} ${r.targetId.slice(0, 8)}`,
+    reporter: nameById.get(r.reporterId) ?? "Pembaca",
+    reason: r.reason, status: r.status,
+    created_at: r.createdAt.toISOString(),
+  }));
 }
 
-export async function reviewReport(id: string, action: "hidden" | "dismissed" | "reviewed"): Promise<void> {
-  const r = store.reports.find((x) => x.id === id);
-  if (r) r.status = action;
+export async function reviewReport(id: string, action: "hidden" | "dismissed" | "reviewed", ctx?: Ctx): Promise<void> {
+  if (useSeed()) return seed.reviewReport(id, action);
+  const profile = await ctxProfile(ctx);
+  if (!can(profile, "report.review")) {
+    throw new Error("FORBIDDEN: moderasi laporan hanya redaksi.");
+  }
+  const db = getDb();
+  await db.update(t.reports).set({ status: action, moderatorId: profile!.id })
+    .where(eq(t.reports.id, id));
 }
 
 export async function listModerationWords(): Promise<ModerationWord[]> {
-  return [
-    { id: "w-1", word: "contoh-kata-dilarang", action: "hold" },
-    { id: "w-2", word: "tautan-penipuan", action: "sensor" },
-  ];
+  if (useSeed()) return seed.listModerationWords();
+  const db = getDb();
+  const rows = await db.select().from(t.moderationWords).orderBy(asc(t.moderationWords.word));
+  return rows.map((r) => ({ id: r.id, word: r.word, action: r.action }));
 }
 
 // --- 3.8 Konten iTAP -----------------------------------------------------------
 
+const IDR = (cents: number | null | undefined): number => Math.round((cents ?? 0) / 100);
+
 export async function getDailyPrices(): Promise<DailyPrices> {
-  return DAILY_PRICES;
+  if (useSeed()) return seed.getDailyPrices();
+  const db = getDb();
+  const latest = await db.select({ priceDate: t.dailyPrices.priceDate })
+    .from(t.dailyPrices).orderBy(desc(t.dailyPrices.priceDate)).limit(1);
+  const date = latest[0]?.priceDate;
+  const rows = date
+    ? await db.select().from(t.dailyPrices).where(eq(t.dailyPrices.priceDate, date)).orderBy(asc(t.dailyPrices.commodity))
+    : [];
+  return {
+    source: "iTAP Belitung — harga pangan harian",
+    source_url: "",
+    market: rows[0]?.market ?? "Pasar Tanjung Pandan",
+    source_date: date ?? new Date().toISOString().slice(0, 10),
+    fetched_at: new Date().toISOString(),
+    items: rows.map((r, i) => ({
+      id: r.id, commodity: r.commodity, price: IDR(r.priceCents),
+      unit: r.unit ?? "", previous_price: null, status: "—",
+      change_note: "Harga kemarin tidak tersedia di sumber.",
+    })),
+  };
 }
 
 export async function getMarketRates(): Promise<MarketRates> {
-  return MARKET_RATES;
+  if (useSeed()) return seed.getMarketRates();
+  const db = getDb();
+  const rows = await db.select().from(t.marketRates).orderBy(desc(t.marketRates.asOf)).limit(30);
+  const byKind = (kind: string, symbol?: string) =>
+    rows.find((r) => r.kind === kind && (!symbol || r.symbol === symbol));
+  const ihsg = byKind("ihsg");
+  const gold = byKind("emas");
+  const currencies = rows.filter((r) => r.kind === "kurs");
+  const details = (r: (typeof rows)[number] | undefined) =>
+    (r?.details ?? {}) as Record<string, number>;
+  const ihsgD = details(ihsg);
+  const goldD = details(gold);
+  return {
+    ihsg: {
+      value: Number(ihsg?.value ?? 0), change: ihsgD.change ?? 0, percent: ihsgD.percent ?? 0,
+      as_of: (ihsg?.asOf ?? new Date()).toISOString(), source: "Bursa Efek Indonesia",
+      fetched_at: new Date().toISOString(),
+    },
+    gold: {
+      price_1g: Number(gold?.value ?? 0), previous: goldD.previous ?? 0,
+      date: (gold?.asOf ?? new Date()).toISOString().slice(0, 10),
+      source: "Antam", fetched_at: new Date().toISOString(),
+    },
+    currencies: currencies.map((r) => {
+      const d = details(r);
+      const v = Number(r.value);
+      return {
+        code: r.symbol, buy_erate: d.buy_erate ?? v, sell_erate: d.sell_erate ?? v,
+        buy_tt: d.buy_tt ?? v, sell_tt: d.sell_tt ?? v,
+        buy_bn: d.buy_bn ?? v, sell_bn: d.sell_bn ?? v,
+      };
+    }),
+    fx_source: "BCA",
+    fx_fetched_at: new Date().toISOString(),
+  };
 }
 
 export async function listJobs(opts: { q?: string; region?: string } = {}): Promise<JobListing[]> {
-  let items = JOBS;
+  if (useSeed()) return seed.listJobs(opts);
+  const db = getDb();
+  const conds = [eq(t.jobListings.status, "open")];
   if (opts.q) {
-    const q = opts.q.toLowerCase();
-    items = items.filter((j) => `${j.title} ${j.company} ${j.location}`.toLowerCase().includes(q));
+    const q = `%${opts.q}%`;
+    conds.push(or(ilike(t.jobListings.title, q), ilike(t.jobListings.company, q), ilike(t.jobListings.location, q))!);
   }
-  if (opts.region && opts.region !== "semua") items = items.filter((j) => j.region === opts.region);
-  return items;
+  if (opts.region && opts.region !== "semua") conds.push(ilike(t.jobListings.location, `%${opts.region}%`));
+  const rows = await db.select().from(t.jobListings).where(and(...conds)).orderBy(desc(t.jobListings.createdAt));
+  return rows.map((r) => ({
+    id: r.id, title: r.title, company: r.company,
+    location: r.location ?? "", salary: formatSalary(r.salaryMinCents, r.salaryMaxCents),
+    deadline: r.deadline, source: r.sourceUrl ? "Sumber eksternal" : "iTAP",
+    source_url: r.sourceUrl ?? "", region: r.location ?? "",
+    posted_at: r.createdAt.toISOString(),
+  }));
+}
+
+function formatSalary(min: number | null, max: number | null): string | null {
+  if (min == null && max == null) return null;
+  const fmt = (c: number) => `Rp${IDR(c).toLocaleString("id-ID")}`;
+  if (min != null && max != null) return `${fmt(min)}–${fmt(max)}`;
+  return fmt((min ?? max)!);
 }
 
 export async function listProducts() {
-  return PRODUCTS;
+  if (useSeed()) return seed.listProducts();
+  const db = getDb();
+  const rows = await db.select().from(t.digitalProducts)
+    .where(eq(t.digitalProducts.active, true)).orderBy(asc(t.digitalProducts.name));
+  // Katalog saja — TANPA logika lisensi (audit K1; arsitektur §1).
+  return rows.map((r) => ({
+    id: r.id, name: r.name, tag: r.slug, desc: r.description ?? "",
+    price: IDR(r.priceCents), was_price: null, price_note: "", badge: null,
+  }));
 }
 
 export async function listServices() {
-  return SERVICES;
+  if (useSeed()) return seed.listServices();
+  const db = getDb();
+  const rows = await db.select().from(t.services)
+    .where(eq(t.services.active, true)).orderBy(asc(t.services.sortOrder));
+  return rows.map((r) => ({
+    id: r.id, name: r.title, desc: r.description ?? "",
+    price_from: IDR(r.priceFromCents), price_note: "", features: [] as string[],
+  }));
 }
 
+/** Info statis Kedai (bukan di DB) + menu dari DB. */
 export async function getKedai(): Promise<Kedai> {
-  return KEDAI;
+  const seedKedai = await seed.getKedai();
+  if (useSeed()) return seedKedai;
+  const db = getDb();
+  const rows = await db.select().from(t.kedaiMenuItems)
+    .where(eq(t.kedaiMenuItems.available, true)).orderBy(asc(t.kedaiMenuItems.category), asc(t.kedaiMenuItems.name));
+  return {
+    ...seedKedai,
+    menu: rows.map((r) => ({
+      id: r.id, name: r.name, desc: "", price: r.priceCents > 0 ? IDR(r.priceCents) : null,
+      category: r.category ?? "", available: r.available,
+      isExample: r.priceCents === 0, // harga 0 = contoh, belum ada harga asli (build-log M2)
+    })),
+  };
 }

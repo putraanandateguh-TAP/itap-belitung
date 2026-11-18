@@ -4,16 +4,20 @@ Portal web iTAP Belitung — rebuild clean-room dari recon Satam Belitung
 (`~/workspace/itap-belitung-app/replica/`). Next.js App Router + TypeScript +
 Tailwind v4. Token desain dari `replica/design/tokens.json`.
 
-## Status: DEMO — data layer masih PALSU
+## Status: BACKEND KODE SELESAI, BELUM LIVE (replica-backend 2026-11-18)
 
-**Belum ada backend.** Semua baca dari `src/lib/seed-data.ts` (digenerate dari
-data ASLI situs statis lama — lihat generator di `/tmp/gen-seed.mjs`), semua
-tulis ke `src/lib/store.ts` (in-memory, hilang saat server restart).
-Tanda tangan fungsi di `src/lib/data.ts` SAMA seperti API di
-`replica/architecture.md` §3, supaya `replica-backend` nanti tinggal mengganti
-implementasi tanpa mengubah layar.
+**Kode backend sudah ada** (`replica/backend.md`): Drizzle + Supabase Auth,
+migrasi `drizzle/0001–0003.sql`, data layer DB-backed (`src/lib/data.ts`),
+78 route API, 5 cron job, Edge Function hapus akun, seed script. Auth demo
+(localStorage + OTP `123456`) sudah DIHAPUS sepenuhnya.
 
-Prasyarat backend yang BELUM ada (arsitektur §0): proyek Supabase BARU (P1),
+**Tapi belum pernah jalan di database live** — proyek Supabase BARU (P1)
+belum dibuat (hanya Teguh yang bisa membuatnya). Selama `DATABASE_URL`
+belum diisi, situs memakai fallback seed sementara (`src/lib/data-seed.ts` +
+`src/lib/store.ts`, in-memory) agar tetap bisa dilihat; matikan dengan
+`ITAP_ALLOW_SEED_FALLBACK=false` setelah P1 + seed.
+
+Prasyarat yang BELUM ada (arsitektur §0): proyek Supabase BARU (P1),
 Resend (P5), Meta WhatsApp Business (P2), Gemini (P3), Firebase (P4).
 `.env.example` berisi NAMA variabel saja — tanpa nilai.
 

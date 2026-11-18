@@ -6,7 +6,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LogOut, Menu, Search, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getSession, setSession, type DemoSession } from "@/lib/auth";
+import { signOut, useSession } from "@/lib/session-client";
 import { CHANNELS } from "@/lib/seed-data";
 
 const CHANNEL_LINKS = (Object.keys(CHANNELS) as (keyof typeof CHANNELS)[]).map((c) => ({
@@ -18,14 +18,7 @@ export function SiteHeader() {
   const pathname = usePathname();
   const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [session, setSessionState] = useState<DemoSession | null>(null);
-
-  useEffect(() => {
-    const read = () => setSessionState(getSession());
-    read();
-    window.addEventListener("itap-session-change", read);
-    return () => window.removeEventListener("itap-session-change", read);
-  }, []);
+  const { session } = useSession();
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + "/");
 
@@ -35,7 +28,7 @@ export function SiteHeader() {
         Lewati ke konten
       </a>
       <div className="mx-auto flex h-16 max-w-[1200px] items-center gap-4 px-4">
-        <Link href="/" className="flex shrink-0 items-center gap-2 focus-visible:outline-2 focus-visible:outline-accent" aria-label="iTAP Belitung — Beranda">
+        <Link href="/" className="flex shrink-0 items-center gap-2 focus-visible:outline-2 focus-visible:outline-accent">
           <span aria-hidden="true" className="flex size-9 items-center justify-center rounded-md bg-surface-dark text-base font-bold text-ink-on-dark">iT</span>
           <span className="leading-tight">
             <span className="block text-base font-bold text-ink">iTAP Belitung</span>
@@ -64,11 +57,11 @@ export function SiteHeader() {
             <span className="hidden items-center gap-2 sm:inline-flex">
               <Link href="/pengaturan" className="inline-flex h-10 items-center gap-2 rounded-md border border-line bg-canvas px-3 text-sm font-semibold text-ink hover:bg-surface focus-visible:outline-2 focus-visible:outline-accent">
                 <User className="size-4" aria-hidden="true" />
-                {session.name.split(" (")[0]}
+                {session.displayName ?? session.email}
               </Link>
               <button
                 type="button"
-                onClick={() => { setSession(null); setSessionState(null); router.push("/"); }}
+                onClick={async () => { await signOut(); router.push("/"); router.refresh(); }}
                 aria-label="Keluar"
                 className="flex size-10 items-center justify-center rounded-md text-ink hover:bg-surface focus-visible:outline-2 focus-visible:outline-accent"
               >

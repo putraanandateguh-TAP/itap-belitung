@@ -39,7 +39,7 @@ export default async function HargaPanganPage() {
         <Badge tone="draft">{prices.items.length - naik - turun} tetap</Badge>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-line bg-canvas">
+      <div className="overflow-x-auto rounded-lg border border-line bg-canvas" tabIndex={0} role="region" aria-label="Tabel harga pangan">
         <table className="w-full text-left text-sm">
           <caption className="sr-only">Harga pangan harian per komoditas</caption>
           <thead>

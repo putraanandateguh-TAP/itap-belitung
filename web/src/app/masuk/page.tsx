@@ -1,11 +1,10 @@
-// S10 Login / Daftar akun — form email + kata sandi, tombol Google, link reset.
-// DEMO: tidak ada Supabase Auth; memilih akun demo langsung masuk.
+// S10 Login / Daftar akun — Supabase Auth (email + kata sandi, Google OAuth,
+// reset kata sandi). Sesi cookie http-only; tidak ada lagi akun demo.
 "use client";
 
-import type { Metadata } from "next";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { DEMO_ACCOUNTS, setSession, type DemoSession } from "@/lib/auth";
+import { createSupabaseBrowser } from "@/lib/supabase/client";
 import { Banner, Button, Field, TextInput } from "@/components/ui";
 
 export default function MasukPage() {
@@ -16,40 +15,69 @@ export default function MasukPage() {
   const [name, setName] = useState("");
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  function submit(e: React.FormEvent) {
+  async function submit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     setNotice("");
-    if (mode === "reset") {
-      if (!/^\S+@\S+\.\S+$/.test(email)) {
-        setError("Masukkan alamat email yang valid.");
-        return;
-      }
-      setNotice(`Demo: tautan reset kata sandi untuk ${email} tidak benar-benar dikirim — reset sungguhan butuh Supabase Auth + Resend (P1/P5). Di versi demo, masuk kembali dengan akun demo di bawah.`);
-      return;
-    }
     if (!/^\S+@\S+\.\S+$/.test(email)) {
       setError("Masukkan alamat email yang valid.");
       return;
     }
-    if (password.length < 8) {
-      setError("Kata sandi minimal 8 karakter.");
-      return;
+    setBusy(true);
+    try {
+      if (mode === "reset") {
+        const res = await fetch("/api/auth/password-reset/request", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ email }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error ?? "Gagal mengirim tautan reset.");
+        setNotice(data.message ?? "Bila email terdaftar, tautan reset sudah dikirim.");
+        return;
+      }
+      if (password.length < 8) {
+        setError("Kata sandi minimal 8 karakter.");
+        return;
+      }
+      if (mode === "daftar") {
+        const res = await fetch("/api/auth/signup", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ email, password, displayName: name.trim() || email.split("@")[0] }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(data.error ?? "Pendaftaran gagal.");
+        router.push("/verifikasi?email=" + encodeURIComponent(email));
+        return;
+      }
+      const supabase = createSupabaseBrowser();
+      const { error: err } = await supabase.auth.signInWithPassword({ email, password });
+      if (err) throw new Error("Email atau kata sandi salah, atau email belum terverifikasi.");
+      router.push("/");
+      router.refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Terjadi kesalahan.");
+    } finally {
+      setBusy(false);
     }
-    const session: DemoSession = {
-      name: mode === "daftar" && name ? name : email.split("@")[0],
-      email,
-      role: "reader",
-      verified: false,
-    };
-    setSession(session);
-    router.push(session.verified ? "/" : "/verifikasi");
   }
 
-  function loginDemo(session: DemoSession) {
-    setSession(session);
-    router.push(session.role === "admin_portal" ? "/redaksi" : session.role === "contributor" ? "/kontributor" : "/");
+  async function loginGoogle() {
+    setError("");
+    setNotice("");
+    setBusy(true);
+    try {
+      const res = await fetch("/api/auth/google", { method: "POST" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.url) throw new Error(data.error ?? "Login Google belum tersedia.");
+      window.location.href = data.url;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Login Google gagal.");
+      setBusy(false);
+    }
   }
 
   return (
@@ -60,12 +88,6 @@ export default function MasukPage() {
           ? "Kami kirim tautan reset (berlaku 60 menit) ke emailmu."
           : "Satu akun untuk membaca, berkomentar, dan menulis sebagai kontributor."}
       </p>
-
-      <div className="mt-4">
-        <Banner tone="warning">
-          Mode demo: belum ada Supabase Auth. Masuk dengan email apa pun akan membuat sesi demo lokal — bukan akun nyata.
-        </Banner>
-      </div>
 
       <form onSubmit={submit} className="mt-6 flex flex-col gap-4" noValidate>
         {mode === "daftar" && (
@@ -83,13 +105,13 @@ export default function MasukPage() {
         )}
         {error && <p role="alert" className="text-sm text-danger">{error}</p>}
         {notice && <Banner tone="success">{notice}</Banner>}
-        <Button type="submit" size="lg" className="w-full">
+        <Button type="submit" size="lg" className="w-full" loading={busy}>
           {mode === "masuk" ? "Masuk" : mode === "daftar" ? "Buat akun" : "Kirim tautan reset"}
         </Button>
       </form>
 
       {mode !== "reset" && (
-        <Button variant="secondary" size="lg" className="mt-3 w-full" onClick={() => setNotice("Demo: login Google belum tersambung — butuh Supabase Auth + proyek Google Cloud (P1/P3). Pilih akun demo di bawah untuk melanjutkan.")}>
+        <Button variant="secondary" size="lg" className="mt-3 w-full" onClick={loginGoogle} loading={busy}>
           Masuk dengan Google
         </Button>
       )}
@@ -105,18 +127,9 @@ export default function MasukPage() {
           <button type="button" onClick={() => setMode("masuk")} className="font-semibold text-accent hover:underline focus-visible:outline-2 focus-visible:outline-accent">Kembali masuk</button>
         )}
       </div>
-
-      <section aria-labelledby="demo-title" className="mt-8 rounded-lg border border-line bg-surface p-4">
-        <h2 id="demo-title" className="text-base font-semibold text-ink">Akun demo (tanpa kata sandi)</h2>
-        <p className="mt-1 text-sm text-muted">Pilih peran untuk mencoba alur: pembaca, kontributor, atau redaksi.</p>
-        <div className="mt-3 flex flex-col gap-2">
-          {DEMO_ACCOUNTS.map((a) => (
-            <Button key={a.label} variant="secondary" onClick={() => loginDemo(a.session)}>
-              Masuk sebagai {a.label} — {a.session.email}
-            </Button>
-          ))}
-        </div>
-      </section>
+      <p className="mt-6 text-center text-xs text-muted">
+        Dengan masuk, kamu menyetujui ketentuan dan kebijakan privasi iTAP Belitung.
+      </p>
     </div>
   );
 }

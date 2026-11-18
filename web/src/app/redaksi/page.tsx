@@ -7,7 +7,7 @@ import { useCallback, useEffect, useState } from "react";
 import { RequireRole } from "@/components/require-role";
 import { Banner, Button, EmptyState, Field, StatusBadge, TextArea, TextInput } from "@/components/ui";
 import type { Article, Category, Comment, ModerationWord, Report } from "@/lib/types";
-import { channelLabel } from "@/lib/data";
+import { channelLabel } from "@/lib/labels";
 import { formatDateWIB } from "@/lib/format";
 
 type Tab = "konten" | "kategori" | "kontributor" | "laporan" | "kata" | "komentar";
@@ -207,7 +207,7 @@ function RedaksiContent() {
           {articles.length === 0 ? (
             <EmptyState title="Belum ada kiriman yang menunggu tinjauan." desc="Ubah filter status untuk melihat konten lain." />
           ) : (
-            <div className="overflow-x-auto rounded-lg border border-line bg-canvas">
+            <div className="overflow-x-auto rounded-lg border border-line bg-canvas" tabIndex={0} role="region" aria-label="Tabel konten">
               <table className="w-full text-left text-sm">
                 <thead>
                   <tr className="border-b border-line bg-surface text-xs uppercase text-muted">
@@ -270,7 +270,7 @@ function RedaksiContent() {
 
       {!loading && tab === "kontributor" && (
         <section aria-label="Kelola kontributor">
-          <div className="overflow-x-auto rounded-lg border border-line bg-canvas">
+          <div className="overflow-x-auto rounded-lg border border-line bg-canvas" tabIndex={0} role="region" aria-label="Tabel kontributor">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-line bg-surface text-xs uppercase text-muted">

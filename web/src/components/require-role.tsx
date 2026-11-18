@@ -1,42 +1,33 @@
-// Guard peran (client) — state "no permission" + "belum masuk" untuk halaman
-// kontributor/redaksi/pengaturan. Auth di fase ini masih DEMO (localStorage).
+// Guard peran (client) — sesi dibaca dari /api/me/profile (cookie Supabase).
+// Auth demo localStorage dihapus 2026-11-18 (replica-backend).
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
-import { getSession, type DemoSession } from "@/lib/auth";
+import { useSession } from "@/lib/session-client";
+import type { Role } from "@/lib/types";
 import { ButtonLink, EmptyState } from "./ui";
-
-export function useSession(): DemoSession | null {
-  const [session, setSessionState] = useState<DemoSession | null>(null);
-  useEffect(() => {
-    const read = () => setSessionState(getSession());
-    read();
-    window.addEventListener("itap-session-change", read);
-    return () => window.removeEventListener("itap-session-change", read);
-  }, []);
-  return session;
-}
 
 export function RequireRole({
   roles,
   children,
   title,
 }: {
-  roles: DemoSession["role"][];
+  roles: Role[];
   children: ReactNode;
   title: string;
 }) {
-  const session = useSession();
+  const { session, loading } = useSession();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  if (!mounted) return <div aria-busy="true" className="py-8"><div className="skeleton h-64 w-full" /></div>;
+  if (!mounted || loading) return <div aria-busy="true" className="py-8"><div className="skeleton h-64 w-full" /></div>;
   if (!session) {
     return (
       <div className="py-8">
         <EmptyState
           title="Masuk dulu untuk membuka halaman ini."
-          desc={`${title} hanya tersedia setelah masuk. Akun demo tersedia di halaman masuk.`}
-          action={<ButtonLink href="/masuk">Masuk / daftar akun demo</ButtonLink>}
+          desc={`${title} hanya tersedia setelah masuk.`}
+          action={<ButtonLink href="/masuk">Masuk / daftar</ButtonLink>}
+          titleAs="h1"
         />
       </div>
     );
@@ -46,8 +37,9 @@ export function RequireRole({
       <div className="py-8">
         <EmptyState
           title="Kamu tidak punya izin untuk halaman ini."
-          desc={`Halaman ${title} membutuhkan peran ${roles.join(" atau ")}. Akunmu saat ini: ${session.name}. Masuk dengan akun demo lain untuk melihatnya.`}
-          action={<ButtonLink href="/masuk">Ganti akun demo</ButtonLink>}
+          desc={`Halaman ${title} membutuhkan peran ${roles.join(" atau ")}. Akunmu saat ini: ${session.displayName ?? session.email} (${session.role}).`}
+          action={<ButtonLink href="/masuk">Masuk dengan akun lain</ButtonLink>}
+          titleAs="h1"
         />
       </div>
     );

@@ -1,32 +1,72 @@
-// S18 Pengaturan akun — profil, bahasa, titik lokasi (tambah/ubah/hapus),
-// notifikasi, hapus akun. DEMO: perubahan tersimpan lokal (sesi demo).
+// S18 Pengaturan akun — profil, bahasa, titik lokasi, notifikasi, hapus akun.
+// Tersimpan ke backend via PATCH /api/me/profile (Supabase).
 "use client";
 
-import { useState } from "react";
-import { getSession, setSession } from "@/lib/auth";
-import { RequireRole, useSession } from "@/components/require-role";
+import { useEffect, useState } from "react";
+import { useSession } from "@/lib/session-client";
+import { RequireRole } from "@/components/require-role";
 import { Banner, Button, Field, LanguagePicker, Switch, TextInput } from "@/components/ui";
 
 function SettingsForm() {
-  const session = useSession();
-  const [name, setName] = useState(session?.name ?? "");
+  const { session, refresh } = useSession();
+  const [name, setName] = useState("");
   const [lang, setLang] = useState<"id" | "en">("id");
-  const [locations, setLocations] = useState<string[]>(["Tanjung Pandan, Belitung"]);
+  const [locations, setLocations] = useState<string[]>([]);
   const [newLoc, setNewLoc] = useState("");
   const [notify, setNotify] = useState(true);
   const [sound, setSound] = useState(false);
   const [notice, setNotice] = useState("");
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  function save(e: React.FormEvent) {
+  useEffect(() => {
+    if (!session) return;
+    setName(session.displayName ?? "");
+    setLang(session.emailVerified ? "id" : "id");
+  }, [session]);
+
+  useEffect(() => {
+    fetch("/api/me/profile", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((p) => {
+        if (!p) return;
+        if (p.languagePref) setLang(p.languagePref);
+        if (p.locationName) setLocations([p.locationName]);
+      })
+      .catch(() => undefined);
+  }, []);
+
+  async function save(e: React.FormEvent) {
     e.preventDefault();
-    if (session) setSession({ ...session, name: name || session.name });
-    setNotice("Pengaturan tersimpan (demo — hanya di perangkat ini).");
+    setBusy(true);
+    setError("");
+    setNotice("");
+    try {
+      const res = await fetch("/api/me/profile", {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          displayName: name.trim() || undefined,
+          languagePref: lang,
+          locationName: locations[0] ?? null,
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error ?? "Tidak bisa menyimpan pengaturan.");
+      setNotice("Pengaturan tersimpan.");
+      refresh();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Tidak bisa menyimpan pengaturan.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
     <form onSubmit={save} className="flex flex-col gap-6 py-8">
       <h1 className="text-xl font-bold text-ink">Pengaturan akun</h1>
       {notice && <Banner tone="success">{notice}</Banner>}
+      {error && <p role="alert" className="text-sm text-danger">{error}</p>}
 
       <section aria-labelledby="profil-title" className="rounded-lg border border-line bg-canvas p-4">
         <h2 id="profil-title" className="text-lg font-semibold text-ink">Profil</h2>
@@ -34,12 +74,14 @@ function SettingsForm() {
           <Field label="Nama tampilan" id="set-nama">
             <TextInput id="set-nama" value={name} onChange={(e) => setName(e.target.value)} />
           </Field>
-          <Field label="Email" id="set-email" hint="Email tidak bisa diubah di versi demo.">
+          <Field label="Email" id="set-email" hint="Email tidak bisa diubah di sini.">
             <TextInput id="set-email" type="email" value={session?.email ?? ""} disabled />
           </Field>
           <p className="text-sm text-muted">
             Peran: <strong className="text-ink">{session?.role}</strong> · Status verifikasi:{" "}
-            {session?.verified ? <span className="font-semibold text-success">Terverifikasi (demo)</span> : <span className="font-semibold text-warning">Belum terverifikasi — <a href="/verifikasi" className="text-accent hover:underline">verifikasi sekarang</a></span>}
+            {session?.verified
+              ? <span className="font-semibold text-success">Terverifikasi</span>
+              : <span className="font-semibold text-warning">Belum terverifikasi — <a href="/verifikasi" className="text-accent hover:underline">verifikasi sekarang</a></span>}
           </p>
         </div>
       </section>
@@ -93,7 +135,7 @@ function SettingsForm() {
       </section>
 
       <div className="flex flex-wrap gap-3">
-        <Button type="submit">Simpan pengaturan</Button>
+        <Button type="submit" loading={busy}>Simpan pengaturan</Button>
         <Button type="button" variant="danger" onClick={() => { window.location.href = "/hapus-akun"; }}>
           Hapus akun…
         </Button>

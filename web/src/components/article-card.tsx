@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ImageOff, MapPin } from "lucide-react";
 import type { Article } from "@/lib/types";
 import { formatDateWIB, formatViews } from "@/lib/format";
-import { channelLabel } from "@/lib/data";
+import { channelLabel } from "@/lib/labels";
 import { Badge } from "./ui";
 
 export function ArticleCard({ article, variant = "standard" }: { article: Article; variant?: "headline" | "standard" | "compact" }) {
@@ -13,7 +13,7 @@ export function ArticleCard({ article, variant = "standard" }: { article: Articl
     return (
       <article className="rounded-lg border border-line bg-canvas p-4">
         <Link href={`/artikel/${article.slug}`} className="group focus-visible:outline-2 focus-visible:outline-accent">
-          <h3 className="text-sm font-semibold text-ink group-hover:text-accent group-hover:underline">{article.title_id}</h3>
+          <h2 className="text-sm font-semibold text-ink group-hover:text-accent group-hover:underline">{article.title_id}</h2>
         </Link>
         <p className="mt-1 text-xs text-muted">{formatDateWIB(article.published_at)} · {article.location_name}</p>
       </article>
@@ -21,9 +21,9 @@ export function ArticleCard({ article, variant = "standard" }: { article: Articl
   }
   return (
     <article className="overflow-hidden rounded-lg border border-line bg-canvas shadow-card">
-      <Link href={`/artikel/${article.slug}`} className="group block focus-visible:outline-2 focus-visible:outline-accent" aria-label={article.title_id}>
+      <Link href={`/artikel/${article.slug}`} className="group block focus-visible:outline-2 focus-visible:outline-accent">
         <div className="flex aspect-video items-center justify-center bg-surface-alt" role="img" aria-label={`Ilustrasi placeholder untuk artikel: ${article.title_id}`}>
-          <span className="flex flex-col items-center gap-1 text-muted">
+          <span aria-hidden="true" className="flex flex-col items-center gap-1 text-muted">
             <ImageOff className="size-8" aria-hidden="true" />
             <span className="px-4 text-center text-xs">Foto menyusul dari arsip iTAP</span>
           </span>
@@ -35,9 +35,9 @@ export function ArticleCard({ article, variant = "standard" }: { article: Articl
           {article.external && <Badge tone="draft">Agregasi media</Badge>}
         </div>
         <Link href={`/artikel/${article.slug}`} className="group focus-visible:outline-2 focus-visible:outline-accent">
-          <h3 className={`mt-2 font-semibold text-ink group-hover:text-accent group-hover:underline ${variant === "headline" ? "text-lg" : "text-base"}`}>
+          <h2 className={`mt-2 font-semibold text-ink group-hover:text-accent group-hover:underline ${variant === "headline" ? "text-lg" : "text-base"}`}>
             {article.title_id}
-          </h3>
+          </h2>
         </Link>
         {excerpt && <p className="mt-1 line-clamp-2 text-sm text-muted">{excerpt}</p>}
         <p className="mt-2 flex items-center gap-1 text-xs text-muted">

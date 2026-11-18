@@ -55,7 +55,7 @@ export default async function KursPage() {
       <section aria-labelledby="kurs-table">
         <h2 id="kurs-table" className="text-lg font-semibold text-ink">Kurs mata uang (BCA)</h2>
         <p className="mt-1 text-sm text-muted">{rates.fx_source} · Diambil: {rates.fx_fetched_at}</p>
-        <div className="mt-3 overflow-x-auto rounded-lg border border-line bg-canvas">
+        <div className="mt-3 overflow-x-auto rounded-lg border border-line bg-canvas" tabIndex={0} role="region" aria-label="Tabel kurs mata uang">
           <table className="w-full text-left text-sm">
             <caption className="sr-only">Kurs beli dan jual per mata uang</caption>
             <thead>

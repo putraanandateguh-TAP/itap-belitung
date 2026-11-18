@@ -3,6 +3,13 @@ node_modules/
 out/
 .env
 .env.local
+.env.*
+!.env.example
 *.log
 next-env.d.ts
 tsconfig.tsbuildinfo
+
+# Playwright (replica-test)
+test-results/
+playwright-report/
+e2e/results.json

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import { siteUrl } from "@/lib/site-url";
 import { ARTICLES } from "@/lib/seed-data";
 
 export default function sitemap() {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://itapbelitung.my.id";
+  const base = siteUrl();
   const channels = ["berita", "kuliner", "wisata", "sejarah", "budaya", "legenda"];
   const statics = ["", "/cari", "/harga-pangan", "/kurs", "/lowongan", "/produk", "/jasa", "/kedai", "/masuk", "/kontributor", "/redaksi", "/privasi", "/ketentuan"];
   return [

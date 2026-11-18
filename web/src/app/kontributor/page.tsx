@@ -76,7 +76,7 @@ function DashboardContent() {
             <EmptyState title="Belum ada kiriman." desc="Tulis cerita pertamamu tentang Belitung — redaksi akan meninjaunya." action={<ButtonLink href="/kontributor/tulis">Mulai menulis</ButtonLink>} />
           </div>
         ) : (
-          <div className="mt-3 overflow-x-auto rounded-lg border border-line bg-canvas">
+          <div className="mt-3 overflow-x-auto rounded-lg border border-line bg-canvas" tabIndex={0} role="region" aria-label="Tabel kiriman saya">
             <table className="w-full text-left text-sm">
               <thead>
                 <tr className="border-b border-line bg-surface text-xs uppercase text-muted">

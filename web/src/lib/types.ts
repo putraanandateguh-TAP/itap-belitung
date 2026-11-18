@@ -183,14 +183,6 @@ export interface Kedai {
 
 export type Role = "reader" | "contributor" | "admin_portal" | "superadmin";
 
-export interface DemoSession {
-  name: string;
-  email: string;
-  role: Role;
-  /** true bila "verifikasi" demo sudah dilewati di S11 */
-  verified: boolean;
-}
-
 export interface Paginated<T> {
   items: T[];
   page: number;

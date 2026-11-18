@@ -1,3 +1,12 @@
 [project]
 # Proyek Supabase BARU milik Teguh (P1) — isi ref setelah dibuat di Dashboard.
 # Jangan commit nilai dari `supabase link` / kunci ke repo.
+
+# SEC-21: kunci verifikasi JWT di gateway Supabase untuk Edge Function
+# yang memakai service-role. Tanpa ini, gateway meneruskan request tanpa
+# JWT dan fungsi hanya mengandalkan getUser() di dalam kode (satu lapis).
+[functions.delete-account]
+verify_jwt = true
+
+[functions.whatsapp-otp]
+verify_jwt = true

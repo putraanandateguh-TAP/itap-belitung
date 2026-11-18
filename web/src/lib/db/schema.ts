@@ -47,6 +47,25 @@ export const profiles = pgTable("profiles", {
   updatedAt: updatedAt(),
 });
 
+// OTP WhatsApp (migrasi 0009, SEC-06). Hanya hash kode (SHA-256) yang
+// disimpan — kode asli dibuat server-side di Edge Function whatsapp-otp
+// dan tidak pernah tersimpan. RLS deny-by-default: tidak ada policy untuk
+// anon/authenticated; hanya service_role (Edge Function + route verify
+// server-side via DATABASE_URL) yang menyentuh tabel ini.
+export const whatsappOtps = pgTable("whatsapp_otps", {
+  id: id(),
+  userId: uuid("user_id").notNull().references(() => profiles.id, { onDelete: "cascade" }),
+  phoneE164: text("phone_e164").notNull(),
+  codeHash: text("code_hash").notNull(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  attempts: integer("attempts").notNull().default(0),
+  verifiedAt: timestamp("verified_at", { withTimezone: true }),
+  createdAt: createdAt(),
+}, (t) => [
+  index("whatsapp_otps_user_created_idx").on(t.userId, t.createdAt),
+  index("whatsapp_otps_phone_created_idx").on(t.phoneE164, t.createdAt),
+]);
+
 export const categories = pgTable("categories", {
   id: id(),
   channel: articleChannel("channel").notNull(),
@@ -362,3 +381,67 @@ export const kedaiMenuItems = pgTable("kedai_menu_items", {
 // - profiles.language_pref in ('id','en'); devices.platform in ('android','ios','web')
 // - views/saves/likes/points >= 0; ai_feedback.vote in (-1, 1)
 // - daily_info_snapshots.source in (...); chat_threads.buyer <> seller; blocks no-self
+// - licenses: max_devices >= 1; license_audit_log.action in (...)
+//   (migrasi 0007_license_server_side.sql — validasi lisensi server-side)
+
+// ---------- Lisensi FULL server-side (Workstream B, migrasi 0007) ----------
+// Hash/salt TIDAK PERNAH dibaca client (RLS deny) — hanya Edge Function
+// service-role. Drizzle di sini hanya cerminan skema untuk query admin.
+// Keunikan aktivasi aktif ditegakkan indeks partial SQL
+// (license_activations_active_device_idx), bukan constraint di sini.
+export const licenseProduct = pgEnum("license_product", ["generator", "kasir"]);
+export const licensePlan = pgEnum("license_plan", ["lifetime", "monthly", "quarterly", "yearly"]);
+export const licenseStatus = pgEnum("license_status", ["active", "revoked", "expired"]);
+export const licenseOrigin = pgEnum("license_origin", ["issued", "legacy"]);
+
+export const licenses = pgTable("licenses", {
+  id: id(),
+  lookupHash: text("lookup_hash").notNull().unique(),
+  salt: text("salt").notNull(),
+  codeHash: text("code_hash").notNull(),
+  product: licenseProduct("product").notNull(),
+  plan: licensePlan("plan").notNull(),
+  status: licenseStatus("status").notNull().default("active"),
+  origin: licenseOrigin("origin").notNull().default("issued"),
+  legacyCodeHash: text("legacy_code_hash"),
+  expiresAt: timestamp("expires_at", { withTimezone: true }),
+  maxDevices: integer("max_devices").notNull().default(3),
+  buyerName: text("buyer_name"),
+  buyerContact: text("buyer_contact"),
+  issuedBy: uuid("issued_by"),
+  revokedAt: timestamp("revoked_at", { withTimezone: true }),
+  revokedBy: uuid("revoked_by"),
+  revokeReason: text("revoke_reason"),
+  createdAt: createdAt(),
+  updatedAt: updatedAt(),
+});
+
+export const licenseActivations = pgTable("license_activations", {
+  id: id(),
+  licenseId: uuid("license_id").notNull(),
+  userId: uuid("user_id").notNull(),
+  deviceHash: text("device_hash").notNull(),
+  deviceLabel: text("device_label"),
+  lastSeenAt: timestamp("last_seen_at", { withTimezone: true }).notNull().defaultNow(),
+  revokedAt: timestamp("revoked_at", { withTimezone: true }),
+  createdAt: createdAt(),
+});
+
+export const licenseAuditLog = pgTable("license_audit_log", {
+  id: id(),
+  licenseId: uuid("license_id"),
+  userId: uuid("user_id"),
+  action: text("action").notNull(),
+  deviceHash: text("device_hash"),
+  ipHash: text("ip_hash"),
+  reason: text("reason"),
+  createdAt: createdAt(),
+});
+
+export const licenseAttempts = pgTable("license_attempts", {
+  id: id(),
+  lookupHash: text("lookup_hash").notNull(),
+  ipHash: text("ip_hash").notNull(),
+  success: boolean("success").notNull().default(false),
+  createdAt: createdAt(),
+});

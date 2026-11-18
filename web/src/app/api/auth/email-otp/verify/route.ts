@@ -32,7 +32,11 @@ export async function POST(req: Request) {
         email: data.user.email ?? parsed.data.email,
         displayName: (data.user.user_metadata?.display_name as string | undefined) ?? null,
       }).onConflictDoNothing();
-    } catch { /* profil dibuat saat login berikutnya */ }
+    } catch (e) {
+      // SEC-01: jangan telan error pembuatan profil — log agar kegagalan
+      // terlihat; profil dibuat ulang saat login berikutnya.
+      console.error("auth/email-otp/verify: gagal membuat profil", e);
+    }
   }
   return NextResponse.json({ ok: true, userId: data.user.id });
 }

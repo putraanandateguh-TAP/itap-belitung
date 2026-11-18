@@ -46,10 +46,21 @@ Deno.serve(async (req) => {
     });
 
     // 1. File Storage milik pengguna (list folder <user_id> di kedua bucket).
+    // SEC-11: error list/remove TIDAK BOLEH ditelan — bila bersih-bersih gagal,
+    // kembalikan 500 TANPA menghapus profil/Auth, agar akun tetap utuh dan
+    // pengguna bisa mencoba lagi (jangan klaim sukses sementara foto tetap publik).
     for (const bucket of ["article-images", "listing-photos"]) {
-      const { data: files } = await admin.storage.from(bucket).list(user.id);
+      const { data: files, error: listErr } = await admin.storage.from(bucket).list(user.id);
+      if (listErr) {
+        console.error("delete-account: gagal list Storage", bucket, listErr);
+        return json({ error: "Penghapusan file gagal. Akun tidak dihapus — coba lagi nanti." }, 500);
+      }
       if (files?.length) {
-        await admin.storage.from(bucket).remove(files.map((f) => `${user.id}/${f.name}`));
+        const { error: removeErr } = await admin.storage.from(bucket).remove(files.map((f) => `${user.id}/${f.name}`));
+        if (removeErr) {
+          console.error("delete-account: gagal hapus Storage", bucket, removeErr);
+          return json({ error: "Penghapusan file gagal. Akun tidak dihapus — coba lagi nanti." }, 500);
+        }
       }
     }
     // 2. Profil (+ semua data terkait via CASCADE di schema.sql).

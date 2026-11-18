@@ -5,6 +5,7 @@ out/
 .env.local
 .env.*
 !.env.example
+!.env.staging.example
 *.log
 next-env.d.ts
 tsconfig.tsbuildinfo

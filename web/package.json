@@ -35,8 +35,11 @@
     "typecheck": "tsc --noEmit",
     "db:migrate": "tsx scripts/migrate.ts",
     "db:seed": "tsx scripts/seed.ts",
+    "db:seed:staging": "tsx scripts/seed-staging.ts",
     "db:validate": "node scripts/validate-schema-local.mjs",
-    "test:rls": "node --experimental-strip-types tests/rls-check.ts 2>/dev/null || npx tsx tests/rls-check.ts"
+    "test:rls": "node --experimental-strip-types tests/rls-check.ts 2>/dev/null || npx tsx tests/rls-check.ts",
+    "test:seed-staging": "node --test tests/seed-staging.test.ts",
+    "test:staging": "playwright test e2e/staging --workers=1"
   },
   "version": "0.1.0"
 }

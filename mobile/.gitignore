@@ -1,0 +1,18 @@
+node_modules/
+.expo/
+dist/
+*.log
+.env
+.env.local
+.env.*.local
+
+# EAS / Play Store secrets — JANGAN PERNAH commit file-file ini.
+# service-account-key.json dipakai eas.json (submit.production.android);
+# google-services.json dipakai bila FCM dikonfigurasi (P4);
+# *.jks / *.keystore = keystore upload bila memakai signing lokal.
+service-account-key.json
+credentials.json
+google-services.json
+GoogleService-Info.plist
+*.jks
+*.keystore

@@ -123,6 +123,7 @@ export const listings = pgTable("listings", {
   sellerId: uuid("seller_id").notNull(),
   title: text("title").notNull(),
   description: text("description"),
+  category: text("category").notNull().default("lainnya"), // M3: kategori penawaran (kendaraan|elektronik|rumah-tangga|pakaian|hobi|properti|jasa|lainnya). Kolom ditambah migrasi 0004; replica/schema.sql sudah disinkronkan (koordinator, 2026-11-18).
   priceCents: integer("price_cents").notNull().default(0),
   currency: text("currency").notNull().default("IDR"),
   locationName: text("location_name"),

@@ -5,6 +5,8 @@
 import { and, desc, eq } from "drizzle-orm";
 import { getDb, isDbConfigured } from "./db";
 import * as t from "./db/schema";
+import * as seed from "./data-seed";
+import type { CultureStory } from "./types";
 
 export type DailySource = "weather" | "prayer" | "fuel" | "transport" | "earthquake" | "air";
 
@@ -24,20 +26,34 @@ export async function getDailySnapshot(source: DailySource, scopeKey = "belitung
   };
 }
 
-export async function listCulture(category?: string) {
-  if (!isDbConfigured()) return [];
+/** Daftar cerita budaya. Tanpa DB: seed 5 cerita asli KB situs lama
+ * (M5 — lihat data-seed.ts CULTURE_STORIES_SEED). */
+export async function listCulture(category?: string): Promise<CultureStory[]> {
+  if (!isDbConfigured()) return seed.listCultureStories(category);
   const db = getDb();
   const rows = await db.select().from(t.cultureStories)
     .where(category ? eq(t.cultureStories.category, category as (typeof t.cultureStories.$inferSelect)["category"]) : undefined)
     .orderBy(desc(t.cultureStories.createdAt));
-  return rows;
+  return rows.map((r) => ({
+    id: r.id, slug: r.slug, category: r.category as CultureStory["category"],
+    title: r.title, body: r.body, lyrics: r.lyrics ?? null,
+    sources: Array.isArray(r.sources) ? (r.sources as string[]) : [],
+    created_at: r.createdAt.toISOString(),
+  }));
 }
 
-export async function getCultureStory(slug: string) {
-  if (!isDbConfigured()) return null;
+export async function getCultureStory(slug: string): Promise<CultureStory | null> {
+  if (!isDbConfigured()) return seed.getCultureStory(slug);
   const db = getDb();
   const rows = await db.select().from(t.cultureStories).where(eq(t.cultureStories.slug, slug)).limit(1);
-  return rows[0] ?? null;
+  const r = rows[0];
+  if (!r) return null;
+  return {
+    id: r.id, slug: r.slug, category: r.category as CultureStory["category"],
+    title: r.title, body: r.body, lyrics: r.lyrics ?? null,
+    sources: Array.isArray(r.sources) ? (r.sources as string[]) : [],
+    created_at: r.createdAt.toISOString(),
+  };
 }
 
 /** Nomor darurat Belitung — data statis iTAP (bukan dari sumber eksternal). */

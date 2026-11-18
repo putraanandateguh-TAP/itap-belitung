@@ -1,19 +1,29 @@
 import { NextResponse } from "next/server";
-import { createListing, listListings } from "@/lib/marketplace";
+import { createListing, listListings, type ListingSort } from "@/lib/marketplace";
 import { checkRateLimit, errorToResponse, getSessionProfile, requireSession } from "@/lib/api";
 import { listingSchema, parseJsonBody } from "@/lib/validation";
+import { isListingCategory } from "@/lib/listings";
 
-// GET /api/listings — daftar penawaran publik (ringkasan). §3.6 / F03.
-// POST — pasang penawaran (login terverifikasi + aturan disetujui). §3.6 / F05.
+// GET /api/listings — daftar penawaran publik (ringkasan) + pagination.
+// §3.6 / F03. Query: q, category, sort (terbaru|termurah|termahal|terpopuler), page.
+// Mengembalikan Paginated<ListingPublic> { items, page, per_page, total, total_pages }.
+// Tanpa DATABASE_URL (P1): total 0 yang jujur, bukan 500 (BUG-001).
 export async function GET(req: Request) {
   const u = new URL(req.url);
+  const sortParam = u.searchParams.get("sort") ?? "terbaru";
+  const sort: ListingSort = ["terbaru", "termurah", "termahal", "terpopuler"].includes(sortParam)
+    ? (sortParam as ListingSort)
+    : "terbaru";
+  const categoryParam = u.searchParams.get("category") ?? "";
   try {
-    const items = await listListings({
+    const result = await listListings({
       q: u.searchParams.get("q") ?? undefined,
+      category: isListingCategory(categoryParam) ? categoryParam : undefined,
+      sort,
       page: Number(u.searchParams.get("page") ?? "1") || 1,
       perPage: 20,
     });
-    return NextResponse.json(items);
+    return NextResponse.json(result);
   } catch (e) {
     return errorToResponse(e);
   }

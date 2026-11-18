@@ -1,17 +1,27 @@
 // Halaman konten iTAP: Kedai Bakso Aci — #30 Kartu Menu Kedai.
 // Info kedai + tautan GrabFood/GoFood ASLI dari index.html situs lama.
-// HARGA MENU tidak ada di repo lama -> item menu bertanda "Contoh" (isExample)
-// dan tidak menampilkan harga palsu.
+// Menu + harga ASLI dari papan menu Kedai I&T (diterima 2026-11-18).
 import type { Metadata } from "next";
 import Image from "next/image";
 import { Clock, MapPin } from "lucide-react";
 import { getKedai } from "@/lib/data";
 import { formatRupiah } from "@/lib/format";
-import { Badge, Banner } from "@/components/ui";
+import { Badge } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: "Kedai Bakso Aci iTAP",
   description: "Kedai Bakso Aci iTAP di Puri Kirana 3, Tanjung Pandan — buka setiap hari 11.00–22.00 WIB. Pesan via GrabFood atau GoFood.",
+};
+
+// Foto asli per item menu resmi (petakan di komponen, bukan di seed-data).
+// 6 item resmi: 5 dari papan menu + Baso Aci Daging Cincang (keputusan Teguh 2026-11-18).
+const MENU_PHOTOS: Record<string, { src: string; width: number; height: number }> = {
+  "menu-seblak-original": { src: "/images/kedai/menu-seblak-original.webp", width: 928, height: 1152 },
+  "menu-boci-daging-mercon": { src: "/images/kedai/menu-boci-daging-mercon.webp", width: 928, height: 1152 },
+  "menu-boci-daging-cincang": { src: "/images/kedai/menu-boci-daging-cincang.webp", width: 1122, height: 1402 },
+  "menu-boci-keju-lumer": { src: "/images/kedai/menu-boci-keju-lumer.webp", width: 1122, height: 1402 },
+  "menu-boci-tulang-rangu": { src: "/images/kedai/menu-boci-tulang-rangu.webp", width: 1122, height: 1402 },
+  "menu-lumpia-basah": { src: "/images/kedai/menu-lumpia-basah.webp", width: 928, height: 1152 },
 };
 
 export default async function KedaiPage() {
@@ -31,7 +41,14 @@ export default async function KedaiPage() {
           />
         </div>
         <div>
-          <p className="text-xs font-medium uppercase tracking-widest text-accent">Dari dapur iTAP</p>
+          <Image
+            src="/images/kedai/logo-kedai-it.webp"
+            alt="Logo Kedai I&T"
+            width={1024}
+            height={1536}
+            className="h-28 w-auto"
+          />
+          <p className="mt-3 text-xs font-medium uppercase tracking-widest text-accent">Dari dapur iTAP</p>
           <h1 className="mt-2 text-xl font-bold text-ink">{kedai.name}</h1>
           <p className="mt-2 flex items-start gap-2 text-sm text-muted">
             <MapPin className="mt-0.5 size-4 shrink-0" aria-hidden="true" /> {kedai.address}
@@ -53,15 +70,35 @@ export default async function KedaiPage() {
         </div>
       </header>
 
-      <Banner tone="warning">
-        Daftar menu di bawah ini masih contoh — harga dan deskripsi menu asli belum ada di repo situs lama. Isi dengan data Kedai sebelum halaman ini dipromosikan.
-      </Banner>
-
       <section aria-labelledby="menu-title">
         <h2 id="menu-title" className="text-lg font-semibold text-ink">Menu Kedai</h2>
-        <ul className="mt-3 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {kedai.menu.map((m) => (
-            <li key={m.id} className="flex flex-col gap-2 rounded-lg border border-line bg-canvas p-4 shadow-card">
+        <figure className="mt-3 overflow-hidden rounded-lg border border-line bg-surface">
+          <Image
+            src="/images/kedai/menu-board.webp"
+            alt="Papan menu Kedai I&T: Seblak Original, Baso Aci Daging Mercon, Baso Aci Keju Lumer, Baso Aci Tulang Rangu Rp18.000 dan Lumpia Basah Rp15.000"
+            width={892}
+            height={1338}
+            className="mx-auto w-full max-w-xl object-cover"
+          />
+          <figcaption className="border-t border-line bg-canvas px-4 py-2 text-center text-xs text-muted">
+            Papan menu Kedai I&amp;T — Baso Aci Daging Cincang Rp18.000 ditambahkan per keputusan 18 Nov 2026
+          </figcaption>
+        </figure>
+        <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {kedai.menu.map((m) => {
+            const photo = MENU_PHOTOS[m.id];
+            return (
+            <li key={m.id} className="flex flex-col gap-2 overflow-hidden rounded-lg border border-line bg-canvas shadow-card">
+              {photo && (
+                <Image
+                  src={photo.src}
+                  alt={`Foto ${m.name}`}
+                  width={photo.width}
+                  height={photo.height}
+                  className="aspect-[4/5] w-full object-cover"
+                />
+              )}
+              <div className="flex flex-col gap-2 p-4 pt-2">
               <div className="flex items-center gap-2">
                 <h3 className="text-base font-semibold text-ink">{m.name}</h3>
                 {m.isExample && <Badge tone="example">Contoh</Badge>}
@@ -74,8 +111,10 @@ export default async function KedaiPage() {
               ) : (
                 <p className="text-sm font-semibold text-muted">Harga menyusul — cek GrabFood/GoFood</p>
               )}
+              </div>
             </li>
-          ))}
+            );
+          })}
         </ul>
       </section>
     </div>

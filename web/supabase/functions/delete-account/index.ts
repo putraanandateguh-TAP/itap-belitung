@@ -1,25 +1,33 @@
 // Edge Function: delete-account (F16 — penghapusan akun PENUH).
-// Dipanggil dari DELETE /api/me setelah user mengetik HAPUS.
+// Dipanggil dari DELETE /api/me (method POST) setelah user mengetik HAPUS.
 // Service-role: bypass RLS. Langkah:
 //   1. Verifikasi JWT pengguna (Authorization: Bearer <token>) — hanya
-//      pemilik akun yang bisa menghapus akunnya sendiri.
+//      pemilik akun yang bisa menghapus akunnya sendiri. ID pengguna diambil
+//      dari JWT yang terverifikasi, BUKAN dari body — tidak ada cara
+//      menghapus akun orang lain.
 //   2. Hapus file Storage miliknya (article-images + listing-photos).
 //   3. Hapus baris profiles (CASCADE menghapus artikel, listing, thread,
 //      pesan, komentar, bookmark, laporan, blokir, poin, revisi, info,
 //      perangkat, itinerary, percakapan AI, feedback).
 //   4. Hapus pengguna di Supabase Auth (mencabut semua sesi).
 // Deploy: `supabase functions deploy delete-account` (setelah P1).
-// Env (diatur di Dashboard Supabase, BUKAN di repo): SUPABASE_URL,
-// SUPABASE_SERVICE_ROLE_KEY.
+// Env (otomatis disediakan Supabase untuk Edge Function, BUKAN di repo):
+// SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY.
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
+const SITE_ORIGIN = "https://itapbelitung.my.id";
 const cors = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": SITE_ORIGIN,
   "Access-Control-Allow-Headers": "authorization, content-type",
 };
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
+  // Hanya POST (dipakai /api/me) — GET/PUT/PATCH ditolak agar tidak ada
+  // pemanggilan penghapusan yang tidak disengaja.
+  if (req.method !== "POST") {
+    return json({ error: "Metode tidak diizinkan." }, 405);
+  }
   try {
     const authHeader = req.headers.get("Authorization");
     if (!authHeader?.startsWith("Bearer ")) {

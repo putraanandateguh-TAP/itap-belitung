@@ -100,12 +100,16 @@ export function can(
     case "moderation-word.manage":
       return isSuperadmin(user);
     case "listing.create":
-      // Gerbang Fase 2: email + WhatsApp terverifikasi + aturan disetujui.
-      return user.emailVerified && user.whatsappVerified && user.marketplaceRulesAccepted;
+      // Gerbang M3: email terverifikasi + aturan marketplace disetujui.
+      // Verifikasi WhatsApp (P2) BELUM tersedia — OTP WhatsApp menjawab 503 —
+      // jadi WhatsApp TIDAK boleh memblokir marketplace saat ini. Bila P2
+      // selesai, gerbang bisa diperketat lagi (lihat replica/build-log.md M3).
+      return user.emailVerified && user.marketplaceRulesAccepted;
     case "listing.edit":
       return owner || isAdmin(user);
     case "thread.create":
-      return user.emailVerified && user.whatsappVerified;
+      // Gerbang M3: cukup email terverifikasi (alasan yang sama seperti di atas).
+      return user.emailVerified;
     case "message.send":
       return owner; // owner = peserta thread (dicek route via thread)
     case "profile.edit":

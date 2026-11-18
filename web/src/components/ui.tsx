@@ -153,6 +153,10 @@ export function StatusBadge({ status }: { status: string }) {
     hidden: { tone: "sold", label: "Disembunyikan" },
     dismissed: { tone: "draft", label: "Ditolak" },
     reviewed: { tone: "active", label: "Sudah ditinjau" },
+    aktif: { tone: "active", label: "Aktif" },
+    terjual: { tone: "sold", label: "Terjual" },
+    dinonaktifkan: { tone: "disabled", label: "Dinonaktifkan" },
+    dihapus: { tone: "sold", label: "Dihapus" },
   };
   const m = map[status] ?? { tone: "draft" as BadgeTone, label: status };
   return <Badge tone={m.tone}>{m.label}</Badge>;

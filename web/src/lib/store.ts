@@ -59,6 +59,28 @@ export const store = {
       status: "open" as const, created_at: "2026-11-17T11:00:00+07:00",
     },
   ] as Report[],
+  /** Kamus kata moderasi seed (bisa diubah di mode seed; hilang saat restart). */
+  words: [
+    { id: "w-1", word: "contoh-kata-dilarang", action: "hold" as const },
+    { id: "w-2", word: "tautan-penipuan", action: "sensor" as const },
+  ] as { id: string; word: string; action: "sensor" | "hold" }[],
+  /** Kiriman info warga seed (menunggu kurasi redaksi). */
+  infoSubmissions: [
+    {
+      id: "is-1", user_id: "u-contoh", user_name: "Warga (contoh)",
+      text: "Jadwal kapal feri Tanjung Pandan – Pulau Leebong berubah: berangkat 08.00 dan 14.00 setiap hari.",
+      status: "pending" as const, curated_for_ai: false,
+      created_at: "2026-11-18T07:15:00+07:00",
+    },
+  ] as {
+    id: string; user_id: string; user_name: string; text: string;
+    status: "pending" | "approved" | "rejected"; curated_for_ai: boolean; created_at: string;
+  }[],
+  /** Akun yang diblokir di mode seed (blocker -> blocked). */
+  blocks: [] as {
+    id: string; blocker_id: string; blocker_name: string;
+    blocked_id: string; blocked_name: string; created_at: string;
+  }[],
   /** Putusan redaksi atas artikel seed (id -> status + catatan). */
   articleOverrides: new Map<string, { status: string; note: string | null }>(),
   categoriesExtra: [] as { id: string; channel: string; name_id: string; name_en: string; slug: string }[],

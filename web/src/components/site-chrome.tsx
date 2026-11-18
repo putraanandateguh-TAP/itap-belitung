@@ -1,12 +1,14 @@
 // #06 Header Web + footer — komponen chrome situs.
-// Header: logo teks iTAP, kanal, cari, masuk/menu akun, menu mobile.
+// Header: logo iTAP, kanal, cari, masuk/menu akun, menu mobile.
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { LogOut, Menu, Search, User, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { signOut, useSession } from "@/lib/session-client";
+import { MusicPlayer } from "@/components/music-player";
 import { CHANNELS } from "@/lib/seed-data";
 
 const CHANNEL_LINKS = (Object.keys(CHANNELS) as (keyof typeof CHANNELS)[]).map((c) => ({
@@ -28,28 +30,60 @@ export function SiteHeader() {
         Lewati ke konten
       </a>
       <div className="mx-auto flex h-16 max-w-[1200px] items-center gap-4 px-4">
-        <Link href="/" className="flex shrink-0 items-center gap-2 focus-visible:outline-2 focus-visible:outline-accent">
-          <span aria-hidden="true" className="flex size-9 items-center justify-center rounded-md bg-surface-dark text-base font-bold text-ink-on-dark">iT</span>
-          <span className="leading-tight">
-            <span className="block text-base font-bold text-ink">iTAP Belitung</span>
-            <span className="block text-xs font-medium text-muted">Kabar · Rasa · Perjalanan</span>
-          </span>
+        <Link href="/" className="flex shrink-0 items-center focus-visible:outline-2 focus-visible:outline-accent" aria-label="iTAP Belitung — Beranda">
+          <Image src="/images/logo-itap-belitung.png" alt="iTAP Belitung" width={1536} height={1024} className="h-10 w-auto" priority />
         </Link>
 
-        <nav aria-label="Kanal utama" className="ml-2 hidden items-center gap-1 lg:flex">
+        <nav aria-label="Kanal utama" className="ml-2 hidden items-center gap-1 whitespace-nowrap xl:flex">
           {CHANNEL_LINKS.map((l) => (
             <Link
               key={l.href}
               href={l.href}
               aria-current={isActive(l.href) ? "page" : undefined}
-              className={`rounded-md px-3 py-2 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent ${isActive(l.href) ? "text-accent underline decoration-accent decoration-2 underline-offset-4" : "text-ink hover:bg-surface"}`}
+              className={`rounded-md px-2 py-2 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent ${isActive(l.href) ? "text-accent underline decoration-accent decoration-2 underline-offset-4" : "text-ink hover:bg-surface"}`}
             >
               {l.label}
             </Link>
           ))}
+          <Link
+            href="/jual-beli"
+            aria-current={isActive("/jual-beli") ? "page" : undefined}
+            className={`rounded-md px-2 py-2 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent ${isActive("/jual-beli") ? "text-accent underline decoration-accent decoration-2 underline-offset-4" : "text-ink hover:bg-surface"}`}
+          >
+            Jual Beli
+          </Link>
+          <Link
+            href="/info-harian"
+            aria-current={isActive("/info-harian") ? "page" : undefined}
+            className={`rounded-md px-2 py-2 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent ${isActive("/info-harian") ? "text-accent underline decoration-accent decoration-2 underline-offset-4" : "text-ink hover:bg-surface"}`}
+          >
+            Info Harian
+          </Link>
+          <Link
+            href="/budaya"
+            aria-current={isActive("/budaya") ? "page" : undefined}
+            className={`rounded-md px-2 py-2 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent ${isActive("/budaya") ? "text-accent underline decoration-accent decoration-2 underline-offset-4" : "text-ink hover:bg-surface"}`}
+          >
+            Budaya
+          </Link>
+          <Link
+            href="/ai"
+            aria-current={isActive("/ai") ? "page" : undefined}
+            className={`rounded-md px-2 py-2 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent ${isActive("/ai") ? "text-accent underline decoration-accent decoration-2 underline-offset-4" : "text-ink hover:bg-surface"}`}
+          >
+            AI iTAP
+          </Link>
+          <Link
+            href="/penerjemah"
+            aria-current={isActive("/penerjemah") ? "page" : undefined}
+            className={`rounded-md px-2 py-2 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent ${isActive("/penerjemah") ? "text-accent underline decoration-accent decoration-2 underline-offset-4" : "text-ink hover:bg-surface"}`}
+          >
+            Penerjemah
+          </Link>
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
+          <MusicPlayer />
           <Link href="/cari" aria-label="Cari konten" className="flex size-10 items-center justify-center rounded-md text-ink hover:bg-surface focus-visible:outline-2 focus-visible:outline-accent">
             <Search className="size-5" aria-hidden="true" />
           </Link>
@@ -75,7 +109,7 @@ export function SiteHeader() {
           )}
           <button
             type="button"
-            className="flex size-10 items-center justify-center rounded-md text-ink hover:bg-surface focus-visible:outline-2 focus-visible:outline-accent lg:hidden"
+            className="flex size-10 items-center justify-center rounded-md text-ink hover:bg-surface focus-visible:outline-2 focus-visible:outline-accent xl:hidden"
             aria-expanded={menuOpen}
             aria-label={menuOpen ? "Tutup menu" : "Buka menu"}
             onClick={() => setMenuOpen((v) => !v)}
@@ -86,7 +120,7 @@ export function SiteHeader() {
       </div>
 
       {menuOpen && (
-        <nav aria-label="Menu mobile" className="border-t border-line bg-canvas px-4 py-3 lg:hidden">
+        <nav aria-label="Menu mobile" className="border-t border-line bg-canvas px-4 py-3 xl:hidden">
           <ul className="flex flex-col gap-1">
             <li><Link href="/" onClick={() => setMenuOpen(false)} className="block rounded-md px-3 py-2 text-sm font-semibold text-ink hover:bg-surface">Beranda</Link></li>
             {CHANNEL_LINKS.map((l) => (
@@ -96,10 +130,44 @@ export function SiteHeader() {
                 </Link>
               </li>
             ))}
+            <li>
+              <Link href="/jual-beli" onClick={() => setMenuOpen(false)} className="block rounded-md px-3 py-2 text-sm font-semibold text-ink hover:bg-surface">
+                Jual Beli
+              </Link>
+            </li>
+            <li>
+              <Link href="/info-harian" onClick={() => setMenuOpen(false)} className="block rounded-md px-3 py-2 text-sm font-semibold text-ink hover:bg-surface">
+                Info Harian
+              </Link>
+            </li>
+            <li>
+              <Link href="/budaya" onClick={() => setMenuOpen(false)} className="block rounded-md px-3 py-2 text-sm font-semibold text-ink hover:bg-surface">
+                Budaya
+              </Link>
+            </li>
+            <li>
+              <Link href="/ai" onClick={() => setMenuOpen(false)} className="block rounded-md px-3 py-2 text-sm font-semibold text-ink hover:bg-surface">
+                AI iTAP
+              </Link>
+            </li>
+            <li>
+              <Link href="/penerjemah" onClick={() => setMenuOpen(false)} className="block rounded-md px-3 py-2 text-sm font-semibold text-ink hover:bg-surface">
+                Penerjemah
+              </Link>
+            </li>
+            <li>
+              <Link href="/chat" onClick={() => setMenuOpen(false)} className="block rounded-md px-3 py-2 text-sm font-semibold text-ink hover:bg-surface">
+                Chat Jual Beli
+              </Link>
+            </li>
             <li className="border-t border-line pt-2">
               <p className="px-3 pb-1 text-xs font-medium uppercase tracking-wider text-muted">Info harian iTAP</p>
             </li>
             {[
+              { href: "/info-harian", label: "Info Harian" },
+              { href: "/budaya", label: "Budaya" },
+              { href: "/ai", label: "AI iTAP" },
+              { href: "/penerjemah", label: "Penerjemah" },
               { href: "/harga-pangan", label: "Harga Pangan" },
               { href: "/kurs", label: "Kurs, IHSG & Emas" },
               { href: "/lowongan", label: "Lowongan Kerja" },
@@ -151,6 +219,10 @@ export function SiteFooter() {
         <nav aria-label="Info harian">
           <p className="text-sm font-semibold text-accent-light">Info harian iTAP</p>
           <ul className="mt-3 flex flex-col gap-2 text-sm">
+            <li><Link href="/info-harian" className="hover:underline focus-visible:outline-2 focus-visible:outline-accent">Info Harian</Link></li>
+            <li><Link href="/budaya" className="hover:underline focus-visible:outline-2 focus-visible:outline-accent">Budaya</Link></li>
+            <li><Link href="/ai" className="hover:underline focus-visible:outline-2 focus-visible:outline-accent">AI iTAP</Link></li>
+            <li><Link href="/penerjemah" className="hover:underline focus-visible:outline-2 focus-visible:outline-accent">Penerjemah</Link></li>
             <li><Link href="/harga-pangan" className="hover:underline focus-visible:outline-2 focus-visible:outline-accent">Harga Pangan</Link></li>
             <li><Link href="/kurs" className="hover:underline focus-visible:outline-2 focus-visible:outline-accent">Kurs, IHSG &amp; Emas</Link></li>
             <li><Link href="/lowongan" className="hover:underline focus-visible:outline-2 focus-visible:outline-accent">Lowongan Kerja</Link></li>
@@ -172,7 +244,9 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-surface-dark-deep">
         <p className="mx-auto max-w-[1200px] px-4 py-4 text-xs text-muted-on-dark">
-          © 2026 iTAP Belitung. Konten iTAP ditulis sendiri; kabar agregasi mencantumkan sumber aslinya. Versi demo (data seed, tanpa database).
+          © 2026 iTAP Belitung. Konten iTAP ditulis sendiri; kabar agregasi mencantumkan sumber aslinya.
+          {/* P1 (M8): penanda demo di footer ikut saklar yang sama dengan banner atas. */}
+          {process.env.NEXT_PUBLIC_DEMO_BANNER !== "false" && " Versi demo (data seed, tanpa database)."}
         </p>
       </div>
     </footer>

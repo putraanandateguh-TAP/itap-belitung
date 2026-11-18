@@ -21,8 +21,14 @@ export async function POST(req: Request) {
   }
   try {
     const db = getDb();
+    // Penahanan otomatis kamus kata (F08): kata "sensor" disamarkan; kata
+    // "hold" menahan kiriman di antrean (status memang selalu pending).
+    const { applySensor, checkModerationWords } = await import("@/lib/moderation");
+    const check = await checkModerationWords(parsed.data.text);
+    const text = check.match?.action === "sensor"
+      ? await applySensor(parsed.data.text) : parsed.data.text;
     const inserted = await db.insert(t.infoSubmissions).values({
-      userId: s.profile.id, text: parsed.data.text, status: "pending",
+      userId: s.profile.id, text, status: "pending",
     }).returning();
     return NextResponse.json(inserted[0], { status: 201 });
   } catch (e) {

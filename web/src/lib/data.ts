@@ -19,9 +19,10 @@ import * as seed from "./data-seed";
 export { channelLabel } from "./labels";
 import type {
   Article, Category, Channel, Comment, Contribution, ContributionPoint,
-  ContributorDashboard, DailyPrices, JobListing, Kedai, MarketRates,
+  ContributorDashboard, DailyPrices, InfoSubmission, JobListing, Kedai, MarketRates,
   ModerationWord, Paginated, Report,
 } from "./types";
+import { applySensor, checkModerationWords } from "./moderation";
 
 const PER_PAGE = 9;
 
@@ -260,8 +261,15 @@ export async function addComment(
   const db = getDb();
   const arts = await db.select().from(t.articles).where(eq(t.articles.slug, slug)).limit(1);
   if (!arts[0]) throw new Error("NOT_FOUND: artikel tidak ditemukan.");
+  // Penahanan otomatis kamus kata (F08): kata "sensor" disamarkan, kata
+  // "hold" menahan komentar di antrean (status tetap pending — semua
+  // komentar memang masuk antrean moderasi dulu). Mode seed: pemeriksaan
+  // dilewati (kamus tidak bisa dibaca tanpa DB) — lihat lib/moderation.ts.
+  const check = await checkModerationWords(text);
+  let finalText = text.trim();
+  if (check.match?.action === "sensor") finalText = await applySensor(finalText);
   const inserted = await db.insert(t.comments).values({
-    articleId: arts[0].id, userId: profile!.id, text: text.trim(), status: "pending",
+    articleId: arts[0].id, userId: profile!.id, text: finalText, status: "pending",
   }).returning();
   return toComment(inserted[0], profile!.displayName ?? profile!.email, slug);
 }
@@ -274,6 +282,20 @@ export async function moderateComment(id: string, decision: "approved" | "reject
   }
   const db = getDb();
   await db.update(t.comments).set({ status: decision }).where(eq(t.comments.id, id));
+}
+
+/** A9 (M8) — komentar SAYA (semua status) agar penulis bisa melihat status
+    moderasi komentarnya sendiri. Hanya milik pemanggil; butuh login. */
+export async function listMyComments(ctx?: Ctx): Promise<Comment[]> {
+  if (useSeed()) return seed.listMyComments();
+  const profile = await ctxProfile(ctx);
+  if (!profile) return [];
+  const db = getDb();
+  const rows = await db.select().from(t.comments)
+    .where(eq(t.comments.userId, profile.id)).orderBy(desc(t.comments.createdAt));
+  const arts = await db.select().from(t.articles);
+  const slugById = new Map(arts.map((a) => [a.id, a.slug]));
+  return rows.map((r) => toComment(r, profile.displayName ?? profile.email, slugById.get(r.articleId) ?? ""));
 }
 
 // --- 3.4 Kontributor (F09) ---------------------------------------------------
@@ -513,15 +535,47 @@ export async function listReports(): Promise<Report[]> {
   }));
 }
 
-export async function reviewReport(id: string, action: "hidden" | "dismissed" | "reviewed", ctx?: Ctx): Promise<void> {
+export type ReportAction = "hidden" | "dismissed" | "reviewed" | "unblock" | "disable_listing";
+
+/**
+ * Putusan redaksi atas satu laporan (S22). Selain mengubah status laporan,
+ * aksi ini MENINDAK materi yang dilaporkan (DB nyata):
+ * - hidden: laporan -> hidden; listing -> dinonaktifkan, komentar -> rejected.
+ * - disable_listing: listing -> dinonaktifkan; laporan -> reviewed.
+ * - unblock: semua blokir atas akun yang dilaporkan dihapus; laporan -> reviewed.
+ * - dismissed / reviewed: hanya status laporan.
+ * Mode seed: hanya status laporan di store yang berubah (tidak ada
+ * listing/komentar/blokir seed yang terikat laporan) — dicatat jujur di UI.
+ */
+export async function reviewReport(id: string, action: ReportAction, ctx?: Ctx, note = ""): Promise<void> {
   if (useSeed()) return seed.reviewReport(id, action);
   const profile = await ctxProfile(ctx);
   if (!can(profile, "report.review")) {
     throw new Error("FORBIDDEN: moderasi laporan hanya redaksi.");
   }
   const db = getDb();
-  await db.update(t.reports).set({ status: action, moderatorId: profile!.id })
-    .where(eq(t.reports.id, id));
+  const rows = await db.select().from(t.reports).where(eq(t.reports.id, id)).limit(1);
+  const report = rows[0];
+  if (!report) throw new Error("NOT_FOUND: laporan tidak ditemukan.");
+  const status: "hidden" | "dismissed" | "reviewed" =
+    action === "hidden" ? "hidden"
+    : action === "dismissed" ? "dismissed" : "reviewed";
+  if (action === "hidden") {
+    if (report.targetType === "listing") {
+      await db.update(t.listings).set({ status: "dinonaktifkan" }).where(eq(t.listings.id, report.targetId));
+    } else if (report.targetType === "comment") {
+      await db.update(t.comments).set({ status: "rejected" }).where(eq(t.comments.id, report.targetId));
+    }
+    // target "account": tidak ada materi untuk disembunyikan; laporan
+    // dicatat hidden, penindakan akun memakai blokir/nonaktifkan terpisah.
+  } else if (action === "disable_listing" && report.targetType === "listing") {
+    await db.update(t.listings).set({ status: "dinonaktifkan" }).where(eq(t.listings.id, report.targetId));
+  } else if (action === "unblock" && report.targetType === "account") {
+    await db.delete(t.blocks).where(eq(t.blocks.blockedId, report.targetId));
+  }
+  await db.update(t.reports).set({
+    status, moderatorId: profile!.id, moderatorNote: note || null,
+  }).where(eq(t.reports.id, id));
 }
 
 export async function listModerationWords(): Promise<ModerationWord[]> {
@@ -529,6 +583,87 @@ export async function listModerationWords(): Promise<ModerationWord[]> {
   const db = getDb();
   const rows = await db.select().from(t.moderationWords).orderBy(asc(t.moderationWords.word));
   return rows.map((r) => ({ id: r.id, word: r.word, action: r.action }));
+}
+
+/** Tambah kata kamus (superadmin saja — dicek route). */
+export async function addModerationWord(word: string, action: "sensor" | "hold", ctx?: Ctx): Promise<ModerationWord> {
+  if (useSeed()) return seed.addModerationWord(word, action);
+  const profile = await ctxProfile(ctx);
+  if (!can(profile, "moderation-word.manage")) {
+    throw new Error("FORBIDDEN: kamus kata hanya superadmin.");
+  }
+  const db = getDb();
+  const inserted = await db.insert(t.moderationWords).values({
+    word: word.toLowerCase(), action, createdBy: profile!.id,
+  }).returning();
+  return { id: inserted[0].id, word: inserted[0].word, action: inserted[0].action };
+}
+
+/** Ubah kata/aksi kamus (superadmin saja — dicek route). */
+export async function updateModerationWord(
+  id: string, patch: { word?: string; action?: "sensor" | "hold" }, ctx?: Ctx,
+): Promise<ModerationWord | null> {
+  if (useSeed()) return seed.updateModerationWord(id, patch);
+  const profile = await ctxProfile(ctx);
+  if (!can(profile, "moderation-word.manage")) {
+    throw new Error("FORBIDDEN: kamus kata hanya superadmin.");
+  }
+  const db = getDb();
+  const updated = await db.update(t.moderationWords).set({
+    ...(patch.word !== undefined ? { word: patch.word.toLowerCase() } : {}),
+    ...(patch.action !== undefined ? { action: patch.action } : {}),
+  }).where(eq(t.moderationWords.id, id)).returning();
+  if (!updated[0]) return null;
+  return { id: updated[0].id, word: updated[0].word, action: updated[0].action };
+}
+
+/** Hapus kata kamus (superadmin saja — dicek route). */
+export async function deleteModerationWord(id: string, ctx?: Ctx): Promise<void> {
+  if (useSeed()) return seed.deleteModerationWord(id);
+  const profile = await ctxProfile(ctx);
+  if (!can(profile, "moderation-word.manage")) {
+    throw new Error("FORBIDDEN: kamus kata hanya superadmin.");
+  }
+  const db = getDb();
+  await db.delete(t.moderationWords).where(eq(t.moderationWords.id, id));
+}
+
+// --- Info warga (kurasi redaksi, S22) ----------------------------------------
+
+export async function listInfoSubmissions(status?: string): Promise<InfoSubmission[]> {
+  if (useSeed()) return seed.listInfoSubmissions(status);
+  const db = getDb();
+  const rows = await db.select().from(t.infoSubmissions)
+    .where(status ? eq(t.infoSubmissions.status, status as (typeof t.infoSubmissions.$inferSelect)["status"]) : undefined)
+    .orderBy(desc(t.infoSubmissions.createdAt));
+  const profs = await db.select().from(t.profiles);
+  const nameById = new Map(profs.map((p) => [p.id, p.displayName ?? p.email]));
+  return rows.map((r) => ({
+    id: r.id, user_id: r.userId, user_name: nameById.get(r.userId) ?? "Warga",
+    text: r.text, status: r.status, curated_for_ai: r.curatedForAi,
+    created_at: r.createdAt.toISOString(),
+  }));
+}
+
+/** Kurasi kiriman info warga: setujui (jadi referensi AI) atau tolak. */
+export async function reviewInfoSubmission(id: string, decision: "approved" | "rejected", ctx?: Ctx): Promise<InfoSubmission | null> {
+  if (useSeed()) return seed.reviewInfoSubmission(id, decision);
+  const profile = await ctxProfile(ctx);
+  if (!can(profile, "info.review")) {
+    throw new Error("FORBIDDEN: kurasi info warga hanya redaksi.");
+  }
+  const db = getDb();
+  const updated = await db.update(t.infoSubmissions).set({
+    status: decision, curatedForAi: decision === "approved",
+  }).where(eq(t.infoSubmissions.id, id)).returning();
+  if (!updated[0]) return null;
+  const profs = await db.select().from(t.profiles).where(eq(t.profiles.id, updated[0].userId)).limit(1);
+  return {
+    id: updated[0].id, user_id: updated[0].userId,
+    user_name: profs[0]?.displayName ?? profs[0]?.email ?? "Warga",
+    text: updated[0].text, status: updated[0].status,
+    curated_for_ai: updated[0].curatedForAi, created_at: updated[0].createdAt.toISOString(),
+  };
 }
 
 // --- 3.8 Konten iTAP -----------------------------------------------------------

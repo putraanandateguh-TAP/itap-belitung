@@ -75,8 +75,22 @@ export const contributorPatchSchema = z.object({
 });
 
 export const reportActionSchema = z.object({
-  action: z.enum(["hidden", "dismissed", "reviewed"]),
+  // hidden = sembunyikan materi yang dilaporkan; disable_listing =
+  // nonaktifkan penawaran (laporan tetap tercatat sebagai ditinjau);
+  // unblock = buka blokir akun yang dilaporkan; dismissed = tolak laporan;
+  // reviewed = tandai sudah ditinjau tanpa tindakan materi.
+  action: z.enum(["hidden", "dismissed", "reviewed", "unblock", "disable_listing"]),
   note: z.string().trim().max(1000).optional().default(""),
+});
+
+/** Aksi admin atas satu listing di antrean moderasi (S22). */
+export const adminListingActionSchema = z.object({
+  action: z.enum(["activate", "disable"]),
+});
+
+/** Putusan redaksi atas satu komentar tertunda (S22). */
+export const commentReviewSchema = z.object({
+  decision: z.enum(["approved", "rejected"]),
 });
 
 export const moderationWordSchema = z.object({
@@ -87,6 +101,7 @@ export const moderationWordSchema = z.object({
 export const listingSchema = z.object({
   title: z.string().trim().min(3).max(120),
   description: z.string().trim().max(5000).optional().default(""),
+  category: z.enum(["kendaraan", "elektronik", "rumah-tangga", "pakaian", "hobi", "properti", "jasa", "lainnya"]).optional().default("lainnya"),
   price_cents: z.number().int().min(0).max(100_000_000_00),
   location_name: z.string().trim().max(160).optional().default(""),
   location_lat: z.number().min(-90).max(90).nullable().optional(),

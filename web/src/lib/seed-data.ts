@@ -7,7 +7,7 @@ import type { Article, Category, Channel, DailyPrices, DigitalProduct, JobListin
 // 01-11-2026), data/loker.json (66 lowongan),
 // data/keuangan.json (IHSG/kurs/emas 2026-11-17 17:42 WIB).
 // Harga produk/jasa di bawah ini dari index.html situs lama (Nov 2026).
-// Menu Kedai TIDAK ada di repo lama -> item menu bertanda isExample.
+// Menu Kedai ASLI: 5 item dari papan menu Kedai I&T (diterima 2026-11-18) + Baso Aci Daging Cincang Rp18.000 (keputusan Teguh 2026-11-18). Bukan contoh.
 // SEMUA data di file ini adalah FAKE DATA LAYER (seed) sampai Supabase (P1) ada.
 
 export const CHANNELS: Record<Channel, string> = {
@@ -2605,31 +2605,58 @@ export const KEDAI: Kedai = {
   "whatsapp": "6285141121283",
   "menu": [
     {
-      "id": "menu-contoh-1",
-      "name": "Baso Aci Original",
-      "desc": "Contoh - isi dengan data iTAP: harga & deskripsi menu asli belum ada di repo lama.",
-      "price": null,
-      "category": "Baso Aci",
+      "id": "menu-seblak-original",
+      "name": "Seblak Original",
+      "desc": "Seblak dengan chilli oil original pedas; kuah gurih berpadu rasa pedas yang meresap, lengkap dengan aneka isian pilihan dan kerupuk yang kenyal.",
+      "price": 18000,
+      "category": "Seblak",
       "available": true,
-      "isExample": true
+      "isExample": false
     },
     {
-      "id": "menu-contoh-2",
+      "id": "menu-boci-daging-mercon",
+      "name": "Baso Aci Daging Mercon",
+      "desc": "Kuah gurih pedas, baso aci kenyal, isian daging mercon melimpah.",
+      "price": 18000,
+      "category": "Baso Aci",
+      "available": true,
+      "isExample": false
+    },
+    {
+      "id": "menu-boci-keju-lumer",
+      "name": "Baso Aci Keju Lumer",
+      "desc": "Baso aci kenyal dengan isian keju lumer gurih yang meleleh di setiap gigitan.",
+      "price": 18000,
+      "category": "Baso Aci",
+      "available": true,
+      "isExample": false
+    },
+    {
+      "id": "menu-boci-tulang-rangu",
       "name": "Baso Aci Tulang Rangu",
-      "desc": "Contoh - isi dengan data iTAP: harga & deskripsi menu asli belum ada di repo lama.",
-      "price": null,
+      "desc": "Baso aci kenyal dengan isian tulang rangu gurih yang bikin setiap suapan makin nagih.",
+      "price": 18000,
       "category": "Baso Aci",
       "available": true,
-      "isExample": true
+      "isExample": false
     },
     {
-      "id": "menu-contoh-3",
-      "name": "Es Teh Manis",
-      "desc": "Contoh - isi dengan data iTAP: harga & deskripsi menu asli belum ada di repo lama.",
-      "price": null,
-      "category": "Minuman",
+      "id": "menu-lumpia-basah",
+      "name": "Lumpia Basah",
+      "desc": "Kulit lembut berpadu tumisan sayur dan telur yang kaya rasa; isian tauge dan telur dibalut kulit lumpia.",
+      "price": 15000,
+      "category": "Lumpia",
       "available": true,
-      "isExample": true
+      "isExample": false
+    },
+    {
+      "id": "menu-boci-daging-cincang",
+      "name": "Baso Aci Daging Cincang",
+      "desc": "Perpaduan baso aci kenyal dengan isian daging cincang gurih berbumbu yang bikin setiap suapan makin nagih.",
+      "price": 18000,
+      "category": "Baso Aci",
+      "available": true,
+      "isExample": false
     }
   ]
 };

@@ -50,14 +50,83 @@ test.describe("F14 info harian", () => {
 });
 
 test.describe("F15 budaya", () => {
-  test("F15-H1 GET /api/culture -> 200 + [] jujur (konten belum diisi)", async ({ request }) => {
+  test("F15-H1 GET /api/culture -> 200 + 5 cerita seed asli KB (M5)", async ({ request }) => {
     const res = await request.get("/api/culture");
     expect(res.status()).toBe(200);
-    expect(await res.json()).toEqual([]);
+    const items = await res.json();
+    expect(items.length).toBe(5);
+    expect(items.map((s: { slug: string }) => s.slug).sort()).toEqual(
+      ["bahasa-melayu-belitung", "buang-jong", "makan-bedulang", "maras-taun", "seni-campak-belitung"],
+    );
+    // Tidak ada lirik karangan di seed: semua null.
+    expect(items.every((s: { lyrics: string | null }) => s.lyrics === null)).toBe(true);
   });
 
   test("F15-H2 GET /api/culture/:slug tidak ada -> 404", async ({ request }) => {
     const res = await request.get("/api/culture/apa-saja");
     expect(res.status()).toBe(404);
+  });
+
+  test("F15-H3 GET /api/culture/maras-taun -> 200 + sumber bacaan", async ({ request }) => {
+    const res = await request.get("/api/culture/maras-taun");
+    expect(res.status()).toBe(200);
+    const s = await res.json();
+    expect(s.title).toBe("Maras Taun");
+    expect(s.category).toBe("upacara");
+    expect(s.sources.length).toBeGreaterThan(0);
+  });
+
+  test("F15-H4 /budaya: daftar + filter kategori + detail (M5)", async ({ page }) => {
+    await page.goto("/budaya");
+    await expect(page.getByRole("heading", { name: "Budaya Belitung" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Makan Bedulang", exact: true })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Bahasa Melayu Belitung", exact: true })).toBeVisible();
+    await page.goto("/budaya?category=lagu");
+    await expect(page.getByText("Belum ada cerita di kategori ini")).toBeVisible();
+    await page.goto("/budaya/maras-taun");
+    await expect(page.getByRole("heading", { name: "Maras Taun" })).toBeVisible();
+    await expect(page.getByText("Lirik belum tersedia untuk cerita ini")).toBeVisible();
+    await expect(page.getByText("Sumber bacaan")).toBeVisible();
+    await expectNoA11yViolations(page);
+  });
+});
+
+test.describe("F14 hub info harian (M5)", () => {
+  test.beforeEach(async ({ page }) => installGuards(page));
+
+  test("F14-M5-1 /info-harian + 6 subhalaman -> 200, pesan jujur saat cache kosong", async ({ page }) => {
+    await page.goto("/info-harian");
+    await expect(page.getByRole("heading", { name: "Info Harian Belitung" })).toBeVisible();
+    for (const [path, heading, empty] of [
+      ["/info-harian/cuaca", "Cuaca Tanjung Pandan", "Cuaca belum tersedia"],
+      ["/info-harian/salat", "Jadwal Salat", "Jadwal salat belum tersedia"],
+      ["/info-harian/transport", "Pesawat & Kapal", "Jadwal pesawat & kapal belum tersedia"],
+      ["/info-harian/bbm", "Harga BBM", "Harga BBM belum tersedia"],
+      ["/info-harian/gempa", "Gempa", "Info gempa belum tersedia"],
+      ["/info-harian/darurat", "Nomor Darurat", null],
+    ] as const) {
+      await page.goto(path);
+      await expect(page.getByRole("heading", { name: heading, exact: true })).toBeVisible();
+      if (empty) await expect(page.getByText(empty)).toBeVisible();
+    }
+    // Darurat: data statis — nomor 110 tampil + tautan tel:.
+    await expect(page.getByRole("link", { name: "110" })).toHaveAttribute("href", "tel:110");
+    await expectNoA11yViolations(page);
+  });
+
+  test("F14-M5-2 beranda S01: kartu cuaca + salat tampil (mode belum tersedia)", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("heading", { name: "Cuaca Tanjung Pandan" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Jadwal salat" })).toBeVisible();
+    await expect(page.getByText("Cuaca belum tersedia — cron daily-info-fetch belum mengisi cache (P1).")).toBeVisible();
+  });
+
+  test("F14-M5-3 mobile 390px: hub + cuaca tanpa overflow", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 });
+    for (const p of ["/info-harian", "/info-harian/cuaca", "/budaya"]) {
+      await page.goto(p);
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      expect(overflow, p).toBeLessThanOrEqual(0);
+    }
   });
 });

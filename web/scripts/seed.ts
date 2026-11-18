@@ -7,6 +7,7 @@
 // dilewati (kategori/harga/kurs/loker/produk/jasa/menu tetap di-seed).
 // Idempotent: pakai onConflictDoNothing pada kunci unik.
 import "dotenv/config";
+import { and, eq } from "drizzle-orm";
 import { getDb } from "../src/lib/db";
 import * as t from "../src/lib/db/schema";
 import {
@@ -70,29 +71,33 @@ async function main() {
   }
   log(`harga pangan: ${DAILY_PRICES.items.length} komoditas @ ${priceDate}`);
 
-  // 4. Kurs / IHSG / emas.
+  // 4. Kurs / IHSG / emas — idempotent: lewati bila (kind, symbol) sudah ada
+  // (tabel market_rates tidak punya unique constraint).
   const asOf = new Date("2026-11-17T17:42:00+07:00");
-  await db.insert(t.marketRates).values({
-    kind: "ihsg", symbol: "IHSG", value: String(MARKET_RATES.ihsg.value), asOf,
-    details: { change: MARKET_RATES.ihsg.change, percent: MARKET_RATES.ihsg.percent },
-  });
-  await db.insert(t.marketRates).values({
-    kind: "emas", symbol: "ANTAM-1G", value: String(MARKET_RATES.gold.price_1g), asOf,
-    details: { previous: MARKET_RATES.gold.previous },
-  });
+  async function insertRateIfAbsent(kind: "ihsg" | "emas" | "kurs", symbol: string, value: string, details: object) {
+    const rows = await db.select().from(t.marketRates)
+      .where(and(eq(t.marketRates.kind, kind), eq(t.marketRates.symbol, symbol))).limit(1);
+    if (rows.length) return;
+    await db.insert(t.marketRates).values({ kind, symbol, value, asOf, details });
+  }
+  await insertRateIfAbsent("ihsg", "IHSG", String(MARKET_RATES.ihsg.value),
+    { change: MARKET_RATES.ihsg.change, percent: MARKET_RATES.ihsg.percent });
+  await insertRateIfAbsent("emas", "ANTAM-1G", String(MARKET_RATES.gold.price_1g),
+    { previous: MARKET_RATES.gold.previous });
   for (const c of MARKET_RATES.currencies) {
-    await db.insert(t.marketRates).values({
-      kind: "kurs", symbol: c.code, value: String(c.sell_erate), asOf,
-      details: {
-        buy_erate: c.buy_erate, sell_erate: c.sell_erate, buy_tt: c.buy_tt,
-        sell_tt: c.sell_tt, buy_bn: c.buy_bn, sell_bn: c.sell_bn,
-      },
+    await insertRateIfAbsent("kurs", c.code, String(c.sell_erate), {
+      buy_erate: c.buy_erate, sell_erate: c.sell_erate, buy_tt: c.buy_tt,
+      sell_tt: c.sell_tt, buy_bn: c.buy_bn, sell_bn: c.sell_bn,
     });
   }
   log(`kurs: IHSG + emas + ${MARKET_RATES.currencies.length} mata uang`);
 
-  // 5. Lowongan.
+  // 5. Lowongan — idempotent: lewati bila (title, company) sudah ada
+  // (tabel job_listings tidak punya unique constraint).
   for (const j of JOBS) {
+    const rows = await db.select().from(t.jobListings)
+      .where(and(eq(t.jobListings.title, j.title), eq(t.jobListings.company, j.company))).limit(1);
+    if (rows.length) continue;
     await db.insert(t.jobListings).values({
       title: j.title, company: j.company, location: j.location,
       salaryMinCents: null, salaryMaxCents: null, deadline: j.deadline,
@@ -102,6 +107,8 @@ async function main() {
   log(`lowongan: ${JOBS.length} (gaji/tenggat null — tidak ada di sumber, sesuai build-log)`);
 
   // 6. Produk digital (katalog saja — TANPA lisensi) + jasa.
+  // digital_products.slug unique -> onConflictDoNothing. services tidak
+  // punya unique constraint -> lewati bila title sudah ada.
   for (const p of PRODUCTS) {
     await db.insert(t.digitalProducts).values({
       name: p.name, slug: p.id, description: p.desc,
@@ -109,6 +116,9 @@ async function main() {
     }).onConflictDoNothing();
   }
   for (const s of SERVICES) {
+    const rows = await db.select().from(t.services)
+      .where(eq(t.services.title, s.name)).limit(1);
+    if (rows.length) continue;
     await db.insert(t.services).values({
       title: s.name, description: s.desc,
       priceFromCents: Math.round(s.price_from * 100), active: true,
@@ -116,14 +126,39 @@ async function main() {
   }
   log(`produk: ${PRODUCTS.length} · jasa: ${SERVICES.length}`);
 
-  // 7. Menu Kedai — HANYA contoh (harga 0). Ganti dengan harga asli bila ada.
+  // 7. Menu Kedai — HARGA ASLI dari poster menu Kedai I&T (18 Nov 2026):
+  // 5× Rp18.000 + Lumpia Basah Rp15.000. Bukan contoh lagi.
+  // Idempotent: lewati bila name sudah ada (kedai_menu_items tanpa unique).
   for (const m of KEDAI.menu) {
+    const rows = await db.select().from(t.kedaiMenuItems)
+      .where(eq(t.kedaiMenuItems.name, m.name)).limit(1);
+    if (rows.length) continue;
     await db.insert(t.kedaiMenuItems).values({
       name: m.name, category: m.category,
       priceCents: m.price ? Math.round(m.price * 100) : 0, available: m.available,
     });
   }
-  log(`menu kedai: ${KEDAI.menu.length} (contoh, harga 0 — belum ada harga asli)`);
+  log(`menu kedai: ${KEDAI.menu.length} (harga asli poster Kedai I&T)`);
+
+  // 8. Budaya (M5) — 5 cerita ASLI dari artikel kanal Budaya KB situs lama
+  // (kb-35 s.d. kb-39). Lirik TIDAK diisi (tidak ada di sumber — jangan
+  // dikarang); kategori lagu/kuliner_tradisi/cerita_rakyat/sejarah_timah
+  // masih kosong sampai Teguh/redaksi mengisinya.
+  const cultureMap: Record<string, "upacara" | "tari_musik" | "bahasa"> = {
+    upacara: "upacara", "tari-musik": "tari_musik", bahasa: "bahasa",
+  };
+  let cultureN = 0;
+  for (const a of ARTICLES) {
+    const cat = cultureMap[a.category_id];
+    if (a.channel !== "budaya" || !cat) continue;
+    await db.insert(t.cultureStories).values({
+      category: cat, title: a.title_id, body: a.body_id.join("\n\n"),
+      lyrics: null, sources: a.source ? [a.source] : [], slug: a.slug,
+    }).onConflictDoNothing();
+    cultureN++;
+  }
+  log(`budaya: ${cultureN} cerita (dari KB situs lama; lirik kosong — belum ada sumber)`);
+
   log("Seed selesai.");
 }
 

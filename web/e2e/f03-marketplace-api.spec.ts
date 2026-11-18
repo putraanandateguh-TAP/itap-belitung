@@ -8,7 +8,11 @@ test.describe("F03 marketplace API publik", () => {
     const res = await request.get("/api/listings");
     expect(res.status(), await res.text()).toBe(200);
     const body = await res.json();
-    expect(Array.isArray(body)).toBeTruthy();
+    // M3: respons paginated { items, page, per_page, total, total_pages }
+    // (bukan array lagi — seed tanpa listing -> items kosong yang jujur).
+    expect(Array.isArray(body.items)).toBeTruthy();
+    expect(body.total).toBe(0);
+    expect(body.page).toBe(1);
   });
 
   test("F03-E1 GET /api/listings/:id tidak ada -> 404, bukan 500", async ({ request }) => {

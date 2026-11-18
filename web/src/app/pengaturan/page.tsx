@@ -18,6 +18,25 @@ function SettingsForm() {
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [myBlocks, setMyBlocks] = useState<{ id: string; blocked_id: string; blocked_name: string; created_at: string }[]>([]);
+
+  useEffect(() => {
+    fetch("/api/me/blocks", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : []))
+      .then((d) => { if (Array.isArray(d)) setMyBlocks(d); })
+      .catch(() => undefined);
+  }, []);
+
+  async function unblock(blockedId: string, name: string) {
+    const res = await fetch(`/api/users/${blockedId}/unblock`, { method: "POST" });
+    if (res.ok) {
+      setMyBlocks((xs) => xs.filter((x) => x.blocked_id !== blockedId));
+      setNotice(`Blokir atas ${name} dibuka.`);
+    } else {
+      const data = await res.json().catch(() => ({}));
+      setError((data as { error?: string }).error ?? "Tidak bisa membuka blokir.");
+    }
+  }
 
   useEffect(() => {
     if (!session) return;
@@ -123,6 +142,25 @@ function SettingsForm() {
             Tambah
           </Button>
         </div>
+      </section>
+
+      <section aria-labelledby="blokir-title" className="rounded-lg border border-line bg-canvas p-4">
+        <h2 id="blokir-title" className="text-lg font-semibold text-ink">Akun yang diblokir</h2>
+        <p className="mt-1 text-sm text-muted">Akun yang diblokir tidak bisa menghubungimu lewat chat marketplace. Daftar lengkap + kelola redaksi ada di Ruang Redaksi (tab Blokir).</p>
+        {myBlocks.length === 0 ? (
+          <p className="mt-3 text-sm text-muted">Kamu belum memblokir akun siapa pun.</p>
+        ) : (
+          <ul className="mt-3 flex flex-col gap-2">
+            {myBlocks.map((b) => (
+              <li key={b.id} className="flex items-center justify-between rounded-md border border-line bg-surface px-3 py-2">
+                <span className="text-sm text-ink">{b.blocked_name}</span>
+                <Button type="button" variant="ghost" size="sm" onClick={() => unblock(b.blocked_id, b.blocked_name)}>
+                  Buka blokir
+                </Button>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       <section aria-labelledby="notif-title" className="rounded-lg border border-line bg-canvas p-4">

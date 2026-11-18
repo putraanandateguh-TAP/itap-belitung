@@ -11,7 +11,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
   const parsed = await parseJsonBody(req, reportActionSchema);
   if ("error" in parsed) return parsed.error;
   try {
-    await reviewReport(id, parsed.data.action, { profile: a.profile });
+    await reviewReport(id, parsed.data.action, { profile: a.profile }, parsed.data.note ?? "");
     return NextResponse.json({ ok: true });
   } catch (e) {
     return errorToResponse(e);

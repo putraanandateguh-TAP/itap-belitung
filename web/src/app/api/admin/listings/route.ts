@@ -5,11 +5,12 @@ import * as t from "@/lib/db/schema";
 import { desc, eq } from "drizzle-orm";
 
 // GET /api/admin/listings — semua listing untuk moderasi. §3.5 / F08.
+// Mode seed (tanpa DB): daftar kosong yang jujur — belum ada listing seed.
 export async function GET(req: Request) {
   const a = await requireAdmin();
   if ("error" in a) return a.error;
   if (!isDbConfigured()) {
-    return NextResponse.json({ error: "DATABASE_URL belum diisi (P1)." }, { status: 503 });
+    return NextResponse.json([]);
   }
   const u = new URL(req.url);
   const status = u.searchParams.get("status");

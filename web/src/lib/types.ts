@@ -99,6 +99,27 @@ export interface ModerationWord {
   action: "sensor" | "hold";
 }
 
+/** Kiriman info warga (S22 — kurasi redaksi, calon referensi AI). */
+export interface InfoSubmission {
+  id: string;
+  user_id: string;
+  user_name: string;
+  text: string;
+  status: "pending" | "approved" | "rejected";
+  curated_for_ai: boolean;
+  created_at: string;
+}
+
+/** Satu baris blokir akun (F08): siapa memblokir siapa. */
+export interface BlockEntry {
+  id: string;
+  blocker_id: string;
+  blocker_name: string;
+  blocked_id: string;
+  blocked_name: string;
+  created_at: string;
+}
+
 export interface DailyPriceItem {
   id: string;
   commodity: string;
@@ -182,6 +203,24 @@ export interface Kedai {
 }
 
 export type Role = "reader" | "contributor" | "admin_portal" | "superadmin";
+
+/** Cerita budaya (S34–S35, F15) — bentuk yang sama dengan tabel
+ * culture_stories di schema.sql. lyrics null = belum ada lirik dari
+ * sumber nyata (jangan dikarang); sources = daftar sumber bacaan. */
+export type CultureCategory =
+  | "upacara" | "tari_musik" | "lagu" | "kuliner_tradisi"
+  | "cerita_rakyat" | "bahasa" | "sejarah_timah";
+
+export interface CultureStory {
+  id: string;
+  slug: string;
+  category: CultureCategory;
+  title: string;
+  body: string;
+  lyrics: string | null;
+  sources: string[];
+  created_at: string;
+}
 
 export interface Paginated<T> {
   items: T[];

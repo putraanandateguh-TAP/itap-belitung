@@ -4,7 +4,7 @@
 // foto Storage + akun Auth (semua sesi dicabut).
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "@/lib/session-client";
 import { RequireRole } from "@/components/require-role";
@@ -15,7 +15,19 @@ function DeleteAccountForm() {
   const [confirm, setConfirm] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  // Gate kejujuran (S25): penghapusan penuh butuh Supabase + Edge Function
+  // delete-account yang ter-deploy (P1). Bila backend belum dikonfigurasi,
+  // tampilkan gate dan nonaktifkan tombol — jangan biarkan pengguna mengetik
+  // HAPUS lalu gagal tanpa penjelasan.
+  const [configured, setConfigured] = useState<boolean | null>(null);
   const { session } = useSession();
+
+  useEffect(() => {
+    fetch("/api/me", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => { if (d && typeof d.configured === "boolean") setConfigured(d.configured); })
+      .catch(() => undefined);
+  }, []);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -44,6 +56,15 @@ function DeleteAccountForm() {
   return (
     <div className="mx-auto max-w-xl py-10">
       <h1 className="text-xl font-bold text-ink">Hapus akun</h1>
+      {configured === false && (
+        <div className="mt-4">
+          <Banner tone="warning">
+            Penghapusan akun belum bisa dijalankan: backend Supabase dan Edge Function hapus-akun belum dikonfigurasi (P1).
+            Akun dan datamu aman — tombol hapus di bawah nonaktif sampai backend live. Verifikasi end-to-end (profil + Storage + Auth user hilang)
+            baru bisa dilakukan setelah proyek Supabase dibuat dan Edge Function di-deploy.
+          </Banner>
+        </div>
+      )}
       <div className="mt-4">
         <Banner tone="error">
           Tindakan ini tidak bisa dibatalkan. Akun <strong>{session?.email}</strong> dan semua data terkait akan dihapus.
@@ -67,7 +88,7 @@ function DeleteAccountForm() {
         </Field>
         {error && <p role="alert" className="text-sm text-danger">{error}</p>}
         <div className="flex gap-3">
-          <Button type="submit" variant="danger" size="lg" loading={busy}>Hapus akun saya</Button>
+          <Button type="submit" variant="danger" size="lg" loading={busy} disabled={configured === false}>Hapus akun saya</Button>
           <Button type="button" variant="secondary" size="lg" onClick={() => router.push("/pengaturan")}>Batalkan</Button>
         </div>
       </form>

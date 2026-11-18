@@ -45,6 +45,18 @@ const SECTIONS: { h: string; body: string[] }[] = [
       "Data cuaca, jadwal salat, harga BBM, dan jadwal transportasi berasal dari sumber publik (BMKG, Kemenag, Pertamina, operator) dan diambil lewat cache, bukan dari data akunmu.",
     ],
   },
+  {
+    h: "Pemroses data (pihak ketiga)",
+    body: [
+      "Supabase (Singapura) — database, autentikasi, dan penyimpanan file; data akunmu tersimpan di sana.",
+      "Vercel — hosting situs ini.",
+      "Resend — pengiriman email (verifikasi, reset kata sandi, notifikasi).",
+      "Meta WhatsApp (lewat ZapClaw) — pengiriman kode OTP ke nomor WhatsAppmu, bila kamu memakai verifikasi WhatsApp.",
+      "Google — login dengan Google (bila kamu memilihnya).",
+      "Firebase — notifikasi push ke perangkatmu (bila kamu mengizinkannya).",
+      "Kami tidak menjual datamu. Pemroses di atas hanya menerima data yang diperlukan untuk fungsinya.",
+    ],
+  },
 ];
 
 export default function PrivasiPage() {

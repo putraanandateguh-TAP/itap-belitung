@@ -33,20 +33,20 @@ test.describe("F12 AI Satam -> 501 jujur", () => {
 
 test.describe("F13 Penerjemah -> 501 jujur", () => {
   test("F13-H1 POST /api/translate -> 501, tanpa terjemahan palsu", async ({ request }) => {
-    const res = await request.post("/api/translate", { data: { text: "Selamat pagi", target_lang: "en" } });
+    const res = await request.post("/api/translate", { data: { text: "Selamat pagi", from: "id", to: "en" } });
     expect(res.status()).toBe(501);
     expect(await res.text()).toContain("Fase 3");
   });
 
   test("F13-E1 teks kosong / sangat panjang -> 400 atau 501", async ({ request }) => {
-    const empty = await request.post("/api/translate", { data: { text: "", target_lang: "en" } });
+    const empty = await request.post("/api/translate", { data: { text: "", from: "id", to: "en" } });
     expect([400, 501]).toContain(empty.status());
-    const long = await request.post("/api/translate", { data: { text: "x".repeat(10000), target_lang: "en" } });
+    const long = await request.post("/api/translate", { data: { text: "x".repeat(10000), from: "id", to: "en" } });
     expect([400, 501]).toContain(long.status());
   });
 
   test("F13-E2 bahasa tidak didukung -> 400", async ({ request }) => {
-    const res = await request.post("/api/translate", { data: { text: "halo", target_lang: "xx" } });
+    const res = await request.post("/api/translate", { data: { text: "halo", from: "id", to: "xx" } });
     expect([400, 501]).toContain(res.status());
     expect(res.status()).not.toBe(500);
   });

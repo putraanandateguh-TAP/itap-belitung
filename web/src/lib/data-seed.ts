@@ -14,7 +14,7 @@ import {
 import { articleWithOverride, store } from "./store";
 import type {
   Article, Category, Channel, Comment, Contribution, ContributionPoint,
-  ContributorDashboard, DailyPrices, JobListing, Kedai, MarketRates,
+  ContributorDashboard, CultureCategory, CultureStory, DailyPrices, JobListing, Kedai, MarketRates,
   ModerationWord, Paginated, Report,
 } from "./types";
 
@@ -143,6 +143,14 @@ export async function moderateComment(id: string, decision: "approved" | "reject
   if (c) c.status = decision;
 }
 
+/** A9 (M8) — mode seed: komentar seed TIDAK punya pemilik (ditulis tanpa
+    user id), jadi "komentar saya" tidak bisa ditentukan dengan jujur —
+    kembalikan daftar kosong. Komentar yang baru dikirim tetap terlihat
+    penulisnya di sesi itu dari respons POST (status pending). */
+export async function listMyComments(): Promise<Comment[]> {
+  return [];
+}
+
 // --- 3.4 Kontributor (F09) ---------------------------------------------------
 
 export async function getContributorDashboard(): Promise<ContributorDashboard> {
@@ -252,16 +260,54 @@ export async function listReports(): Promise<Report[]> {
   return store.reports;
 }
 
-export async function reviewReport(id: string, action: "hidden" | "dismissed" | "reviewed"): Promise<void> {
+export async function reviewReport(id: string, action: "hidden" | "dismissed" | "reviewed" | "unblock" | "disable_listing"): Promise<void> {
   const r = store.reports.find((x) => x.id === id);
-  if (r) r.status = action;
+  // Mode seed: hanya status laporan yang berubah. disable_listing/unblock
+  // dicatat sebagai "reviewed" — tidak ada listing/komentar/blokir seed
+  // yang terikat laporan untuk ditindak.
+  if (r) r.status = action === "disable_listing" || action === "unblock" ? "reviewed" : action;
 }
 
 export async function listModerationWords(): Promise<ModerationWord[]> {
-  return [
-    { id: "w-1", word: "contoh-kata-dilarang", action: "hold" },
-    { id: "w-2", word: "tautan-penipuan", action: "sensor" },
-  ];
+  return store.words;
+}
+
+export async function addModerationWord(word: string, action: "sensor" | "hold"): Promise<ModerationWord> {
+  const w: ModerationWord = { id: `w-${Date.now()}`, word: word.toLowerCase(), action };
+  store.words.push(w);
+  store.words.sort((a, b) => a.word.localeCompare(b.word));
+  return w;
+}
+
+export async function updateModerationWord(id: string, patch: { word?: string; action?: "sensor" | "hold" }): Promise<ModerationWord | null> {
+  const w = store.words.find((x) => x.id === id);
+  if (!w) return null;
+  if (patch.word !== undefined) w.word = patch.word.toLowerCase();
+  if (patch.action !== undefined) w.action = patch.action;
+  store.words.sort((a, b) => a.word.localeCompare(b.word));
+  return w;
+}
+
+export async function deleteModerationWord(id: string): Promise<void> {
+  // Mutasi in-place (bukan reassign) supaya referensi store.words yang
+  // sudah dipegang pemanggil tidak basi.
+  const i = store.words.findIndex((x) => x.id === id);
+  if (i >= 0) store.words.splice(i, 1);
+}
+
+// --- Info warga (kurasi redaksi, S22) -----------------------------------------
+
+export async function listInfoSubmissions(status?: string) {
+  const rows = store.infoSubmissions;
+  return status ? rows.filter((x) => x.status === status) : rows;
+}
+
+export async function reviewInfoSubmission(id: string, decision: "approved" | "rejected") {
+  const row = store.infoSubmissions.find((x) => x.id === id);
+  if (!row) return null;
+  row.status = decision;
+  row.curated_for_ai = decision === "approved";
+  return row;
 }
 
 // --- 3.8 Konten iTAP -----------------------------------------------------------
@@ -294,4 +340,39 @@ export async function listServices() {
 
 export async function getKedai(): Promise<Kedai> {
   return KEDAI;
+}
+
+// --- Budaya (S34–S35, F15, M5) ---------------------------------------------
+// Seed cerita budaya HANYA dari 5 artikel kanal Budaya yang teksnya memang
+// ada di KB situs lama (seed-data.ts, id kb-35 s.d. kb-39). Tidak ada cerita
+// atau lirik yang dikarang: lyrics selalu null di seed ini (tidak ada lirik
+// di sumber), sources = sumber artikel aslinya. Kategori dipetakan dari
+// kategori artikel ke enum culture_stories (upacara, tari-musik -> tari_musik,
+// bahasa); kategori lagu/kuliner_tradisi/cerita_rakyat/sejarah_timah masih
+// kosong sampai Teguh/redaksi mengisinya.
+const CULTURE_CATEGORY_MAP: Record<string, CultureCategory> = {
+  upacara: "upacara",
+  "tari-musik": "tari_musik",
+  bahasa: "bahasa",
+};
+
+export const CULTURE_STORIES_SEED: CultureStory[] = ARTICLES.filter(
+  (a) => a.channel === "budaya" && CULTURE_CATEGORY_MAP[a.category_id],
+).map((a) => ({
+  id: `culture-${a.id}`,
+  slug: a.slug,
+  category: CULTURE_CATEGORY_MAP[a.category_id],
+  title: a.title_id,
+  body: a.body_id.join("\n\n"),
+  lyrics: null,
+  sources: a.source ? [a.source] : [],
+  created_at: a.published_at,
+}));
+
+export async function listCultureStories(category?: string): Promise<CultureStory[]> {
+  return CULTURE_STORIES_SEED.filter((s) => !category || s.category === category);
+}
+
+export async function getCultureStory(slug: string): Promise<CultureStory | null> {
+  return CULTURE_STORIES_SEED.find((s) => s.slug === slug) ?? null;
 }

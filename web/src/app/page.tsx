@@ -1,47 +1,65 @@
 // S01 Beranda web — pintu masuk editorial (recon): hero headline, kabar
 // terbaru, populer, banyak dicari, seksi kanal, CTA kontributor + info iTAP.
 import Link from "next/link";
-import { ArrowRight, BookOpen, Coins, ShoppingBasket, TrendingUp } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, BookOpen, CloudSun, Coins, MoonStar, ShoppingBasket, TrendingUp } from "lucide-react";
 import { getFeatured, getLatest, getPopular, listArticles } from "@/lib/data";
 import { CHANNELS } from "@/lib/seed-data";
 import { ArticleCard } from "@/components/article-card";
 import { ButtonLink } from "@/components/ui";
 import { formatRupiah } from "@/lib/format";
 import { getDailyPrices, getMarketRates, listJobs } from "@/lib/data";
+import { getDailySnapshot } from "@/lib/daily";
+import { formatUpdatedWIB, isCacheStale, parsePrayerPayload, parseWeatherPayload } from "@/lib/daily-parse";
 import type { Channel } from "@/lib/types";
 
 const CHANNEL_ORDER: Channel[] = ["berita", "kuliner", "wisata", "sejarah", "budaya", "legenda"];
 
 export default async function HomePage() {
-  const [featured, latest, popular, prices, rates, jobs] = await Promise.all([
+  const [featured, latest, popular, prices, rates, jobs, weatherSnap, prayerSnap] = await Promise.all([
     getFeatured(),
     getLatest(6),
     getPopular(5),
     getDailyPrices(),
     getMarketRates(),
     listJobs(),
+    getDailySnapshot("weather"),
+    getDailySnapshot("prayer"),
   ]);
+  const weather = weatherSnap ? parseWeatherPayload(weatherSnap.payload) : null;
+  const prayer = prayerSnap ? parsePrayerPayload(prayerSnap.payload) : null;
+  const weatherNow = weather?.days[0]?.items[0];
   const channelTeasers = await Promise.all(
     CHANNEL_ORDER.map(async (c) => ({ channel: c, items: (await listArticles({ channel: c, page: 1, perPage: 3 })).items })),
   );
 
   return (
     <div className="flex flex-col gap-12 py-8">
-      {/* #11 Hero Headline (gelap/navy) */}
-      <section aria-labelledby="hero-title" className="rounded-xl bg-surface-dark px-6 py-12 text-ink-on-dark md:px-12">
-        <p className="text-xs font-medium uppercase tracking-widest text-accent-light">Kabar · Rasa · Perjalanan</p>
-        <h1 id="hero-title" className="mt-3 max-w-2xl text-xl font-bold md:text-display">
-          Cerita pulau, dekat denganmu.
-        </h1>
-        <p className="mt-3 max-w-xl text-base text-muted-on-dark">
-          Berita, kuliner, wisata, sejarah, budaya, dan legenda Belitung — ditulis warga Belitung, ditinjau redaksi iTAP.
-        </p>
-        <div className="mt-6 flex flex-wrap gap-3">
-          <ButtonLink href="/kanal/berita">Baca kabar terbaru</ButtonLink>
-          <ButtonLink href="/kontributor" variant="secondary" className="border-line bg-surface-dark text-ink-on-dark hover:bg-surface-dark-deep">
-            Jadi kontributor
-          </ButtonLink>
+      {/* #11 Hero Headline (gelap/navy) + foto hero pantai Belitung */}
+      <section aria-labelledby="hero-title" className="grid items-center gap-8 rounded-xl bg-surface-dark px-6 py-12 text-ink-on-dark md:grid-cols-[1.2fr_1fr] md:px-12">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-widest text-accent-light">Kabar · Rasa · Perjalanan</p>
+          <h1 id="hero-title" className="mt-3 max-w-2xl text-xl font-bold md:text-display">
+            Cerita pulau, dekat denganmu.
+          </h1>
+          <p className="mt-3 max-w-xl text-base text-muted-on-dark">
+            Berita, kuliner, wisata, sejarah, budaya, dan legenda Belitung — ditulis warga Belitung, ditinjau redaksi iTAP.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3">
+            <ButtonLink href="/kanal/berita">Baca kabar terbaru</ButtonLink>
+            <ButtonLink href="/kontributor" variant="secondary" className="border-line bg-surface-dark text-ink-on-dark hover:bg-surface-dark-deep">
+              Jadi kontributor
+            </ButtonLink>
+          </div>
         </div>
+        <Image
+          src="/images/pantai-itap.webp"
+          alt="Pantai Belitung dengan batu granit dan logo iTAP Belitung"
+          width={1024}
+          height={1536}
+          className="mx-auto aspect-[2/3] w-full max-w-sm rounded-lg object-cover"
+          priority
+        />
       </section>
 
       {/* Headline + kabar terbaru */}
@@ -83,6 +101,50 @@ export default async function HomePage() {
 
         <section aria-labelledby="info-title" className="flex flex-col gap-4">
           <h2 id="info-title" className="text-xl font-bold text-ink">Info harian iTAP</h2>
+          {/* Kartu ringkas cuaca + salat (M5, A5): dari cache yang sama dengan
+              /api/daily/*; tanpa cache tampilkan pesan jujur, bukan angka karangan. */}
+          <article className="rounded-lg border border-line bg-canvas p-4 shadow-card">
+            <h3 className="flex items-center gap-2 text-base font-semibold text-ink">
+              <CloudSun className="size-5 text-accent" aria-hidden="true" /> Cuaca Tanjung Pandan
+            </h3>
+            {weather && weatherNow ? (
+              <>
+                <p className="mt-2 text-sm text-muted">
+                  {weatherNow.desc} · {weatherNow.temp !== null ? `${weatherNow.temp}°C` : "—"} · hujan {weatherNow.rainMm !== null ? `${weatherNow.rainMm} mm` : "—"}
+                </p>
+                <p className="mt-1 text-xs text-muted">
+                  Diperbarui pukul {formatUpdatedWIB(weatherSnap!.fetched_at)}
+                  {isCacheStale(weatherSnap!.fetched_at, weatherSnap!.as_of) ? " · Data mungkin basi" : ""}
+                </p>
+              </>
+            ) : (
+              <p className="mt-2 text-sm text-muted">Cuaca belum tersedia — cron daily-info-fetch belum mengisi cache (P1).</p>
+            )}
+            <Link href="/info-harian/cuaca" className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-accent hover:underline focus-visible:outline-2 focus-visible:outline-accent">
+              Lihat prakiraan <ArrowRight className="size-4" aria-hidden="true" />
+            </Link>
+          </article>
+          <article className="rounded-lg border border-line bg-canvas p-4 shadow-card">
+            <h3 className="flex items-center gap-2 text-base font-semibold text-ink">
+              <MoonStar className="size-5 text-accent" aria-hidden="true" /> Jadwal salat
+            </h3>
+            {prayer ? (
+              <>
+                <p className="mt-2 text-sm text-muted">
+                  {prayer.times.filter((t) => ["Subuh", "Zuhur", "Asar", "Magrib", "Isya"].includes(t.label)).map((t) => `${t.label} ${t.time}`).join(" · ")}
+                </p>
+                <p className="mt-1 text-xs text-muted">
+                  {prayer.location} · {prayer.dateLabel} · Diperbarui pukul {formatUpdatedWIB(prayerSnap!.fetched_at)}
+                  {isCacheStale(prayerSnap!.fetched_at, prayerSnap!.as_of) ? " · Data mungkin basi" : ""}
+                </p>
+              </>
+            ) : (
+              <p className="mt-2 text-sm text-muted">Jadwal salat belum tersedia — cron daily-info-fetch belum mengisi cache (P1).</p>
+            )}
+            <Link href="/info-harian/salat" className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-accent hover:underline focus-visible:outline-2 focus-visible:outline-accent">
+              Lihat jadwal salat <ArrowRight className="size-4" aria-hidden="true" />
+            </Link>
+          </article>
           <article className="rounded-lg border border-line bg-canvas p-4 shadow-card">
             <h3 className="flex items-center gap-2 text-base font-semibold text-ink">
               <ShoppingBasket className="size-5 text-accent" aria-hidden="true" /> Harga pangan hari ini

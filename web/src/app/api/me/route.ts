@@ -9,6 +9,18 @@ import { z } from "zod";
 // RLS. Setelah Edge Function jalan, cabut sesi lokal juga.
 const bodySchema = z.object({ confirm: z.literal("HAPUS") });
 
+// GET /api/me — gate kejujuran untuk halaman /hapus-akun (S25): apakah
+// penghapusan penuh BISA jalan di lingkungan ini. `configured` false =
+// Supabase/Edge Function belum ada (P1) — halaman menampilkan gate jujur
+// dan menonaktifkan tombol hapus, bukan membiarkan pengguna mengetik HAPUS
+// lalu gagal. 401 tanpa login.
+export async function GET() {
+  const s = await requireSession();
+  if ("error" in s) return s.error;
+  const configured = Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL);
+  return NextResponse.json({ ok: true, configured, email: s.profile.email });
+}
+
 export async function DELETE(req: Request) {
   const s = await requireSession();
   if ("error" in s) return s.error;

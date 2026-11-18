@@ -26,7 +26,7 @@ import type {
 const PER_PAGE = 9;
 
 /** true bila DB tersambung (dan fallback seed tidak dimatikan paksa). */
-function useSeed(): boolean {
+function isSeedMode(): boolean {
   return !isDbConfigured() && process.env.ITAP_ALLOW_SEED_FALLBACK !== "false";
 }
 
@@ -91,7 +91,7 @@ async function categorySlugById(db: ReturnType<typeof getDb>, id: string | null)
 // --- 3.2 Portal & pencarian (F01, F02) -------------------------------------
 
 export async function listCategories(channel?: Channel): Promise<Category[]> {
-  if (useSeed()) return seed.listCategories(channel);
+  if (isSeedMode()) return seed.listCategories(channel);
   const db = getDb();
   const rows = await db.select().from(t.categories)
     .where(channel ? eq(t.categories.channel, channel) : undefined)
@@ -102,7 +102,7 @@ export async function listCategories(channel?: Channel): Promise<Category[]> {
 export async function listArticles(opts: {
   channel?: Channel; category?: string; page?: number; perPage?: number;
 }): Promise<Paginated<Article>> {
-  if (useSeed()) return seed.listArticles(opts);
+  if (isSeedMode()) return seed.listArticles(opts);
   const db = getDb();
   const conds = [eq(t.articles.status, "published")];
   if (opts.channel) conds.push(eq(t.articles.channel, opts.channel));
@@ -117,7 +117,7 @@ export async function listArticles(opts: {
 }
 
 export async function getArticle(slug: string): Promise<Article | null> {
-  if (useSeed()) return seed.getArticle(slug);
+  if (isSeedMode()) return seed.getArticle(slug);
   const db = getDb();
   const rows = await db.select().from(t.articles).where(eq(t.articles.slug, slug)).limit(1);
   const row = rows[0];
@@ -131,7 +131,7 @@ export async function getArticle(slug: string): Promise<Article | null> {
 }
 
 export async function getRelated(slug: string, limit = 4): Promise<Article[]> {
-  if (useSeed()) return seed.getRelated(slug, limit);
+  if (isSeedMode()) return seed.getRelated(slug, limit);
   const article = await getArticle(slug);
   if (!article) return [];
   const db = getDb();
@@ -148,7 +148,7 @@ export async function searchArticles(opts: {
   sort?: "terbaru" | "terpopuler" | "banyak-dicari";
   from?: string; to?: string; page?: number;
 }): Promise<Paginated<Article>> {
-  if (useSeed()) return seed.searchArticles(opts);
+  if (isSeedMode()) return seed.searchArticles(opts);
   const db = getDb();
   const q = opts.q.trim();
   const conds = [eq(t.articles.status, "published")];
@@ -173,7 +173,7 @@ export async function searchArticles(opts: {
 }
 
 export async function getPopular(limit = 5): Promise<Article[]> {
-  if (useSeed()) return seed.getPopular(limit);
+  if (isSeedMode()) return seed.getPopular(limit);
   const db = getDb();
   const rows = await db.select().from(t.articles)
     .where(eq(t.articles.status, "published"))
@@ -182,7 +182,7 @@ export async function getPopular(limit = 5): Promise<Article[]> {
 }
 
 export async function getLatest(limit = 6): Promise<Article[]> {
-  if (useSeed()) return seed.getLatest(limit);
+  if (isSeedMode()) return seed.getLatest(limit);
   const db = getDb();
   const rows = await db.select().from(t.articles)
     .where(eq(t.articles.status, "published"))
@@ -191,14 +191,14 @@ export async function getLatest(limit = 6): Promise<Article[]> {
 }
 
 export async function getFeatured(): Promise<Article | null> {
-  if (useSeed()) return seed.getFeatured();
+  if (isSeedMode()) return seed.getFeatured();
   const latest = await getLatest(1);
   return latest[0] ?? null;
 }
 
 /** Nama kategori dari id (uuid DB / slug seed). Async karena butuh DB. */
 export async function categoryName(id: string): Promise<string> {
-  if (useSeed()) return seed.categoryName(id);
+  if (isSeedMode()) return seed.categoryName(id);
   try {
     const db = getDb();
     const rows = await db.select().from(t.categories).where(eq(t.categories.id, id)).limit(1);
@@ -225,7 +225,7 @@ function toComment(
 }
 
 export async function listComments(slug: string): Promise<Comment[]> {
-  if (useSeed()) return seed.listComments(slug);
+  if (isSeedMode()) return seed.listComments(slug);
   const db = getDb();
   const arts = await db.select().from(t.articles).where(eq(t.articles.slug, slug)).limit(1);
   if (!arts[0]) return [];
@@ -238,7 +238,7 @@ export async function listComments(slug: string): Promise<Comment[]> {
 }
 
 export async function listPendingComments(): Promise<Comment[]> {
-  if (useSeed()) return seed.listPendingComments();
+  if (isSeedMode()) return seed.listPendingComments();
   const db = getDb();
   const rows = await db.select().from(t.comments)
     .where(eq(t.comments.status, "pending")).orderBy(desc(t.comments.createdAt));
@@ -252,7 +252,7 @@ export async function listPendingComments(): Promise<Comment[]> {
 export async function addComment(
   slug: string, _authorName: string, text: string, ctx?: Ctx,
 ): Promise<Comment> {
-  if (useSeed()) return seed.addComment(slug, _authorName, text);
+  if (isSeedMode()) return seed.addComment(slug, _authorName, text);
   const profile = await ctxProfile(ctx);
   if (!can(profile, "comment.create")) {
     throw new Error("UNAUTHORIZED: komentar butuh login + email terverifikasi.");
@@ -267,7 +267,7 @@ export async function addComment(
 }
 
 export async function moderateComment(id: string, decision: "approved" | "rejected", ctx?: Ctx): Promise<void> {
-  if (useSeed()) return seed.moderateComment(id, decision);
+  if (isSeedMode()) return seed.moderateComment(id, decision);
   const profile = await ctxProfile(ctx);
   if (!can(profile, "article.review")) {
     throw new Error("FORBIDDEN: moderasi komentar hanya redaksi.");
@@ -297,7 +297,7 @@ function toContribution(row: ArticleRow): Contribution {
 }
 
 export async function getContributorDashboard(ctx?: Ctx): Promise<ContributorDashboard> {
-  if (useSeed()) return seed.getContributorDashboard();
+  if (isSeedMode()) return seed.getContributorDashboard();
   const profile = await ctxProfile(ctx);
   if (!profile) throw new Error("UNAUTHORIZED: masuk dulu.");
   const db = getDb();
@@ -315,7 +315,7 @@ export async function getContributorDashboard(ctx?: Ctx): Promise<ContributorDas
 }
 
 export async function listPoints(userId?: string, ctx?: Ctx): Promise<ContributionPoint[]> {
-  if (useSeed()) return seed.listPoints();
+  if (isSeedMode()) return seed.listPoints();
   const profile = userId ? null : await ctxProfile(ctx);
   const uid = userId ?? profile?.id;
   if (!uid) return [];
@@ -332,7 +332,7 @@ export async function listPoints(userId?: string, ctx?: Ctx): Promise<Contributi
 }
 
 export async function listContributions(ctx?: Ctx): Promise<Contribution[]> {
-  if (useSeed()) return seed.listContributions();
+  if (isSeedMode()) return seed.listContributions();
   const profile = await ctxProfile(ctx);
   if (!profile) throw new Error("UNAUTHORIZED: masuk dulu.");
   const db = getDb();
@@ -342,7 +342,7 @@ export async function listContributions(ctx?: Ctx): Promise<Contribution[]> {
 }
 
 export async function getContribution(id: string, ctx?: Ctx): Promise<Contribution | null> {
-  if (useSeed()) return seed.getContribution(id);
+  if (isSeedMode()) return seed.getContribution(id);
   const db = getDb();
   const rows = await db.select().from(t.articles).where(eq(t.articles.id, id)).limit(1);
   if (!rows[0]) return null;
@@ -360,7 +360,7 @@ function slugify(s: string): string {
 }
 
 export async function createContribution(data: Partial<Contribution>, ctx?: Ctx): Promise<Contribution> {
-  if (useSeed()) return seed.createContribution(data);
+  if (isSeedMode()) return seed.createContribution(data);
   const profile = await ctxProfile(ctx);
   if (!can(profile, "contribution.create")) {
     throw new Error("FORBIDDEN: hanya kontributor yang bisa membuat draf.");
@@ -385,7 +385,7 @@ export async function createContribution(data: Partial<Contribution>, ctx?: Ctx)
 }
 
 export async function updateContribution(id: string, data: Partial<Contribution>, ctx?: Ctx): Promise<Contribution | null> {
-  if (useSeed()) return seed.updateContribution(id, data);
+  if (isSeedMode()) return seed.updateContribution(id, data);
   const db = getDb();
   const rows = await db.select().from(t.articles).where(eq(t.articles.id, id)).limit(1);
   if (!rows[0]) return null;
@@ -407,7 +407,7 @@ export async function updateContribution(id: string, data: Partial<Contribution>
 }
 
 export async function submitContribution(id: string, ctx?: Ctx): Promise<Contribution | null> {
-  if (useSeed()) return seed.submitContribution(id);
+  if (isSeedMode()) return seed.submitContribution(id);
   const db = getDb();
   const rows = await db.select().from(t.articles).where(eq(t.articles.id, id)).limit(1);
   if (!rows[0]) return null;
@@ -421,7 +421,7 @@ export async function submitContribution(id: string, ctx?: Ctx): Promise<Contrib
 }
 
 export async function listContributionRevisions(id: string): Promise<{ at: string; by: string; changes: string }[]> {
-  if (useSeed()) return seed.listContributionRevisions(id);
+  if (isSeedMode()) return seed.listContributionRevisions(id);
   const db = getDb();
   const rows = await db.select().from(t.articleRevisions)
     .where(eq(t.articleRevisions.articleId, id)).orderBy(desc(t.articleRevisions.createdAt));
@@ -437,7 +437,7 @@ export async function listContributionRevisions(id: string): Promise<{ at: strin
 // --- 3.5 CMS / redaksi / moderasi (F11, F08) ---------------------------------
 
 export async function listAdminArticles(filter?: string): Promise<Article[]> {
-  if (useSeed()) return seed.listAdminArticles(filter);
+  if (isSeedMode()) return seed.listAdminArticles(filter);
   const db = getDb();
   const rows = await db.select().from(t.articles)
     .where(filter && filter !== "semua" ? eq(t.articles.status, filter as Article["status"]) : undefined)
@@ -448,7 +448,7 @@ export async function listAdminArticles(filter?: string): Promise<Article[]> {
 export async function reviewArticle(
   id: string, decision: "publish" | "unpublish" | "return", note: string, ctx?: Ctx,
 ): Promise<void> {
-  if (useSeed()) return seed.reviewArticle(id, decision, note);
+  if (isSeedMode()) return seed.reviewArticle(id, decision, note);
   const profile = await ctxProfile(ctx);
   if (!can(profile, "article.review")) {
     throw new Error("FORBIDDEN: putusan redaksi hanya admin portal / superadmin.");
@@ -472,7 +472,7 @@ export async function reviewArticle(
 }
 
 export async function createCategory(channel: Channel, name_id: string, name_en: string, ctx?: Ctx): Promise<Category> {
-  if (useSeed()) return seed.createCategory(channel, name_id, name_en);
+  if (isSeedMode()) return seed.createCategory(channel, name_id, name_en);
   const profile = await ctxProfile(ctx);
   if (!can(profile, "category.manage")) {
     throw new Error("FORBIDDEN: kelola kategori hanya redaksi.");
@@ -485,7 +485,7 @@ export async function createCategory(channel: Channel, name_id: string, name_en:
 }
 
 export async function listAdminContributors(): Promise<{ id: string; name: string; email: string; verified: boolean; auto_approve: boolean; points: number }[]> {
-  if (useSeed()) return seed.listAdminContributors();
+  if (isSeedMode()) return seed.listAdminContributors();
   const db = getDb();
   const profs = await db.select().from(t.profiles).where(eq(t.profiles.role, "contributor"));
   const cps = await db.select().from(t.contributorProfiles);
@@ -499,7 +499,7 @@ export async function listAdminContributors(): Promise<{ id: string; name: strin
 }
 
 export async function listReports(): Promise<Report[]> {
-  if (useSeed()) return seed.listReports();
+  if (isSeedMode()) return seed.listReports();
   const db = getDb();
   const rows = await db.select().from(t.reports).orderBy(desc(t.reports.createdAt));
   const profs = await db.select().from(t.profiles);
@@ -514,7 +514,7 @@ export async function listReports(): Promise<Report[]> {
 }
 
 export async function reviewReport(id: string, action: "hidden" | "dismissed" | "reviewed", ctx?: Ctx): Promise<void> {
-  if (useSeed()) return seed.reviewReport(id, action);
+  if (isSeedMode()) return seed.reviewReport(id, action);
   const profile = await ctxProfile(ctx);
   if (!can(profile, "report.review")) {
     throw new Error("FORBIDDEN: moderasi laporan hanya redaksi.");
@@ -525,7 +525,7 @@ export async function reviewReport(id: string, action: "hidden" | "dismissed" | 
 }
 
 export async function listModerationWords(): Promise<ModerationWord[]> {
-  if (useSeed()) return seed.listModerationWords();
+  if (isSeedMode()) return seed.listModerationWords();
   const db = getDb();
   const rows = await db.select().from(t.moderationWords).orderBy(asc(t.moderationWords.word));
   return rows.map((r) => ({ id: r.id, word: r.word, action: r.action }));
@@ -536,7 +536,7 @@ export async function listModerationWords(): Promise<ModerationWord[]> {
 const IDR = (cents: number | null | undefined): number => Math.round((cents ?? 0) / 100);
 
 export async function getDailyPrices(): Promise<DailyPrices> {
-  if (useSeed()) return seed.getDailyPrices();
+  if (isSeedMode()) return seed.getDailyPrices();
   const db = getDb();
   const latest = await db.select({ priceDate: t.dailyPrices.priceDate })
     .from(t.dailyPrices).orderBy(desc(t.dailyPrices.priceDate)).limit(1);
@@ -550,7 +550,7 @@ export async function getDailyPrices(): Promise<DailyPrices> {
     market: rows[0]?.market ?? "Pasar Tanjung Pandan",
     source_date: date ?? new Date().toISOString().slice(0, 10),
     fetched_at: new Date().toISOString(),
-    items: rows.map((r, i) => ({
+    items: rows.map((r) => ({
       id: r.id, commodity: r.commodity, price: IDR(r.priceCents),
       unit: r.unit ?? "", previous_price: null, status: "—",
       change_note: "Harga kemarin tidak tersedia di sumber.",
@@ -559,7 +559,7 @@ export async function getDailyPrices(): Promise<DailyPrices> {
 }
 
 export async function getMarketRates(): Promise<MarketRates> {
-  if (useSeed()) return seed.getMarketRates();
+  if (isSeedMode()) return seed.getMarketRates();
   const db = getDb();
   const rows = await db.select().from(t.marketRates).orderBy(desc(t.marketRates.asOf)).limit(30);
   const byKind = (kind: string, symbol?: string) =>
@@ -597,7 +597,7 @@ export async function getMarketRates(): Promise<MarketRates> {
 }
 
 export async function listJobs(opts: { q?: string; region?: string } = {}): Promise<JobListing[]> {
-  if (useSeed()) return seed.listJobs(opts);
+  if (isSeedMode()) return seed.listJobs(opts);
   const db = getDb();
   const conds = [eq(t.jobListings.status, "open")];
   if (opts.q) {
@@ -623,7 +623,7 @@ function formatSalary(min: number | null, max: number | null): string | null {
 }
 
 export async function listProducts() {
-  if (useSeed()) return seed.listProducts();
+  if (isSeedMode()) return seed.listProducts();
   const db = getDb();
   const rows = await db.select().from(t.digitalProducts)
     .where(eq(t.digitalProducts.active, true)).orderBy(asc(t.digitalProducts.name));
@@ -635,7 +635,7 @@ export async function listProducts() {
 }
 
 export async function listServices() {
-  if (useSeed()) return seed.listServices();
+  if (isSeedMode()) return seed.listServices();
   const db = getDb();
   const rows = await db.select().from(t.services)
     .where(eq(t.services.active, true)).orderBy(asc(t.services.sortOrder));
@@ -648,7 +648,7 @@ export async function listServices() {
 /** Info statis Kedai (bukan di DB) + menu dari DB. */
 export async function getKedai(): Promise<Kedai> {
   const seedKedai = await seed.getKedai();
-  if (useSeed()) return seedKedai;
+  if (isSeedMode()) return seedKedai;
   const db = getDb();
   const rows = await db.select().from(t.kedaiMenuItems)
     .where(eq(t.kedaiMenuItems.available, true)).orderBy(asc(t.kedaiMenuItems.category), asc(t.kedaiMenuItems.name));

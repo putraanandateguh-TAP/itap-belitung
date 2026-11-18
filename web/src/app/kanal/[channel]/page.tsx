@@ -1,6 +1,7 @@
 // S02/S03/S04 + kanal iTAP (sejarah/budaya/legenda): daftar kanal + filter +
 // pagination. Satu route dinamis [channel] — layout sama untuk semua kanal.
 import type { Metadata } from "next";
+import Link from "next/link";
 import { siteUrl } from "@/lib/site-url";
 import { notFound } from "next/navigation";
 import { listArticles, listCategories } from "@/lib/data";
@@ -68,7 +69,7 @@ export default async function ChannelPage({
         <EmptyState
           title="Belum ada kabar di sini."
           desc={`Belum ada artikel ${CHANNELS[ch].toLowerCase()} ${sp.category ? "di kategori ini" : "yang diterbitkan"}. Coba kanal lain, atau tulis sendiri sebagai kontributor.`}
-          action={<a href="/kontributor/tulis" className="inline-flex h-10 items-center rounded-md bg-accent px-4 text-sm font-semibold text-on-accent hover:bg-accent-dark">Tulis artikel</a>}
+          action={<Link href="/kontributor/tulis" className="inline-flex h-10 items-center rounded-md bg-accent px-4 text-sm font-semibold text-on-accent hover:bg-accent-dark">Tulis artikel</Link>}
         />
       ) : (
         <>

@@ -8,7 +8,11 @@ import * as t from "@/lib/db/schema";
 export async function GET(req: Request) {
   const url = new URL(req.url);
   const code = url.searchParams.get("code");
-  const next = url.searchParams.get("next") ?? "/pengaturan";
+  // Open-redirect guard (workstream D): `next` wajib path relatif di situs
+  // ini. Tanpa guard, `?next=//evil.com` lolos lewat `new URL(next, origin)`
+  // dan mengarahkan pengguna yang baru login ke situs luar (phishing).
+  const rawNext = url.searchParams.get("next") ?? "/pengaturan";
+  const next = /^\/[^/\\]/.test(rawNext) || rawNext === "/" ? rawNext : "/pengaturan";
   if (!code) return NextResponse.redirect(new URL("/masuk?error=no-code", url.origin));
   const supabase = await createSupabaseServer();
   const { data, error } = await supabase.auth.exchangeCodeForSession(code);

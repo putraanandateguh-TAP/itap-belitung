@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { siteUrl } from "@/lib/site-url";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ExternalLink, MapPin, Share2 } from "lucide-react";
+import { ExternalLink, MapPin } from "lucide-react";
 import { getArticle, getRelated, listComments } from "@/lib/data";
 import { categoryName } from "@/lib/data";
 import { channelLabel } from "@/lib/labels";

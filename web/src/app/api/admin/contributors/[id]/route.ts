@@ -3,7 +3,6 @@ import { errorToResponse, requireAdmin } from "@/lib/api";
 import { contributorPatchSchema, parseJsonBody } from "@/lib/validation";
 import { getDb, isDbConfigured } from "@/lib/db";
 import * as t from "@/lib/db/schema";
-import { eq } from "drizzle-orm";
 
 // PATCH /api/admin/contributors/:id — ubah verifikasi/auto-approve kontributor. §3.5.
 export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {

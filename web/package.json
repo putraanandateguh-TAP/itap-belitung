@@ -1,0 +1,45 @@
+{
+  "dependencies": {
+    "@supabase/ssr": "^0.12.7",
+    "@supabase/supabase-js": "^2.119.0",
+    "drizzle-orm": "^0.45.4",
+    "lucide-react": "^0.469.0",
+    "next": "^15.1.0",
+    "postgres": "^4.1.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "zod": "^4.6.7"
+  },
+  "description": "Portal web iTAP Belitung — rebuild (clean-room) dari recon Satam Belitung, fase M0–M2 + backend Supabase (replica-backend). Next.js App Router + TypeScript + Tailwind v4 + Drizzle + Supabase Auth.",
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@electric-sql/pglite": "^0.5.16",
+    "@playwright/test": "^1.65.1",
+    "@tailwindcss/postcss": "^4.0.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "dotenv": "^18.0.10",
+    "drizzle-kit": "^0.31.11",
+    "tailwindcss": "^4.0.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.7.0"
+  },
+  "name": "itap-belitung-web",
+  "private": true,
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "lint": "next lint",
+    "start": "next start",
+    "typecheck": "tsc --noEmit",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:seed": "tsx scripts/seed.ts",
+    "db:validate": "node scripts/validate-schema-local.mjs",
+    "test:rls": "node --experimental-strip-types tests/rls-check.ts 2>/dev/null || npx tsx tests/rls-check.ts",
+    "test:security-0008": "node tests/security-0008.pglite.mjs",
+    "test:security-chain": "node tests/security-chain.pglite.mjs",
+    "test:license": "node --test tests/license.test.ts"
+  },
+  "version": "0.1.0"
+}

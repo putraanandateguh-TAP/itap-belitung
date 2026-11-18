@@ -1,0 +1,38 @@
+[
+  {
+    "at": "2026-11-18T14:07:39.059Z",
+    "by": "Redaksi iTAP",
+    "changes": "Bagus, terbit.",
+    "snapshot": {
+      "title_id": "Uji revisi W5",
+      "body_id": "Paragraf satu asli.\n\nParagraf dua diubah total.\n\nParagraf tiga baru."
+    }
+  },
+  {
+    "at": "2026-11-18T14:07:39.058Z",
+    "by": "Dian (Kontributor Demo)",
+    "changes": "Draf dibuat.",
+    "snapshot": {
+      "title_id": "Uji revisi W5",
+      "body_id": "Paragraf satu asli.\n\nParagraf dua asli."
+    }
+  },
+  {
+    "at": "2026-11-18T14:07:39.058Z",
+    "by": "Penulis",
+    "changes": "Draf diubah oleh penulis.",
+    "snapshot": {
+      "title_id": "Uji revisi W5",
+      "body_id": "Paragraf satu asli.\n\nParagraf dua diubah total.\n\nParagraf tiga baru."
+    }
+  },
+  {
+    "at": "2026-11-18T14:07:39.058Z",
+    "by": "Dian (Kontributor Demo)",
+    "changes": "Dikirim ke redaksi.",
+    "snapshot": {
+      "title_id": "Uji revisi W5",
+      "body_id": "Paragraf satu asli.\n\nParagraf dua diubah total.\n\nParagraf tiga baru."
+    }
+  }
+]

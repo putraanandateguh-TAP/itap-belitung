@@ -1,0 +1,2786 @@
+import type { Article, Category, Channel, DailyPrices, DigitalProduct, JobListing, Kedai, MarketRates, Service } from "./types";
+
+// SEED DATA — digenerate dari data ASLI situs statis lama (lihat generator
+// di /tmp/gen-seed.mjs; JANGAN edit manual, regenerate bila sumber berubah).
+// Sumber: data.js (KB, 59 entri), data/berita.json (15 kabar,
+// diperbarui 2026-11-18T11:02+07:00), data/harga-pangan.json (13 komoditas,
+// 01-11-2026), data/loker.json (66 lowongan),
+// data/keuangan.json (IHSG/kurs/emas 2026-11-17 17:42 WIB).
+// Harga produk/jasa di bawah ini dari index.html situs lama (Nov 2026).
+// Menu Kedai ASLI: 5 item dari papan menu Kedai I&T (diterima 2026-11-18) + Baso Aci Daging Cincang Rp18.000 (keputusan Teguh 2026-11-18). Bukan contoh.
+// SEMUA data di file ini adalah FAKE DATA LAYER (seed) sampai Supabase (P1) ada.
+
+export const CHANNELS: Record<Channel, string> = {
+  "berita": "Berita",
+  "kuliner": "Kuliner",
+  "wisata": "Wisata",
+  "sejarah": "Sejarah",
+  "budaya": "Budaya",
+  "legenda": "Legenda"
+};
+export const CATEGORIES: Category[] = [
+  {
+    "id": "belitung",
+    "channel": "berita",
+    "name_id": "Belitung",
+    "name_en": "Belitung",
+    "slug": "belitung"
+  },
+  {
+    "id": "bangka-belitung",
+    "channel": "berita",
+    "name_id": "Bangka Belitung",
+    "name_en": "Bangka Belitung",
+    "slug": "bangka-belitung"
+  },
+  {
+    "id": "nasional",
+    "channel": "berita",
+    "name_id": "Nasional",
+    "name_en": "National",
+    "slug": "nasional"
+  },
+  {
+    "id": "kuliner-lokal",
+    "channel": "kuliner",
+    "name_id": "Kuliner Lokal",
+    "name_en": "Local Food",
+    "slug": "kuliner-lokal"
+  },
+  {
+    "id": "kafe-restoran",
+    "channel": "kuliner",
+    "name_id": "Kafe & Restoran",
+    "name_en": "Cafés & Restaurants",
+    "slug": "kafe-restoran"
+  },
+  {
+    "id": "oleh-oleh",
+    "channel": "kuliner",
+    "name_id": "Oleh-oleh",
+    "name_en": "Souvenirs",
+    "slug": "oleh-oleh"
+  },
+  {
+    "id": "pantai-pulau",
+    "channel": "wisata",
+    "name_id": "Pantai & Pulau",
+    "name_en": "Beaches & Islands",
+    "slug": "pantai-pulau"
+  },
+  {
+    "id": "alam",
+    "channel": "wisata",
+    "name_id": "Alam",
+    "name_en": "Nature",
+    "slug": "alam"
+  },
+  {
+    "id": "sejarah-budaya",
+    "channel": "wisata",
+    "name_id": "Sejarah & Budaya",
+    "name_en": "History & Culture",
+    "slug": "sejarah-budaya"
+  },
+  {
+    "id": "sejarah-timah",
+    "channel": "sejarah",
+    "name_id": "Sejarah Timah",
+    "name_en": "Tin History",
+    "slug": "sejarah-timah"
+  },
+  {
+    "id": "kerajaan",
+    "channel": "sejarah",
+    "name_id": "Kerajaan",
+    "name_en": "Kingdoms",
+    "slug": "kerajaan"
+  },
+  {
+    "id": "museum",
+    "channel": "sejarah",
+    "name_id": "Museum & Rumah Adat",
+    "name_en": "Museums & Traditional Houses",
+    "slug": "museum"
+  },
+  {
+    "id": "upacara",
+    "channel": "budaya",
+    "name_id": "Upacara",
+    "name_en": "Ceremonies",
+    "slug": "upacara"
+  },
+  {
+    "id": "tari-musik",
+    "channel": "budaya",
+    "name_id": "Tari & Musik",
+    "name_en": "Dance & Music",
+    "slug": "tari-musik"
+  },
+  {
+    "id": "bahasa",
+    "channel": "budaya",
+    "name_id": "Bahasa",
+    "name_en": "Language",
+    "slug": "bahasa"
+  },
+  {
+    "id": "cerita-rakyat",
+    "channel": "legenda",
+    "name_id": "Cerita Rakyat",
+    "name_en": "Folktales",
+    "slug": "cerita-rakyat"
+  }
+];
+export const ARTICLES: Article[] = [
+  {
+    "id": "kb-1",
+    "slug": "pantai-tanjung-tinggi",
+    "channel": "wisata",
+    "category_id": "pantai-pulau",
+    "title_id": "Pantai Tanjung Tinggi",
+    "title_en": "Tanjung Tinggi Beach",
+    "body_id": [
+      "Pantai ikonik dengan batu granit raksasa di Sijuk, Belitung. Lokasi syuting film Laskar Pelangi.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "An iconic beach with giant granite boulders in Sijuk, Belitung. Filming location of the movie Laskar Pelangi.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Sijuk, Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-04T08:00:00+07:00",
+    "views": 1383,
+    "featured": true
+  },
+  {
+    "id": "kb-2",
+    "slug": "pantai-tanjung-kelayang",
+    "channel": "wisata",
+    "category_id": "pantai-pulau",
+    "title_id": "Pantai Tanjung Kelayang",
+    "title_en": "Tanjung Kelayang Beach",
+    "body_id": [
+      "Titik keberangkatan utama island hopping ke Pulau Lengkuas, Batu Berlayar, dan Pulau Burung. Kawasan KEK pariwisata.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "The main departure point for island hopping to Lengkuas Island, Batu Berlayar, and Burung Island. A tourism special economic zone (KEK).",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-05T08:00:00+07:00",
+    "views": 1366,
+    "featured": true
+  },
+  {
+    "id": "kb-3",
+    "slug": "pulau-lengkuas",
+    "channel": "wisata",
+    "category_id": "pantai-pulau",
+    "title_id": "Pulau Lengkuas",
+    "title_en": "Lengkuas Island",
+    "body_id": [
+      "Pulau kecil dengan mercusuar peninggalan Belanda (abad ke-19) yang bisa dinaiki; spot snorkeling populer.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A small island with a Dutch-era lighthouse (19th century) that visitors can climb; a popular snorkeling spot.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-06T08:00:00+07:00",
+    "views": 1349,
+    "featured": true
+  },
+  {
+    "id": "kb-4",
+    "slug": "pulau-batu-berlayar",
+    "channel": "wisata",
+    "category_id": "pantai-pulau",
+    "title_id": "Pulau Batu Berlayar",
+    "title_en": "Batu Berlayar Island",
+    "body_id": [
+      "Gugusan batu granit yang bentuknya menyerupai layar perahu, disinggahi saat island hopping.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A cluster of granite rocks shaped like a boat's sail, visited during island hopping.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-07T08:00:00+07:00",
+    "views": 1332,
+    "featured": false
+  },
+  {
+    "id": "kb-5",
+    "slug": "pulau-burung",
+    "channel": "wisata",
+    "category_id": "pantai-pulau",
+    "title_id": "Pulau Burung",
+    "title_en": "Burung Island",
+    "body_id": [
+      "Pulau dengan batu granit besar yang menyerupai kepala burung.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "An island with a large granite rock resembling a bird's head.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-08T08:00:00+07:00",
+    "views": 1315,
+    "featured": false
+  },
+  {
+    "id": "kb-6",
+    "slug": "pulau-kepayang",
+    "channel": "wisata",
+    "category_id": "pantai-pulau",
+    "title_id": "Pulau Kepayang",
+    "title_en": "Kepayang Island",
+    "body_id": [
+      "Pulau kecil yang dikenal dengan kegiatan konservasi penyu.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A small island known for its sea turtle conservation activities.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-09T08:00:00+07:00",
+    "views": 1298,
+    "featured": false
+  },
+  {
+    "id": "kb-7",
+    "slug": "danau-kaolin",
+    "channel": "wisata",
+    "category_id": "alam",
+    "title_id": "Danau Kaolin",
+    "title_en": "Kaolin Lake",
+    "body_id": [
+      "Danau bekas tambang kaolin berair biru-toska dengan tanah putih, dekat Tanjung Pandan (arah bandara).",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A former kaolin mine lake with turquoise-blue water and white soil, near Tanjung Pandan (towards the airport).",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Tanjung Pandan, Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-10T08:00:00+07:00",
+    "views": 1281,
+    "featured": false
+  },
+  {
+    "id": "kb-8",
+    "slug": "bukit-peramun",
+    "channel": "wisata",
+    "category_id": "alam",
+    "title_id": "Bukit Peramun",
+    "title_en": "Peramun Hill",
+    "body_id": [
+      "Hutan kemasyarakatan di Air Selumar, Sijuk, dengan trekking ke puncak bukit granit; dikenal ada tarsius (pelilean).",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A community forest in Air Selumar, Sijuk, with trekking to the top of a granite hill; known for its tarsiers (pelilean).",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Sijuk, Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-11T08:00:00+07:00",
+    "views": 1264,
+    "featured": false
+  },
+  {
+    "id": "kb-9",
+    "slug": "pantai-tanjung-pendam",
+    "channel": "wisata",
+    "category_id": "pantai-pulau",
+    "title_id": "Pantai Tanjung Pendam",
+    "title_en": "Tanjung Pendam Beach",
+    "body_id": [
+      "Pantai kota di Tanjung Pandan, tempat santai menikmati matahari terbenam.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A town beach in Tanjung Pandan, a relaxing place to enjoy the sunset.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Tanjung Pandan, Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-12T08:00:00+07:00",
+    "views": 1247,
+    "featured": false
+  },
+  {
+    "id": "kb-10",
+    "slug": "replika-sd-muhammadiyah-gantong",
+    "channel": "wisata",
+    "category_id": "sejarah-budaya",
+    "title_id": "Replika SD Muhammadiyah Gantong",
+    "title_en": "Replica of SD Muhammadiyah Gantong",
+    "body_id": [
+      "Replika sekolah Laskar Pelangi di Gantong, Belitung Timur.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A replica of the Laskar Pelangi school in Gantong, East Belitung.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Gantong, Belitung Timur",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-13T08:00:00+07:00",
+    "views": 1230,
+    "featured": false
+  },
+  {
+    "id": "kb-11",
+    "slug": "museum-kata-andrea-hirata",
+    "channel": "wisata",
+    "category_id": "sejarah-budaya",
+    "title_id": "Museum Kata Andrea Hirata",
+    "title_en": "Andrea Hirata Word Museum",
+    "body_id": [
+      "Museum sastra di Gantong, Belitung Timur, didirikan penulis Laskar Pelangi, Andrea Hirata.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A literature museum in Gantong, East Belitung, founded by Laskar Pelangi author Andrea Hirata.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Gantong, Belitung Timur",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-14T08:00:00+07:00",
+    "views": 1213,
+    "featured": false
+  },
+  {
+    "id": "kb-12",
+    "slug": "kampung-ahok-rumah-keluarga-ahok",
+    "channel": "wisata",
+    "category_id": "sejarah-budaya",
+    "title_id": "Kampung Ahok & Rumah Keluarga Ahok",
+    "title_en": "Ahok Village & the Ahok Family Home",
+    "body_id": [
+      "Destinasi di Gantong, Belitung Timur, terkait mantan Gubernur DKI Basuki Tjahaja Purnama.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A destination in Gantong, East Belitung, linked to former Jakarta Governor Basuki Tjahaja Purnama.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Gantong, Belitung Timur",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-03T08:00:00+07:00",
+    "views": 1196,
+    "featured": false
+  },
+  {
+    "id": "kb-13",
+    "slug": "vihara-dewi-kwan-im",
+    "channel": "wisata",
+    "category_id": "sejarah-budaya",
+    "title_id": "Vihara Dewi Kwan Im",
+    "title_en": "Dewi Kwan Im Temple",
+    "body_id": [
+      "Vihara tua di Burung Mandi, Belitung Timur, menghadap laut.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "An old temple in Burung Mandi, East Belitung, facing the sea.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung Timur",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-04T08:00:00+07:00",
+    "views": 1179,
+    "featured": false
+  },
+  {
+    "id": "kb-14",
+    "slug": "pantai-serdang-pantai-burung-mandi",
+    "channel": "wisata",
+    "category_id": "pantai-pulau",
+    "title_id": "Pantai Serdang & Pantai Burung Mandi",
+    "title_en": "Serdang Beach & Burung Mandi Beach",
+    "body_id": [
+      "Pantai-pantai di Belitung Timur, dekat Manggar.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "Beaches in East Belitung, near Manggar.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Manggar, Belitung Timur",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-05T08:00:00+07:00",
+    "views": 1162,
+    "featured": false
+  },
+  {
+    "id": "kb-15",
+    "slug": "open-pit-nam-salu",
+    "channel": "wisata",
+    "category_id": "sejarah-budaya",
+    "title_id": "Open Pit Nam Salu",
+    "title_en": "Nam Salu Open Pit",
+    "body_id": [
+      "Bekas tambang timah bawah tanah/terbuka di Kelapa Kampit, Belitung Timur; situs geopark.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A former underground/open-pit tin mine in Kelapa Kampit, East Belitung; a geopark site.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung Timur",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-06T08:00:00+07:00",
+    "views": 1145,
+    "featured": false
+  },
+  {
+    "id": "kb-16",
+    "slug": "geopark-belitong",
+    "channel": "wisata",
+    "category_id": "sejarah-budaya",
+    "title_id": "Geopark Belitong",
+    "title_en": "Belitong Geopark",
+    "body_id": [
+      "Belitong ditetapkan UNESCO Global Geopark pada 2021, dengan banyak geosite granit, pesisir, dan bekas tambang.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "Belitong was designated a UNESCO Global Geopark in 2021, with many granite, coastal, and former-mine geosites.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-07T08:00:00+07:00",
+    "views": 1128,
+    "featured": false
+  },
+  {
+    "id": "kb-17",
+    "slug": "mie-belitung",
+    "channel": "kuliner",
+    "category_id": "kuliner-lokal",
+    "title_id": "Mie Belitung",
+    "title_en": "Belitung Noodles",
+    "body_id": [
+      "Mie kuning dengan kuah kental manis gurih dari kaldu udang, disajikan dengan udang, kentang, timun, emping. Warung legendaris: Mie Atep di Tanjung Pandan.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "Yellow noodles in a thick, sweet-savoury shrimp broth, served with shrimp, potato, cucumber, and emping crackers. Legendary stall: Mie Atep in Tanjung Pandan.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Tanjung Pandan, Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-08T08:00:00+07:00",
+    "views": 1111,
+    "featured": false
+  },
+  {
+    "id": "kb-18",
+    "slug": "gangan",
+    "channel": "kuliner",
+    "category_id": "kuliner-lokal",
+    "title_id": "Gangan",
+    "title_en": "Gangan",
+    "body_id": [
+      "Sup ikan kuah kuning (kunyit) asam pedas khas Belitung, sering pakai ikan ketarap atau kakap dan nanas.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A Belitung fish soup in a yellow (turmeric), sour-spicy broth, often made with ketarap or snapper and pineapple.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-09T08:00:00+07:00",
+    "views": 1094,
+    "featured": false
+  },
+  {
+    "id": "kb-19",
+    "slug": "kopi-manggar-budaya-warung-kopi",
+    "channel": "kuliner",
+    "category_id": "kuliner-lokal",
+    "title_id": "Kopi Manggar & budaya warung kopi",
+    "title_en": "Manggar Coffee & the Coffee Stall Culture",
+    "body_id": [
+      "Manggar dijuluki 'Kota 1001 Warung Kopi'. Ngopi di warung kopi adalah tradisi sosial warga Belitung.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "Manggar is nicknamed the 'City of 1,001 Coffee Stalls'. Drinking coffee at a warung kopi is a social tradition of Belitung's people.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Manggar, Belitung Timur",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-10T08:00:00+07:00",
+    "views": 1077,
+    "featured": false
+  },
+  {
+    "id": "kb-20",
+    "slug": "bakso-aci-itap",
+    "channel": "kuliner",
+    "category_id": "kuliner-lokal",
+    "title_id": "Bakso Aci iTAP",
+    "title_en": "iTAP Bakso Aci",
+    "body_id": [
+      "Kedai Bakso Aci iTAP, Jl. Permata VI Blok H25, Puri Kirana 3, Air Merbau, Tanjung Pandan 33414. Buka setiap hari 11.00–22.00 WIB. Pesan via GrabFood/GoFood.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "The iTAP Bakso Aci stall, Jl. Permata VI Blok H25, Puri Kirana 3, Air Merbau, Tanjung Pandan 33414. Open daily 11.00–22.00 WIB. Order via GrabFood/GoFood.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Tanjung Pandan, Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-11T08:00:00+07:00",
+    "views": 1060,
+    "featured": false
+  },
+  {
+    "id": "kb-21",
+    "slug": "martabak-bangka-belitung-hok-lo-pan",
+    "channel": "kuliner",
+    "category_id": "kuliner-lokal",
+    "title_id": "Martabak Bangka/Belitung (Hok Lo Pan)",
+    "title_en": "Bangka/Belitung Martabak (Hok Lo Pan)",
+    "body_id": [
+      "Martabak manis tebal khas Bangka Belitung, pengaruh kuliner Tionghoa.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A thick sweet martabak typical of Bangka Belitung, influenced by Chinese cuisine.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-12T08:00:00+07:00",
+    "views": 1043,
+    "featured": false
+  },
+  {
+    "id": "kb-22",
+    "slug": "kue-rintak-kue-bingka",
+    "channel": "kuliner",
+    "category_id": "oleh-oleh",
+    "title_id": "Kue Rintak & Kue Bingka",
+    "title_en": "Rintak & Bingka Cakes",
+    "body_id": [
+      "Kue tradisional: rintak (kue sagu kering) dan bingka (kue basah manis).",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "Traditional cakes: rintak (dry sago cake) and bingka (sweet moist cake).",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-13T08:00:00+07:00",
+    "views": 1026,
+    "featured": false
+  },
+  {
+    "id": "kb-23",
+    "slug": "kerupuk-kemplang-terasi-belitung",
+    "channel": "kuliner",
+    "category_id": "oleh-oleh",
+    "title_id": "Kerupuk/Kemplang & Terasi Belitung",
+    "title_en": "Belitung Crackers/Kemplang & Shrimp Paste",
+    "body_id": [
+      "Oleh-oleh khas: kerupuk ikan/kemplang dan terasi.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "Typical souvenirs: fish crackers/kemplang and shrimp paste (terasi).",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-14T08:00:00+07:00",
+    "views": 1009,
+    "featured": false
+  },
+  {
+    "id": "kb-24",
+    "slug": "sate-ikan-seafood-bakar",
+    "channel": "kuliner",
+    "category_id": "kuliner-lokal",
+    "title_id": "Sate Ikan & Seafood bakar",
+    "title_en": "Grilled Fish Satay & Seafood",
+    "body_id": [
+      "Hidangan laut segar mudah ditemukan di pesisir dan rumah makan di Tanjung Pandan.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "Fresh seafood dishes are easy to find along the coast and at restaurants in Tanjung Pandan.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Tanjung Pandan, Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-03T08:00:00+07:00",
+    "views": 992,
+    "featured": false
+  },
+  {
+    "id": "kb-25",
+    "slug": "timah-belitung",
+    "channel": "sejarah",
+    "category_id": "sejarah-timah",
+    "title_id": "Timah Belitung",
+    "title_en": "Belitung Tin",
+    "body_id": [
+      "Belitung dikenal sebagai pulau timah. Penambangan besar dimulai era kolonial Belanda (perusahaan Billiton Maatschappij, sekitar 1860), lalu dilanjutkan PT Timah.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "Belitung is known as a tin island. Large-scale mining began in the Dutch colonial era (the Billiton Maatschappij company, around 1860), later continued by PT Timah.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-04T08:00:00+07:00",
+    "views": 975,
+    "featured": false
+  },
+  {
+    "id": "kb-26",
+    "slug": "kerajaan-balok",
+    "channel": "sejarah",
+    "category_id": "kerajaan",
+    "title_id": "Kerajaan Balok",
+    "title_en": "The Balok Kingdom",
+    "body_id": [
+      "Kerajaan lokal Belitung pada masa lalu (sekitar abad ke-17), dengan pusat di daerah Balok, Belitung Timur.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A local Belitung kingdom of the past (around the 17th century), centred in the Balok area, East Belitung.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung Timur",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-05T08:00:00+07:00",
+    "views": 958,
+    "featured": false
+  },
+  {
+    "id": "kb-27",
+    "slug": "rumah-adat-belitung",
+    "channel": "sejarah",
+    "category_id": "museum",
+    "title_id": "Rumah Adat Belitung",
+    "title_en": "Belitung Traditional House",
+    "body_id": [
+      "Rumah panggung tradisional; replikanya ada di Tanjung Pandan dan dipakai untuk acara adat.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A traditional stilt house; a replica stands in Tanjung Pandan and is used for customary events.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Tanjung Pandan, Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-06T08:00:00+07:00",
+    "views": 941,
+    "featured": false
+  },
+  {
+    "id": "kb-28",
+    "slug": "museum-tanjung-pandan",
+    "channel": "sejarah",
+    "category_id": "sejarah-timah",
+    "title_id": "Museum Tanjung Pandan",
+    "title_en": "Tanjung Pandan Museum",
+    "body_id": [
+      "Museum yang menyimpan koleksi sejarah pertambangan timah, keramik, dan temuan kapal karam.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A museum holding collections on tin-mining history, ceramics, and shipwreck finds.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-07T08:00:00+07:00",
+    "views": 924,
+    "featured": false
+  },
+  {
+    "id": "kb-29",
+    "slug": "kapal-karam-belitung-batu-hitam",
+    "channel": "sejarah",
+    "category_id": "sejarah-timah",
+    "title_id": "Kapal Karam Belitung (Batu Hitam)",
+    "title_en": "The Belitung Shipwreck (Batu Hitam)",
+    "body_id": [
+      "Kapal Arab abad ke-9 yang karam di perairan Belitung; ditemukan 1998 dengan ribuan keramik Dinasti Tang.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A 9th-century Arab ship that sank in Belitung waters; found in 1998 with thousands of Tang Dynasty ceramics.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-08T08:00:00+07:00",
+    "views": 907,
+    "featured": false
+  },
+  {
+    "id": "kb-30",
+    "slug": "pemekaran-belitung-timur",
+    "channel": "sejarah",
+    "category_id": "museum",
+    "title_id": "Pemekaran Belitung Timur",
+    "title_en": "The Creation of East Belitung Regency",
+    "body_id": [
+      "Kabupaten Belitung Timur (ibu kota Manggar) dimekarkan dari Kabupaten Belitung pada 2003.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "East Belitung Regency (capital Manggar) was split off from Belitung Regency in 2003.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Manggar, Belitung Timur",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-09T08:00:00+07:00",
+    "views": 890,
+    "featured": false
+  },
+  {
+    "id": "kb-31",
+    "slug": "legenda-batu-baginda",
+    "channel": "legenda",
+    "category_id": "cerita-rakyat",
+    "title_id": "Legenda Batu Baginda",
+    "title_en": "The Legend of Batu Baginda",
+    "body_id": [
+      "Cerita rakyat tentang batu besar di Bukit Tebalu dan kisah cinta seorang putri dengan baginda raja.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A folktale about a great boulder on Tebalu Hill and the love story of a princess and a king.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-10T08:00:00+07:00",
+    "views": 873,
+    "featured": false
+  },
+  {
+    "id": "kb-32",
+    "slug": "legenda-batu-mentas",
+    "channel": "legenda",
+    "category_id": "cerita-rakyat",
+    "title_id": "Legenda Batu Mentas",
+    "title_en": "The Legend of Batu Mentas",
+    "body_id": [
+      "Cerita rakyat terkait aliran sungai berbatu di Kelekak Usang, kawasan konservasi tarsius.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A folktale linked to the rocky stream at Kelekak Usang, a tarsier conservation area.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-11T08:00:00+07:00",
+    "views": 856,
+    "featured": false
+  },
+  {
+    "id": "kb-33",
+    "slug": "dukun-kampong",
+    "channel": "legenda",
+    "category_id": "cerita-rakyat",
+    "title_id": "Dukun Kampong",
+    "title_en": "Dukun Kampong",
+    "body_id": [
+      "Tokoh adat tradisional Belitung yang memimpin ritual dan menjaga hubungan dengan alam.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A traditional Belitung customary figure who leads rituals and maintains harmony with nature.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-12T08:00:00+07:00",
+    "views": 839,
+    "featured": false
+  },
+  {
+    "id": "kb-34",
+    "slug": "laskar-pelangi",
+    "channel": "legenda",
+    "category_id": "cerita-rakyat",
+    "title_id": "Laskar Pelangi",
+    "title_en": "Laskar Pelangi",
+    "body_id": [
+      "Novel Andrea Hirata (2005) dan film (2008) yang mengangkat kisah sekolah sederhana di Gantong dan membuat Belitung terkenal.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "Andrea Hirata's novel (2005) and film (2008) telling the story of a humble school in Gantong, which made Belitung famous.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Gantong, Belitung Timur",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-13T08:00:00+07:00",
+    "views": 822,
+    "featured": false
+  },
+  {
+    "id": "kb-35",
+    "slug": "makan-bedulang",
+    "channel": "budaya",
+    "category_id": "upacara",
+    "title_id": "Makan Bedulang",
+    "title_en": "Makan Bedulang",
+    "body_id": [
+      "Tradisi makan bersama empat orang mengelilingi dulang berisi nasi dan lauk, dengan tata krama tertentu (yang muda melayani yang tua).",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A tradition of four people eating together around a dulang (tray) of rice and side dishes, with set etiquette (the young serve the elders).",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-14T08:00:00+07:00",
+    "views": 805,
+    "featured": false
+  },
+  {
+    "id": "kb-36",
+    "slug": "maras-taun",
+    "channel": "budaya",
+    "category_id": "upacara",
+    "title_id": "Maras Taun",
+    "title_en": "Maras Taun",
+    "body_id": [
+      "Pesta adat syukur panen padi khas Belitung, biasa disertai kue juadah dan kesenian.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A Belitung harvest thanksgiving festival, usually accompanied by juadah cakes and traditional arts.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-03T08:00:00+07:00",
+    "views": 788,
+    "featured": false
+  },
+  {
+    "id": "kb-37",
+    "slug": "buang-jong",
+    "channel": "budaya",
+    "category_id": "upacara",
+    "title_id": "Buang Jong",
+    "title_en": "Buang Jong",
+    "body_id": [
+      "Upacara adat suku Sawang (suku laut) melepas perahu kecil ke laut sebagai persembahan.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A customary ceremony of the Sawang (sea people) in which a small boat is released into the sea as an offering.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-04T08:00:00+07:00",
+    "views": 771,
+    "featured": false
+  },
+  {
+    "id": "kb-38",
+    "slug": "seni-campak-belitung",
+    "channel": "budaya",
+    "category_id": "tari-musik",
+    "title_id": "Seni Campak Belitung",
+    "title_en": "Belitung Campak Art",
+    "body_id": [
+      "Kesenian tari dan berbalas pantun diiringi musik tradisional.",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "A dance art form with exchanged pantun verses accompanied by traditional music.",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-05T08:00:00+07:00",
+    "views": 754,
+    "featured": false
+  },
+  {
+    "id": "kb-39",
+    "slug": "bahasa-melayu-belitung",
+    "channel": "budaya",
+    "category_id": "bahasa",
+    "title_id": "Bahasa Melayu Belitung",
+    "title_en": "Belitung Malay Language",
+    "body_id": [
+      "Bahasa sehari-hari warga, dialek Melayu. Contoh: 'kamek'/'kite' (saya/kita).",
+      "Catatan redaksi: tulisan ini adalah ringkasan dari basis pengetahuan iTAP Belitung (pengetahuan umum publik). Kontributor dapat mengembangkannya menjadi artikel lengkap lewat halaman kontributor — kiriman akan ditinjau redaksi sebelum diterbitkan."
+    ],
+    "body_en": [
+      "The everyday language of the people, a Malay dialect. Example: 'kamek'/'kite' (I/we).",
+      "Editor's note: this article is a summary from the iTAP Belitung knowledge base (public general knowledge). Contributors can expand it into a full article via the contributor page — submissions will be reviewed by the editors before publication."
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Basis pengetahuan iTAP Belitung (pengetahuan umum publik)",
+    "source_url": null,
+    "external": false,
+    "author_id": "redaksi-itap",
+    "status": "published",
+    "published_at": "2026-11-06T08:00:00+07:00",
+    "views": 737,
+    "featured": false
+  },
+  {
+    "id": "berita-1",
+    "slug": "kabar-peringati-hut-polairud-ke-76-polres-belitung-gelar-tabur-bun",
+    "channel": "berita",
+    "category_id": "belitung",
+    "title_id": "Peringati HUT Polairud ke-76, Polres Belitung Gelar Tabur Bunga untuk Mengenang Jasa Pahlawan",
+    "title_en": "Marking the 76th Anniversary of the Water Police, Belitung Police Hold Flower Scattering to Honour Fallen Heroes",
+    "body_id": [],
+    "body_en": [],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Belitong Info",
+    "source_url": "https://www.belitonginfo.com/peringati-hut-polairud-ke-76-polres-belitung-gelar-tabur-bunga-untuk-mengenang-jasa-pahlawan/",
+    "external": true,
+    "author_id": "agregasi",
+    "status": "published",
+    "published_at": "2026-11-18T10:50+07:00",
+    "views": 900,
+    "featured": true
+  },
+  {
+    "id": "berita-2",
+    "slug": "kabar-pln-diakui-jadi-tempat-kerja-terbaik-di-indonesia-dan-asia-2",
+    "channel": "berita",
+    "category_id": "belitung",
+    "title_id": "PLN Diakui Jadi Tempat Kerja Terbaik di Indonesia dan Asia 2026",
+    "title_en": "PLN Recognised as One of the Best Workplaces in Indonesia and Asia 2026",
+    "body_id": [],
+    "body_en": [],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Posbelitung.co",
+    "source_url": "https://belitung.tribunnews.com/adv/219325/pln-diakui-jadi-tempat-kerja-terbaik-di-indonesia-dan-asia-2026",
+    "external": true,
+    "author_id": "agregasi",
+    "status": "published",
+    "published_at": "2026-11-18T10:41+07:00",
+    "views": 877,
+    "featured": false
+  },
+  {
+    "id": "berita-3",
+    "slug": "kabar-ketua-koni-beltim-ceritakan-perjuangan-atlet-kamarudin-diseb",
+    "channel": "berita",
+    "category_id": "belitung",
+    "title_id": "Ketua KONI Beltim Ceritakan Perjuangan Atlet, Kamarudin Disebut Rutin Telepon hingga Tengah Malam",
+    "title_en": "East Belitung KONI Chief Tells of Athletes' Struggles; Kamarudin Said to Call Regularly Until Midnight",
+    "body_id": [],
+    "body_en": [],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Posbelitung.co",
+    "source_url": "https://belitung.tribunnews.com/lokal/219324/ketua-koni-beltim-ceritakan-perjuangan-atlet-kamarudin-disebut-rutin-telepon-hingga-tengah-malam",
+    "external": true,
+    "author_id": "agregasi",
+    "status": "published",
+    "published_at": "2026-11-18T10:33+07:00",
+    "views": 854,
+    "featured": false
+  },
+  {
+    "id": "berita-4",
+    "slug": "kabar-kajari-beltim-kritik-bank-tanah-sebut-kebijakan-minta-warga-",
+    "channel": "berita",
+    "category_id": "belitung",
+    "title_id": "Kajari Beltim Kritik Bank Tanah, Sebut Kebijakan Minta Warga Bayar Lahan Berpotensi Memicu Konflik",
+    "title_en": "East Belitung Chief Prosecutor Criticises Land Bank, Says Policy Asking Residents to Pay for Land Could Spark Conflict",
+    "body_id": [],
+    "body_en": [],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Posbelitung.co",
+    "source_url": "https://belitung.tribunnews.com/lokal/219323/kajari-beltim-kritik-bank-tanah-sebut-kebijakan-minta-warga-bayar-lahan-berpotensi-memicu-konflik",
+    "external": true,
+    "author_id": "agregasi",
+    "status": "published",
+    "published_at": "2026-11-18T10:22+07:00",
+    "views": 831,
+    "featured": false
+  },
+  {
+    "id": "berita-5",
+    "slug": "kabar-pemda-di-bangka-belitung-diminta-tingkatkan-antisipasi-banji",
+    "channel": "berita",
+    "category_id": "belitung",
+    "title_id": "Pemda di Bangka Belitung Diminta Tingkatkan Antisipasi Banjir",
+    "title_en": "Local Governments in Bangka Belitung Urged to Step Up Flood Preparedness",
+    "body_id": [],
+    "body_en": [],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Tribunnews.com",
+    "source_url": "https://babel.tribunnews.com/lokal/21292/pemda-di-bangka-belitung-diminta-tingkatkan-antisipasi-banjir",
+    "external": true,
+    "author_id": "agregasi",
+    "status": "published",
+    "published_at": "2026-11-18T09:22+07:00",
+    "views": 808,
+    "featured": false
+  },
+  {
+    "id": "berita-6",
+    "slug": "kabar-gubernur-hidayat-arsani-dipercaya-jadi-perwira-upacara-apel-",
+    "channel": "berita",
+    "category_id": "bangka-belitung",
+    "title_id": "Gubernur Hidayat Arsani dipercaya jadi Perwira Upacara Apel Akbar Satlinmas 2026 di Jawa Barat",
+    "title_en": "Governor Hidayat Arsani Entrusted as Ceremony Officer at the 2026 Satlinmas Grand Assembly in West Java",
+    "body_id": [
+      "Gubernur Bangka Belitung (Babel), Hidayat Arsani, mendapat kehormatan sekaligus kepercayaan untuk bertugas sebagai Perwira Upacara dalam Apel Akbar Satuan…"
+    ],
+    "body_en": [
+      "The Governor of Bangka Belitung (Babel), Hidayat Arsani, was honoured and entrusted to serve as ceremony officer at the grand assembly of the Satuan…"
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "ANTARA Babel",
+    "source_url": "https://babel.antaranews.com/berita/595863/gubernur-hidayat-arsani-dipercaya-jadi-perwira-upacara-apel-akbar-satlinmas-2026-di-jawa-barat",
+    "external": true,
+    "author_id": "agregasi",
+    "status": "published",
+    "published_at": "2026-11-18T09:17+07:00",
+    "views": 785,
+    "featured": false
+  },
+  {
+    "id": "berita-7",
+    "slug": "kabar-gala-dinner-apel-akbar-banten-peran-hidayat-arsani-dalam-pem",
+    "channel": "berita",
+    "category_id": "bangka-belitung",
+    "title_id": "Gala Dinner Apel Akbar Banten: Peran Hidayat Arsani dalam pembentukan Aslinmas mendapat apresiasi",
+    "title_en": "Banten Grand Assembly Gala Dinner: Hidayat Arsani's Role in Forming Aslinmas Earns Appreciation",
+    "body_id": [
+      "Gubernur Kepulauan Bangka Belitung (Babel), Hidayat Arsani, turut menghadiri rangkaian kegiatan Apel Akbar Satuan Perlindungan Masyarakat (Satlinmas)…"
+    ],
+    "body_en": [
+      "The Governor of the Bangka Belitung Islands (Babel), Hidayat Arsani, attended a series of events at the grand assembly of the Community Protection Unit (Satlinmas)…"
+    ],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "ANTARA Babel",
+    "source_url": "https://babel.antaranews.com/berita/595859/gala-dinner-apel-akbar-banten-peran-hidayat-arsani-dalam-pembentukan-aslinmas-mendapat-apresiasi",
+    "external": true,
+    "author_id": "agregasi",
+    "status": "published",
+    "published_at": "2026-11-18T09:15+07:00",
+    "views": 762,
+    "featured": false
+  },
+  {
+    "id": "berita-8",
+    "slug": "kabar-kabupaten-belitung-peringkat-ke-11-di-sumatra-dalam-penilaia",
+    "channel": "berita",
+    "category_id": "belitung",
+    "title_id": "Kabupaten Belitung Peringkat ke-11 di Sumatra dalam Penilaian Kinerja Digitalisasi Daerah",
+    "title_en": "Belitung Regency Ranks 11th in Sumatra in Regional Digitalisation Performance Assessment",
+    "body_id": [],
+    "body_en": [],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Tribunnews.com",
+    "source_url": "https://babel.tribunnews.com/lokal/21289/kabupaten-belitung-peringkat-ke-11-di-sumatra-dalam-penilaian-kinerja-digitalisasi-daerah",
+    "external": true,
+    "author_id": "agregasi",
+    "status": "published",
+    "published_at": "2026-11-18T09:00+07:00",
+    "views": 739,
+    "featured": false
+  },
+  {
+    "id": "berita-9",
+    "slug": "kabar-dafam-resort-belitung-hadirkan-tiga-paket-pernikahan-eksklus",
+    "channel": "berita",
+    "category_id": "bangka-belitung",
+    "title_id": "Dafam Resort Belitung Hadirkan Tiga Paket Pernikahan Eksklusif Bernuansa Romantis",
+    "title_en": "Dafam Resort Belitung Launches Three Exclusive Romantic Wedding Packages",
+    "body_id": [],
+    "body_en": [],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Tras Berita Babel",
+    "source_url": "https://www.trasberita.com/dafam-resort-belitung-hadirkan-tiga-paket-pernikahan-eksklusif-bernuansa-romantis/",
+    "external": true,
+    "author_id": "agregasi",
+    "status": "published",
+    "published_at": "2026-11-18T08:57+07:00",
+    "views": 716,
+    "featured": false
+  },
+  {
+    "id": "berita-10",
+    "slug": "kabar-dprd-belitung-sahkan-perda-skt-cegah-dokumen-tanah-ganda-di-",
+    "channel": "berita",
+    "category_id": "belitung",
+    "title_id": "DPRD Belitung Sahkan Perda SKT, Cegah Dokumen Tanah Ganda di Desa",
+    "title_en": "Belitung DPRD Passes SKT Regulation to Prevent Duplicate Land Documents in Villages",
+    "body_id": [],
+    "body_en": [],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Belitong Ekspres",
+    "source_url": "https://belitongekspres.disway.id/belitung/read/652853/dprd-belitung-sahkan-perda-skt-cegah-dokumen-tanah-ganda-di-desa",
+    "external": true,
+    "author_id": "agregasi",
+    "status": "published",
+    "published_at": "2026-11-17T22:50+07:00",
+    "views": 693,
+    "featured": false
+  },
+  {
+    "id": "berita-11",
+    "slug": "kabar-terbongkar-modus-arisan-fiktif-di-belitung-korban-rugi-rp106",
+    "channel": "berita",
+    "category_id": "belitung",
+    "title_id": "Terbongkar! Modus Arisan Fiktif di Belitung, Korban Rugi Rp106,2 Juta",
+    "title_en": "Exposed! Fake Arisan Scam in Belitung, Victims Lose Rp106.2 Million",
+    "body_id": [],
+    "body_en": [],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Belitong Ekspres",
+    "source_url": "https://belitongekspres.disway.id/belitung/read/652851/terbongkar-modus-arisan-fiktif-di-belitung-korban-rugi-rp1062-juta",
+    "external": true,
+    "author_id": "agregasi",
+    "status": "published",
+    "published_at": "2026-11-17T22:35+07:00",
+    "views": 670,
+    "featured": false
+  },
+  {
+    "id": "berita-12",
+    "slug": "kabar-dprd-provinsi-bangka-belitung-resmi-umumkan-nama-nama-yang-l",
+    "channel": "berita",
+    "category_id": "bangka-belitung",
+    "title_id": "DPRD Provinsi Bangka Belitung Resmi Umumkan Nama-nama yang Lulus Calon Anggota KPID",
+    "title_en": "Bangka Belitung Provincial DPRD Officially Announces Names of KPID Member Candidates Who Passed",
+    "body_id": [],
+    "body_en": [],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Bangkapos.com",
+    "source_url": "https://bangka.tribunnews.com/lokal/1703157/dprd-provinsi-bangka-belitung-resmi-umumkan-nama-nama-yang-lulus-calon-anggota-kpid",
+    "external": true,
+    "author_id": "agregasi",
+    "status": "published",
+    "published_at": "2026-11-17T17:35+07:00",
+    "views": 647,
+    "featured": false
+  },
+  {
+    "id": "berita-13",
+    "slug": "kabar-bpbd-bangka-belitung-ingatkan-daerah-segera-tangani-titik-ra",
+    "channel": "berita",
+    "category_id": "bangka-belitung",
+    "title_id": "BPBD Bangka Belitung Ingatkan Daerah Segera Tangani Titik Rawan Banjir",
+    "title_en": "Bangka Belitung Disaster Agency Urges Regions to Address Flood-Prone Spots Immediately",
+    "body_id": [],
+    "body_en": [],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Bangkapos.com",
+    "source_url": "https://bangka.tribunnews.com/lokal/1703139/bpbd-bangka-belitung-ingatkan-daerah-segera-tangani-titik-rawan-banjir",
+    "external": true,
+    "author_id": "agregasi",
+    "status": "published",
+    "published_at": "2026-11-17T15:26+07:00",
+    "views": 624,
+    "featured": false
+  },
+  {
+    "id": "berita-14",
+    "slug": "kabar-harga-cabai-belitung-makin-pedas-tembus-rp93-750-per-kg-lebi",
+    "channel": "berita",
+    "category_id": "bangka-belitung",
+    "title_id": "Harga Cabai Belitung Makin Pedas Tembus Rp93.750 per Kg, Lebih Mahal dari Rata-Rata Nasional",
+    "title_en": "Belitung Chilli Prices Soar to Rp93,750 per Kg, Above the National Average",
+    "body_id": [],
+    "body_en": [],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Babelpos",
+    "source_url": "https://babelpos.disway.id/belitung/read/692113/harga-cabai-belitung-makin-pedas-tembus-rp93750-per-kg-lebih-mahal-dari-rata-rata-nasional",
+    "external": true,
+    "author_id": "agregasi",
+    "status": "published",
+    "published_at": "2026-11-17T07:30+07:00",
+    "views": 601,
+    "featured": false
+  },
+  {
+    "id": "berita-15",
+    "slug": "kabar-bank-indonesia-perkuat-ketahanan-pangan-belitung-melalui-dig",
+    "channel": "berita",
+    "category_id": "bangka-belitung",
+    "title_id": "Bank Indonesia Perkuat Ketahanan Pangan Belitung melalui Digitalisasi Pertanian & Hilirisasi Produk Perikanan",
+    "title_en": "Bank Indonesia Strengthens Belitung Food Security Through Agricultural Digitalisation & Fisheries Product Downstreaming",
+    "body_id": [],
+    "body_en": [],
+    "gallery": [],
+    "location_name": "Belitung",
+    "location_lat": null,
+    "location_lng": null,
+    "source": "Babelpos",
+    "source_url": "https://babelpos.disway.id/probis/read/692083/bank-indonesia-perkuat-ketahanan-pangan-belitung-melalui-digitalisasi-pertanian-hilirisasi-produk-perikanan",
+    "external": true,
+    "author_id": "agregasi",
+    "status": "published",
+    "published_at": "2026-11-16T13:50+07:00",
+    "views": 578,
+    "featured": false
+  }
+];
+export const DAILY_PRICES: DailyPrices = {
+  "source": "ADAT Belitung, Diskominfo Kab. Belitung (data: Dinas Ketahanan Pangan dan Pertanian Kab. Belitung)",
+  "source_url": "https://adat.belitung.go.id/komoditas",
+  "market": "Pasar Tanjung Pandan, Belitung",
+  "source_date": "01-11-2026",
+  "fetched_at": "2026-11-18 12:32 WIB",
+  "items": [
+    {
+      "id": "harga-1",
+      "commodity": "Beras Premium",
+      "price": 18000,
+      "unit": "kg",
+      "previous_price": null,
+      "status": "stabil",
+      "change_note": "Harga tetap / baru"
+    },
+    {
+      "id": "harga-2",
+      "commodity": "Beras Medium",
+      "price": 15000,
+      "unit": "kg",
+      "previous_price": null,
+      "status": "stabil",
+      "change_note": "Harga tetap / baru"
+    },
+    {
+      "id": "harga-3",
+      "commodity": "Kedelai Biji Kering",
+      "price": 14000,
+      "unit": "kg",
+      "previous_price": null,
+      "status": "stabil",
+      "change_note": "Harga tetap / baru"
+    },
+    {
+      "id": "harga-4",
+      "commodity": "Bawang Merah",
+      "price": 45000,
+      "unit": "kg",
+      "previous_price": null,
+      "status": "stabil",
+      "change_note": "Harga tetap / baru"
+    },
+    {
+      "id": "harga-5",
+      "commodity": "Bawang Putih",
+      "price": 35000,
+      "unit": "kg",
+      "previous_price": null,
+      "status": "stabil",
+      "change_note": "Harga tetap / baru"
+    },
+    {
+      "id": "harga-6",
+      "commodity": "Cabe Merah Keriting",
+      "price": 90000,
+      "unit": "kg",
+      "previous_price": null,
+      "status": "stabil",
+      "change_note": "Harga tetap / baru"
+    },
+    {
+      "id": "harga-7",
+      "commodity": "Cabe Rawit Merah",
+      "price": 100000,
+      "unit": "kg",
+      "previous_price": null,
+      "status": "stabil",
+      "change_note": "Harga tetap / baru"
+    },
+    {
+      "id": "harga-8",
+      "commodity": "Daging Sapi",
+      "price": 160000,
+      "unit": "kg",
+      "previous_price": null,
+      "status": "stabil",
+      "change_note": "Harga tetap / baru"
+    },
+    {
+      "id": "harga-9",
+      "commodity": "Daging Ayam Ras",
+      "price": 38000,
+      "unit": "kg",
+      "previous_price": null,
+      "status": "stabil",
+      "change_note": "Harga tetap / baru"
+    },
+    {
+      "id": "harga-10",
+      "commodity": "Telur Ayam Ras",
+      "price": 32000,
+      "unit": "kg",
+      "previous_price": null,
+      "status": "stabil",
+      "change_note": "Harga tetap / baru"
+    },
+    {
+      "id": "harga-11",
+      "commodity": "Gula Pasir Lokal/Curah",
+      "price": 19000,
+      "unit": "kg",
+      "previous_price": null,
+      "status": "stabil",
+      "change_note": "Harga tetap / baru"
+    },
+    {
+      "id": "harga-12",
+      "commodity": "Minyak Goreng Kemasan",
+      "price": 21000,
+      "unit": "liter",
+      "previous_price": null,
+      "status": "stabil",
+      "change_note": "Harga tetap / baru"
+    },
+    {
+      "id": "harga-13",
+      "commodity": "Tepung Terigu",
+      "price": 10000,
+      "unit": "kg",
+      "previous_price": null,
+      "status": "stabil",
+      "change_note": "Harga tetap / baru"
+    }
+  ]
+};
+export const MARKET_RATES: MarketRates = {
+  "ihsg": {
+    "value": 5304.76,
+    "change": -39.65,
+    "percent": -0.74,
+    "as_of": "2026-11-17 16:00 WIB",
+    "source": "Yahoo Finance (^JKSE, tertunda)",
+    "fetched_at": "2026-11-17 17:42 WIB"
+  },
+  "gold": {
+    "price_1g": 2515000,
+    "previous": 2522000,
+    "date": "17 November 2026",
+    "source": "emasantam.id (Antam 1 gram, situs non-resmi)",
+    "fetched_at": "2026-11-17 17:42 WIB"
+  },
+  "currencies": [
+    {
+      "code": "USD",
+      "buy_erate": 18177,
+      "sell_erate": 18287,
+      "buy_tt": 18070,
+      "sell_tt": 18350,
+      "buy_bn": 18070,
+      "sell_bn": 18350
+    },
+    {
+      "code": "SGD",
+      "buy_erate": 14038.96,
+      "sell_erate": 14262.8,
+      "buy_tt": 13966.61,
+      "sell_tt": 14301.3,
+      "buy_bn": 14009,
+      "sell_bn": 14356
+    },
+    {
+      "code": "EUR",
+      "buy_erate": 19874.82,
+      "sell_erate": 20196.09,
+      "buy_tt": 19819.18,
+      "sell_tt": 20258.4,
+      "buy_bn": 19844,
+      "sell_bn": 20202
+    },
+    {
+      "code": "AUD",
+      "buy_erate": 12176.87,
+      "sell_erate": 12389.35,
+      "buy_tt": 12094.25,
+      "sell_tt": 12448.64,
+      "buy_bn": 12150,
+      "sell_bn": 12389
+    },
+    {
+      "code": "JPY",
+      "buy_erate": 113.53,
+      "sell_erate": 115.77,
+      "buy_tt": 112.92,
+      "sell_tt": 115.87,
+      "buy_bn": 112.31,
+      "sell_bn": 116.07
+    },
+    {
+      "code": "SAR",
+      "buy_erate": 4826.31,
+      "sell_erate": 4892.75,
+      "buy_tt": 4799.85,
+      "sell_tt": 4906.68,
+      "buy_bn": 4765,
+      "sell_bn": 4914
+    },
+    {
+      "code": "CNH",
+      "buy_erate": 2702.22,
+      "sell_erate": 2768.07,
+      "buy_tt": 2649.06,
+      "sell_tt": 2818.35,
+      "buy_bn": 0,
+      "sell_bn": 0
+    },
+    {
+      "code": "MYR",
+      "buy_erate": 4409.13,
+      "sell_erate": 4499.24,
+      "buy_tt": 4400.34,
+      "sell_tt": 4502.52,
+      "buy_bn": 0,
+      "sell_bn": 0
+    }
+  ],
+  "fx_source": "BCA (e-Rate, TT Counter, Bank Notes) · beli/jual",
+  "fx_fetched_at": "2026-11-17 17:42 WIB"
+};
+export const JOBS: JobListing[] = [
+  {
+    "id": "loker-1",
+    "title": "Field Officer (Pangkal Pinang)",
+    "company": "BCA Finance",
+    "location": "Bukitintan, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/field-officer-pangkal-pinang/656a6378-fe24-4343-bd9c-5ace0bbae109",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-17T17:30+07:00"
+  },
+  {
+    "id": "loker-2",
+    "title": "CPNS 2026 Dibuka Akhir November, 5 Jurusan S1 Ini Berpeluang Dibutuhkan, Babel Usulkan 618 Formasi",
+    "company": "Info loker (berita)",
+    "location": "Bangka Belitung",
+    "salary": null,
+    "deadline": null,
+    "source": "Bangkapos.com",
+    "source_url": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxNWmdLTTBmaTJ3TFVuU1hQWktpX1V0elptZDRWU1VEelBsM0FkRS1Wcm5XRjlIVU5QU3MyaWRNSjFuVXliZGdBcUtNN2FXSUhQekZkLVc5M1FBWGhla2Q2eGNGR1BvcG9FV3R3Y09hdlZjYzU5MTdpRVlIdHhfSVdTV1daaHV1ZktRMWJNY0pKaHZBM2FDbTRoMWVTV0RMS1BhU2QwZldBZm9BVC16dFVIdGRFbWNNbk9YZTFRM1g2UlprZUJ2eVVvR293cVNXVENxcjhmQlZR?oc=5",
+    "region": "Lainnya / Babel umum",
+    "posted_at": "2026-11-17T17:26+07:00"
+  },
+  {
+    "id": "loker-3",
+    "title": "Mitra Kurir Motor - Tanjungpandan, Kabupaten Belitung",
+    "company": "Anteraja",
+    "location": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/mitra-kurir-motor-tanjungpandan-kabupaten-belitung/e711867c-e184-4631-b752-abca10808e26",
+    "region": "Belitung",
+    "posted_at": "2026-11-17T16:20+07:00"
+  },
+  {
+    "id": "loker-4",
+    "title": "Waiter / Waitress",
+    "company": "Panglima Kuliner Indonesia",
+    "location": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/waiter-waitress/2118cc52-f792-4d0c-9ce8-b0df577b0387",
+    "region": "Belitung",
+    "posted_at": "2026-11-17T01:10+07:00"
+  },
+  {
+    "id": "loker-5",
+    "title": "OPERATION LEADER - TRANS STUDIO MINI PANGKAL PINANG",
+    "company": "Trans Entertainment",
+    "location": "Gerunggang, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/operation-leader-trans-studio-mini-pangkal-pinang/bb41bda0-c692-441f-a444-8d35c4db71c5",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-16T16:10+07:00"
+  },
+  {
+    "id": "loker-6",
+    "title": "ABK Ayam Boiler",
+    "company": "PT Mitra Elang Bersatu",
+    "location": "Bakam, Bangka, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/abk-ayam-boiler/294fe3b2-b159-4004-bb3e-40670c7cf894",
+    "region": "Bangka",
+    "posted_at": "2026-11-16T12:21+07:00"
+  },
+  {
+    "id": "loker-7",
+    "title": "PIC Network - Bangka Belitung",
+    "company": "J&T Cargo Indonesia (PT Global Yimi Cargo)",
+    "location": "Bukitintan, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/pic-network-bangka-belitung/59c777cb-0ff6-411f-9651-0fad544db315",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-15T20:25+07:00"
+  },
+  {
+    "id": "loker-8",
+    "title": "Pangkalpinang Kekurangan 119 Guru SD dan SMP, Disdik Berharap Rekrutmen CPNS Jadi Solusi",
+    "company": "Info loker (berita)",
+    "location": "Bangka Belitung",
+    "salary": null,
+    "deadline": null,
+    "source": "Kompas.com",
+    "source_url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxNd0xaMUItVndRS0oyZU1PX016Xy01dFdIRktHcFlQaUZiZ09QenJkekRlTDkzSk1pT3g4NE9FTHRNSVZwYXZFbUVJOUlXcXAtRUNsNDJydTZZR2hjZ3hkM3phUnlwd1Q2TFYxcFN0b2lma0NYNGJFNzVQTVFXYjlxRnR6OVdfQ2xPbU5wbkpJMVdLMDQ3MU1UX1lHVnREd0poYW5NM1IyMjdBRUFHelNNYVhiTW1KTFFZNjRBdFZTTFZxdXJOOWdkZg?oc=5",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-13T20:26+07:00"
+  },
+  {
+    "id": "loker-9",
+    "title": "Guru Bahasa Inggris",
+    "company": "Kampung Inggris Babel",
+    "location": "Girimaya, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/guru-bahasa-inggris/ccce17d8-23ab-4150-89b8-c9f125d039b8",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-13T19:33+07:00"
+  },
+  {
+    "id": "loker-10",
+    "title": "Customer Service (Bangka Belitung)",
+    "company": "RAJA EMAS INDONESIA",
+    "location": "Girimaya, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/customer-service-bangka-belitung/d0724c0b-9a2e-482e-a697-0fbf69c1101d",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-13T15:57+07:00"
+  },
+  {
+    "id": "loker-11",
+    "title": "BKPSDM Belitung Tunggu Kepastian Rekrutmen CPNS 2026",
+    "company": "Info loker (berita)",
+    "location": "Bangka Belitung",
+    "salary": null,
+    "deadline": null,
+    "source": "RRI.co.id",
+    "source_url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQYjBFUVdvQ2FlcGR2LVdnQ2FpazhUQnZ6bHA2ekg1bDFiRlp0MEpqYXhwTVVOcmZsQ21BLV9LaEVLTFhzWklOaUJ5S19FeWlKVDU3TExtNGpkTFNzQlcta1VNbG45NDJBR3hSeVBPcWoyZXljVmE2ZnBmRVc3em5BZmtZNU9TNWF5cFd1MUF6TXE2UUhBM2dsQjhoRW85SDg?oc=5",
+    "region": "Belitung",
+    "posted_at": "2026-11-13T13:28+07:00"
+  },
+  {
+    "id": "loker-12",
+    "title": "Lowongan Kerja Domino’s Pizza Belitung 2026, Buka 6 Posisi",
+    "company": "Info loker (berita)",
+    "location": "Bangka Belitung",
+    "salary": null,
+    "deadline": null,
+    "source": "Media Jabejabe",
+    "source_url": "https://news.google.com/rss/articles/CBMixAFBVV95cUxNVkEyRUJYWEZkVGdCNmpMVEFlRmV2dmxGVXBQdUliM1lBRTBwZGV5dDN3U25WbnZfY1JjbVpNTlRVVkU3Zkt5djQtZ083SDF6N2xDTWJlUWFyeUlZVFRrUUpYaXg4TVpZR0lESU9yM3NDLTdDa1lBcjVyME9sNjZqU3RaM0hXRHo3LVNZTUNIcDBBbWhJOFRzNldtYVFRWWFoalltc3dLVVFHQnVsWHF5V05GTGkzbHZ1N0llZGE1WTRGdVlq0gHEAUFVX3lxTE1WQTJFQlhYRmRUZ0I2akxUQWVGZXZ2bEZVcFB1SWIzWUFFMHBkZXl0M3dTblZudl9jUmNtWk1OVFVWRTdmS3l2NC1nTzdIMXo3bENNYmVRYXJ5SVlUVGtRSlhpeDhNWllHSURJT3Izc0MtN0NrWUFyNXIwT2w2NmpTdFozSFdEejctU1lNQ0hwMEFtaEk4VHM2V21hUVFZYWhqWW1zd0tVUUdCdWxYcXlXTkZMaTNsdnU3SWVkYTVZNEZ1WWo?oc=5",
+    "region": "Belitung",
+    "posted_at": "2026-11-12T19:57+07:00"
+  },
+  {
+    "id": "loker-13",
+    "title": "Lowongan Kerja The Serai Hotel & Resort Belitung Disorot, Pemuda Lokal Diminta Jadi Prioritas - belitongekspres.disway.id",
+    "company": "Info loker (berita)",
+    "location": "Bangka Belitung",
+    "salary": null,
+    "deadline": null,
+    "source": "Disway",
+    "source_url": "https://news.google.com/rss/articles/CBMi3gFBVV95cUxPQ2Y4S0dFRnZmS3dmMGhPR2dTemRhYXliOW5KZlZmcVIxWWNaNkJQSnZpZmMwSUlxNEFCbWhCT1lMUm1DUERXR0lHdFUyMG9Rd3hOdUdSeW5GXzRIYXBFU1Y4dFBoNkVWeHlRMWsxLXpSNkZZVDhMb3JYVlJ1ZElDUnc1eHRmck0tblFiTzdqY1hEVGlkVm0yYzAyNS1ibzA4emYydTNuTEJNM1dET0QxMksxVlZ5VHVpV253dWFYU1YxbnJXdUcwNXB4VUlxMEJZVDQ4Sm50LVQ5ZktQYlHSAdABQVVfeXFMUGRLSDVHbU91bnhiYXRLYWZvVGVsaFlVeEpoLU9Bdk9CbXZLeXZHYlh5MksxSnZaQnNmaVNEQ0s5LTVzeHhxbGxsUUFmaFhQREg4NHFHLWlBbVVLTm8tN3VWSlFvcWI5WHNQRXFUTlZNWWctVWpNbDBRY1d3RG12WTV0ZEE4T2lyOU4tVHlZUEtURERCUDBpbDZKcUlPUlhadk1iM0hpQWRsYXBfNDEzZVlFLUhoaU85UlUzaUIxVVpnSmhQY3FNV1BkQkJXbW9Ubg?oc=5",
+    "region": "Belitung",
+    "posted_at": "2026-11-12T19:45+07:00"
+  },
+  {
+    "id": "loker-14",
+    "title": "Account Representative Indibiz Telkom - Pangkal Pinang",
+    "company": "PT Infomedia Nusantara",
+    "location": "Taman Sari, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/account-representative-indibiz-telkom-pangkal-pinang/5a9239f6-cfaa-4909-83e6-8f199b9daf98",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-12T15:57+07:00"
+  },
+  {
+    "id": "loker-15",
+    "title": "Perawat Support Pangkal pinang",
+    "company": "Alfatih Center",
+    "location": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/perawat-support-pangkal-pinang/8a723de4-e5d2-4e02-96dd-a7196f3c1626",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-12T15:13+07:00"
+  },
+  {
+    "id": "loker-16",
+    "title": "HotelMewahBelitungBukaLowonganKerjaPemudaTanjungBingaMintaDiprioritaskan - https://belitongekspres.bacakoran.co/",
+    "company": "Info loker (berita)",
+    "location": "Bangka Belitung",
+    "salary": null,
+    "deadline": null,
+    "source": "Belitong Ekspres",
+    "source_url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxQNmNReWFTNG1KRWdCakx2U29CT3BSOWlNWm12d2s2b2VTeE1mSXZDam1XRURkMzJaZnVsS3o3U0huS05oYzdSNDZjRkhwaHk0cWtwSXFwQ0l4SUJaMmYya1p6eXBob2hTZmZKZmFLQ1FlYXpVU0hkcnhFY1h2ZlJLQ3B0N0ROVy12ekRSTHI5RGc1cllRQ0RaRHhmRHpBN0VQRmZtMUdGNXJsN045MldFZ05ySEdYTnR4TFpLMlMyejlJby10NjBEZDcxTkZSc3RKOHFaSXEzOEZ0S3dY0gHIAUFVX3lxTE4zVDdZbXZyMDQzMnkxUXlDUjhNLTVHbGc4c0Q0ZWtMVUpQajJvbFdEalBaNXFIY2pkVDZBc2tUanJndmdUNTVVb1JlRjI0ZHRlZ3FkY290Rm1mbGxvQUgzOEFndnp3Q2FpMDFvUld0N2VVZ1MyZVZsaWxNMTd6cWtUeUZ0bGpPc29wOXk4M3BFSUF5dTRJWVRncDM4Qk8tNVBHTkV0UVRkM1BWY3h3bnRTVFUtNUJaWnFfSzNWUm1QWUdzUlQ4QUNv?oc=5",
+    "region": "Belitung",
+    "posted_at": "2026-11-12T14:09+07:00"
+  },
+  {
+    "id": "loker-17",
+    "title": "Supervisor Marketing Sepeda Motor Honda - Cab Muara Bangka Hulu",
+    "company": "Nusantara Sakti Group",
+    "location": "Muara Bangka Hulu, Bengkulu, Bengkulu, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/supervisor-marketing-sepeda-motor-honda-cab-muara-bangka-hulu/4f323386-a540-4c53-8d2a-964bb5b73cca",
+    "region": "Bangka",
+    "posted_at": "2026-11-12T13:56+07:00"
+  },
+  {
+    "id": "loker-18",
+    "title": "IT Support (Placement : Pangkal Pinang)",
+    "company": "Mutiara Harapan Islamic School Bangka",
+    "location": "Gabek, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/it-support-placement-pangkal-pinang/58ab5d73-e96d-4dff-a646-e21b419165e4",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-12T11:15+07:00"
+  },
+  {
+    "id": "loker-19",
+    "title": "Kindergarten Teacher (Academic Year 2027/2028)",
+    "company": "Mutiara Harapan Islamic School Bangka",
+    "location": "Gabek, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/kindergarten-teacher-academic-year-2027-2028/dfb75199-aad7-452b-ac7c-00650b9a750c",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-12T11:14+07:00"
+  },
+  {
+    "id": "loker-20",
+    "title": "Sales Canvas EDC (Bangka Barat, Bangka Tengah, Bangka Selatan)",
+    "company": "PT. Buku Usaha Digital",
+    "location": "Simpang Katis, Bangka Tengah, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/sales-canvas-edc-bangka-barat-bangka-tengah-bangka-selatan/0d52052a-f4b6-494b-b101-7e38a76bc3b9",
+    "region": "Bangka",
+    "posted_at": "2026-11-12T08:35+07:00"
+  },
+  {
+    "id": "loker-21",
+    "title": "Rekrutmen CPNS Beltim 2027 Mulai Disiapkan, Ini Tahapannya - belitongekspres.disway.id",
+    "company": "Info loker (berita)",
+    "location": "Bangka Belitung",
+    "salary": null,
+    "deadline": null,
+    "source": "Disway",
+    "source_url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxOc3RScFROWTZjLTNWaEhONUFNVFcwWlBHc0luRWxsbEVCSGxmT19qM2tMUkxJNWlfWHpWRk5MRkNwNGNZZ1dic2FNcDItOVBOVUdfU3BKTTRWNm41X0t3NC11MTVpRHlOLVVUWDNEMFJVeFY3MktTem4xSHhLWlU4X2M0NVRVc0tOc09aRFZNQjJqVFJIT3JtZWY3UXBqY2FhcThCQThLUWJQX21GaUlHcExQN3NKVWJZT3fSAaQBQVVfeXFMUC1uaW5vd0o4OE9XOXpPWndBYkNDR0xhWlZENFZNdE9SYkhOOXJiaDhkS015V3JGNlFQWTZiRjloemVOb3gwU2F4a3F4X2FnNmZtWmNvaG5VelNET29SYlRhMzh0a2VtSmFyMGNIakF3aWl3d2ZQTVg5blA3VHlydy1RUDZmUFpNck56QnpTN2pzZTZvWkptNlRXcVQtc1hVNkY3MzQ?oc=5",
+    "region": "Belitung Timur",
+    "posted_at": "2026-11-11T19:32+07:00"
+  },
+  {
+    "id": "loker-22",
+    "title": "Marketing Sharia Pembiayaan Haji - Area Pangkal Pinang",
+    "company": "PT SAPTA SINERGI BERKARYA",
+    "location": "Girimaya, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/marketing-sharia-pembiayaan-haji-area-pangkal-pinang/502ab9b4-1457-4632-ab6c-f3e9046107f9",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-11T10:30+07:00"
+  },
+  {
+    "id": "loker-23",
+    "title": "STORE LEADER (PANGKALPINANG)",
+    "company": "Wearing Klamby",
+    "location": "Taman Sari, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/store-leader-pangkalpinang/97fdd429-75a7-456e-813a-8020d9ea2007",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-11T10:07+07:00"
+  },
+  {
+    "id": "loker-24",
+    "title": "Perawat Gigi (Pangkal Pinang)",
+    "company": "SOZO Dental (Seven Retail Group)",
+    "location": "Girimaya, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/perawat-gigi-pangkal-pinang/69305f02-52a7-4a9e-9dd5-357d91c21647",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-10T10:27+07:00"
+  },
+  {
+    "id": "loker-25",
+    "title": "Relationship Officer (Pangkal Pinang)",
+    "company": "BCA Finance",
+    "location": "Bukitintan, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/relationship-officer-pangkal-pinang/d070edd1-a595-4dbb-887e-232f1457ec4e",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-09T16:59+07:00"
+  },
+  {
+    "id": "loker-26",
+    "title": "Marketing Sharia Haji (Area Pangkal Pinang)",
+    "company": "PT SAPTA SINERGI BERKARYA",
+    "location": "Girimaya, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/marketing-sharia-haji-area-pangkal-pinang/5a42a375-d4e7-49f6-b43e-d778eea2cb61",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-09T14:12+07:00"
+  },
+  {
+    "id": "loker-27",
+    "title": "Staff Sales Representative (Bangka)",
+    "company": "PT. Suryamas Cipta Sentosa (GREEBEL)",
+    "location": "Sungailiat, Bangka, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/staff-sales-representative-bangka/d9912b1a-e3da-459d-9e27-e2252c0b9daf",
+    "region": "Bangka",
+    "posted_at": "2026-11-09T10:25+07:00"
+  },
+  {
+    "id": "loker-28",
+    "title": "Kabar Rekrutmen CPNS, BKPSDM Belitung Tunggu Surat Resmi dari Kemenpan-RB",
+    "company": "Info loker (berita)",
+    "location": "Bangka Belitung",
+    "salary": null,
+    "deadline": null,
+    "source": "Posbelitung.co",
+    "source_url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxOdGlFSnBIWWdmLWRIWmQzakMwekczYjhUdjlzaTNIS0xXOEVvbm9ab1BocFA3dS1YM2VyN1EwWU9xYkE0WEpPYWhwZmtfSWljRTNER1QxZUF0N2Y3VUxNMGQ3alczSGVCZVdZZDZBN2JQb1hPMElKcF9Na2E1V09hX0daR0pxYWpRUldlc3lXcF9TZmMwOEN2cjNRcWNFbm1UaVBWNFpqWXVtWWFiZElKNU95VENyYkc0?oc=5",
+    "region": "Belitung",
+    "posted_at": "2026-11-06T15:00+07:00"
+  },
+  {
+    "id": "loker-29",
+    "title": "Rekrutmen CPNS 2026 Segera Dimulai, Pemkab Bangka Tengah Ajukan 88 Formasi Guru dan Nakes",
+    "company": "Info loker (berita)",
+    "location": "Bangka Belitung",
+    "salary": null,
+    "deadline": null,
+    "source": "Bangkapos.com",
+    "source_url": "https://news.google.com/rss/articles/CBMizAFBVV95cUxNX19OeTBEZ2hBOFBFc0Ewc0hoQ0E1LXpnNUdnWGJNT2VOZV9FY3dWUEZGOTJuSDRXRFZjVDItZ2E5NDdlbUYxUjFMQnlmUXJkWHlUSmJNdVh2V0Y2RmUzTWF6ci1ZaFVBeVlsLTFCQWhxYzBkdkFjdk5jXy1GdnFiSndzcFpadHNUTnZDMWdDc3BfQXFkWFo3ZG5pNUVmMDZpR1ZxeV9oVUN3OExrMGoxaURsUjFESlpmdk5yMW01blRGUE92dGV4UEZuVHI?oc=5",
+    "region": "Bangka",
+    "posted_at": "2026-11-06T15:00+07:00"
+  },
+  {
+    "id": "loker-30",
+    "title": "Field Account Consultant (Pangkal Pinang)",
+    "company": "BCA Finance",
+    "location": "Bukitintan, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/field-account-consultant-pangkal-pinang/101cdc62-1cac-4ea7-b979-3a0af16f0507",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-06T13:21+07:00"
+  },
+  {
+    "id": "loker-31",
+    "title": "Tutor Bahasa Inggris",
+    "company": "Kampung Inggris Babel",
+    "location": "Girimaya, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/tutor-bahasa-inggris/988f0d27-e6cc-4b93-8b50-23cc9f7ddc28",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-06T13:16+07:00"
+  },
+  {
+    "id": "loker-32",
+    "title": "Ops Supervisor",
+    "company": "Turas Group Indonesia",
+    "location": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/ops-supervisor/f59ce932-2b3a-4daa-9f85-0c6b6d96951e",
+    "region": "Belitung",
+    "posted_at": "2026-11-05T19:09+07:00"
+  },
+  {
+    "id": "loker-33",
+    "title": "Photo Editing - Technical Trainer",
+    "company": "Turas Group Indonesia",
+    "location": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/photo-editing-technical-trainer/d8927e56-12be-4216-811f-c05799ee2e43",
+    "region": "Belitung",
+    "posted_at": "2026-11-05T19:02+07:00"
+  },
+  {
+    "id": "loker-34",
+    "title": "HR Manager",
+    "company": "Turas Group Indonesia",
+    "location": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/hr-manager/ab3b46b9-330d-4bdd-975d-cfb654b28397",
+    "region": "Belitung",
+    "posted_at": "2026-11-05T18:50+07:00"
+  },
+  {
+    "id": "loker-35",
+    "title": "Polisi Peduli Pengangguran, Polres Bangka Barat Dorong Kemudahan Akses Informasi Lowongan Kerja",
+    "company": "Info loker (berita)",
+    "location": "Bangka Belitung",
+    "salary": null,
+    "deadline": null,
+    "source": "BabelReview",
+    "source_url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNMGVQTFJYWGs1b3BLZmQ0UlE2bTVabHpRNk9qNGpaUkViTkQ3Mi1UM1QtS3pqVTF2dlIyekFhVnRLRmxWM3NYMHVyQ1ZVSWkwc3FkME1BUlNLa0l0cFBPSDJNZ2RobVdxdDlxT1VpLXFObm5jbHNodlZISndHN2o2dnhDd3RUUHFNOUUyemplWkVIMW9JX003VHNKOWtUMWM4QWZZZDVUb0dnXzMyaF9LZkxORTRvUTh5VHN3eHJR?oc=5",
+    "region": "Bangka",
+    "posted_at": "2026-11-05T15:00+07:00"
+  },
+  {
+    "id": "loker-36",
+    "title": "Driver Dumptruck (Supir)",
+    "company": "PT PAYUNG MITRAJAYA MANDIRI",
+    "location": "Bakam, Bangka, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/driver-dumptruck-supir/52954588-d04a-4176-b0e8-217ef074fae0",
+    "region": "Bangka",
+    "posted_at": "2026-11-05T15:00+07:00"
+  },
+  {
+    "id": "loker-37",
+    "title": "Kennel Boy",
+    "company": "PT Mitra Elang Bersatu",
+    "location": "Belinyu, Bangka, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/kennel-boy/f9eecd27-0b3a-4800-ae2e-a0b5e1dffc78",
+    "region": "Bangka",
+    "posted_at": "2026-11-05T11:32+07:00"
+  },
+  {
+    "id": "loker-38",
+    "title": "Staff Support Freelance",
+    "company": "Pt Botanica Home Fragrance",
+    "location": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/staff-support-freelance/d7911e44-b15e-45e4-8420-fe7f0417dd9c",
+    "region": "Belitung",
+    "posted_at": "2026-11-05T11:14+07:00"
+  },
+  {
+    "id": "loker-39",
+    "title": "STAFF PENAGIHAN AREA PANGKAL PINANG (URGENT)",
+    "company": "PT SWAKARYA INSAN MANDIRI CENTRAL 4",
+    "location": "Gerunggang, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/staff-penagihan-area-pangkal-pinang-urgent/31f3d819-0cd7-42ed-9f3a-46bbc6f925a2",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-05T05:26+07:00"
+  },
+  {
+    "id": "loker-40",
+    "title": "STAFF TAX ACCOUNTING",
+    "company": "Taxco Solution",
+    "location": "Rangkui, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/staff-tax-accounting/325f2507-5a42-472a-a862-71c0b744e99a",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-05T01:07+07:00"
+  },
+  {
+    "id": "loker-41",
+    "title": "Apoteker Penanggung Jawab Sozo Dental Pangkal Pinang",
+    "company": "SOZO Dental (Seven Retail Group)",
+    "location": "Girimaya, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/apoteker-penanggung-jawab-sozo-dental-pangkal-pinang/7408b8a6-a36a-48e9-88ed-94594f11ea86",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-04T10:12+07:00"
+  },
+  {
+    "id": "loker-42",
+    "title": "Marketing Officer Sharia (Area Pangkal Pinang)",
+    "company": "PT SAPTA SINERGI BERKARYA",
+    "location": "Girimaya, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/marketing-officer-sharia-area-pangkal-pinang/88b0f50b-8af9-4ef7-8d4d-6b889f514d0b",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-11-03T10:58+07:00"
+  },
+  {
+    "id": "loker-43",
+    "title": "MARKETING BANGKA",
+    "company": "PT SWAKARYA INSAN MANDIRI CENTRAL 4",
+    "location": "Sungailiat, Bangka, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/marketing-bangka/e1899727-07c4-4cf3-b38e-bf7650acbf0d",
+    "region": "Bangka",
+    "posted_at": "2026-11-03T09:20+07:00"
+  },
+  {
+    "id": "loker-44",
+    "title": "Admission and Communication Staff (Placement: Pangkal Pinang)",
+    "company": "Mutiara Harapan Islamic School Bangka",
+    "location": "Gabek, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/admission-and-communication-staff-placement-pangkal-pinang/2c77a761-f966-491b-9c1b-36617d8a7f21",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-10-31T01:13+07:00"
+  },
+  {
+    "id": "loker-45",
+    "title": "Barista",
+    "company": "Billiton Street Food",
+    "location": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/barista/fd7c0a45-5f2c-4214-bf4d-8f8256318fa0",
+    "region": "Belitung",
+    "posted_at": "2026-10-30T14:30+07:00"
+  },
+  {
+    "id": "loker-46",
+    "title": "Educational Sales Representative Bangka Barat",
+    "company": "PT INTAN PARIWARA GROUP",
+    "location": "Muntok, Bangka Barat, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/educational-sales-representative-bangka-barat/6b67684b-778c-4f13-bbfb-c86fa60bb46e",
+    "region": "Bangka",
+    "posted_at": "2026-10-30T08:19+07:00"
+  },
+  {
+    "id": "loker-47",
+    "title": "Social Media Specialist Intern (Placement : Pangkalpinang)",
+    "company": "Mutiara Harapan Islamic School Bangka",
+    "location": "Gabek, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/social-media-specialist-intern-placement-pangkalpinang/10cdaef6-6cb9-4223-9c16-07da19c2d16e",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-10-30T01:10+07:00"
+  },
+  {
+    "id": "loker-48",
+    "title": "KOLEKTOR PANGKAL PINANG",
+    "company": "PT SWAKARYA INSAN MANDIRI CENTRAL 4",
+    "location": "Gabek, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/kolektor-pangkal-pinang/e798f09e-4b6a-4697-b6a9-4eb5da187edf",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-10-29T05:10+07:00"
+  },
+  {
+    "id": "loker-49",
+    "title": "HR Development",
+    "company": "Legal Kreatif",
+    "location": "Sungailiat, Bangka, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/hr-development/e4da35d7-a036-435b-9961-a0c692cef880",
+    "region": "Bangka",
+    "posted_at": "2026-10-28T15:50+07:00"
+  },
+  {
+    "id": "loker-50",
+    "title": "Sales Canvasser (Horeka) - Pangkal Pinang",
+    "company": "PT Transretail Indonesia",
+    "location": "Gerunggang, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/sales-canvasser-horeka-pangkal-pinang/f36630a4-604f-44bf-96df-b4d4f1e8d110",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-10-28T14:25+07:00"
+  },
+  {
+    "id": "loker-51",
+    "title": "Customer Service Representative XLSmart Belitung",
+    "company": "PT. Duta Generasi Mandiri",
+    "location": "Pulaubesar, Bangka Selatan, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/customer-service-representative-xlsmart-belitung/8c75fd2e-a895-4260-9423-49cbf25de594",
+    "region": "Belitung",
+    "posted_at": "2026-10-28T10:28+07:00"
+  },
+  {
+    "id": "loker-52",
+    "title": "Marketing Head Multiguna R2 - Bangka Belitung",
+    "company": "Nusantara Sakti Group",
+    "location": "Toboali, Bangka Selatan, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/marketing-head-multiguna-r2-bangka-belitung/e2b143bb-bde2-4f78-82bf-238e9b49d260",
+    "region": "Bangka",
+    "posted_at": "2026-10-28T09:49+07:00"
+  },
+  {
+    "id": "loker-53",
+    "title": "Mekanik Mobil",
+    "company": "PT INTINUSA MITRA SUKSES",
+    "location": "Belitung",
+    "salary": null,
+    "deadline": null,
+    "source": "Loker.id",
+    "source_url": "https://www.loker.id/teknik/otomotif/mekanik-mobil-pt-intinusa-mitra-sukses-belitung-2.html",
+    "region": "Belitung",
+    "posted_at": "2026-10-27T21:19+07:00"
+  },
+  {
+    "id": "loker-54",
+    "title": "Sport Center Manager",
+    "company": "PT. Talenta Eksekutif Asia (Matcha Talent)",
+    "location": "Pangkal Pinang",
+    "salary": null,
+    "deadline": null,
+    "source": "Loker.id",
+    "source_url": "https://www.loker.id/kesehatan-dan-kedokteran/instruktur-kebugaran/sport-center-manager-pt-talenta-eksekutif-asia-matcha-talent-pangkal-pinang.html",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-10-27T21:19+07:00"
+  },
+  {
+    "id": "loker-55",
+    "title": "Sales Kordinator",
+    "company": "Toyota Istana Agung",
+    "location": "Pangkal Pinang",
+    "salary": null,
+    "deadline": null,
+    "source": "Loker.id",
+    "source_url": "https://www.loker.id/penjualan/manajemen-penjualan/sales-kordinator-toyota-istana-agung-pangkal-pinang.html",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-10-27T21:19+07:00"
+  },
+  {
+    "id": "loker-56",
+    "title": "Sales Marketing",
+    "company": "Toyota Istana Agung",
+    "location": "Pangkal Pinang",
+    "salary": null,
+    "deadline": null,
+    "source": "Loker.id",
+    "source_url": "https://www.loker.id/penjualan/konsultan-penjualan/sales-marketing-toyota-istana-agung-pangkal-pinang.html",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-10-27T21:19+07:00"
+  },
+  {
+    "id": "loker-57",
+    "title": "Office boy Bangka",
+    "company": "PT Jagratara Delapan Empat",
+    "location": "Gabek, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/office-boy-bangka/aa08c33a-6a3e-49dc-aa83-d0b01ef59b75",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-10-26T17:33+07:00"
+  },
+  {
+    "id": "loker-58",
+    "title": "Anak Buah Kandang Ayam Petelur",
+    "company": "PT Mitra Elang Bersatu",
+    "location": "Belinyu, Bangka, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/anak-buah-kandang-ayam-petelur/58c8b9a5-08bd-48c5-b6ac-ce4f914590f7",
+    "region": "Bangka",
+    "posted_at": "2026-10-26T14:07+07:00"
+  },
+  {
+    "id": "loker-59",
+    "title": "Mekanik Mobil Mesin Diesel",
+    "company": "PT Mitra Elang Bersatu",
+    "location": "Belinyu, Bangka, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/mekanik-mobil-mesin-diesel/d7f9c1b8-73ad-4fa5-b89c-c63a53a35210",
+    "region": "Bangka",
+    "posted_at": "2026-10-26T14:07+07:00"
+  },
+  {
+    "id": "loker-60",
+    "title": "HR Staff Intern (Placement : Pangkalpinang, Bangka)",
+    "company": "Mutiara Harapan Islamic School Bangka",
+    "location": "Gabek, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/hr-staff-intern-placement-pangkalpinang-bangka/9a2ecb0c-d5d3-4c8b-8710-b38c45c5c166",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-10-23T10:14+07:00"
+  },
+  {
+    "id": "loker-61",
+    "title": "English Trainer / English Teacher",
+    "company": "LPK Pasti Bisa",
+    "location": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/english-trainer-english-teacher/5a1f7f37-2a87-45f3-aa0c-0b7e04d9ccf6",
+    "region": "Belitung",
+    "posted_at": "2026-10-23T09:20+07:00"
+  },
+  {
+    "id": "loker-62",
+    "title": "Dokter Hewan",
+    "company": "Alobi Foundation",
+    "location": "Taman Sari, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/dokter-hewan/d5e39564-0012-4102-8d2b-ac272b04385e",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-10-22T16:50+07:00"
+  },
+  {
+    "id": "loker-63",
+    "title": "Administration Staff (Placement : Pangkal Pinang)",
+    "company": "Mutiara Harapan Islamic School Bangka",
+    "location": "Gabek, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/administration-staff-placement-pangkal-pinang/5cc939e6-f19e-4174-8c3a-e5974d37935b",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-10-21T09:25+07:00"
+  },
+  {
+    "id": "loker-64",
+    "title": "Physical Education / PJOK Teacher (Academic Year 2027/2028)",
+    "company": "Mutiara Harapan Islamic School Bangka",
+    "location": "Gabek, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/physical-education-pjok-teacher-academic-year-2027-2028/532d104a-5c42-447c-87f7-b63b83823fad",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-10-21T08:41+07:00"
+  },
+  {
+    "id": "loker-65",
+    "title": "Staff Accounting, Finance & Tax",
+    "company": "Panglima Kuliner Indonesia",
+    "location": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/staff-accounting-finance-tax/542a58fb-22ec-4ee6-ae2e-374c565993ae",
+    "region": "Belitung",
+    "posted_at": "2026-10-20T09:00+07:00"
+  },
+  {
+    "id": "loker-66",
+    "title": "Sales Promoter (SPG/SPB) - Bangka Belitung",
+    "company": "PT. Artha Dana Teknologi (Indodana)",
+    "location": "Bukitintan, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+    "salary": null,
+    "deadline": null,
+    "source": "Glints",
+    "source_url": "https://glints.com/id/opportunities/jobs/sales-promoter-spg-spb-bangka-belitung/c64b4746-bd8d-41d3-8546-d66aa58e2aa4",
+    "region": "Pangkal Pinang",
+    "posted_at": "2026-10-19T15:59+07:00"
+  }
+];
+
+export const PRODUCTS: DigitalProduct[] = [
+  {
+    "id": "epic-video-generator",
+    "name": "iTAP Epic Video Generator",
+    "tag": "Tools AI",
+    "desc": "Bikin prompt video epik tinggal klik: 6 scene x 10 detik, prompt visual EN untuk Veo/Grok Imagine/Kling, narasi Indonesia utuh, musik & SFX, subtitle SRT. Bisa dipasang di HP.",
+    "price": 49000,
+    "was_price": 99000,
+    "price_note": "Lifetime",
+    "badge": "Baru"
+  },
+  {
+    "id": "itap-kasir",
+    "name": "iTAP Kasir (AI)",
+    "tag": "Aplikasi",
+    "desc": "Kasir di HP untuk warung & kedai: foto barang, AI isi keranjang. Stok, kulakan, opname, laba & struk WA tercatat otomatis. Data tersimpan di HP sendiri.",
+    "price": 49000,
+    "was_price": 79000,
+    "price_note": "per bulan · Tahunan Rp399.000",
+    "badge": "Baru"
+  },
+  {
+    "id": "ebook-video-ai",
+    "name": "Ebook Bikin Video Sinematik AI dari HP",
+    "tag": "Ebook",
+    "desc": "Panduan membuat video sinematik AI dari HP — dari riset sampai publikasi.",
+    "price": 20000,
+    "was_price": 99000,
+    "price_note": "Sekali bayar",
+    "badge": null
+  },
+  {
+    "id": "100-prompt-sinematik",
+    "name": "100 Prompt Sinematik AI (Siap Copas)",
+    "tag": "Prompt",
+    "desc": "Seratus prompt sinematik siap salin-tempel untuk video AI.",
+    "price": 36000,
+    "was_price": 120000,
+    "price_note": "Sekali bayar",
+    "badge": null
+  },
+  {
+    "id": "ai-prompt-pack",
+    "name": "iTAP AI Prompt Pack",
+    "tag": "Prompt",
+    "desc": "PDF 13 halaman: formula video sinematik 6 scene, 30 prompt siap pakai, character sheet wajah konsisten, thumbnail & template caption.",
+    "price": 35000,
+    "was_price": 49000,
+    "price_note": "Sekali bayar",
+    "badge": "Baru"
+  },
+  {
+    "id": "paket-hemat-kreator",
+    "name": "Paket Hemat Kreator",
+    "tag": "Paket",
+    "desc": "Paket hemat gabungan produk digital kreator iTAP.",
+    "price": 59000,
+    "was_price": null,
+    "price_note": "Sekali bayar",
+    "badge": "Paket hemat"
+  }
+];
+
+export const SERVICES: Service[] = [
+  {
+    "id": "jasa-website",
+    "name": "Jasa Website UMKM",
+    "desc": "Website untuk usaha kecil Belitung: landing page, toko/katalog, dan perawatan bulanan.",
+    "price_from": 350000,
+    "price_note": "Landing page Rp350rb · Toko/katalog Rp750rb · Maintenance Rp50rb/bln",
+    "features": [
+      "Landing page Rp350.000",
+      "Toko/katalog Rp750.000",
+      "Maintenance Rp50.000/bulan"
+    ]
+  },
+  {
+    "id": "jasa-chatbot-wa",
+    "name": "Jasa Chatbot WhatsApp",
+    "desc": "Auto-balas & terima pesanan 24 jam lewat WhatsApp.",
+    "price_from": 300000,
+    "price_note": "Mulai Rp300rb + Rp100rb/bln",
+    "features": [
+      "Auto-balas 24 jam",
+      "Terima pesanan otomatis",
+      "Mulai Rp300.000 + Rp100.000/bulan"
+    ]
+  },
+  {
+    "id": "jasa-video-ai",
+    "name": "Jasa Video AI Sinematik",
+    "desc": "Video AI sinematik 6 scene, siap tayang di Reels/TikTok.",
+    "price_from": 160000,
+    "price_note": "1 video Rp160rb · 6 video Rp920rb · 12 video/bln Rp1,8jt",
+    "features": [
+      "1 video (6 scene) Rp160.000",
+      "Paket 6 video Rp920.000 (hemat Rp40.000)",
+      "12 video/bulan Rp1.800.000 (hemat Rp120.000)"
+    ]
+  },
+  {
+    "id": "kelas-k1",
+    "name": "Kelas K1 — Kreator Video AI Lokal",
+    "desc": "Kursus video 5-12 menit per materi + PDF + template. Total sekitar 2-3 jam.",
+    "price_from": 149000,
+    "price_note": "Rp149.000 (normal Rp199.000)",
+    "features": [
+      "Video per materi + PDF",
+      "Template naskah & prompt",
+      "Belajar mandiri"
+    ]
+  },
+  {
+    "id": "kelas-k2",
+    "name": "Kelas K2 — Kursus + Mentoring 30 Hari",
+    "desc": "Semua isi K1 ditambah grup WhatsApp batch (maks 20 orang), 4x sesi live/Zoom mingguan, dan review 2 video per peserta.",
+    "price_from": 349000,
+    "price_note": "Rp349.000",
+    "features": [
+      "Semua isi K1",
+      "Grup WhatsApp batch (maks 20 orang)",
+      "4x sesi live/Zoom mingguan",
+      "Review 2 video per peserta"
+    ]
+  },
+  {
+    "id": "pasang-iklan",
+    "name": "Slot Iklan iTAP",
+    "desc": "Promosikan usaha Belitung kamu di portal iTAP.",
+    "price_from": 50000,
+    "price_note": "Mulai Rp50rb/minggu",
+    "features": [
+      "Slot di beranda portal",
+      "Mulai Rp50.000/minggu"
+    ]
+  }
+];
+
+export const KEDAI: Kedai = {
+  "name": "Kedai Bakso Aci iTAP",
+  "address": "Jl. Permata VI, Puri Kirana 3, Blok H No. 25, Air Merbau, Tanjung Pandan 33414",
+  "hours": "Buka setiap hari 11.00-22.00 WIB",
+  "maps_url": "https://www.google.com/maps/dir/?api=1&destination=-2.719012,107.677769",
+  "grabfood_url": "https://r.grab.com/g/6-20260510_162421_4039400cbca040d580dd39269511dcc8_MEXMPS-6-C7JCKE3BUGAEUA",
+  "gofood_url": "https://gofood.link/a/PXng6F7",
+  "whatsapp": "6285141121283",
+  "menu": [
+    {
+      "id": "menu-seblak-original",
+      "name": "Seblak Original",
+      "desc": "Seblak dengan chilli oil original pedas; kuah gurih berpadu rasa pedas yang meresap, lengkap dengan aneka isian pilihan dan kerupuk yang kenyal.",
+      "price": 18000,
+      "category": "Seblak",
+      "available": true,
+      "isExample": false
+    },
+    {
+      "id": "menu-boci-daging-mercon",
+      "name": "Baso Aci Daging Mercon",
+      "desc": "Kuah gurih pedas, baso aci kenyal, isian daging mercon melimpah.",
+      "price": 18000,
+      "category": "Baso Aci",
+      "available": true,
+      "isExample": false
+    },
+    {
+      "id": "menu-boci-keju-lumer",
+      "name": "Baso Aci Keju Lumer",
+      "desc": "Baso aci kenyal dengan isian keju lumer gurih yang meleleh di setiap gigitan.",
+      "price": 18000,
+      "category": "Baso Aci",
+      "available": true,
+      "isExample": false
+    },
+    {
+      "id": "menu-boci-tulang-rangu",
+      "name": "Baso Aci Tulang Rangu",
+      "desc": "Baso aci kenyal dengan isian tulang rangu gurih yang bikin setiap suapan makin nagih.",
+      "price": 18000,
+      "category": "Baso Aci",
+      "available": true,
+      "isExample": false
+    },
+    {
+      "id": "menu-lumpia-basah",
+      "name": "Lumpia Basah",
+      "desc": "Kulit lembut berpadu tumisan sayur dan telur yang kaya rasa; isian tauge dan telur dibalut kulit lumpia.",
+      "price": 15000,
+      "category": "Lumpia",
+      "available": true,
+      "isExample": false
+    },
+    {
+      "id": "menu-boci-daging-cincang",
+      "name": "Baso Aci Daging Cincang",
+      "desc": "Perpaduan baso aci kenyal dengan isian daging cincang gurih berbumbu yang bikin setiap suapan makin nagih.",
+      "price": 18000,
+      "category": "Baso Aci",
+      "available": true,
+      "isExample": false
+    }
+  ]
+};
+
+export const WA_NUMBER = "6285141121283";
+export const WA_DISPLAY = "0851-4112-1283";

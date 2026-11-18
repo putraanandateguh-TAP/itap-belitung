@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Ambil berita Belitung dari beberapa RSS -> data/berita.json. Hanya judul, link, cuplikan singkat.
 Kalau semua sumber gagal / hasil kosong, data lama dipertahankan (exit 1)."""
-import json, re, html, sys, urllib.request, urllib.parse, xml.etree.ElementTree as ET
+import json, re, html, sys, os, urllib.request, urllib.parse, xml.etree.ElementTree as ET
 from datetime import datetime, timezone, timedelta
 from email.utils import parsedate_to_datetime
-WIB = timezone(timedelta(hours=7)); OUT = "data/berita.json"
+WIB = timezone(timedelta(hours=7)); OUT = os.path.join(os.path.dirname(__file__), "..", "data", "berita.json")
 GN = "https://news.google.com/rss/search?hl=id&gl=ID&ceid=ID:id&q="
 SOURCES = [  # (nama, url, wajib filter kata kunci, maks item)
   ("Belitong Ekspres", GN + urllib.parse.quote("site:belitongekspres.disway.id (Belitung OR Beltim OR Tanjungpandan OR Manggar) when:14d"), True, 5),

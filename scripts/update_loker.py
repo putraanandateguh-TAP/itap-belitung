@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Lowongan kerja Belitung/Babel dari sumber publik -> data/loker.json (tanpa API berbayar).
 Sumber: Glints (NEXT_DATA), Loker.id (halaman lokasi), Google News RSS. Simpan 30 hari, terbaru dulu."""
-import json, re, html, urllib.request, urllib.parse, xml.etree.ElementTree as ET
+import json, re, html, os, urllib.request, urllib.parse, xml.etree.ElementTree as ET
 from datetime import datetime, timezone, timedelta
 from email.utils import parsedate_to_datetime
-WIB = timezone(timedelta(hours=7)); OUT = "data/loker.json"; NOW = datetime.now(WIB)
+WIB = timezone(timedelta(hours=7)); OUT = os.path.join(os.path.dirname(__file__), "..", "data", "loker.json"); NOW = datetime.now(WIB)
 UA = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"}
 LOC = re.compile(r"belitu?ng|belitong|tanjung ?pandan|manggar|bangka|pangkal ?pinang|babel|sungailiat|muntok|toboali|koba", re.I)
 REG = [("Belitung Timur", r"belitung timur|beltim|manggar|gantung|kelapa kampit|dendang|damar|simpang renggiang|simpang pesak"),
@@ -55,7 +55,11 @@ def gnews():
             t = clean(it.findtext("title")); src = it.findtext("source") or "Google News"
             t = re.sub(r"\s+-\s+" + re.escape(src) + r"$", "", t)
             if not re.search(r"lowongan|loker|rekrutmen|job ?fair|bursa kerja|dibutuhkan|penerimaan", t, re.I) or not LOC.search(t): continue
-            out.append({"title": t, "company": "Info loker (berita)", "location": "Bangka Belitung", "source": src.strip(), "date": parsedate_to_datetime(it.findtext("pubDate")).isoformat(), "url": it.findtext("link")})
+            try:
+                pub = parsedate_to_datetime(it.findtext("pubDate")).isoformat()
+            except Exception:
+                continue  # pubDate hilang/rusak: lewati item ini, jangan gugurkan seluruh sumber
+            out.append({"title": t, "company": "Info loker (berita)", "location": "Bangka Belitung", "source": src.strip(), "date": pub, "url": it.findtext("link")})
     return out
 try: old = {x["url"]: x for x in json.load(open(OUT))["items"]}
 except Exception: old = {}
@@ -71,7 +75,13 @@ for x in items:
     if k in seen or x["url"] in {r["url"] for r in res}: continue
     seen.add(k)
     if not x.get("date"): x["date"] = (old.get(x["url"]) or {}).get("date") or NOW.isoformat(timespec="minutes")  # tanggal pertama terlihat
-    dt = datetime.fromisoformat(x["date"].replace("Z", "+00:00")).astimezone(WIB)
+    try:
+        dt = datetime.fromisoformat(str(x["date"]).replace("Z", "+00:00")).astimezone(WIB)
+    except Exception as e:
+        # Satu tanggal rusak di data lama tidak boleh mengunci semua run berikutnya:
+        # lewati item ini, lanjut ke item lain.
+        print(f"::warning::lewati loker tanggal rusak: {x.get('url')} ({e})")
+        continue
     if NOW - dt > timedelta(days=30): continue
     x["date"] = dt.isoformat(timespec="minutes"); x["region"] = region(x); res.append(x)
 res.sort(key=lambda x: x["date"], reverse=True); res = res[:80]

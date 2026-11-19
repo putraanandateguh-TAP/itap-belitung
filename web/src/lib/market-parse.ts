@@ -149,7 +149,7 @@ export function goldPerGramIdr(usdPerTroyOz: number, usdIdr: number): number {
 // RSS (Google News) + slug
 // ---------------------------------------------------------------------------
 
-export type RssItem = { title: string; link: string; pubDate: Date | null; source: string };
+export type RssItem = { title: string; link: string; pubDate: Date | null; source: string; description: string };
 
 const XML_ENTITIES: [RegExp, string][] = [
   [/&amp;/g, "&"],
@@ -159,6 +159,7 @@ const XML_ENTITIES: [RegExp, string][] = [
   [/&apos;/g, "'"],
   [/&#39;/g, "'"],
   [/&#x27;/g, "'"],
+  [/&nbsp;/g, " "],
 ];
 
 export function decodeXmlEntities(s: string): string {
@@ -189,7 +190,12 @@ export function parseRss(xml: string): RssItem[] {
     const pubRaw = tagText(block, "pubDate");
     const pub = pubRaw ? new Date(pubRaw) : null;
     const source = tagText(block, "source") || "Google News";
-    items.push({ title, link, pubDate: pub && !Number.isNaN(pub.getTime()) ? pub : null, source });
+    // <description> Google News berisi cuplikan isi artikel (sering
+    // ber-HTML; tagText sudah membersihkan tag + entitas). Dipakai sebagai
+    // paragraf pertama body_id artikel agregasi supaya halaman artikel
+    // tidak kosong (perbaikan 19 Nov 2026).
+    const description = tagText(block, "description") || "";
+    items.push({ title, link, pubDate: pub && !Number.isNaN(pub.getTime()) ? pub : null, source, description });
   }
   return items;
 }

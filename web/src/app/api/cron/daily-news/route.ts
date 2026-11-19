@@ -13,9 +13,13 @@
 //   News bila sama dengan <source>); slug dari judul (unik per channel);
 //   channel = berita (RSS tidak membawa kategori; default berita);
 //   source = nama media (<source>); source_url = tautan asli;
-//   status = published; body_id = "" (kosong sesuai desain — pengguna
-//   baca di situs sumber; halaman artikel menampilkan banner agregasi +
-//   tombol "Baca di <sumber>"); published_at = tanggal RSS.
+//   status = published; body_id = deskripsi RSS (cuplikan isi, paragraf
+//   pertama) + catatan redaksi; bila deskripsi kosong, body_id = "".
+//   Halaman artikel tetap menampilkan banner agregasi + tombol
+//   "Baca di <sumber>" (cuplikan bukan isi penuh). Perbaikan 19 Nov 2026:
+//   13 artikel kabar lama body-nya kosong sehingga pengunjung tidak bisa
+//   membaca apa pun di iTAP; artikel agregasi baru tidak boleh kosong lagi.
+//   published_at = tanggal RSS.
 // - Hanya item <= 7 hari terakhir yang diambil.
 // - author_id = profil superadmin (dipilih saat jalan); bila tidak ada,
 //   job GAGAL terlihat — jangan karang UUID penulis.
@@ -132,6 +136,15 @@ export async function GET(req: Request) {
       skippedDuplicate++;
       continue;
     }
+    // Deskripsi RSS jadi paragraf pertama body agar halaman artikel
+    // agregasi tidak kosong. Deskripsi Google News hanya cuplikan — bukan
+    // isi penuh — jadi banner agregasi + tombol "Baca di <sumber>" tetap
+    // ditampilkan di halaman artikel. Bila deskripsi kosong, body tetap
+    // "" (perilaku lama) supaya job tidak gagal karena satu item.
+    const desc = (item.description || "").replace(/\s+/g, " ").trim();
+    const bodyId = desc
+      ? `${desc}\n\nCatatan redaksi: ringkasan ini adalah cuplikan dari ${item.source}; baca versi lengkapnya melalui tautan sumber di halaman ini.`
+      : "";
     await db
       .insert(t.articles)
       .values({
@@ -141,7 +154,7 @@ export async function GET(req: Request) {
         slug,
         titleId: title,
         titleEn: null,
-        bodyId: "",
+        bodyId,
         bodyEn: null,
         gallery: [],
         locationName: "Belitung",

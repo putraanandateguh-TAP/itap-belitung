@@ -4,7 +4,7 @@
 // -> kolom perubahan memakai catatan sumber ("Harga tetap / baru").
 import type { Metadata } from "next";
 import { getDailyPrices } from "@/lib/data";
-import { formatDateWIB, formatRupiah } from "@/lib/format";
+import { formatDateLoose, formatDateTimeLoose, formatRupiah } from "@/lib/format";
 import { Badge } from "@/components/ui";
 import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
@@ -25,13 +25,22 @@ export default async function HargaPanganPage() {
       <header>
         <h1 className="text-xl font-bold text-ink">{t(lang, "food.title")}</h1>
         <p className="mt-1 text-sm text-muted">
-          {prices.market} · {t(lang, "food.marketLabel")}: {prices.source_date} · {t(lang, "food.fetchedLabel")}: {prices.fetched_at}
+          {prices.market} · {t(lang, "food.marketLabel")}: {formatDateLoose(prices.source_date, lang)} · {t(lang, "food.fetchedLabel")}: {formatDateTimeLoose(prices.fetched_at, lang)}
         </p>
         <p className="mt-1 text-sm text-muted">
-          {t(lang, "food.sourceLabel")}: {prices.source}.{" "}
-          <a href={prices.source_url} target="_blank" rel="noopener noreferrer" className="font-semibold text-accent hover:underline focus-visible:outline-2 focus-visible:outline-accent">
-            {t(lang, "food.viewSource")}
-          </a>
+          {t(lang, "food.sourceLabel")}: {prices.source}
+          {/* Tautan sumber hanya tampil bila URL-nya ada: sebelumnya href=""
+              (source_url kosong di jalur DB) sehingga tautan mati. */}
+          {prices.source_url ? (
+            <>
+              .{" "}
+              <a href={prices.source_url} target="_blank" rel="noopener noreferrer" className="font-semibold text-accent hover:underline focus-visible:outline-2 focus-visible:outline-accent">
+                {t(lang, "food.viewSource")}
+              </a>
+            </>
+          ) : (
+            "."
+          )}
         </p>
       </header>
 

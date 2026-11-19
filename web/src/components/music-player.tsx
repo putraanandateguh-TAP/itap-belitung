@@ -41,6 +41,9 @@ export function MusicPlayer() {
   const failedRef = useRef(false);
   const [on, setOn] = useState(false);
   const [failed, setFailed] = useState(false);
+  // Tombol nonaktif sampai komponen ter-mount (hydrate): klik sebelum
+  // hydration hilang diam-diam karena handler belum terpasang (19 Nov 2026).
+  const [mounted, setMounted] = useState(false);
 
   const setFailedState = useCallback((v: boolean) => {
     failedRef.current = v;
@@ -112,6 +115,7 @@ export function MusicPlayer() {
   }, [on, start, stop, setFailedState]);
 
   useEffect(() => {
+    setMounted(true);
     const audio = new Audio(AUDIO_SRC);
     audio.loop = true;
     audio.preload = "none";
@@ -159,18 +163,29 @@ export function MusicPlayer() {
       type="button"
       data-music-toggle
       onClick={toggle}
+      disabled={!mounted}
       aria-pressed={on}
-      aria-label={on ? "Matikan musik latar" : "Putar musik latar"}
+      aria-label={
+        failed
+          ? "Musik latar gagal dimuat — ketuk untuk mencoba lagi"
+          : on
+            ? "Matikan musik latar"
+            : "Putar musik latar"
+      }
+      title={failed ? "Musik gagal dimuat — ketuk untuk mencoba lagi" : undefined}
       className={`inline-flex h-10 items-center gap-2 whitespace-nowrap rounded-md px-3 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent ${
         on ? "bg-accent text-on-accent hover:bg-accent-dark" : "text-ink hover:bg-surface"
-      }`}
+      } ${!mounted ? "opacity-60" : ""}`}
     >
       {on ? (
         <Volume2 className="size-5" aria-hidden="true" />
       ) : (
         <VolumeX className="size-5" aria-hidden="true" />
       )}
-      <span className="hidden sm:inline">{on ? "Musik hidup" : "Musik"}</span>
+      {/* Status gagal sebelumnya tidak pernah tampil di UI — pengguna tidak
+          tahu kenapa musik tidak berbunyi. Ketuk lagi untuk mencoba ulang
+          (toggle sudah me-reset failed sebelum start()). */}
+      <span className="hidden sm:inline">{failed ? "Musik gagal" : on ? "Musik hidup" : "Musik"}</span>
     </button>
   );
 }

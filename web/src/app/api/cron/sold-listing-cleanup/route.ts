@@ -1,4 +1,4 @@
-// Job 3/5 — sold-listing-cleanup (harian 02:00 WIB).
+// Job 5/7 — sold-listing-cleanup (harian 19:00 UTC (02:00 WIB)).
 // Daftar publik hanya menampilkan status='aktif', jadi listing terjual
 // otomatis hilang dari daftar. Job ini mengarsipkan listing terjual yang
 // sold_at-nya sudah >24 jam: status tetap 'terjual' (trigger melarang

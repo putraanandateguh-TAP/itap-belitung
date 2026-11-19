@@ -1,4 +1,4 @@
-// Job 5/5 — auth-cleanup (harian 04:00 WIB).
+// Job 7/7 — auth-cleanup (harian 21:00 UTC (04:00 WIB)).
 // Supabase Auth mengelola token reset/sesi sendiri; yang bisa dibersihkan
 // dari sisi aplikasi: baris devices dengan token FCM yang tidak pernah
 // dipakai (di sini: tidak ada pemakaian tercatat — FCM butuh P4) dan

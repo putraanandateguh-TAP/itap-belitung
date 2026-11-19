@@ -2,9 +2,11 @@
 // Lirik HANYA tampil bila ada di sumber nyata; bila null, tampilkan pesan
 // jujur (jangan karang lirik). Sama untuk sumber bacaan yang kosong.
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCultureStory } from "@/lib/daily";
+import { CULTURE_IMAGES } from "@/lib/photo-map";
 import { Badge, Banner } from "@/components/ui";
 import { cultureLabel } from "@/lib/labels";
 import { getServerLang } from "@/lib/i18n-server";
@@ -39,7 +41,18 @@ export default async function BudayaDetailPage({ params }: { params: Promise<{ s
         </p>
       </header>
 
-      <article className="flex flex-col gap-4 rounded-lg border border-line bg-canvas p-4 shadow-card md:p-6">
+      <article className="flex flex-col gap-4 overflow-hidden rounded-lg border border-line bg-canvas p-4 shadow-card md:p-6">
+        {CULTURE_IMAGES[slug] && (
+          <div className="relative -m-4 mb-0 aspect-video overflow-hidden bg-surface-alt md:-m-6 md:mb-0">
+            <Image
+              src={CULTURE_IMAGES[slug]}
+              alt={story.title}
+              fill
+              sizes="(max-width: 768px) 100vw, 800px"
+              className="object-cover"
+            />
+          </div>
+        )}
         {paragraphs.map((p, i) => (
           <p key={i} className="text-base leading-relaxed text-ink">{p}</p>
         ))}

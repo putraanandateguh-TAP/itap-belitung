@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { siteUrl } from "@/lib/site-url";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
 import { MapPin } from "lucide-react";
 import { getArticle, getRelated, listComments } from "@/lib/data";
 import { categoryName } from "@/lib/data";
@@ -34,7 +35,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const article = await getArticle(slug);
+  // Hitung view sekali per sesi: cookie itap_read_<slug> dipasang middleware
+  // saat artikel pertama kali dibuka (cookie sesi). Tanpa ini, satu kali buka
+  // halaman menaikkan 3x (generateMetadata + halaman + getRelated memanggil
+  // getArticle) — mis. 906 -> 909 dari satu kunjungan (bug 19 Nov 2026).
+  const alreadyRead = (await cookies()).has(`itap_read_${slug}`);
+  const article = await getArticle(slug, { countView: !alreadyRead });
   if (!article || article.status !== "published") notFound();
   const lang = await getServerLang();
   const [related, comments, categoryNameValue] = await Promise.all([getRelated(slug), listComments(slug), categoryName(article.category_id, lang)]);

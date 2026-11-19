@@ -11,6 +11,7 @@ import { WA_NUMBER } from "@/lib/seed-data";
 import { formatRupiah } from "@/lib/format";
 import { Badge, Banner } from "@/components/ui";
 import { LicenseSection } from "@/components/license-section";
+import { PRODUCT_IMAGES } from "@/lib/photo-map";
 import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 
@@ -41,26 +42,39 @@ export default async function ProdukPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {products.map((p) => (
-          <article key={p.id} className="flex flex-col gap-2 rounded-lg border border-line bg-canvas p-4 shadow-card">
-            <div className="flex items-center gap-2">
-              <Badge tone="info">{p.tag}</Badge>
-              {p.badge && <Badge tone="active">{p.badge}</Badge>}
+          <article key={p.id} className="flex flex-col gap-2 overflow-hidden rounded-lg border border-line bg-canvas shadow-card">
+            {PRODUCT_IMAGES[p.tag] && (
+              <div className="relative aspect-video overflow-hidden bg-surface-alt">
+                <Image
+                  src={PRODUCT_IMAGES[p.tag]}
+                  alt={p.name}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover"
+                />
+              </div>
+            )}
+            <div className="flex flex-1 flex-col gap-2 p-4">
+              <div className="flex items-center gap-2">
+                <Badge tone="info">{p.tag}</Badge>
+                {p.badge && <Badge tone="active">{p.badge}</Badge>}
+              </div>
+              <h2 className="text-base font-semibold text-ink">{p.name}</h2>
+              <p className="flex-1 text-sm text-muted">{p.desc}</p>
+              <p className="text-lg font-bold text-ink">
+                {p.was_price && <s className="mr-2 text-sm font-normal text-muted">{formatRupiah(p.was_price)}</s>}
+                {formatRupiah(p.price)}
+                <span className="ml-2 text-sm font-normal text-muted">{p.price_note}</span>
+              </p>
+              <a
+                href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(`Halo iTAP, saya mau beli ${p.name} (${formatRupiah(p.price)})`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-on-accent hover:bg-accent-dark focus-visible:outline-2 focus-visible:outline-accent"
+              >
+                {t(lang, "produk.buyViaWa", { name: p.name })}
+              </a>
             </div>
-            <h2 className="text-base font-semibold text-ink">{p.name}</h2>
-            <p className="flex-1 text-sm text-muted">{p.desc}</p>
-            <p className="text-lg font-bold text-ink">
-              {p.was_price && <s className="mr-2 text-sm font-normal text-muted">{formatRupiah(p.was_price)}</s>}
-              {formatRupiah(p.price)}
-              <span className="ml-2 text-sm font-normal text-muted">{p.price_note}</span>
-            </p>
-            <a
-              href={`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(`Halo iTAP, saya mau beli ${p.name} (${formatRupiah(p.price)})`)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex h-10 items-center justify-center rounded-md bg-accent px-4 text-sm font-semibold text-on-accent hover:bg-accent-dark focus-visible:outline-2 focus-visible:outline-accent"
-            >
-              {t(lang, "produk.buyViaWa", { name: p.name })}
-            </a>
           </article>
         ))}
       </div>

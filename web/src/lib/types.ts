@@ -23,8 +23,9 @@ export interface Article {
   title_en: string | null;
   body_id: string[];
   body_en: string[] | null;
-  /** Galeri: tanpa URL foto asli di fase ini — komponen merender placeholder. */
-  gallery: { alt: string; caption: string }[];
+  /** Galeri: tiap item boleh membawa URL foto publik (Storage
+   * article-images). Tanpa url, komponen merender placeholder jujur. */
+  gallery: { alt: string; caption: string; url?: string }[];
   location_name: string;
   location_lat: number | null;
   location_lng: number | null;

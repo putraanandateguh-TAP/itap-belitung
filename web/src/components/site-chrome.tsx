@@ -74,13 +74,10 @@ export function SiteHeader() {
           >
             {t("nav.dailyInfo")}
           </Link>
-          <Link
-            href="/budaya"
-            aria-current={isActive("/budaya") ? "page" : undefined}
-            className={`rounded-md px-2 py-2 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent ${isActive("/budaya") ? "text-accent underline decoration-accent decoration-2 underline-offset-4" : "text-ink hover:bg-surface"}`}
-          >
-            {t("nav.culture")}
-          </Link>
+          {/* "Budaya" TIDAK ditautkan terpisah di sini: CHANNEL_LINKS di atas
+              sudah memuat Budaya (/kanal/budaya). Tautan /budaya (hub cerita
+              budaya) yang dulu berdampingan dihapus — dobel label (bug 19 Nov 2026).
+              Hub /budaya tetap bisa dibuka dari footer (kolom Kanal). */}
           <Link
             href="/ai"
             aria-current={isActive("/ai") ? "page" : undefined}
@@ -156,11 +153,6 @@ export function SiteHeader() {
               </Link>
             </li>
             <li>
-              <Link href="/budaya" onClick={() => setMenuOpen(false)} className="block rounded-md px-3 py-2 text-sm font-semibold text-ink hover:bg-surface">
-                {t("nav.culture")}
-              </Link>
-            </li>
-            <li>
               <Link href="/ai" onClick={() => setMenuOpen(false)} className="block rounded-md px-3 py-2 text-sm font-semibold text-ink hover:bg-surface">
                 {t("nav.ai")}
               </Link>
@@ -180,7 +172,6 @@ export function SiteHeader() {
             </li>
             {[
               { href: "/info-harian", key: "nav.dailyInfo" },
-              { href: "/budaya", key: "nav.culture" },
               { href: "/ai", key: "nav.ai" },
               { href: "/penerjemah", key: "nav.translator" },
               ...MORE_LINKS,
@@ -227,13 +218,16 @@ export function SiteFooter() {
             {CHANNEL_LINKS.map((l) => (
               <li key={l.href}><Link href={l.href} className="text-ink-on-dark hover:underline focus-visible:outline-2 focus-visible:outline-accent">{l.label}</Link></li>
             ))}
+            {/* Hub cerita budaya (/budaya) — label dibedakan ("Budaya Belitung")
+                supaya tidak dobel dengan "Budaya" (/kanal/budaya) di atas.
+                Sebelumnya tautan ini salah masuk di kolom "Info Harian". */}
+            <li><Link href="/budaya" className="text-ink-on-dark hover:underline focus-visible:outline-2 focus-visible:outline-accent">{t("budaya.title")}</Link></li>
           </ul>
         </nav>
         <nav aria-label={t("nav.dailyInfo")}>
           <p className="text-sm font-semibold text-accent-light">{t("nav.dailyInfoItap")}</p>
           <ul className="mt-3 flex flex-col gap-2 text-sm">
             <li><Link href="/info-harian" className="hover:underline focus-visible:outline-2 focus-visible:outline-accent">{t("nav.dailyInfo")}</Link></li>
-            <li><Link href="/budaya" className="hover:underline focus-visible:outline-2 focus-visible:outline-accent">{t("nav.culture")}</Link></li>
             <li><Link href="/ai" className="hover:underline focus-visible:outline-2 focus-visible:outline-accent">{t("nav.ai")}</Link></li>
             <li><Link href="/penerjemah" className="hover:underline focus-visible:outline-2 focus-visible:outline-accent">{t("nav.translator")}</Link></li>
             <li><Link href="/harga-pangan" className="hover:underline focus-visible:outline-2 focus-visible:outline-accent">{t("nav.foodPrices")}</Link></li>

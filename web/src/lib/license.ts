@@ -21,7 +21,13 @@ export const NO_ENTITLEMENT: Entitlement = {
 
 export async function fetchEntitlement(): Promise<Entitlement> {
   try {
-    const res = await fetch("/api/license/entitlement", { cache: "no-store" });
+    // Batas waktu 10 detik: tanpa timeout, Edge Function yang cold-start /
+    // menggantung membuat "Memeriksa lisensi…" tampil selamanya (bug 19 Nov
+    // 2026). Gagal / timeout = fail-closed (NO_ENTITLEMENT).
+    const res = await fetch("/api/license/entitlement", {
+      cache: "no-store",
+      signal: AbortSignal.timeout(10_000),
+    });
     if (!res.ok) return NO_ENTITLEMENT;
     const j = (await res.json()) as Partial<Entitlement>;
     return {

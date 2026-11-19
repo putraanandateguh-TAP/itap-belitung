@@ -39,6 +39,35 @@ export function formatDateTimeWIB(iso: string, lang: Lang = "id"): string {
   }).format(new Date(iso)) + " WIB";
 }
 
+/** Format tanggal yang toleran terhadap berbagai bentuk sumber:
+ * ISO ("2026-11-01", "2026-11-18T05:32:00.000Z"), "DD-MM-YYYY"
+ * ("01-11-2026" -> 1 Nov 2026), atau yang sudah berformat manusia
+ * ("17 November 2026", "2026-11-17 16:00 WIB") -> dikembalikan apa adanya.
+ * Dipakai di halaman yang datanya bisa datang dari DB (ISO) maupun seed
+ * (format manusia) — jangan sampai tampil "Invalid Date" atau tanggal salah. */
+export function formatDateLoose(value: string | null | undefined, lang: Lang = "id"): string {
+  if (!value) return "—";
+  const v = value.trim();
+  if (/WIB/i.test(v)) return v; // sudah berformat manusia + zona
+  const ddmmyyyy = /^(\d{2})-(\d{2})-(\d{4})$/.exec(v);
+  const iso = ddmmyyyy ? `${ddmmyyyy[3]}-${ddmmyyyy[2]}-${ddmmyyyy[1]}` : v;
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return v; // tidak bisa diparse -> tampilkan apa adanya
+  return formatDateWIB(iso, lang);
+}
+
+/** Seperti formatDateLoose, tapi dengan jam ("10 Okt 2026 · 08.00 WIB"). */
+export function formatDateTimeLoose(value: string | null | undefined, lang: Lang = "id"): string {
+  if (!value) return "—";
+  const v = value.trim();
+  if (/WIB/i.test(v)) return v;
+  const ddmmyyyy = /^(\d{2})-(\d{2})-(\d{4})$/.exec(v);
+  const iso = ddmmyyyy ? `${ddmmyyyy[3]}-${ddmmyyyy[2]}-${ddmmyyyy[1]}` : v;
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return v;
+  return formatDateTimeWIB(iso, lang);
+}
+
 /** "2 hari lalu" / "2 days ago" — relatif terhadap sekarang, WIB. */
 export function formatRelativeWIB(iso: string, lang: Lang = "id"): string {
   const diffMs = Date.now() - new Date(iso).getTime();

@@ -1,4 +1,4 @@
-// Job 2/5 — availability-reminders (harian 09:00 WIB).
+// Job 3/7 — availability-reminders (harian 02:00 UTC (09:00 WIB)).
 // Listing aktif yang last_confirmed_at-nya sudah >7 hari dianggap perlu
 // diingatkan. Job ini TIDAK mengirim push sendiri (FCM butuh P4): ia
 // mengembalikan daftar penjual yang perlu diingatkan; pengiriman push

@@ -87,6 +87,21 @@ export default async function KedaiPage() {
             {t(lang, "kedai.menuBoardCaption")}
           </figcaption>
         </figure>
+        {/* Daftar menu versi TEKS (nama + harga) — bisa dibaca, dicari, dan
+            dibaca screen reader tanpa mengandalkan gambar papan menu
+            (bug 19 Nov 2026: menu + harga hanya ada di dalam gambar). */}
+        <ul aria-label={t(lang, "kedai.menu")} className="mt-4 divide-y divide-line rounded-lg border border-line bg-canvas">
+          {kedai.menu.map((m) => (
+            <li key={m.id} className="flex items-center justify-between gap-4 px-4 py-3">
+              <span className="text-sm font-semibold text-ink">{m.name}</span>
+              {m.price ? (
+                <span className="text-sm font-bold text-ink">{formatRupiah(m.price)}</span>
+              ) : (
+                <span className="text-sm font-semibold text-muted">{t(lang, "kedai.priceComing")}</span>
+              )}
+            </li>
+          ))}
+        </ul>
         <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {kedai.menu.map((m) => {
             const photo = MENU_PHOTOS[m.id];

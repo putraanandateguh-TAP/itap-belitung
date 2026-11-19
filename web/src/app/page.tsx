@@ -7,7 +7,7 @@ import { getFeatured, getLatest, getPopular, listArticles } from "@/lib/data";
 import { channelLabel } from "@/lib/labels";
 import { ArticleCard } from "@/components/article-card";
 import { ButtonLink } from "@/components/ui";
-import { formatRupiah } from "@/lib/format";
+import { formatDateLoose, formatRupiah } from "@/lib/format";
 import { getDailyPrices, getMarketRates, listJobs } from "@/lib/data";
 import { getDailySnapshot } from "@/lib/daily";
 import { formatUpdatedWIB, isCacheStale, parsePrayerPayload, parseWeatherPayload } from "@/lib/daily-parse";
@@ -35,6 +35,21 @@ export default async function HomePage() {
   const channelTeasers = await Promise.all(
     CHANNEL_ORDER.map(async (c) => ({ channel: c, items: (await listArticles({ channel: c, page: 1, perPage: 3 })).items })),
   );
+  // Dedupe antar seksi berdasarkan id: satu artikel hanya tampil sekali di
+  // beranda. Sebelumnya artikel yang sama muncul di beberapa seksi sekaligus
+  // (featured = getLatest(1) = latest[0], plus teaser kanal yang sama) —
+  // mis. Polairud 3x, PLN 2x (bug 19 Nov 2026). Urutan prioritas:
+  // featured -> terbaru -> populer -> teaser kanal.
+  const seen = new Set<string>();
+  const takeUnique = <T extends { id: string }>(list: T[]): T[] =>
+    list.filter((a) => (seen.has(a.id) ? false : (seen.add(a.id), true)));
+  const featuredUnique = featured ? takeUnique([featured]) : [];
+  const latestUnique = takeUnique(latest);
+  const popularUnique = takeUnique(popular);
+  const channelTeasersUnique = channelTeasers.map(({ channel, items }) => ({
+    channel,
+    items: takeUnique(items),
+  }));
 
   return (
     <div className="flex flex-col gap-12 py-8">
@@ -73,13 +88,13 @@ export default async function HomePage() {
             {t(lang, "home.allNews")} <ArrowRight className="size-4" aria-hidden="true" />
           </Link>
         </div>
-        {featured && (
+        {featuredUnique[0] && (
           <div className="mt-4">
-            <ArticleCard article={featured} variant="headline" />
+            <ArticleCard article={featuredUnique[0]} variant="headline" />
           </div>
         )}
         <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {latest.map((a) => <ArticleCard key={a.id} article={a} />)}
+          {latestUnique.map((a) => <ArticleCard key={a.id} article={a} />)}
         </div>
       </section>
 
@@ -88,7 +103,7 @@ export default async function HomePage() {
         <section aria-labelledby="populer-title" className="lg:col-span-2">
           <h2 id="populer-title" className="text-xl font-bold text-ink">{t(lang, "home.mostSought")}</h2>
           <ol className="mt-4 flex flex-col divide-y divide-line rounded-lg border border-line bg-canvas">
-            {popular.map((a, i) => (
+            {popularUnique.map((a, i) => (
               <li key={a.id} className="flex items-start gap-3 p-4">
                 <span aria-hidden="true" className="flex size-8 shrink-0 items-center justify-center rounded-md bg-surface-alt text-sm font-bold text-accent">{i + 1}</span>
                 <div>
@@ -160,7 +175,7 @@ export default async function HomePage() {
                 </li>
               ))}
             </ul>
-            <p className="mt-2 text-xs text-muted">{prices.market} · sumber {prices.source_date}</p>
+            <p className="mt-2 text-xs text-muted">{prices.market} · sumber {formatDateLoose(prices.source_date, lang)}</p>
             <Link href="/harga-pangan" className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-accent hover:underline focus-visible:outline-2 focus-visible:outline-accent">
               {t(lang, "home.viewAllPrices")} <ArrowRight className="size-4" aria-hidden="true" />
             </Link>
@@ -189,7 +204,7 @@ export default async function HomePage() {
       </div>
 
       {/* Seksi kanal */}
-      {channelTeasers.map(({ channel, items }) => (
+      {channelTeasersUnique.map(({ channel, items }) => (
         <section key={channel} aria-labelledby={`kanal-${channel}`}>
           <div className="flex items-end justify-between gap-4">
             <h2 id={`kanal-${channel}`} className="text-xl font-bold text-ink">{channelLabel(channel, lang)}</h2>

@@ -7,7 +7,7 @@ import Link from "next/link";
 import { ExternalLink, MapPin } from "lucide-react";
 import { listJobs } from "@/lib/data";
 import { formatDateWIB } from "@/lib/format";
-import { Badge, Button, EmptyState } from "@/components/ui";
+import { Button, EmptyState } from "@/components/ui";
 import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 
@@ -61,10 +61,10 @@ export default async function LowonganPage({
         <ul className="grid gap-4 md:grid-cols-2">
           {jobs.map((j) => (
             <li key={j.id} className="flex flex-col gap-2 rounded-lg border border-line bg-canvas p-4 shadow-card">
-              <div className="flex items-start justify-between gap-2">
-                <h2 className="text-base font-semibold text-ink">{j.title}</h2>
-                <Badge tone="info">{j.region}</Badge>
-              </div>
+              {/* Judul memakai lebar penuh: sebelumnya Badge region di pojok
+                  kanan atas menutupi judul, dan lokasi tampil 2x (Badge +
+                  baris MapPin). Lokasi kini hanya di baris MapPin di bawah. */}
+              <h2 className="text-base font-semibold text-ink">{j.title}</h2>
               <p className="text-sm font-semibold text-ink">{j.company}</p>
               <p className="flex items-center gap-1 text-sm text-muted">
                 <MapPin className="size-4" aria-hidden="true" /> {j.location}

@@ -1,4 +1,4 @@
-// Job 4/5 — deleted-listing-purge (harian 03:00 WIB).
+// Job 6/7 — deleted-listing-purge (harian 20:00 UTC (03:00 WIB)).
 // Hapus permanen listing soft-deleted >14 hari (+ fotonya di Storage).
 // Foto dihapus dulu via Supabase Storage (service role), baru baris listing
 // (cascade menghapus listing_photos, threads, messages, bookmarks).

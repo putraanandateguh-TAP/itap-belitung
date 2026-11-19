@@ -3,7 +3,7 @@
 // IHSG Yahoo Finance tertunda, emas Antam 1 gram 17 Nov 2026).
 import type { Metadata } from "next";
 import { getMarketRates } from "@/lib/data";
-import { formatNumber, formatRupiah } from "@/lib/format";
+import { formatDateLoose, formatDateTimeLoose, formatNumber, formatRupiah } from "@/lib/format";
 import { Badge } from "@/components/ui";
 import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
@@ -22,7 +22,7 @@ export default async function KursPage() {
     <div className="flex flex-col gap-6 py-8">
       <header>
         <h1 className="text-xl font-bold text-ink">{t(lang, "rates.title")}</h1>
-        <p className="mt-1 text-sm text-muted">{t(lang, "rates.lastUpdated")}: {rates.fx_fetched_at}. {t(lang, "rates.notAdvice")}</p>
+        <p className="mt-1 text-sm text-muted">{t(lang, "rates.lastUpdated")}: {formatDateTimeLoose(rates.fx_fetched_at, lang)}. {t(lang, "rates.notAdvice")}</p>
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -38,7 +38,7 @@ export default async function KursPage() {
             <span className={rates.ihsg.change < 0 ? "font-semibold text-danger" : "font-semibold text-success"}>
               {rates.ihsg.change < 0 ? "↓" : "↑"} {formatNumber(rates.ihsg.change)} ({rates.ihsg.percent}%)
             </span>{" "}
-            <span className="text-muted">· {rates.ihsg.as_of}</span>
+            <span className="text-muted">· {formatDateLoose(rates.ihsg.as_of, lang)}</span>
           </p>
           <p className="mt-1 text-xs text-muted">{rates.ihsg.source}</p>
         </article>
@@ -49,7 +49,7 @@ export default async function KursPage() {
             <span className={rates.gold.price_1g < rates.gold.previous ? "font-semibold text-danger" : "font-semibold text-success"}>
               {rates.gold.price_1g < rates.gold.previous ? `↓ ${t(lang, "rates.down")}` : `↑ ${t(lang, "rates.up")}`} {formatRupiah(Math.abs(rates.gold.price_1g - rates.gold.previous))}
             </span>{" "}
-            <span className="text-muted">{t(lang, "rates.from")} {formatRupiah(rates.gold.previous)} · {rates.gold.date}</span>
+            <span className="text-muted">{t(lang, "rates.from")} {formatRupiah(rates.gold.previous)} · {formatDateLoose(rates.gold.date, lang)}</span>
           </p>
           <p className="mt-1 text-xs text-muted">{rates.gold.source}</p>
         </article>
@@ -57,7 +57,7 @@ export default async function KursPage() {
 
       <section aria-labelledby="kurs-table">
         <h2 id="kurs-table" className="text-lg font-semibold text-ink">{t(lang, "rates.tableTitle")}</h2>
-        <p className="mt-1 text-sm text-muted">{rates.fx_source} · {t(lang, "food.fetchedLabel")}: {rates.fx_fetched_at}</p>
+        <p className="mt-1 text-sm text-muted">{rates.fx_source} · {t(lang, "food.fetchedLabel")}: {formatDateTimeLoose(rates.fx_fetched_at, lang)}</p>
         <div className="mt-3 overflow-x-auto rounded-lg border border-line bg-canvas" tabIndex={0} role="region" aria-label={t(lang, "rates.tableAria")}>
           <table className="w-full text-left text-sm">
             <caption className="sr-only">{t(lang, "rates.caption")}</caption>

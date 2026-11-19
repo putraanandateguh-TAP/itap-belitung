@@ -1,4 +1,4 @@
-// Job 1/5 — daily-info-fetch (tiap jam, staggered per sumber di vercel.json).
+// Job 1/7 — daily-info-fetch (tiap hari 00:15 UTC (07:15 WIB)).
 // Ambil data publik resmi (BMKG/Kemenag/dll.) lalu simpan ke
 // daily_info_snapshots. JANGAN fetch per request (arsitektur §4).
 // Bila fetch gagal / sumber berubah: biarkan cache lama + tandai stale —
@@ -34,6 +34,11 @@ import * as t from "@/lib/db/schema";
 import { parsePrayerPayload, parseQuakePayload, parseWeatherPayload } from "@/lib/daily-parse";
 
 export const dynamic = "force-dynamic";
+// Batas durasi 60 dtk (maks Hobby): default Vercel 15 dtk terlalu pendek
+// untuk 3 fetch berurutan @ timeout 8 dtk + insert DB Singapura dari
+// region cron — fungsi bisa terbunuh sebelum insert pertama (dugaan kuat
+// invokasi 00:20 UTC 19 Nov 2026 yang tidak menulis apa pun).
+export const maxDuration = 60;
 
 type SourceDef = {
   source: string;
@@ -79,30 +84,35 @@ export async function GET(req: Request) {
   const denied = cronAuth(req);
   if (denied) return denied;
   if (!isDbConfigured()) {
-    return NextResponse.json({ error: "DATABASE_URL belum diisi (P1)." }, { status: 503 });
+    return NextResponse.json({ error: "DATABASE_URL belum diisi." }, { status: 503 });
   }
   const db = getDb();
   const today = todayWIB();
   const results: Record<string, string> = {};
-  for (const s of SOURCES) {
-    try {
+  // Fetch paralel (bukan berurutan): skenario terburuk 3x8 dtk -> ~8 dtk,
+  // dan SETIAP kegagalan dicatat ke log — sebelumnya loop berurutan menelan
+  // semua error ke `results` tanpa console.* apa pun, sehingga invokasi
+  // yang gagal total tidak meninggalkan jejak di log (19 Nov 2026).
+  const settled = await Promise.allSettled(
+    SOURCES.map(async (s) => {
       const payload = await fetchJson(s.url());
-      if (!s.validate(payload)) {
-        results[s.source] = "gagal: bentuk respons berubah (parser menolak)";
-        continue;
-      }
+      if (!s.validate(payload)) throw new Error("bentuk respons berubah (parser menolak)");
       await db.insert(t.dailyInfoSnapshots).values({
         source: s.source, scopeKey: "belitung", asOfDate: today,
         payload: payload as object,
       }).onConflictDoNothing();
-      results[s.source] = "ok";
-    } catch (e) {
-      // Degrade ke cache: jangan hapus data lama; catat gagal saja.
-      results[s.source] = `gagal: ${(e as Error).message}`;
-    }
+      return s.source;
+    }),
+  );
+  for (const [i, r] of settled.entries()) {
+    const src = SOURCES[i].source;
+    // Degrade ke cache: jangan hapus data lama; catat gagal saja.
+    results[src] = r.status === "fulfilled" ? "ok" : `gagal: ${(r.reason as Error).message}`;
+    if (r.status === "rejected") console.error(`[daily-info-fetch] ${src} gagal:`, r.reason);
   }
   results.fuel = "belum-dipetakan";
   results.transport = "belum-dipetakan";
   results.air = "belum-dipetakan";
+  console.log("[daily-info-fetch]", JSON.stringify({ date: today, results }));
   return NextResponse.json({ ok: true, date: today, results });
 }

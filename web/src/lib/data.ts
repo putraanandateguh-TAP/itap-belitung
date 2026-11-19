@@ -54,7 +54,7 @@ type ArticleRow = typeof t.articles.$inferSelect;
 
 function toArticle(row: ArticleRow, categorySlug?: string): Article {
   const gallery = Array.isArray(row.gallery)
-    ? (row.gallery as { alt: string; caption: string }[])
+    ? (row.gallery as { alt: string; caption: string; url?: string }[])
     : [];
   return {
     id: row.id,
@@ -120,14 +120,18 @@ export async function listArticles(opts: {
   return paginate(items, opts.page ?? 1, opts.perPage ?? PER_PAGE);
 }
 
-export async function getArticle(slug: string): Promise<Article | null> {
+export async function getArticle(slug: string, opts?: { countView?: boolean }): Promise<Article | null> {
   if (useSeed()) return seed.getArticle(slug);
   const db = getDb();
   const rows = await db.select().from(t.articles).where(eq(t.articles.slug, slug)).limit(1);
   const row = rows[0];
   if (!row) return null;
-  // View counter atomic (arsitektur §2.10) — hanya untuk artikel published.
-  if (row.status === "published") {
+  // View counter atomic (arsitektur §2.10) — hanya untuk artikel published,
+  // dan HANYA bila pemanggil memintanya (countView). Default TIDAK menghitung:
+  // generateMetadata, getRelated, dan /api/articles/:slug memanggil fungsi ini
+  // juga — tanpa ini satu kali buka halaman menaikkan 3x (bug 19 Nov 2026).
+  // Halaman artikel menghitung sekali per sesi lewat cookie itap_read_<slug>.
+  if (row.status === "published" && opts?.countView) {
     await db.execute(sql`select public.increment_article_views(${row.id})`).catch(() => undefined);
     row.views += 1;
   }
@@ -794,12 +798,19 @@ export async function getDailyPrices(): Promise<DailyPrices> {
   const rows = date
     ? await db.select().from(t.dailyPrices).where(eq(t.dailyPrices.priceDate, date)).orderBy(asc(t.dailyPrices.commodity))
     : [];
+  // fetched_at = waktu baris terbaru benar-benar masuk DB (bukan "sekarang":
+  // sebelumnya memakai new Date() sehingga halaman selalu tampak baru padahal
+  // datanya 18 hari — bug 19 Nov 2026). source_url = tautan ADAT yang asli
+  // (sebelumnya "" sehingga tautan "Lihat sumber data" mati).
+  const fetchedAt = rows.length
+    ? new Date(Math.max(...rows.map((r) => r.createdAt.getTime()))).toISOString()
+    : new Date().toISOString();
   return {
-    source: "iTAP Belitung — harga pangan harian",
-    source_url: "",
+    source: "ADAT Belitung, Diskominfo Kab. Belitung (data: Dinas Ketahanan Pangan dan Pertanian Kab. Belitung)",
+    source_url: "https://adat.belitung.go.id/komoditas",
     market: rows[0]?.market ?? "Pasar Tanjung Pandan",
     source_date: date ?? new Date().toISOString().slice(0, 10),
-    fetched_at: new Date().toISOString(),
+    fetched_at: fetchedAt,
     items: rows.map((r, i) => ({
       id: r.id, commodity: r.commodity, price: IDR(r.priceCents),
       unit: r.unit ?? "", previous_price: null, status: "—",
@@ -819,18 +830,30 @@ export async function getMarketRates(): Promise<MarketRates> {
   const currencies = rows.filter((r) => r.kind === "kurs");
   const details = (r: (typeof rows)[number] | undefined) =>
     (r?.details ?? {}) as Record<string, number>;
+  // Sumber tampilan dibaca dari details.source yang ditulis cron
+  // daily-prices (Yahoo/COMEX); baris seed lama tidak punya field ini dan
+  // memakai label lama (Antam/BCA) sebagai fallback — tanpa ini halaman
+  // kurs menampilkan nilai baru dengan label lama yang salah (butir 16).
+  const detailStr = (r: (typeof rows)[number] | undefined, key: string): string | undefined => {
+    const d = (r?.details ?? {}) as Record<string, unknown>;
+    return typeof d[key] === "string" ? (d[key] as string) : undefined;
+  };
   const ihsgD = details(ihsg);
   const goldD = details(gold);
+  // fx_fetched_at = as_of baris terbaru yang benar-benar ada di DB (bukan
+  // "sekarang" — sebelumnya memakai new Date() sehingga halaman kurs selalu
+  // tampak baru padahal datanya 17 Nov — bug 19 Nov 2026).
+  const fxFetchedAt = (rows[0]?.asOf ?? new Date()).toISOString();
   return {
     ihsg: {
       value: Number(ihsg?.value ?? 0), change: ihsgD.change ?? 0, percent: ihsgD.percent ?? 0,
-      as_of: (ihsg?.asOf ?? new Date()).toISOString(), source: "Bursa Efek Indonesia",
+      as_of: (ihsg?.asOf ?? new Date()).toISOString(), source: detailStr(ihsg, "source") ?? "Bursa Efek Indonesia",
       fetched_at: new Date().toISOString(),
     },
     gold: {
       price_1g: Number(gold?.value ?? 0), previous: goldD.previous ?? 0,
       date: (gold?.asOf ?? new Date()).toISOString().slice(0, 10),
-      source: "Antam", fetched_at: new Date().toISOString(),
+      source: detailStr(gold, "source") ?? "Antam", fetched_at: new Date().toISOString(),
     },
     currencies: currencies.map((r) => {
       const d = details(r);
@@ -841,8 +864,8 @@ export async function getMarketRates(): Promise<MarketRates> {
         buy_bn: d.buy_bn ?? v, sell_bn: d.sell_bn ?? v,
       };
     }),
-    fx_source: "BCA",
-    fx_fetched_at: new Date().toISOString(),
+    fx_source: detailStr(currencies[0], "source") ?? "BCA",
+    fx_fetched_at: fxFetchedAt,
   };
 }
 

@@ -26,8 +26,12 @@ export async function callLicenseFunction(
     : `${url}/functions/v1/${fn}`;
   let res: Response;
   try {
+    // Batas waktu 8 detik: tanpa timeout, Edge Function yang cold-start /
+    // menggantung membuat /api/license/entitlement (dan "Memeriksa lisensi…"
+    // di /produk) menggantung tanpa batas (bug 19 Nov 2026).
     res = await fetch(path, {
       method: init.method,
+      signal: AbortSignal.timeout(8_000),
       headers: {
         Authorization: `Bearer ${session.access_token}`,
         apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",

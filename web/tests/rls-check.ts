@@ -36,6 +36,20 @@ async function main() {
   const id2 = s2.user.id;
   check("dua pengguna berbeda", id1 !== id2);
 
+  // SEC-09 (migrasi 0011): anon TIDAK boleh membaca tabel listings
+  // (koordinat persis penjual), tetapi BOLEH membaca view publik
+  // listings_public (tanpa koordinat). Cek read-only, tanpa data uji.
+  // GAGAL bila migrasi 0011 belum diterapkan di database live.
+  const anonClient = createClient(url, anon);
+  const { data: anonTableRows, error: anonTableErr } = await anonClient
+    .from("listings").select("id").limit(1);
+  check("anon ditolak membaca tabel listings (401)", !!anonTableErr && /permission denied/i.test(anonTableErr.message ?? ""), anonTableErr?.message ?? `tidak ada error — dapat ${anonTableRows?.length ?? 0} baris`);
+  const { data: anonViewRows, error: anonViewErr } = await anonClient
+    .from("listings_public").select("*").limit(5);
+  check("anon bisa membaca view listings_public", !anonViewErr, anonViewErr?.message ?? "");
+  const leaked = (anonViewRows ?? []).some((r) => "location_lat" in r || "location_lng" in r);
+  check("view listings_public tanpa location_lat/location_lng", !leaked, leaked ? "koordinat bocor di view" : "");
+
   // User1: buat draf artikel + bookmark + itinerary (data privat).
   const { data: draft, error: dErr } = await c1.from("articles").insert({
     author_id: id1, channel: "wisata", slug: `rls-uji-${Date.now()}`,

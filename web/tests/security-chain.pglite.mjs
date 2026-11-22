@@ -1,8 +1,10 @@
 // tests/security-chain.pglite.mjs — Uji rantai migrasi penuh di PGlite:
-// 0001 + 0005 + 0006 + 0007 (lisensi) + 0008-core (tanpa blok Storage) + 0009
-// (whatsapp_otps). Memeriksa tabel lisensi + whatsapp_otps terbentuk, RLS
-// aktif, deny-by-default untuk client, grant service_role, indeks unik
-// LIC-02/LIC-07, dan revoke RPC.
+// 0001 + 0004 (kategori listing) + 0005 + 0006 + 0007 (lisensi) + 0008-core
+// (tanpa blok Storage) + 0009 (whatsapp_otps) + 0011 (SEC-09: view publik
+// listings_public + cabut SELECT anon dari tabel listings). Memeriksa tabel
+// lisensi + whatsapp_otps terbentuk, RLS aktif, deny-by-default untuk
+// client, grant service_role, indeks unik LIC-02/LIC-07, revoke RPC, dan
+// SEC-09 (anon tidak bisa baca tabel listings, bisa baca view aktif saja).
 // Jalankan: npm run test:security-chain
 import { readFileSync } from "node:fs";
 import path from "node:path";
@@ -36,7 +38,9 @@ async function main() {
   const m8 = load("0008_security_fixes.sql");
   await db.exec(m8.slice(0, m8.indexOf("-- SEC-12")) + m8.slice(m8.indexOf("-- SEC-13")));
   await db.exec(load("0009_whatsapp_otps.sql"));
-  check("rantai 0001+0005+0006+0007+0008+0009 termuat", true);
+  await db.exec(load("0004_listing_category.sql"));
+  await db.exec(load("0011_sec09_listings_public.sql"));
+  check("rantai 0001+0004+0005+0006+0007+0008+0009+0011 termuat", true);
 
   const one = async (sql, p) => (await db.query(sql, p)).rows[0];
 
@@ -84,6 +88,40 @@ async function main() {
   // Trigger pengaman ada.
   const trg = await db.query(`select tgname from pg_trigger where tgname in ('profiles_insert_role_guard','profiles_sensitive_columns_guard','contributor_profile_guard','listings_counters_guard','chat_threads_listing_active') and not tgisinternal`);
   check("5 trigger pengaman ada", trg.rows.length === 5, JSON.stringify(trg.rows.map((r) => r.tgname)));
+
+  // SEC-09 (migrasi 0011): view publik listings_public tanpa koordinat
+  // persis + cabut SELECT anon dari tabel listings.
+  const vw = await one(`select count(*)::int n from information_schema.views where table_schema='public' and table_name='listings_public'`);
+  check("view listings_public ada", vw.n === 1, `dapat ${vw.n}`);
+  const vwCols = await db.query(`select column_name from information_schema.columns where table_schema='public' and table_name='listings_public'`);
+  const vwColNames = vwCols.rows.map((r) => r.column_name);
+  check("view tanpa location_lat/location_lng/seller_id/description", !vwColNames.includes("location_lat") && !vwColNames.includes("location_lng") && !vwColNames.includes("seller_id") && !vwColNames.includes("description"), vwColNames.join(","));
+  check("view memuat kolom publik (id/title/price_cents/location_name/status)", ["id", "title", "price_cents", "location_name", "status"].every((c) => vwColNames.includes(c)), vwColNames.join(","));
+  const anonTable = await one(`select has_table_privilege('anon', 'public.listings', 'SELECT') as ok`);
+  check("anon tidak punya SELECT di tabel listings", anonTable.ok === false, `has_privilege=${anonTable.ok}`);
+  const anonView = await one(`select has_table_privilege('anon', 'public.listings_public', 'SELECT') as ok`);
+  check("anon punya SELECT di view listings_public", anonView.ok === true, `has_privilege=${anonView.ok}`);
+  const authView = await one(`select has_table_privilege('authenticated', 'public.listings_public', 'SELECT') as ok`);
+  check("authenticated punya SELECT di view listings_public", authView.ok === true, `has_privilege=${authView.ok}`);
+
+  // Perilaku sebagai anon: baca tabel DITOLAK, baca view hanya baris aktif
+  // dan tanpa koordinat persis.
+  await db.exec(`insert into auth.users (id, email) values ('22222222-2222-2222-2222-222222222222', 'penjual@uji.local')`);
+  await db.exec(`insert into public.profiles (id, email) values ('22222222-2222-2222-2222-222222222222', 'penjual@uji.local')`);
+  await db.exec(`insert into public.listings (id, seller_id, title, price_cents, location_name, location_lat, location_lng, status) values
+    ('33333333-3333-3333-3333-333333333333', '22222222-2222-2222-2222-222222222222', 'Barang aktif uji', 100000, 'Tanjungpandan', -2.75, 107.65, 'aktif'),
+    ('44444444-4444-4444-4444-444444444444', '22222222-2222-2222-2222-222222222222', 'Barang nonaktif uji', 50000, 'Membalong', -2.95, 107.45, 'dinonaktifkan')`);
+  try {
+    await db.exec("set role anon");
+    let anonTableErr = "";
+    try { await db.query(`select * from public.listings limit 1`); } catch (e) { anonTableErr = e.message; }
+    check("anon SELECT tabel listings ditolak (permission denied)", /permission denied/i.test(anonTableErr), anonTableErr);
+    const anonViewRows = await db.query(`select * from public.listings_public`);
+    check("anon SELECT view hanya 1 baris aktif", anonViewRows.rows.length === 1, `dapat ${anonViewRows.rows.length}`);
+    check("baris view tanpa kunci location_lat/location_lng", anonViewRows.rows.length === 1 && !("location_lat" in anonViewRows.rows[0]) && !("location_lng" in anonViewRows.rows[0]), JSON.stringify(Object.keys(anonViewRows.rows[0] ?? {})));
+  } finally {
+    await db.exec("reset role");
+  }
 
   await db.close();
   console.log(`\n${pass} PASS, ${fail} FAIL`);

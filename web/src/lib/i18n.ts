@@ -307,7 +307,7 @@ const id = {
 
   "kedai.fromKitchen": "Dari dapur iTAP",
   "kedai.menu": "Menu Kedai",
-  "kedai.menuBoardCaption": "Papan menu Kedai I&T — Baso Aci Daging Cincang Rp18.000 ditambahkan per keputusan 18 Nov 2026",
+  "kedai.menuBoardCaption": "Papan menu Kedai I&T — kini juga tersedia Baso Aci Daging Cincang Rp18.000",
   "kedai.route": "Rute ke kedai",
   "kedai.orderGrab": "Pesan di GrabFood",
   "kedai.orderGo": "Pesan di GoFood",
@@ -749,7 +749,7 @@ const id = {
 
   "daily.back": "Kembali ke Info Harian",
   "daily.stale": "Data mungkin basi",
-  "daily.updatedAt": "Diperbarui pukul {time} WIB",
+  "daily.updatedAt": "Diperbarui pukul {time}",
   "daily.notAvailable": "{source} belum tersedia",
   "daily.emptyDesc": "Data {source} belum bisa ditampilkan: {reason} Kami tidak menampilkan angka perkiraan — halaman ini akan terisi begitu data resmi berhasil diambil.",
   "daily.unreadable": "{source} belum bisa dibaca",
@@ -1577,7 +1577,7 @@ export const dict: Record<Lang, typeof id> = {
 
     "kedai.fromKitchen": "From the iTAP kitchen",
     "kedai.menu": "Stall Menu",
-    "kedai.menuBoardCaption": "Kedai I&T menu board — Baso Aci Daging Cincang Rp18,000 added per decision of 18 Nov 2026",
+    "kedai.menuBoardCaption": "Kedai I&T menu board — Baso Aci Daging Cincang (Rp18,000) is now available too",
     "kedai.route": "Route to the stall",
     "kedai.orderGrab": "Order on GrabFood",
     "kedai.orderGo": "Order on GoFood",
@@ -2019,7 +2019,7 @@ export const dict: Record<Lang, typeof id> = {
 
     "daily.back": "Back to Daily Info",
     "daily.stale": "Data may be stale",
-    "daily.updatedAt": "Updated at {time} WIB",
+    "daily.updatedAt": "Updated at {time}",
     "daily.notAvailable": "{source} not available yet",
     "daily.emptyDesc": "{source} data cannot be shown yet: {reason} We do not show estimated figures — this page will fill in once official data is retrieved.",
     "daily.unreadable": "{source} could not be read",

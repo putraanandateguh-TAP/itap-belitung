@@ -9,6 +9,7 @@ import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/info-harian/salat" },
   title: "Jadwal Salat Belitung",
   description: "Jadwal salat Kab. Belitung hari ini — data Kemenag.",
 };

@@ -103,7 +103,7 @@ export function SiteHeader() {
       {/* Baris logo + aksi */}
       <div className="mx-auto flex h-16 max-w-[1200px] items-center gap-3 px-4">
         <Link href="/" className="flex shrink-0 items-center rounded-xl focus-visible:outline-2 focus-visible:outline-accent" aria-label="iTAP Belitung — Beranda">
-          <Image src="/images/logo-itap-belitung.png" alt="iTAP Belitung" width={1536} height={1024} className="h-11 w-auto" priority />
+          <Image src="/images/logo-itap-belitung.png" alt="iTAP Belitung" width={1536} height={1024} sizes="132px" className="h-11 w-auto" priority />
         </Link>
 
         <div className="ml-auto flex items-center gap-2">
@@ -268,7 +268,7 @@ export function SiteFooter() {
       <div className="mx-auto grid max-w-[1200px] gap-8 px-4 py-12 md:grid-cols-4">
         <div>
           <p className="inline-flex items-center gap-2 text-lg font-bold">
-            <span className="inline-flex rounded-xl bg-canvas p-1"><Image src="/images/logo-itap-belitung.png" alt="" width={1536} height={1024} className="h-8 w-auto" /></span>
+            <span className="inline-flex rounded-xl bg-canvas p-1"><Image src="/images/logo-itap-belitung.png" alt="" width={1536} height={1024} sizes="96px" className="h-8 w-auto" /></span>
             iTAP Belitung
           </p>
           <p className="mt-2 text-sm text-muted-on-dark">

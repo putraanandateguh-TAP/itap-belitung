@@ -10,6 +10,7 @@ import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/info-harian/cuaca" },
   title: "Cuaca Belitung — Prakiraan BMKG",
   description: "Prakiraan cuaca BMKG per jam untuk Tanjung Pandan, Belitung.",
 };

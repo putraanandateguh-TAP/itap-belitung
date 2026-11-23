@@ -9,6 +9,14 @@ export async function POST(req: Request) {
   if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
     return NextResponse.json({ error: "Supabase belum dikonfigurasi (P1)." }, { status: 503 });
   }
+  // Provider Google belum diaktifkan di Supabase Auth (audit 23 Nov 2026):
+  // tanpa cek ini pengguna dilempar ke halaman JSON error Supabase.
+  if (!(await googleProviderEnabled())) {
+    return NextResponse.json(
+      { error: "Login Google belum aktif. Silakan masuk atau daftar pakai email dulu." },
+      { status: 503 },
+    );
+  }
   const supabase = await createSupabaseServer();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
@@ -18,4 +26,26 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Login Google belum tersedia — periksa konfigurasi OAuth (P1/P3)." }, { status: 503 });
   }
   return NextResponse.json({ url: data.url });
+}
+
+let cache: { ok: boolean; at: number } | null = null;
+
+async function googleProviderEnabled(): Promise<boolean> {
+  if (cache && Date.now() - cache.at < 5 * 60 * 1000) return cache.ok;
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !anon) return true; // biarkan alur lama yang menangani
+  try {
+    const res = await fetch(`${url}/auth/v1/settings`, {
+      headers: { apikey: anon },
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!res.ok) return true;
+    const body = (await res.json()) as { external?: { google?: boolean } };
+    const ok = body.external?.google === true;
+    cache = { ok, at: Date.now() };
+    return ok;
+  } catch {
+    return true;
+  }
 }

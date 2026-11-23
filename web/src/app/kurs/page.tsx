@@ -9,6 +9,7 @@ import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/kurs" },
   title: "Kurs, IHSG & Emas",
   description: "Kurs rupiah terhadap dolar dan mata uang lain, IHSG, dan harga emas Antam — data terakhir dari sumber publik.",
 };

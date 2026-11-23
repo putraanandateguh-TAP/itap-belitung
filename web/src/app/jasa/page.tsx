@@ -9,6 +9,7 @@ import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/jasa" },
   title: "Jasa iTAP Belitung",
   description: "Jasa iTAP: website UMKM, chatbot WhatsApp, video AI sinematik, kelas kreator video AI, dan slot iklan.",
 };

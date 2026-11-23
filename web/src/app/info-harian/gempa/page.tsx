@@ -11,6 +11,7 @@ import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/info-harian/gempa" },
   title: "Info Gempa Belitung",
   description: "Gempa terbaru dari BMKG dan kualitas udara Belitung.",
 };

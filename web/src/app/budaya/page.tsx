@@ -10,6 +10,7 @@ import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/budaya" },
   title: "Budaya Belitung",
   description: "Cerita budaya Belitung: upacara, tari & musik, lagu, kuliner tradisi, cerita rakyat, bahasa, dan sejarah timah.",
 };

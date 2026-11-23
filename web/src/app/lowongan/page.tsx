@@ -12,6 +12,7 @@ import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/lowongan" },
   title: "Lowongan Kerja Belitung",
   description: "Lowongan kerja di Belitung dan Bangka Belitung — dikumpulkan dari sumber publik, dengan tautan ke sumber asli.",
 };

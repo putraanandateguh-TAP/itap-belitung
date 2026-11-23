@@ -10,6 +10,7 @@ import { searchArticles } from "@/lib/data";
 import { listCulture } from "@/lib/daily";
 import { geminiGenerate, GeminiError, isGeminiConfigured } from "@/lib/server/gemini";
 import { rateLimit, rateLimitKey, rateLimitResponse } from "@/lib/rate-limit";
+import { getCurrentProfile } from "@/lib/auth";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -100,6 +101,9 @@ export async function POST(req: Request) {
       { status: 501 },
     );
   }
+  // Sama seperti halaman /ai (arsitektur §3.9): hanya untuk pengguna masuk.
+  const user = await getCurrentProfile();
+  if (!user) return NextResponse.json({ error: "Masuk dulu untuk memakai AI iTAP." }, { status: 401 });
   const raw: unknown = await req.json().catch(() => null);
   const parsed = bodySchema.safeParse(raw);
   const text = (parsed.success ? (parsed.data.text ?? parsed.data.message ?? "") : "").trim();
@@ -107,9 +111,11 @@ export async function POST(req: Request) {
   if (text.length > 500) {
     return NextResponse.json({ error: "Pertanyaan terlalu panjang (maks 500 karakter)." }, { status: 400 });
   }
-  // Rate limit: 10 pertanyaan / 10 menit per IP + 300 / jam per instance.
+  // Rate limit: 10 / 10 menit per IP, 40 / jam per akun, 300 / jam per instance.
   const rl = rateLimit(rateLimitKey(req, "ai-chat"), 10, 10 * 60 * 1000);
   if (!rl.ok) return rateLimitResponse(rl.retryAfterSec);
+  const perUser = rateLimit(`ai-chat:user:${user.id}`, 40, 60 * 60 * 1000);
+  if (!perUser.ok) return rateLimitResponse(perUser.retryAfterSec);
   const global = rateLimit("ai-chat:global", 300, 60 * 60 * 1000);
   if (!global.ok) return rateLimitResponse(global.retryAfterSec);
 

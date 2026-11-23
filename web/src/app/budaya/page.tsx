@@ -3,6 +3,8 @@
 // dengan pesan jujur sampai Teguh/redaksi mengisinya.
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
+import { cultureIllustration } from "@/lib/illustrations";
 import { listCulture } from "@/lib/daily";
 import { Badge, EmptyState } from "@/components/ui";
 import { CULTURE_CATEGORIES, cultureLabel } from "@/lib/labels";
@@ -62,7 +64,12 @@ export default async function BudayaPage({ searchParams }: { searchParams: Promi
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {stories.map((s) => (
-            <article key={s.slug} className="flex flex-col gap-2 rounded-lg border border-line bg-canvas p-4 shadow-card">
+            <article key={s.slug} className="flex flex-col gap-2 overflow-hidden rounded-lg border border-line bg-canvas shadow-card">
+              <Link href={`/budaya/${s.slug}`} className="relative block aspect-video overflow-hidden bg-surface-alt focus-visible:outline-2 focus-visible:outline-accent" tabIndex={-1} aria-hidden="true">
+                {/* Belum ada foto per cerita -> ilustrasi kategori iTAP */}
+                <Image src={cultureIllustration(s.category).src} alt="" fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" className="object-cover" data-illustration="true" />
+              </Link>
+              <div className="flex flex-1 flex-col gap-2 px-4 pb-4">
               <Badge tone="info">{cultureLabel(s.category, lang)}</Badge>
               <h2 className="text-base font-bold text-ink">
                 <Link href={`/budaya/${s.slug}`} className="hover:text-accent hover:underline focus-visible:outline-2 focus-visible:outline-accent">
@@ -73,6 +80,7 @@ export default async function BudayaPage({ searchParams }: { searchParams: Promi
               <Link href={`/budaya/${s.slug}`} className="mt-auto text-sm font-semibold text-accent hover:underline focus-visible:outline-2 focus-visible:outline-accent">
                 {t(lang, "budaya.readStory")}
               </Link>
+              </div>
             </article>
           ))}
         </div>

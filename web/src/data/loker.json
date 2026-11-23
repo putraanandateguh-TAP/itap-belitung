@@ -3,11 +3,12 @@
     "diperbarui": "2026-11-23",
     "catatan": "Lowongan dari sumber publik; lamar langsung lewat link resmi. iTAP tidak memungut biaya apa pun.",
     "jumlah": {
-      "belitung": 57,
-      "babel_lainnya": 74,
-      "total": 131
+      "belitung": 69,
+      "babel_lainnya": 126,
+      "total": 195
     },
-    "cakupan_babel_lainnya": "Lowongan JobStreet dan sumber lain dengan lokasi Bangka/Pangkal Pinang/Sungailiat/sejenis yang tayang sejak 2026-10-23. Lowongan lebih lama masih bisa ada di sumber aslinya."
+    "cakupan_babel_lainnya": "Lowongan JobStreet dan sumber lain dengan lokasi Bangka/Pangkal Pinang/Sungailiat/sejenis yang tayang sejak 2026-10-23. Lowongan lebih lama masih bisa ada di sumber aslinya.",
+    "otomatis": "GitHub Actions update-data.yml (scripts/update_loker_web.py): JobStreet, NyamanKerje, Glints, Loker.id"
   },
   "lowongan": [
     {
@@ -193,6 +194,20 @@
       "batas_lamaran": "2026-11-30"
     },
     {
+      "judul": "TEAM LEADER KAB. BELITUNG",
+      "perusahaan": "Sigap Prima",
+      "lokasi": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-21",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/team-leader-kab-belitung/6b25069f-2d18-40ff-992d-9f814802a7ba",
+      "ringkasan": null,
+      "bagian": "Belitung",
+      "batas_lamaran": null
+    },
+    {
       "judul": "Branch Manager",
       "perusahaan": "Internusa Tribuana Citra Multi Finance",
       "lokasi": "Belitung",
@@ -230,6 +245,62 @@
       "link": "https://id.jobstreet.com/id/job/95610077",
       "ringkasan": "Mengajar bahasa Inggris dan mengisi English Club untuk pembelajar dewasa di LPK Pasti Bisa, Belitung.",
       "bagian": "Belitung"
+    },
+    {
+      "judul": "Kepala Cabang Dealer Motor (NsoHead) - Bangka Belitung",
+      "perusahaan": "Nusantara Sakti Group",
+      "lokasi": "Manggar, Belitung Timur, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-19",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/kepala-cabang-dealer-motor-nsohead-bangka-belitung/f547950c-7ff0-4465-ac94-bf1fcdd884e8",
+      "ringkasan": null,
+      "bagian": "Belitung",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Area Manager",
+      "perusahaan": "Panglima Kuliner Indonesia",
+      "lokasi": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-19",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/area-manager/8b308dd7-514f-4910-98a7-c7381ff7797c",
+      "ringkasan": null,
+      "bagian": "Belitung",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Mitra Kurir Motor - Tanjungpandan, Kabupaten Belitung",
+      "perusahaan": "Anteraja",
+      "lokasi": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-17",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/mitra-kurir-motor-tanjungpandan-kabupaten-belitung/e711867c-e184-4631-b752-abca10808e26",
+      "ringkasan": null,
+      "bagian": "Belitung",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Waiter / Waitress",
+      "perusahaan": "Panglima Kuliner Indonesia",
+      "lokasi": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-17",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/waiter-waitress/2118cc52-f792-4d0c-9ce8-b0df577b0387",
+      "ringkasan": null,
+      "bagian": "Belitung",
+      "batas_lamaran": null
     },
     {
       "judul": "Sales Trainee Academy by Ruangguru Brain Academy Tanjung Pandan Sriwijaya",
@@ -295,6 +366,20 @@
       "link": "https://id.jobstreet.com/id/job/95862885",
       "ringkasan": "Mengajar sempoa secara paruh waktu di Tanjung Pandan bersama Ruangguru.",
       "bagian": "Belitung"
+    },
+    {
+      "judul": "Perawat Support Pangkal pinang",
+      "perusahaan": "Alfatih Center",
+      "lokasi": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-12",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/perawat-support-pangkal-pinang/8a723de4-e5d2-4e02-96dd-a7196f3c1626",
+      "ringkasan": null,
+      "bagian": "Belitung",
+      "batas_lamaran": null
     },
     {
       "judul": "Sales Coordinator",
@@ -502,6 +587,62 @@
       "link": "https://www.linkedin.com/jobs/view/4488056160",
       "ringkasan": "Pengajar fisika paruh waktu untuk area Tanjung Pandan.",
       "bagian": "Belitung"
+    },
+    {
+      "judul": "Ops Supervisor",
+      "perusahaan": "Turas Group Indonesia",
+      "lokasi": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-05",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/ops-supervisor/f59ce932-2b3a-4daa-9f85-0c6b6d96951e",
+      "ringkasan": null,
+      "bagian": "Belitung",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Photo Editing - Technical Trainer",
+      "perusahaan": "Turas Group Indonesia",
+      "lokasi": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-05",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/photo-editing-technical-trainer/d8927e56-12be-4216-811f-c05799ee2e43",
+      "ringkasan": null,
+      "bagian": "Belitung",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "HR Manager",
+      "perusahaan": "Turas Group Indonesia",
+      "lokasi": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-05",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/hr-manager/ab3b46b9-330d-4bdd-975d-cfb654b28397",
+      "ringkasan": null,
+      "bagian": "Belitung",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Staff Support Freelance",
+      "perusahaan": "Pt Botanica Home Fragrance",
+      "lokasi": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-05",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/staff-support-freelance/d7911e44-b15e-45e4-8420-fe7f0417dd9c",
+      "ringkasan": null,
+      "bagian": "Belitung",
+      "batas_lamaran": null
     },
     {
       "judul": "MEKANIK & TEKNISI LISTRIK",
@@ -712,6 +853,20 @@
       "bagian": "Belitung"
     },
     {
+      "judul": "Barista",
+      "perusahaan": "Billiton Street Food",
+      "lokasi": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-10-30",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/barista/fd7c0a45-5f2c-4214-bf4d-8f8256318fa0",
+      "ringkasan": null,
+      "bagian": "Belitung",
+      "batas_lamaran": null
+    },
+    {
       "judul": "Sales Supervisor Bangka & Belitung",
       "perusahaan": "PT Changhong Electric Indonesia",
       "lokasi": "Bangka & Belitung (lokasi listing: Bangka Barat)",
@@ -738,6 +893,20 @@
       "bagian": "Belitung"
     },
     {
+      "judul": "Customer Service Representative XLSmart Belitung",
+      "perusahaan": "PT. Duta Generasi Mandiri",
+      "lokasi": "Pulaubesar, Bangka Selatan, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-10-28",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/customer-service-representative-xlsmart-belitung/8c75fd2e-a895-4260-9423-49cbf25de594",
+      "ringkasan": null,
+      "bagian": "Belitung",
+      "batas_lamaran": null
+    },
+    {
       "judul": "Customer Service XL Center - Belitung",
       "perusahaan": "Duta Generasi Mandiri",
       "lokasi": "Belitung",
@@ -749,6 +918,20 @@
       "link": "https://id.jobstreet.com/id/job/95521370",
       "ringkasan": "Melayani pelanggan dan mendukung penjualan di XL Center Belitung.",
       "bagian": "Belitung"
+    },
+    {
+      "judul": "Mekanik Mobil",
+      "perusahaan": "PT INTINUSA MITRA SUKSES",
+      "lokasi": "Belitung",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-10-27",
+      "dicek": "2026-11-23",
+      "sumber": "Loker.id",
+      "link": "https://www.loker.id/teknik/otomotif/mekanik-mobil-pt-intinusa-mitra-sukses-belitung-2.html",
+      "ringkasan": null,
+      "bagian": "Belitung",
+      "batas_lamaran": null
     },
     {
       "judul": "marketing",
@@ -764,17 +947,32 @@
       "bagian": "Belitung"
     },
     {
-      "judul": "Retail Assistant Regional (Tanjung Pandan)",
-      "perusahaan": "Eigerindo Multi Product Industry",
-      "lokasi": "Tanjung Pandan, Bangka Belitung",
-      "kategori": "Retail",
+      "judul": "Crowd Surveyor",
+      "perusahaan": "Pictopia",
+      "lokasi": "Gerunggang, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
       "gaji": null,
-      "tanggal_posting": "2026-08-14",
+      "tanggal_posting": "2026-11-23",
       "dicek": "2026-11-23",
-      "sumber": "JobStreet",
-      "link": "https://id.jobstreet.com/id/job/93970151",
-      "ringkasan": "Melayani pembeli dan membantu penjualan produk Eiger di toko Tanjung Pandan.",
-      "bagian": "Belitung"
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/crowd-surveyor/bef9bf99-f4de-47cb-a27c-9aa2a9b7257f",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Headstore - Pangkal Pinang",
+      "perusahaan": "CV Rabbani Asysa",
+      "lokasi": "Taman Sari, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-23",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/headstore-pangkal-pinang/cdff49ac-0732-4a76-9553-083e6ffe904c",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
     },
     {
       "judul": "Operations Supervisor",
@@ -790,6 +988,20 @@
       "bagian": "Babel lainnya"
     },
     {
+      "judul": "Head Store - Pangkal Pinang",
+      "perusahaan": "MOTIFASHION",
+      "lokasi": "Taman Sari, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-21",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/head-store-pangkal-pinang/66ea270f-0c09-49aa-ac60-53262368bbc3",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
       "judul": "Educational Sales Representative Sungailiat",
       "perusahaan": "PT Intan Pariwara",
       "lokasi": "Sungailiat, Bangka Belitung",
@@ -801,6 +1013,34 @@
       "link": "https://id.jobstreet.com/id/job/96016553",
       "ringkasan": "Menjalankan penjualan dan layanan pendidikan PT Intan Pariwara di Sungailiat.",
       "bagian": "Babel lainnya"
+    },
+    {
+      "judul": "Sport Center Manager",
+      "perusahaan": "PT. Talenta Eksekutif Asia (Matcha Talent)",
+      "lokasi": "Pangkal Pinang",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-20",
+      "dicek": "2026-11-23",
+      "sumber": "Loker.id",
+      "link": "https://www.loker.id/eksekutif-manajemen-senior/general-manager-unit-bisnis/sport-center-manager-pt-talenta-eksekutif-asia-matcha-talent-pangkal-pinang.html",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Clinic Supervisor - Pangkal Pinang",
+      "perusahaan": "SOZO Dental (Seven Retail Group)",
+      "lokasi": "Girimaya, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-20",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/clinic-supervisor-pangkal-pinang/97e1de62-983a-43ef-a889-1fab065dfdfe",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
     },
     {
       "judul": "Sales Canvassing - Fragrance & Cosmetic Industry Bangka Belitung",
@@ -853,6 +1093,62 @@
       "link": "https://id.jobstreet.com/id/job/96000583",
       "ringkasan": "Memimpin operasional klinik Sozo Dental di Pangkal Pinang (Seven Retail Group).",
       "bagian": "Babel lainnya"
+    },
+    {
+      "judul": "Pengajar Freelance IPS",
+      "perusahaan": "PT Ganesha Operation Pangkal Pinang",
+      "lokasi": "Sungailiat, Bangka, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-19",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/pengajar-freelance-ips/257d352d-70af-425b-89a2-1b4f75c3625c",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Office Boy",
+      "perusahaan": "PT Ganesha Operation Pangkal Pinang",
+      "lokasi": "Bukitintan, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-19",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/office-boy/52cb48ac-bc12-4b15-b521-814db8af68b0",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Staff Pembuat Jadwal",
+      "perusahaan": "PT Ganesha Operation Pangkal Pinang",
+      "lokasi": "Bukitintan, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-19",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/staff-pembuat-jadwal/f14af962-774d-4c2a-8f43-a7536c33ffea",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Customer Service",
+      "perusahaan": "PT Ganesha Operation Pangkal Pinang",
+      "lokasi": "Sungailiat, Bangka, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-19",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/customer-service/aa7d819c-71e8-48c9-a86e-c047b5884038",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
     },
     {
       "judul": "Frontline",
@@ -959,6 +1255,20 @@
       "bagian": "Babel lainnya"
     },
     {
+      "judul": "Field Officer (Pangkal Pinang)",
+      "perusahaan": "BCA Finance",
+      "lokasi": "Bukitintan, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-17",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/field-officer-pangkal-pinang/656a6378-fe24-4343-bd9c-5ace0bbae109",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
       "judul": "Staff Sales Representative (Bangka)",
       "perusahaan": "PT Suryamas Cipta Sentosa",
       "lokasi": "Bangka Belitung",
@@ -1024,6 +1334,48 @@
       "bagian": "Babel lainnya"
     },
     {
+      "judul": "OPERATION LEADER - TRANS STUDIO MINI PANGKAL PINANG",
+      "perusahaan": "Trans Entertainment",
+      "lokasi": "Gerunggang, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-16",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/operation-leader-trans-studio-mini-pangkal-pinang/bb41bda0-c692-441f-a444-8d35c4db71c5",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "ABK Ayam Boiler",
+      "perusahaan": "PT Mitra Elang Bersatu",
+      "lokasi": "Bakam, Bangka, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-16",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/abk-ayam-boiler/294fe3b2-b159-4004-bb3e-40670c7cf894",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "PIC Network - Bangka Belitung",
+      "perusahaan": "J&T Cargo Indonesia (PT Global Yimi Cargo)",
+      "lokasi": "Bukitintan, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-15",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/pic-network-bangka-belitung/59c777cb-0ff6-411f-9651-0fad544db315",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
       "judul": "Administrasi",
       "perusahaan": "CV Austindo Jaya Abadi",
       "lokasi": "Pangkal Pinang, Bangka Belitung",
@@ -1048,6 +1400,34 @@
       "link": "https://id.jobstreet.com/id/job/95875400",
       "ringkasan": "Memeriksa barang masuk dan keluar gudang CV Austindo Jaya Abadi di Pangkal Pinang.",
       "bagian": "Babel lainnya"
+    },
+    {
+      "judul": "Guru Bahasa Inggris",
+      "perusahaan": "Kampung Inggris Babel",
+      "lokasi": "Girimaya, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-13",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/guru-bahasa-inggris/ccce17d8-23ab-4150-89b8-c9f125d039b8",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Customer Service (Bangka Belitung)",
+      "perusahaan": "RAJA EMAS INDONESIA",
+      "lokasi": "Girimaya, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-13",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/customer-service-bangka-belitung/d0724c0b-9a2e-482e-a697-0fbf69c1101d",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
     },
     {
       "judul": "Senior English Teacher (Academic Year 2027/2028)",
@@ -1193,6 +1573,76 @@
       "bagian": "Babel lainnya"
     },
     {
+      "judul": "Account Representative Indibiz Telkom - Pangkal Pinang",
+      "perusahaan": "PT Infomedia Nusantara",
+      "lokasi": "Taman Sari, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-12",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/account-representative-indibiz-telkom-pangkal-pinang/5a9239f6-cfaa-4909-83e6-8f199b9daf98",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Supervisor Marketing Sepeda Motor Honda - Cab Muara Bangka Hulu",
+      "perusahaan": "Nusantara Sakti Group",
+      "lokasi": "Muara Bangka Hulu, Bengkulu, Bengkulu, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-12",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/supervisor-marketing-sepeda-motor-honda-cab-muara-bangka-hulu/4f323386-a540-4c53-8d2a-964bb5b73cca",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "IT Support (Placement : Pangkal Pinang)",
+      "perusahaan": "Mutiara Harapan Islamic School Bangka",
+      "lokasi": "Gabek, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-12",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/it-support-placement-pangkal-pinang/58ab5d73-e96d-4dff-a646-e21b419165e4",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Kindergarten Teacher (Academic Year 2027/2028)",
+      "perusahaan": "Mutiara Harapan Islamic School Bangka",
+      "lokasi": "Gabek, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-12",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/kindergarten-teacher-academic-year-2027-2028/dfb75199-aad7-452b-ac7c-00650b9a750c",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Sales Canvas EDC (Bangka Barat, Bangka Tengah, Bangka Selatan)",
+      "perusahaan": "PT. Buku Usaha Digital",
+      "lokasi": "Simpang Katis, Bangka Tengah, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-12",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/sales-canvas-edc-bangka-barat-bangka-tengah-bangka-selatan/0d52052a-f4b6-494b-b101-7e38a76bc3b9",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
       "judul": "Supervisor Store - Pangkalpinang",
       "perusahaan": "Fore Kopi Indonesia",
       "lokasi": "Pangkal Pinang, Bangka Belitung",
@@ -1217,6 +1667,34 @@
       "link": "https://id.jobstreet.com/id/job/95824286",
       "ringkasan": "Menjalankan pekerjaan operasional PT Widasa Jaya Perkasa di Puding Besar, Bangka.",
       "bagian": "Babel lainnya"
+    },
+    {
+      "judul": "Marketing Sharia Pembiayaan Haji - Area Pangkal Pinang",
+      "perusahaan": "PT SAPTA SINERGI BERKARYA",
+      "lokasi": "Girimaya, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-11",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/marketing-sharia-pembiayaan-haji-area-pangkal-pinang/502ab9b4-1457-4632-ab6c-f3e9046107f9",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "STORE LEADER (PANGKALPINANG)",
+      "perusahaan": "Wearing Klamby",
+      "lokasi": "Taman Sari, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-11",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/store-leader-pangkalpinang/97fdd429-75a7-456e-813a-8020d9ea2007",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
     },
     {
       "judul": "Sales Promotion SPB/SPG - Bangka",
@@ -1258,6 +1736,20 @@
       "bagian": "Babel lainnya"
     },
     {
+      "judul": "Perawat Gigi (Pangkal Pinang)",
+      "perusahaan": "SOZO Dental (Seven Retail Group)",
+      "lokasi": "Girimaya, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-10",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/perawat-gigi-pangkal-pinang/69305f02-52a7-4a9e-9dd5-357d91c21647",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
       "judul": "Retail Assistant Mesjid Jamik (Pangkal Pinang)",
       "perusahaan": "Eigerindo Multi Product Industry",
       "lokasi": "Merawang, Bangka Belitung",
@@ -1295,6 +1787,48 @@
       "link": "https://id.jobstreet.com/id/job/95785063",
       "ringkasan": "Mengajar Bahasa Inggris secara interaktif untuk anak-anak dan remaja di Pangkal Pinang.",
       "bagian": "Babel lainnya"
+    },
+    {
+      "judul": "Relationship Officer (Pangkal Pinang)",
+      "perusahaan": "BCA Finance",
+      "lokasi": "Bukitintan, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-09",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/relationship-officer-pangkal-pinang/d070edd1-a595-4dbb-887e-232f1457ec4e",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Marketing Sharia Haji (Area Pangkal Pinang)",
+      "perusahaan": "PT SAPTA SINERGI BERKARYA",
+      "lokasi": "Girimaya, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-09",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/marketing-sharia-haji-area-pangkal-pinang/5a42a375-d4e7-49f6-b43e-d778eea2cb61",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Staff Sales Representative (Bangka)",
+      "perusahaan": "PT. Suryamas Cipta Sentosa (GREEBEL)",
+      "lokasi": "Sungailiat, Bangka, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-09",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/staff-sales-representative-bangka/d9912b1a-e3da-459d-9e27-e2252c0b9daf",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
     },
     {
       "judul": "Sales Promotor Kredivo",
@@ -1336,6 +1870,34 @@
       "bagian": "Babel lainnya"
     },
     {
+      "judul": "Field Account Consultant (Pangkal Pinang)",
+      "perusahaan": "BCA Finance",
+      "lokasi": "Bukitintan, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-06",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/field-account-consultant-pangkal-pinang/101cdc62-1cac-4ea7-b979-3a0af16f0507",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Tutor Bahasa Inggris",
+      "perusahaan": "Kampung Inggris Babel",
+      "lokasi": "Girimaya, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-06",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/tutor-bahasa-inggris/988f0d27-e6cc-4b93-8b50-23cc9f7ddc28",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
       "judul": "Sales Team Lead (Bangka Belitung)",
       "perusahaan": "BukuWarung",
       "lokasi": "Pangkal Pinang, Bangka Belitung",
@@ -1362,6 +1924,62 @@
       "bagian": "Babel lainnya"
     },
     {
+      "judul": "Driver Dumptruck (Supir)",
+      "perusahaan": "PT PAYUNG MITRAJAYA MANDIRI",
+      "lokasi": "Bakam, Bangka, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-05",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/driver-dumptruck-supir/52954588-d04a-4176-b0e8-217ef074fae0",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Kennel Boy",
+      "perusahaan": "PT Mitra Elang Bersatu",
+      "lokasi": "Belinyu, Bangka, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-05",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/kennel-boy/f9eecd27-0b3a-4800-ae2e-a0b5e1dffc78",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "STAFF PENAGIHAN AREA PANGKAL PINANG (URGENT)",
+      "perusahaan": "PT SWAKARYA INSAN MANDIRI CENTRAL 4",
+      "lokasi": "Gerunggang, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-05",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/staff-penagihan-area-pangkal-pinang-urgent/31f3d819-0cd7-42ed-9f3a-46bbc6f925a2",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "STAFF TAX ACCOUNTING",
+      "perusahaan": "Taxco Solution",
+      "lokasi": "Rangkui, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-05",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/staff-tax-accounting/325f2507-5a42-472a-a862-71c0b744e99a",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
       "judul": "Sales Supervisor",
       "perusahaan": "CV Austindo Jaya Abadi",
       "lokasi": "Pangkal Pinang, Bangka Belitung",
@@ -1373,6 +1991,20 @@
       "link": "https://id.jobstreet.com/id/job/95695232",
       "ringkasan": "Memimpin tim sales ritel dan produk konsumen Austindo di Pangkal Pinang.",
       "bagian": "Babel lainnya"
+    },
+    {
+      "judul": "Apoteker Penanggung Jawab Sozo Dental Pangkal Pinang",
+      "perusahaan": "SOZO Dental (Seven Retail Group)",
+      "lokasi": "Girimaya, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-04",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/apoteker-penanggung-jawab-sozo-dental-pangkal-pinang/7408b8a6-a36a-48e9-88ed-94594f11ea86",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
     },
     {
       "judul": "Shadow Teacher",
@@ -1414,6 +2046,34 @@
       "bagian": "Babel lainnya"
     },
     {
+      "judul": "Marketing Officer Sharia (Area Pangkal Pinang)",
+      "perusahaan": "PT SAPTA SINERGI BERKARYA",
+      "lokasi": "Girimaya, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-03",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/marketing-officer-sharia-area-pangkal-pinang/88b0f50b-8af9-4ef7-8d4d-6b889f514d0b",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "MARKETING BANGKA",
+      "perusahaan": "PT SWAKARYA INSAN MANDIRI CENTRAL 4",
+      "lokasi": "Sungailiat, Bangka, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-03",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/marketing-bangka/e1899727-07c4-4cf3-b38e-bf7650acbf0d",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
       "judul": "Sales Marketing eksekutif",
       "perusahaan": "PT. ISTANA AGUNG BABEL",
       "lokasi": "Pangkal Pinang, Bangka Belitung",
@@ -1438,6 +2098,20 @@
       "link": "https://www.linkedin.com/jobs/view/4486143939",
       "ringkasan": "Mengajar sejarah secara paruh waktu di Kota Pangkal Pinang bersama Ruangguru for Business.",
       "bagian": "Babel lainnya"
+    },
+    {
+      "judul": "Admission and Communication Staff (Placement: Pangkal Pinang)",
+      "perusahaan": "Mutiara Harapan Islamic School Bangka",
+      "lokasi": "Gabek, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-10-31",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/admission-and-communication-staff-placement-pangkal-pinang/2c77a761-f966-491b-9c1b-36617d8a7f21",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
     },
     {
       "judul": "Sales Executive (Bangka Belitung)",
@@ -1544,6 +2218,34 @@
       "bagian": "Babel lainnya"
     },
     {
+      "judul": "Educational Sales Representative Bangka Barat",
+      "perusahaan": "PT INTAN PARIWARA GROUP",
+      "lokasi": "Muntok, Bangka Barat, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-10-30",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/educational-sales-representative-bangka-barat/6b67684b-778c-4f13-bbfb-c86fa60bb46e",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Social Media Specialist Intern (Placement : Pangkalpinang)",
+      "perusahaan": "Mutiara Harapan Islamic School Bangka",
+      "lokasi": "Gabek, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-10-30",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/social-media-specialist-intern-placement-pangkalpinang/10cdaef6-6cb9-4223-9c16-07da19c2d16e",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
       "judul": "TIM PANEN",
       "perusahaan": "PT Merdeka Sarana Usaha",
       "lokasi": "Pangkal Pinang, Bangka Belitung",
@@ -1594,6 +2296,20 @@
       "link": "https://id.jobstreet.com/id/job/95568242",
       "ringkasan": "Petugas kebersihan di Dana Purna Investama, Pangkal Pinang.",
       "bagian": "Babel lainnya"
+    },
+    {
+      "judul": "KOLEKTOR PANGKAL PINANG",
+      "perusahaan": "PT SWAKARYA INSAN MANDIRI CENTRAL 4",
+      "lokasi": "Gabek, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-10-29",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/kolektor-pangkal-pinang/e798f09e-4b6a-4697-b6a9-4eb5da187edf",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
     },
     {
       "judul": "STORE LEADER (PANGKALPINANG)",
@@ -1648,6 +2364,48 @@
       "bagian": "Babel lainnya"
     },
     {
+      "judul": "HR Development",
+      "perusahaan": "Legal Kreatif",
+      "lokasi": "Sungailiat, Bangka, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-10-28",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/hr-development/e4da35d7-a036-435b-9961-a0c692cef880",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Sales Canvasser (Horeka) - Pangkal Pinang",
+      "perusahaan": "PT Transretail Indonesia",
+      "lokasi": "Gerunggang, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-10-28",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/sales-canvasser-horeka-pangkal-pinang/f36630a4-604f-44bf-96df-b4d4f1e8d110",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Marketing Head Multiguna R2 - Bangka Belitung",
+      "perusahaan": "Nusantara Sakti Group",
+      "lokasi": "Toboali, Bangka Selatan, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-10-28",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/marketing-head-multiguna-r2-bangka-belitung/e2b143bb-bde2-4f78-82bf-238e9b49d260",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
       "judul": "Primary Vice Principal of Academic Excellence (Placement : Pangkal Pinang)",
       "perusahaan": "Mutiara Harapan Islamic School",
       "lokasi": "Pangkal Pinang, Bangka Belitung",
@@ -1672,6 +2430,34 @@
       "link": "https://www.linkedin.com/jobs/view/4463199050",
       "ringkasan": "Mengembangkan kemitraan bisnis RedDoorz di wilayah Bangka Belitung.",
       "bagian": "Babel lainnya"
+    },
+    {
+      "judul": "Sales Kordinator",
+      "perusahaan": "Toyota Istana Agung",
+      "lokasi": "Pangkal Pinang",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-10-27",
+      "dicek": "2026-11-23",
+      "sumber": "Loker.id",
+      "link": "https://www.loker.id/penjualan/manajemen-penjualan/sales-kordinator-toyota-istana-agung-pangkal-pinang.html",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Sales Marketing",
+      "perusahaan": "Toyota Istana Agung",
+      "lokasi": "Pangkal Pinang",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-10-27",
+      "dicek": "2026-11-23",
+      "sumber": "Loker.id",
+      "link": "https://www.loker.id/penjualan/konsultan-penjualan/sales-marketing-toyota-istana-agung-pangkal-pinang.html",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
     },
     {
       "judul": "Store Manager XL Center Bangka Belitung",
@@ -1713,6 +2499,48 @@
       "bagian": "Babel lainnya"
     },
     {
+      "judul": "Office boy Bangka",
+      "perusahaan": "PT Jagratara Delapan Empat",
+      "lokasi": "Gabek, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-10-26",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/office-boy-bangka/aa08c33a-6a3e-49dc-aa83-d0b01ef59b75",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Anak Buah Kandang Ayam Petelur",
+      "perusahaan": "PT Mitra Elang Bersatu",
+      "lokasi": "Belinyu, Bangka, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-10-26",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/anak-buah-kandang-ayam-petelur/58c8b9a5-08bd-48c5-b6ac-ce4f914590f7",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Mekanik Mobil Mesin Diesel",
+      "perusahaan": "PT Mitra Elang Bersatu",
+      "lokasi": "Belinyu, Bangka, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-10-26",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/mekanik-mobil-mesin-diesel/d7f9c1b8-73ad-4fa5-b89c-c63a53a35210",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
       "judul": "TEKNISI - BANGKA",
       "perusahaan": "PT Universal",
       "lokasi": "Central Bangka, Bangka Belitung",
@@ -1737,6 +2565,76 @@
       "link": "https://id.jobstreet.com/id/job/95466529",
       "ringkasan": "Memimpin dan mengatur operasional cabang di Pangkal Pinang (pemasang tidak menampilkan nama perusahaan di JobStreet).",
       "bagian": "Babel lainnya"
+    },
+    {
+      "judul": "Front Office Staff",
+      "perusahaan": "Siloam Hospitals Group (Tbk)",
+      "lokasi": "Bangka Belitung",
+      "kategori": "Administrasi & Dukungan Perkantoran",
+      "gaji": null,
+      "tanggal_posting": "2026-10-20",
+      "dicek": "2026-11-23",
+      "sumber": "JobStreet",
+      "link": "https://id.jobstreet.com/id/job/95386331",
+      "ringkasan": "•Familiarity with front office management software, electronic health records (EHR) systems, and Microsoft Office Suite (especially Excel and...",
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Account Receivable Staff",
+      "perusahaan": "Siloam Hospitals Group (Tbk)",
+      "lokasi": "Bangka Belitung",
+      "kategori": "Administrasi & Dukungan Perkantoran",
+      "gaji": null,
+      "tanggal_posting": "2026-10-20",
+      "dicek": "2026-11-23",
+      "sumber": "JobStreet",
+      "link": "https://id.jobstreet.com/id/job/95386338",
+      "ringkasan": "•Ensure that all invoices are sent in accordance with quality targets so that the payment process is carried out on time as well as bookkeeping of...",
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Radiographer",
+      "perusahaan": "Siloam Hospitals Group (Tbk)",
+      "lokasi": "Bangka Belitung",
+      "kategori": "Kesehatan & Medis",
+      "gaji": null,
+      "tanggal_posting": "2026-10-20",
+      "dicek": "2026-11-23",
+      "sumber": "JobStreet",
+      "link": "https://id.jobstreet.com/id/job/95386336",
+      "ringkasan": "Carrying out radiographic examinations which include conventional radiography, fluoroscopy, mammography, CT Scan, MRI, mobile photos in the room,...",
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Retail Assistant (Sungailiat)",
+      "perusahaan": "PT Eigerindo Multi Produk Industri",
+      "lokasi": "Sungailiat, Bangka Belitung",
+      "kategori": "Penjualan",
+      "gaji": null,
+      "tanggal_posting": "2026-10-16",
+      "dicek": "2026-11-23",
+      "sumber": "JobStreet",
+      "link": "https://id.jobstreet.com/id/job/95311511",
+      "ringkasan": "Do you enjoy interacting with people to find the solution to their outdoor activities needs? Are you passionate about conquering one peak after...",
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Full Time Pengajar UTBK Numerasi Pangkal Pinang",
+      "perusahaan": "Ruangguru.com",
+      "lokasi": "Merawang, Bangka Belitung",
+      "kategori": "Pendidikan & Pelatihan",
+      "gaji": null,
+      "tanggal_posting": "2026-10-12",
+      "dicek": "2026-11-23",
+      "sumber": "JobStreet",
+      "link": "https://id.jobstreet.com/id/job/95214082",
+      "ringkasan": "Mengawasi dan menjaga hubungan baik dengan mitra pengajar, memantau pelaksanaan pembelajaran di kelas, serta berkoordinasi dengan tim akademik...",
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
     }
   ]
 }

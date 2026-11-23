@@ -16,6 +16,8 @@ import { getDb, isDbConfigured } from "./db";
 import * as t from "./db/schema";
 import { can, getCurrentProfile, isAdmin, type SessionProfile } from "./auth";
 import * as seed from "./data-seed";
+import pricesJson from "@/data/harga-pangan.json";
+import keuanganJson from "@/data/keuangan.json";
 import { getJobsUpdatedAt as getJobsUpdatedAtFromJson, listJobsFromJson } from "./jobs-json";
 import type { Lang } from "./i18n";
 export { channelLabel } from "./labels";
@@ -790,8 +792,20 @@ export async function reviewInfoSubmission(id: string, decision: "approved" | "r
 
 const IDR = (cents: number | null | undefined): number => Math.round((cents ?? 0) / 100);
 
+/** Harga pangan dari web/src/data/harga-pangan.json (ditulis GitHub Actions
+ * update-data.yml -> scripts/update_harga.py, sumber Panel Harga Pangan Bapanas
+ * Kab. Belitung, harian + harga kemarin). Null bila file tidak valid. */
+function dailyPricesFromJson(): DailyPrices | null {
+  const j = pricesJson as unknown as DailyPrices;
+  if (!j || !Array.isArray(j.items) || j.items.length < 3 || !j.source_date) return null;
+  return j;
+}
+
 export async function getDailyPrices(): Promise<DailyPrices> {
   if (useSeed()) return seed.getDailyPrices();
+  // 23 Nov 2026: ADAT Belitung (sumber cron DB) berhenti di 01-11-2026; data
+  // harian kini dari JSON GitHub Actions. DB dipakai bila JSON lebih lama.
+  const fromJson = dailyPricesFromJson();
   const db = getDb();
   const latest = await db.select({ priceDate: t.dailyPrices.priceDate })
     .from(t.dailyPrices).orderBy(desc(t.dailyPrices.priceDate)).limit(1);
@@ -803,6 +817,7 @@ export async function getDailyPrices(): Promise<DailyPrices> {
   // sebelumnya memakai new Date() sehingga halaman selalu tampak baru padahal
   // datanya 18 hari — bug 19 Nov 2026). source_url = tautan ADAT yang asli
   // (sebelumnya "" sehingga tautan "Lihat sumber data" mati).
+  if (fromJson && (!date || fromJson.source_date >= String(date))) return fromJson;
   const fetchedAt = rows.length
     ? new Date(Math.max(...rows.map((r) => r.createdAt.getTime()))).toISOString()
     : new Date().toISOString();
@@ -820,10 +835,51 @@ export async function getDailyPrices(): Promise<DailyPrices> {
   };
 }
 
+type KeuanganFile = {
+  ihsg?: { nilai: number; perubahan: number | null; persen: number | null; waktu_pasar: string; sumber: string; diambil: string };
+  kurs?: { data: Record<string, { erate: number[]; tt: number[]; bn: number[] }>; sumber: string; diambil: string };
+  emas?: { harga: number; sebelumnya: number; tanggal: string; sumber: string; diambil: string };
+};
+
+/** "2026-11-23 12:30 WIB" -> ISO (UTC). */
+function wibToIso(s: string | undefined): string | null {
+  const m = (s ?? "").match(/(\d{4}-\d{2}-\d{2})[ T](\d{2}):(\d{2})/);
+  return m ? new Date(`${m[1]}T${m[2]}:${m[3]}:00+07:00`).toISOString() : null;
+}
+
+const ID_MONTHS = ["januari", "februari", "maret", "april", "mei", "juni", "juli", "agustus", "september", "oktober", "november", "desember"];
+function idDateToIso(s: string | undefined): string | null {
+  const m = (s ?? "").toLowerCase().match(/(\d{1,2}) (\w+) (\d{4})/);
+  const mi = m ? ID_MONTHS.indexOf(m[2]) : -1;
+  return m && mi >= 0 ? `${m[3]}-${String(mi + 1).padStart(2, "0")}-${m[1].padStart(2, "0")}` : null;
+}
+
+/** Kurs BCA + IHSG + emas Antam dari web/src/data/keuangan.json (ditulis
+ * GitHub Actions update-data.yml 3x sehari kerja). Null bila tidak valid. */
+function marketRatesFromJson(): MarketRates | null {
+  const j = keuanganJson as unknown as KeuanganFile;
+  const fx = j.kurs; const fxAt = wibToIso(fx?.diambil);
+  if (!fx || !fxAt || Object.keys(fx.data ?? {}).length < 5 || !j.ihsg || !j.emas) return null;
+  const ihsgAt = wibToIso(j.ihsg.waktu_pasar) ?? fxAt;
+  return {
+    ihsg: { value: j.ihsg.nilai, change: j.ihsg.perubahan ?? 0, percent: j.ihsg.persen ?? 0, as_of: ihsgAt, source: j.ihsg.sumber, fetched_at: wibToIso(j.ihsg.diambil) ?? fxAt },
+    gold: { price_1g: j.emas.harga, previous: j.emas.sebelumnya, date: idDateToIso(j.emas.tanggal) ?? fxAt.slice(0, 10), source: j.emas.sumber, fetched_at: wibToIso(j.emas.diambil) ?? fxAt },
+    currencies: Object.entries(fx.data).map(([code, v]) => ({
+      code, buy_erate: v.erate[0], sell_erate: v.erate[1], buy_tt: v.tt[0], sell_tt: v.tt[1], buy_bn: v.bn[0], sell_bn: v.bn[1],
+    })),
+    fx_source: fx.sumber,
+    fx_fetched_at: fxAt,
+  };
+}
+
 export async function getMarketRates(): Promise<MarketRates> {
   if (useSeed()) return seed.getMarketRates();
   const db = getDb();
   const rows = await db.select().from(t.marketRates).orderBy(desc(t.marketRates.asOf)).limit(30);
+  // 23 Nov 2026: JSON GitHub Actions (BCA e-Rate, Antam, 3x sehari) dipakai
+  // bila lebih baru dari baris DB (cron Vercel harian, kurs mid-market Yahoo).
+  const fromJson = marketRatesFromJson();
+  if (fromJson && (!rows[0] || new Date(fromJson.fx_fetched_at) >= rows[0].asOf)) return fromJson;
   const byKind = (kind: string, symbol?: string) =>
     rows.find((r) => r.kind === kind && (!symbol || r.symbol === symbol));
   const ihsg = byKind("ihsg");

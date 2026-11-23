@@ -8,29 +8,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { MapPin } from "lucide-react";
 import { CHANNEL_STYLE } from "@/lib/channel-style";
-import type { Article, Channel } from "@/lib/types";
+import { articleIllustration } from "@/lib/illustrations";
+import type { Article } from "@/lib/types";
 import { formatDateWIB, formatViews } from "@/lib/format";
 import { channelLabel } from "@/lib/labels";
 import { useLanguage } from "@/components/language-provider";
 
-function ChannelArt({ channel, size = "md", dark = false }: { channel: Channel; size?: "sm" | "md"; dark?: boolean }) {
-  const st = CHANNEL_STYLE[channel];
-  const Icon = st.icon;
-  return (
-    <span aria-hidden="true" className={`flex size-full bg-gradient-to-br ${dark ? "items-start justify-end p-6 " : "items-center justify-center "}${dark ? "from-surface-dark via-accent-dark to-surface-dark-deep text-surface-dark" : st.art}`}>
-      <span className={`flex items-center justify-center rounded-full bg-canvas/80 shadow-sm ${size === "sm" ? "size-8" : "size-14"}`}>
-        <Icon className={size === "sm" ? "size-4" : "size-7"} />
-      </span>
-    </span>
-  );
-}
-
-function Photo({ article, sizes, size, dark, priority }: { article: Article; sizes: string; size?: "sm" | "md"; dark?: boolean; priority?: boolean }) {
+function Photo({ article, sizes, priority }: { article: Article; sizes: string; size?: "sm" | "md"; dark?: boolean; priority?: boolean }) {
   const g = article.gallery[0];
   if (g?.url) {
     return <Image src={g.url} alt={g.alt} fill sizes={sizes} priority={priority} className="object-cover transition-transform duration-300 group-hover:scale-[1.03]" />;
   }
-  return <ChannelArt channel={article.channel} size={size} dark={dark} />;
+  // Belum ada foto asli -> ilustrasi kanal (bukan foto peristiwa; alt jujur).
+  const ill = articleIllustration(article);
+  return <Image src={ill.src} alt={ill.alt} fill sizes={sizes} priority={priority} className="object-cover transition-transform duration-300 group-hover:scale-[1.03]" data-illustration="true" />;
 }
 
 

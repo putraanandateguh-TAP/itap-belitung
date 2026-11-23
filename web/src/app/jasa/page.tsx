@@ -1,6 +1,8 @@
 // Halaman konten iTAP: Jasa — #29 Kartu Jasa.
 // Harga ASLI dari index.html situs lama (Nov 2026).
 import type { Metadata } from "next";
+import Image from "next/image";
+import { SECTION_ILLUSTRATIONS } from "@/lib/illustrations";
 import { Check } from "lucide-react";
 import { listServices } from "@/lib/data";
 import { WA_NUMBER } from "@/lib/seed-data";
@@ -27,7 +29,18 @@ export default async function JasaPage() {
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((s) => (
-          <article key={s.id} className="flex flex-col gap-3 rounded-lg border border-line bg-canvas p-4 shadow-card">
+          <article key={s.id} className="flex flex-col gap-3 overflow-hidden rounded-lg border border-line bg-canvas shadow-card">
+            <div className="relative aspect-video overflow-hidden bg-surface-alt">
+              {/* Kelas -> poster asli kelas AI; jasa lain -> ilustrasi jasa digital iTAP */}
+              <Image
+                src={/kelas/i.test(s.name) ? "/images/ai-content-creator.webp" : SECTION_ILLUSTRATIONS.jasa.src}
+                alt={/kelas/i.test(s.name) ? `Poster kelas AI Content Creator iTAP — ${s.name}` : `${SECTION_ILLUSTRATIONS.jasa.alt} — ${s.name}`}
+                fill
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                className="object-cover"
+              />
+            </div>
+            <div className="flex flex-1 flex-col gap-3 px-4 pb-4">
             <h2 className="text-base font-semibold text-ink">{s.name}</h2>
             <p className="flex-1 text-sm text-muted">{s.desc}</p>
             <ul className="flex flex-col gap-1">
@@ -50,6 +63,7 @@ export default async function JasaPage() {
             >
               {t(lang, "jasa.askViaWa")}
             </a>
+            </div>
           </article>
         ))}
       </div>

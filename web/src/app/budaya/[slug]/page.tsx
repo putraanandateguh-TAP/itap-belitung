@@ -3,6 +3,7 @@
 // jujur (jangan karang lirik). Sama untuk sumber bacaan yang kosong.
 import type { Metadata } from "next";
 import Image from "next/image";
+import { cultureIllustration } from "@/lib/illustrations";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getCultureStory } from "@/lib/daily";
@@ -43,11 +44,12 @@ export default async function BudayaDetailPage({ params }: { params: Promise<{ s
       </header>
 
       <article className="flex flex-col gap-4 overflow-hidden rounded-lg border border-line bg-canvas p-4 shadow-card md:p-6">
-        {CULTURE_IMAGES[slug] && (
+        {(
           <div className="relative -m-4 mb-0 aspect-video overflow-hidden bg-surface-alt md:-m-6 md:mb-0">
+            {/* Tanpa foto cerita -> ilustrasi kategori iTAP (alt jujur) */}
             <Image
-              src={CULTURE_IMAGES[slug]}
-              alt={story.title}
+              src={CULTURE_IMAGES[slug] ?? cultureIllustration(story.category).src}
+              alt={CULTURE_IMAGES[slug] ? story.title : cultureIllustration(story.category).alt}
               fill
               sizes="(max-width: 768px) 100vw, 800px"
               className="object-cover"

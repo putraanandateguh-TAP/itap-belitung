@@ -4,6 +4,8 @@
 // form GET (tanpa JS pun jalan). Empty state jujur: seed tidak punya
 // listing — jangan karang penawaran.
 import type { Metadata } from "next";
+import Image from "next/image";
+import { SECTION_ILLUSTRATIONS } from "@/lib/illustrations";
 import { listListings, type ListingSort } from "@/lib/marketplace";
 import { LISTING_CATEGORIES, LISTING_CATEGORY_LABELS } from "@/lib/listings";
 import { ListingCard } from "@/components/listing-card";
@@ -58,7 +60,11 @@ export default async function JualBeliPage({
 
   return (
     <div className="flex flex-col gap-6 py-8">
-      <section aria-labelledby="jual-beli-title" className="rounded-xl bg-surface-dark px-6 py-10 text-ink-on-dark">
+      <section aria-labelledby="jual-beli-title" className="relative overflow-hidden rounded-xl bg-surface-dark px-6 pb-10 pt-36 text-ink-on-dark sm:pt-44">
+        {/* Latar ilustrasi jual beli iTAP + gradasi gelap agar teks tetap terbaca */}
+        <Image src={SECTION_ILLUSTRATIONS.jualBeli.src} alt="" fill priority sizes="(max-width: 1024px) 100vw, 1024px" className="object-cover" data-illustration="true" />
+        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-surface-dark via-surface-dark/90 via-50% to-transparent" />
+        <div className="relative">
         <p className="text-xs font-medium uppercase tracking-widest text-accent-light">{t(lang, "market.kicker")}</p>
         <h1 id="jual-beli-title" className="mt-2 text-xl font-bold md:text-display">{t(lang, "market.title")}</h1>
         <p className="mt-2 max-w-xl text-base text-muted-on-dark">
@@ -67,6 +73,7 @@ export default async function JualBeliPage({
         <div className="mt-4 flex flex-wrap gap-2">
           <ButtonLink href="/jual-beli/pasang">{t(lang, "market.postOffer")}</ButtonLink>
           <ButtonLink href="/jual-beli/aturan" variant="secondary" className="bg-transparent text-ink-on-dark">{t(lang, "market.rules")}</ButtonLink>
+        </div>
         </div>
       </section>
 

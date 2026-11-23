@@ -60,7 +60,9 @@ test.describe("F01 tamu membaca berita", () => {
 
   test("F01-E2/E3 artikel tanpa foto & tanpa koordinat", async ({ page }) => {
     await page.goto("/artikel/pantai-tanjung-tinggi");
-    await expect(page.getByText("Belum ada foto untuk artikel ini")).toBeVisible();
+    // 23 Nov 2026: artikel tanpa foto kini menampilkan ilustrasi kanal + keterangan jujur.
+    await expect(page.locator('img[data-illustration="true"]').first()).toBeVisible();
+    await expect(page.getByText("Gambar ilustrasi iTAP, bukan foto peristiwa")).toBeVisible();
     await expect(page.getByText("Koordinat peta belum tersedia")).toBeVisible();
   });
 

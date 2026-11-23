@@ -3,6 +3,7 @@
 // publik; detail penuh hanya bila login + email terverifikasi / pemilik / admin.
 // Aksi (simpan/suka, chat, lapor) di actions.tsx (client island).
 import type { Metadata } from "next";
+import { SECTION_ILLUSTRATIONS } from "@/lib/illustrations";
 import { notFound } from "next/navigation";
 import { getListing } from "@/lib/marketplace";
 import { getCurrentProfile } from "@/lib/auth";
@@ -64,9 +65,12 @@ export default async function ListingDetailPage({ params }: { params: Promise<{ 
           })}
         </div>
       ) : (
-        <div className="rounded-lg border border-line bg-surface p-8 text-center text-sm text-muted">
-          {t(lang, "market.noPhotoDetail")}
-        </div>
+        <figure className="overflow-hidden rounded-lg border border-line bg-surface">
+          {/* Penjual belum unggah foto -> ilustrasi jual beli iTAP + keterangan jujur */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={SECTION_ILLUSTRATIONS.jualBeli.src} alt={SECTION_ILLUSTRATIONS.jualBeli.alt} className="aspect-video w-full object-cover" data-illustration="true" />
+          <figcaption className="px-4 py-2 text-center text-sm text-muted">{t(lang, "market.noPhotoDetail")}</figcaption>
+        </figure>
       )}
 
       <p className="text-xl font-bold text-ink">{formatListingPrice(listing.price_cents)}</p>

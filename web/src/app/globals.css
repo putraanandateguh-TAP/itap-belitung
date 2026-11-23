@@ -34,6 +34,14 @@
   --color-success: #15803d;
   --color-success-bright: #16a34a;
   --color-warning: #92400e;
+  /* 23 Nov 2026 — tampilan portal: latar halaman kebiruan lembut + aksen emas
+     dari logo iTAP (navy-emas). Emas HANYA sebagai latar/ikon, bukan warna
+     teks di atas putih (kontras); teks di atas emas pakai navy. */
+  --color-page: #f3f6fb;
+  --color-gold: #f2b632;
+  --color-gold-soft: #fff6dd;
+  --color-gold-ink: #7a4f00;
+  --color-navy-soft: #e8eef9;
 
   --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -107,6 +115,11 @@
   --color-success: var(--color-success);
   --color-success-bright: var(--color-success-bright);
   --color-warning: var(--color-warning);
+  --color-page: var(--color-page);
+  --color-gold: var(--color-gold);
+  --color-gold-soft: var(--color-gold-soft);
+  --color-gold-ink: var(--color-gold-ink);
+  --color-navy-soft: var(--color-navy-soft);
 
   --color-canvas: var(--color-bg);
   --color-ink: var(--color-text);
@@ -122,12 +135,21 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
 
-  --text-xs: var(--text-xs) / var(--text-xs-line);
-  --text-sm: var(--text-sm) / var(--text-sm-line);
-  --text-base: var(--text-base) / var(--text-base-line);
-  --text-lg: var(--text-lg) / var(--text-lg-line);
-  --text-xl: var(--text-xl) / var(--text-xl-line);
-  --text-display: var(--text-display) / var(--text-display-line);
+  /* Tailwind v4 butuh ukuran dan line-height sebagai variabel terpisah.
+     Format lama "ukuran / line-height" tidak valid untuk font-size sehingga
+     SEMUA teks text-xs..text-display jatuh ke 16px (bug, diperbaiki 23 Nov 2026). */
+  --text-xs: var(--text-xs);
+  --text-xs--line-height: var(--text-xs-line);
+  --text-sm: var(--text-sm);
+  --text-sm--line-height: var(--text-sm-line);
+  --text-base: var(--text-base);
+  --text-base--line-height: var(--text-base-line);
+  --text-lg: var(--text-lg);
+  --text-lg--line-height: var(--text-lg-line);
+  --text-xl: var(--text-xl);
+  --text-xl--line-height: var(--text-xl-line);
+  --text-display: var(--text-display);
+  --text-display--line-height: var(--text-display-line);
 
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);
@@ -149,7 +171,7 @@
     scroll-behavior: smooth;
   }
   body {
-    @apply bg-canvas font-sans text-ink antialiased;
+    @apply bg-page font-sans text-ink antialiased;
   }
   /* Focus ring selalu 2px aksen — jangan dihilangkan (tailwind-mapping.md). */
   :focus-visible {
@@ -173,5 +195,23 @@
   /* Skeleton shimmer (components.md #37) — berhenti bila reduced-motion. */
   .skeleton {
     @apply animate-pulse rounded-md bg-surface;
+  }
+  /* Baris kartu yang bisa digeser (swipe) — scroll-snap horizontal,
+     scrollbar disembunyikan tapi tetap bisa di-scroll keyboard/trackpad. */
+  .swipe-row {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 16px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .swipe-row::-webkit-scrollbar {
+    display: none;
+  }
+  .swipe-row > * {
+    scroll-snap-align: start;
+    flex: 0 0 auto;
   }
 }

@@ -118,7 +118,7 @@ test.describe("F14 hub info harian (M5)", () => {
     await page.goto("/");
     await expect(page.getByRole("heading", { name: "Cuaca Tanjung Pandan" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "Jadwal salat" })).toBeVisible();
-    await expect(page.getByText("Cuaca belum tersedia — cron daily-info-fetch belum mengisi cache (P1).")).toBeVisible();
+    await expect(page.getByText("Prakiraan cuaca belum tersedia saat ini. Silakan coba lagi nanti.")).toBeVisible();
   });
 
   test("F14-M5-3 mobile 390px: hub + cuaca tanpa overflow", async ({ page }) => {

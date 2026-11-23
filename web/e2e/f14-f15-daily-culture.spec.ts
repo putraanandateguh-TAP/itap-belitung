@@ -20,7 +20,7 @@ test.describe("F14 info harian", () => {
   test("F14-H3 /lowongan: lowongan tampil + cari", async ({ page }) => {
     await page.goto("/lowongan");
     await expect(page.getByRole("heading", { name: "Lowongan Kerja Belitung" })).toBeVisible();
-    await expect(page.getByText("Field Officer").first()).toBeVisible();
+    await expect(page.getByText("Sales TO - CV. Arjuna Prima Manggar").first()).toBeVisible();
   });
 
   test("F14-H4/H5 API info harian yang sudah ada -> 200", async ({ request }) => {

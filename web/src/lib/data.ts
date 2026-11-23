@@ -16,6 +16,7 @@ import { getDb, isDbConfigured } from "./db";
 import * as t from "./db/schema";
 import { can, getCurrentProfile, isAdmin, type SessionProfile } from "./auth";
 import * as seed from "./data-seed";
+import { getJobsUpdatedAt as getJobsUpdatedAtFromJson, listJobsFromJson } from "./jobs-json";
 import type { Lang } from "./i18n";
 export { channelLabel } from "./labels";
 import type {
@@ -869,31 +870,18 @@ export async function getMarketRates(): Promise<MarketRates> {
   };
 }
 
+// Lowongan publik selalu dari web/src/data/loker.json (kurasi tim Career),
+// bukan dari job_listings di Supabase. Tabel DB masih diisi seed lama (sumber
+// jadi "Sumber eksternal") dan tidak ikut refresh harian Career. Lihat
+// web/src/data/README.md.
 export async function listJobs(opts: { q?: string; region?: string } = {}): Promise<JobListing[]> {
-  if (useSeed()) return seed.listJobs(opts);
-  const db = getDb();
-  const conds = [eq(t.jobListings.status, "open")];
-  if (opts.q) {
-    const q = `%${opts.q}%`;
-    conds.push(or(ilike(t.jobListings.title, q), ilike(t.jobListings.company, q), ilike(t.jobListings.location, q))!);
-  }
-  if (opts.region && opts.region !== "semua") conds.push(ilike(t.jobListings.location, `%${opts.region}%`));
-  const rows = await db.select().from(t.jobListings).where(and(...conds)).orderBy(desc(t.jobListings.createdAt));
-  return rows.map((r) => ({
-    id: r.id, title: r.title, company: r.company,
-    location: r.location ?? "", salary: formatSalary(r.salaryMinCents, r.salaryMaxCents),
-    deadline: r.deadline, source: r.sourceUrl ? "Sumber eksternal" : "iTAP",
-    source_url: r.sourceUrl ?? "", region: r.location ?? "",
-    posted_at: r.createdAt.toISOString(),
-  }));
+  return listJobsFromJson(opts);
 }
 
-function formatSalary(min: number | null, max: number | null): string | null {
-  if (min == null && max == null) return null;
-  const fmt = (c: number) => `Rp${IDR(c).toLocaleString("id-ID")}`;
-  if (min != null && max != null) return `${fmt(min)}–${fmt(max)}`;
-  return fmt((min ?? max)!);
+export function getJobsUpdatedAt(): string {
+  return getJobsUpdatedAtFromJson();
 }
+
 
 export async function listProducts() {
   if (useSeed()) return seed.listProducts();

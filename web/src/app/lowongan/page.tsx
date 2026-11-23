@@ -1,22 +1,22 @@
 // Halaman konten iTAP: Lowongan Kerja — #27 Kartu Lowongan.
-// Data ASLI dari data/loker.json situs lama (66 lowongan, Glints dkk.,
-// diperbarui 2026-11-18). Gaji & tenggat tidak ada di sumber -> ditampilkan
-// sebagai "tidak tercantum" dan tautan ke sumber asli.
+// Data dari web/src/data/loker.json (skema kurasi tim Career). Gaji & tenggat
+// hanya ditampilkan jika ada di sumber; kalau tidak, "tidak tercantum".
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ExternalLink, MapPin } from "lucide-react";
-import { listJobs } from "@/lib/data";
-import { formatDateWIB } from "@/lib/format";
+import { getJobsUpdatedAt, listJobs } from "@/lib/data";
+import { formatDateLoose, formatDateWIB } from "@/lib/format";
+import { JOB_REGIONS } from "@/lib/jobs-json";
 import { Button, EmptyState } from "@/components/ui";
 import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Lowongan Kerja Belitung",
-  description: "Lowongan kerja di Belitung dan Bangka Belitung — dikumpulkan dari Glints dan media lain, dengan tautan ke sumber asli.",
+  description: "Lowongan kerja di Belitung dan Bangka Belitung — dikumpulkan dari sumber publik, dengan tautan ke sumber asli.",
 };
 
-const REGIONS = ["Belitung", "Pangkal Pinang", "Bangka", "Lainnya / Babel umum"];
+const REGIONS = JOB_REGIONS;
 
 export default async function LowonganPage({
   searchParams,
@@ -26,13 +26,14 @@ export default async function LowonganPage({
   const sp = await searchParams;
   const jobs = await listJobs({ q: sp.q, region: sp.region });
   const lang = await getServerLang();
+  const updated = formatDateWIB(getJobsUpdatedAt(), lang);
 
   return (
     <div className="flex flex-col gap-6 py-8">
       <header>
         <h1 className="text-xl font-bold text-ink">{t(lang, "jobs.title")}</h1>
         <p className="mt-1 text-sm text-muted">
-          {t(lang, "jobs.subtitle", { count: jobs.length })}
+          {t(lang, "jobs.subtitle", { count: jobs.length, updated })}
         </p>
       </header>
 
@@ -70,7 +71,7 @@ export default async function LowonganPage({
                 <MapPin className="size-4" aria-hidden="true" /> {j.location}
               </p>
               <p className="text-sm text-muted">
-                {t(lang, "jobs.salary")}: {j.salary ?? t(lang, "jobs.notListed")} · {t(lang, "jobs.deadline")}: {j.deadline ?? t(lang, "jobs.notListed")}
+                {t(lang, "jobs.salary")}: {j.salary ?? t(lang, "jobs.notListed")} · {t(lang, "jobs.deadline")}: {j.deadline ? formatDateLoose(j.deadline, lang) : t(lang, "jobs.notListed")}
               </p>
               <p className="text-xs text-muted">{t(lang, "jobs.sourceLabel")}: {j.source} · {formatDateWIB(j.posted_at, lang)}</p>
               <a

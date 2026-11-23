@@ -8,7 +8,7 @@
 // semua baca dari seed-data.ts, semua tulis ke store.ts (in-memory, hilang
 // saat server restart). Supabase (P1) BELUM ada.
 import {
-  ARTICLES, CATEGORIES, CHANNELS, DAILY_PRICES, JOBS, KEDAI, MARKET_RATES,
+  ARTICLES, CATEGORIES, CHANNELS, DAILY_PRICES, KEDAI, MARKET_RATES,
   PRODUCTS, SERVICES,
 } from "./seed-data";
 import { articleWithOverride, store } from "./store";
@@ -433,13 +433,8 @@ export async function getMarketRates(): Promise<MarketRates> {
 }
 
 export async function listJobs(opts: { q?: string; region?: string } = {}): Promise<JobListing[]> {
-  let items = JOBS;
-  if (opts.q) {
-    const q = opts.q.toLowerCase();
-    items = items.filter((j) => `${j.title} ${j.company} ${j.location}`.toLowerCase().includes(q));
-  }
-  if (opts.region && opts.region !== "semua") items = items.filter((j) => j.region === opts.region);
-  return items;
+  const { listJobsFromJson } = await import("./jobs-json");
+  return listJobsFromJson(opts);
 }
 
 export async function listProducts() {

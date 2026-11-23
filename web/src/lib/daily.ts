@@ -10,7 +10,7 @@ import * as seed from "./data-seed";
 import { DAILY_SOURCES, fetchJson, todayWIB } from "./daily-sources";
 
 const REFRESH_AFTER_MS: Record<string, number> = {
-  weather: 3 * 3600_000, prayer: 12 * 3600_000, earthquake: 30 * 60_000,
+  weather: 3 * 3600_000, prayer: 5 * 3600_000, earthquake: 30 * 60_000,
 };
 const lastAttempt = new Map<string, number>();
 

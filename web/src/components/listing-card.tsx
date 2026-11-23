@@ -3,7 +3,7 @@
 // Foto dari bucket listing-photos; tanpa foto tampil placeholder jujur
 // (bukan gambar karangan). Harga dari price_cents (sen) -> Rupiah.
 import Link from "next/link";
-import { ImageOff } from "lucide-react";
+import { SECTION_ILLUSTRATIONS } from "@/lib/illustrations";
 import { Badge, StatusBadge } from "./ui";
 import { useLanguage } from "@/components/language-provider";
 import { listingCategoryName } from "@/lib/i18n";
@@ -25,9 +25,11 @@ export function ListingCard({ listing }: { listing: MarketplaceListing }) {
           // eslint-disable-next-line @next/next/no-img-element
           <img src={photoUrl} alt={t("market.photoAlt", { title: listing.title })} className="aspect-video w-full object-cover" loading="lazy" />
         ) : (
-          <span className="flex aspect-video w-full flex-col items-center justify-center gap-1 bg-surface text-muted" aria-label={t("market.noPhoto")}>
-            <ImageOff className="size-8" aria-hidden="true" />
-            <span className="text-xs font-medium">{t("market.noPhoto")}</span>
+          // Penjual belum unggah foto -> ilustrasi jual beli + label jujur.
+          <span className="relative block aspect-video w-full overflow-hidden bg-surface">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={SECTION_ILLUSTRATIONS.jualBeli.src} alt={`${SECTION_ILLUSTRATIONS.jualBeli.alt} (${t("market.noPhoto")})`} className="size-full object-cover" loading="lazy" data-illustration="true" />
+            <span className="absolute bottom-2 left-2 rounded-full bg-canvas/90 px-2 py-0.5 text-[11px] font-semibold text-ink">{t("market.noPhoto")}</span>
           </span>
         )}
       </Link>

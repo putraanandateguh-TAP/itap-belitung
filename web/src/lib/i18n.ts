@@ -200,6 +200,7 @@ const id = {
   "article.photoComing": "Foto menyusul dari arsip iTAP",
   "article.galleryEmpty": "Belum ada foto untuk artikel ini. Foto asli dari arsip iTAP akan ditambahkan redaksi.",
   "article.galleryCaption": "Galeri foto — placeholder (foto asli menyusul).",
+  "article.illustrationCaption": "Gambar ilustrasi iTAP, bukan foto peristiwa. Foto asli menyusul dari redaksi.",
   "article.placeholderAlt": "Ilustrasi placeholder untuk artikel: {title}",
   "article.galleryAlt": "Galeri belum berisi foto untuk artikel: {title}",
 
@@ -1470,6 +1471,7 @@ export const dict: Record<Lang, typeof id> = {
     "article.photoComing": "Photo coming from the iTAP archive",
     "article.galleryEmpty": "No photos for this article yet. Original photos from the iTAP archive will be added by the editors.",
     "article.galleryCaption": "Photo gallery — placeholder (original photos coming).",
+    "article.illustrationCaption": "iTAP illustration, not a photo of the event. Original photos coming from the editors.",
     "article.placeholderAlt": "Placeholder illustration for article: {title}",
     "article.galleryAlt": "Gallery has no photos yet for article: {title}",
 

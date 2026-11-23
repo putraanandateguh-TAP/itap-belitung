@@ -6,6 +6,7 @@
 // Pembelian lewat WhatsApp admin. Teks antarmuka bilingual (i18n, PR #30).
 import type { Metadata } from "next";
 import Image from "next/image";
+import { SECTION_ILLUSTRATIONS } from "@/lib/illustrations";
 import { listProducts, listServices } from "@/lib/data";
 import { WA_NUMBER } from "@/lib/seed-data";
 import { formatRupiah } from "@/lib/format";
@@ -43,11 +44,12 @@ export default async function ProdukPage() {
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {products.map((p) => (
           <article key={p.id} className="flex flex-col gap-2 overflow-hidden rounded-lg border border-line bg-canvas shadow-card">
-            {PRODUCT_IMAGES[p.tag] && (
+            {(
               <div className="relative aspect-video overflow-hidden bg-surface-alt">
+                {/* Produk tanpa gambar sendiri -> ilustrasi produk digital iTAP */}
                 <Image
-                  src={PRODUCT_IMAGES[p.tag]}
-                  alt={p.name}
+                  src={PRODUCT_IMAGES[p.tag] ?? SECTION_ILLUSTRATIONS.produk.src}
+                  alt={PRODUCT_IMAGES[p.tag] ? p.name : `${SECTION_ILLUSTRATIONS.produk.alt} — ${p.name}`}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover"

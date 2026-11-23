@@ -3,6 +3,8 @@
 // (harga pangan S32, kurs, lowongan). CCTV (S31) dan Statistik (S39)
 // SENGAJA tidak ditampilkan: isinya tidak teramati di recon (A10).
 import type { Metadata } from "next";
+import { SectionIllustration } from "@/components/section-illustration";
+import { SECTION_ILLUSTRATIONS } from "@/lib/illustrations";
 import Link from "next/link";
 import { ArrowRight, CloudSun, Fuel, Megaphone, MoonStar, PhoneCall, Plane, ShoppingBasket, Siren, TrendingUp, BookOpen } from "lucide-react";
 import { getServerLang } from "@/lib/i18n-server";
@@ -39,6 +41,8 @@ export default async function InfoHarianPage() {
           {t(lang, "info.hubDesc")}
         </p>
       </header>
+
+      <SectionIllustration ill={SECTION_ILLUSTRATIONS.infoHarian} />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {ITEMS.map((it) => (

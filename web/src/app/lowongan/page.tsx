@@ -2,6 +2,8 @@
 // Data dari web/src/data/loker.json (skema kurasi tim Career). Gaji & tenggat
 // hanya ditampilkan jika ada di sumber; kalau tidak, "tidak tercantum".
 import type { Metadata } from "next";
+import { SectionIllustration } from "@/components/section-illustration";
+import { SECTION_ILLUSTRATIONS } from "@/lib/illustrations";
 import Link from "next/link";
 import { ExternalLink, MapPin } from "lucide-react";
 import { getJobsUpdatedAt, listJobs } from "@/lib/data";
@@ -36,6 +38,8 @@ export default async function LowonganPage({
           {t(lang, "jobs.subtitle", { count: jobs.length, updated })}
         </p>
       </header>
+
+      <SectionIllustration ill={SECTION_ILLUSTRATIONS.lowongan} />
 
       <form method="get" role="search" aria-label={t(lang, "jobs.searchAria")} className="flex flex-col gap-3 rounded-lg border border-line bg-canvas p-4 sm:flex-row sm:items-end">
         <div className="flex flex-1 flex-col gap-1">

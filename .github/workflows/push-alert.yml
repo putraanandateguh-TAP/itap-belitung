@@ -3,12 +3,33 @@ on:
   schedule:
     - cron: '*/15 * * * *'
   workflow_dispatch:
+# Jangan biarkan dua panggilan jalan bersamaan (cron + manual).
+concurrency:
+  group: push-alert
+  cancel-in-progress: false
 jobs:
   push:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - name: Panggil fungsi push-alert
         env:
           PUSH_CRON_SECRET: ${{ secrets.PUSH_CRON_SECRET }}
+        # 23 Nov 2026: gagal sekali dengan HTTP 546 (Edge Function kena batas
+        # waktu/sumber daya ~150 dtk saat sumber BMKG/Open-Meteo menggantung).
+        # Ulangi sekali setelah jeda; notifikasi memakai tag yang sama sehingga
+        # kiriman ganda di HP tertimpa, bukan menumpuk. 403 = rahasia tidak cocok
+        # -> jangan diulang.
         run: |
-          curl -fsS -X POST "https://mmtxxztkezbuissxembl.supabase.co/functions/v1/push-alert" -H "x-cron-secret: $PUSH_CRON_SECRET"
+          set -u
+          url="https://mmtxxztkezbuissxembl.supabase.co/functions/v1/push-alert"
+          for i in 1 2; do
+            code=$(curl -sS -o resp.txt -w '%{http_code}' --max-time 170 -X POST "$url" -H "x-cron-secret: $PUSH_CRON_SECRET" || echo 000)
+            echo "percobaan $i: HTTP $code"; head -c 300 resp.txt 2>/dev/null; echo
+            case "$code" in
+              2??) exit 0 ;;
+              401|403) echo "::error::push-alert menolak rahasia (HTTP $code). Samakan secret Actions PUSH_CRON_SECRET dengan secret fungsi PUSH_CRON_SECRET di Supabase."; exit 1 ;;
+            esac
+            [ "$i" = 1 ] && sleep 30
+          done
+          echo "::error::push-alert gagal dua kali (HTTP $code)"; exit 1

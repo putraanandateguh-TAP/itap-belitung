@@ -12,6 +12,17 @@ import { formatDateWIB, formatViews } from "@/lib/format";
 import { channelLabel } from "@/lib/labels";
 import { useLanguage } from "@/components/language-provider";
 import { Badge } from "./ui";
+import { CHANNEL_STYLE } from "@/lib/channel-style";
+import type { Channel } from "@/lib/types";
+
+function PlaceholderIcon({ channel }: { channel: Channel }) {
+  const Icon = CHANNEL_STYLE[channel].icon;
+  return (
+    <span className="flex size-12 items-center justify-center rounded-full bg-canvas/80 shadow-sm">
+      <Icon className="size-6" />
+    </span>
+  );
+}
 
 export function ArticleCard({ article, variant = "standard" }: { article: Article; variant?: "headline" | "standard" | "compact" }) {
   const { lang, t } = useLanguage();
@@ -27,7 +38,7 @@ export function ArticleCard({ article, variant = "standard" }: { article: Articl
     );
   }
   return (
-    <article className="overflow-hidden rounded-lg border border-line bg-canvas shadow-card">
+    <article className="overflow-hidden rounded-3xl border border-line bg-canvas shadow-card">
       <Link href={`/artikel/${article.slug}`} className="group block focus-visible:outline-2 focus-visible:outline-accent">
         {article.gallery[0]?.url ? (
           <div className="relative aspect-video overflow-hidden bg-surface-alt">
@@ -40,10 +51,10 @@ export function ArticleCard({ article, variant = "standard" }: { article: Articl
             />
           </div>
         ) : (
-          <div className="flex aspect-video items-center justify-center bg-surface-alt" role="img" aria-label={t("article.placeholderAlt", { title: article.title_id })}>
-            <span aria-hidden="true" className="flex flex-col items-center gap-1 text-muted">
-              <ImageOff className="size-8" aria-hidden="true" />
-              <span className="px-4 text-center text-xs">{t("article.photoComing")}</span>
+          <div className={`flex aspect-video items-center justify-center bg-gradient-to-br ${CHANNEL_STYLE[article.channel].art}`} role="img" aria-label={t("article.placeholderAlt", { title: article.title_id })}>
+            <span aria-hidden="true" className="flex flex-col items-center gap-2">
+              <PlaceholderIcon channel={article.channel} />
+              <span className="px-4 text-center text-xs font-medium">{t("article.photoComing")}</span>
             </span>
           </div>
         )}

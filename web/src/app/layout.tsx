@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { siteUrl } from "@/lib/site-url";
-import { SiteFooter, SiteHeader } from "@/components/site-chrome";
+import { BottomNav, SiteFooter, SiteHeader } from "@/components/site-chrome";
 import { LanguageProvider } from "@/components/language-provider";
 import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
@@ -55,6 +55,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {children}
           </main>
           <SiteFooter />
+          <BottomNav />
         </LanguageProvider>
       </body>
     </html>

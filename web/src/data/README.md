@@ -14,3 +14,13 @@ Supabase), supaya refresh cukup mengganti JSON.
 
 Lowongan dengan `batas_lamaran` yang sudah lewat (menurut tanggal WIB)
 disembunyikan saat halaman diminta, jadi tidak perlu dihapus dulu dari JSON.
+
+## Otomatis lewat GitHub Actions (sejak 23 Nov 2026)
+
+`.github/workflows/update-data.yml` memperbarui file di folder ini tanpa asisten:
+
+- `loker.json`: `scripts/update_loker_web.py` (JobStreet API, NyamanKerje Beltim, Glints, Loker.id). Entri kurasi lama tetap dipertahankan, entri kedaluwarsa dibuang.
+- `harga-pangan.json`: `scripts/update_harga.py` (Panel Harga Pangan Bapanas, Kab. Belitung, dengan harga kemarin).
+- `keuangan.json`: salinan `data/keuangan.json` (kurs BCA, IHSG, emas Antam), Senin–Jumat 3x sehari.
+
+Commit ke `main` otomatis memicu deploy Vercel.

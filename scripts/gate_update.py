@@ -5,7 +5,7 @@ Jadwal cron GitHub sering telat 1-5 jam atau DILEWATI saat antrean padat
 (terbukti: slot 00:00 UTC harga pangan beberapa hari tidak jalan, slot kurs
 09:15/12:15/16:15 WIB sering hilang). Karena itu tiap jalan terjadwal ikut
 memeriksa apakah data sudah basi, bukan hanya mencocokkan slot cron:
-- pangan  : jalan bila data/harga-pangan.json belum diambil hari ini (WIB).
+- pangan  : tiap jalan terjadwal (skrip hanya menulis bila data berubah).
 - keuangan: Senin-Jumat 08:30-17:59 WIB bila kurs terakhir > 150 menit lalu.
 - berita/loker: jalan bila 'updated' > 5 jam lalu.
 workflow_dispatch: ikut input target (semua = jalankan semua).
@@ -44,7 +44,9 @@ else:
     ku = load("data/keuangan.json")
     be = load("data/berita.json")
     lo = load("data/loker.json")
-    pangan = not str(hp.get("diambil", "")).startswith(now.strftime("%Y-%m-%d"))
+    # Panel Harga murah dipanggil & skrip hanya menulis bila isi berubah ->
+    # cek tiap jalan terjadwal agar entri harian enumerator cepat tampil.
+    pangan = True
     jam = now.hour * 60 + now.minute
     keu = now.weekday() < 5 and 8 * 60 + 30 <= jam <= 17 * 60 + 59 and age_min((ku.get("kurs") or {}).get("diambil")) > 150
     out = {

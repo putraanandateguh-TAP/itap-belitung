@@ -1,4 +1,6 @@
 name: Update data harian (harga pangan, kurs & IHSG)
+# Menulis data/*.json (situs lama) dan web/src/data/*.json (situs Next.js;
+# commit ke main memicu deploy Vercel otomatis).
 # Mandiri di GitHub Actions — tidak bergantung pada asisten/kredit apa pun.
 # Jadwal (WIB = UTC+7). Menit sengaja bukan :00 karena slot :00 paling sering
 # dilewati GitHub. Tiap jalan terjadwal memeriksa kebasian data lewat
@@ -27,23 +29,28 @@ jobs:
         id: gate
         env: {EVENT: "${{ github.event_name }}", TARGET: "${{ inputs.target }}"}
         run: python3 scripts/gate_update.py
-      - name: Harga pangan (ADAT Belitung)
+      - name: Harga pangan (Panel Harga Bapanas, Kab. Belitung)
         if: steps.gate.outputs.pangan == 'true'
-        run: python3 scripts/update_harga.py || (echo "::warning::Harga pangan gagal, data lama dipertahankan"; git checkout -- data/harga-pangan.json)
+        run: python3 scripts/update_harga.py || (echo "::warning::Harga pangan gagal, data lama dipertahankan"; git checkout -- data/harga-pangan.json web/src/data/harga-pangan.json)
       - name: Kurs BCA, IHSG & emas
         if: steps.gate.outputs.keuangan == 'true'
-        run: python3 scripts/update_keuangan.py || (echo "::warning::Keuangan gagal, data lama dipertahankan"; git checkout -- data/keuangan.json)
+        run: |
+          python3 scripts/update_keuangan.py || (echo "::warning::Keuangan gagal, data lama dipertahankan"; git checkout -- data/keuangan.json)
+          cp data/keuangan.json web/src/data/keuangan.json
       - name: Berita Belitung
         if: steps.gate.outputs.berita == 'true'
         run: python3 scripts/update_berita.py || (echo "::warning::Berita gagal, data lama dipertahankan"; git checkout -- data/berita.json || true)
       - name: Lowongan kerja Belitung
         if: steps.gate.outputs.loker == 'true'
-        run: python3 scripts/update_loker.py || (echo "::warning::Loker gagal, data lama dipertahankan"; git checkout -- data/loker.json || true)
+        run: |
+          python3 scripts/update_loker.py || (echo "::warning::Loker gagal, data lama dipertahankan"; git checkout -- data/loker.json || true)
+          python3 scripts/update_loker_web.py || (echo "::warning::Loker web gagal, data lama dipertahankan"; git checkout -- web/src/data/loker.json)
       - name: Commit kalau ada perubahan
         run: |
-          python3 -c "import json;[json.load(open(f)) for f in ('data/harga-pangan.json','data/keuangan.json','data/berita.json','data/loker.json')]" || git checkout -- data/
+          FILES="data/harga-pangan.json data/keuangan.json data/berita.json data/loker.json web/src/data/harga-pangan.json web/src/data/keuangan.json web/src/data/loker.json"
+          for f in $FILES; do python3 -c "import json,sys;json.load(open(sys.argv[1]))" "$f" || git checkout -- "$f"; done
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/harga-pangan.json data/keuangan.json data/berita.json data/loker.json
+          git add $FILES
           git diff --cached --quiet && echo "Tidak ada perubahan" && exit 0
           git commit -m "data harian $(TZ=Asia/Jakarta date '+%F %H:%M') WIB"
           for i in 1 2 3; do git pull --rebase && git push && exit 0; sleep 5; done; exit 1

@@ -1,0 +1,189 @@
+{
+ "source": "Panel Harga Pangan Badan Pangan Nasional (harga eceran Kab. Belitung)",
+ "source_url": "https://panelharga.badanpangan.go.id/",
+ "market": "Kab. Belitung (pasar pantauan Panel Harga Pangan)",
+ "source_date": "2026-11-23",
+ "fetched_at": "2026-11-23T12:38:34+07:00",
+ "items": [
+  {
+   "id": "panelharga-27",
+   "commodity": "Beras Premium",
+   "price": 16600,
+   "unit": "kg",
+   "previous_price": 16617,
+   "status": "turun",
+   "change_note": "Turun Rp 17 (0,1%) dari Rp 16.617 kemarin."
+  },
+  {
+   "id": "panelharga-28",
+   "commodity": "Beras Medium",
+   "price": 13133,
+   "unit": "kg",
+   "previous_price": 13100,
+   "status": "naik",
+   "change_note": "Naik Rp 33 (0,3%) dari Rp 13.100 kemarin."
+  },
+  {
+   "id": "panelharga-109",
+   "commodity": "Beras SPHP",
+   "price": 12200,
+   "unit": "kg",
+   "previous_price": 12200,
+   "status": "—",
+   "change_note": "Sama dengan kemarin (Rp 12.200)."
+  },
+  {
+   "id": "panelharga-165",
+   "commodity": "Beras Medium Non SPHP",
+   "price": 14067,
+   "unit": "kg",
+   "previous_price": 14000,
+   "status": "naik",
+   "change_note": "Naik Rp 67 (0,5%) dari Rp 14.000 kemarin."
+  },
+  {
+   "id": "panelharga-29",
+   "commodity": "Kedelai Biji Kering (Impor)",
+   "price": 12383,
+   "unit": "kg",
+   "previous_price": 12303,
+   "status": "naik",
+   "change_note": "Naik Rp 80 (0,7%) dari Rp 12.303 kemarin."
+  },
+  {
+   "id": "panelharga-30",
+   "commodity": "Bawang Merah",
+   "price": 44833,
+   "unit": "kg",
+   "previous_price": 44000,
+   "status": "naik",
+   "change_note": "Naik Rp 833 (1,9%) dari Rp 44.000 kemarin."
+  },
+  {
+   "id": "panelharga-31",
+   "commodity": "Bawang Putih Bonggol",
+   "price": 36167,
+   "unit": "kg",
+   "previous_price": 35333,
+   "status": "naik",
+   "change_note": "Naik Rp 834 (2,4%) dari Rp 35.333 kemarin."
+  },
+  {
+   "id": "panelharga-32",
+   "commodity": "Cabai Merah Keriting",
+   "price": 94167,
+   "unit": "kg",
+   "previous_price": 93333,
+   "status": "naik",
+   "change_note": "Naik Rp 834 (0,9%) dari Rp 93.333 kemarin."
+  },
+  {
+   "id": "panelharga-34",
+   "commodity": "Daging Sapi Murni",
+   "price": 170000,
+   "unit": "kg",
+   "previous_price": 170000,
+   "status": "—",
+   "change_note": "Sama dengan kemarin (Rp 170.000)."
+  },
+  {
+   "id": "panelharga-33",
+   "commodity": "Cabai Rawit Merah",
+   "price": 95000,
+   "unit": "kg",
+   "previous_price": 95000,
+   "status": "—",
+   "change_note": "Sama dengan kemarin (Rp 95.000)."
+  },
+  {
+   "id": "panelharga-35",
+   "commodity": "Daging Ayam Ras",
+   "price": 50000,
+   "unit": "kg",
+   "previous_price": 43667,
+   "status": "naik",
+   "change_note": "Naik Rp 6.333 (14,5%) dari Rp 43.667 kemarin."
+  },
+  {
+   "id": "panelharga-36",
+   "commodity": "Telur Ayam Ras",
+   "price": 30933,
+   "unit": "kg",
+   "previous_price": 30400,
+   "status": "naik",
+   "change_note": "Naik Rp 533 (1,8%) dari Rp 30.400 kemarin."
+  },
+  {
+   "id": "panelharga-37",
+   "commodity": "Gula Konsumsi",
+   "price": 19000,
+   "unit": "kg",
+   "previous_price": 19000,
+   "status": "—",
+   "change_note": "Sama dengan kemarin (Rp 19.000)."
+  },
+  {
+   "id": "panelharga-38",
+   "commodity": "Minyak Goreng Kemasan",
+   "price": 22000,
+   "unit": "liter",
+   "previous_price": 22000,
+   "status": "—",
+   "change_note": "Sama dengan kemarin (Rp 22.000)."
+  },
+  {
+   "id": "panelharga-40",
+   "commodity": "Tepung Terigu (Curah)",
+   "price": 10000,
+   "unit": "kg",
+   "previous_price": 10000,
+   "status": "—",
+   "change_note": "Sama dengan kemarin (Rp 10.000)."
+  },
+  {
+   "id": "panelharga-127",
+   "commodity": "Minyakita",
+   "price": 15667,
+   "unit": "liter",
+   "previous_price": 15667,
+   "status": "—",
+   "change_note": "Sama dengan kemarin (Rp 15.667)."
+  },
+  {
+   "id": "panelharga-108",
+   "commodity": "Tepung Terigu Kemasan",
+   "price": 12250,
+   "unit": "kg",
+   "previous_price": 12252,
+   "status": "turun",
+   "change_note": "Turun Rp 2 (0,0%) dari Rp 12.252 kemarin."
+  },
+  {
+   "id": "panelharga-104",
+   "commodity": "Ikan Kembung",
+   "price": 50000,
+   "unit": "kg",
+   "previous_price": 51667,
+   "status": "turun",
+   "change_note": "Turun Rp 1.667 (3,2%) dari Rp 51.667 kemarin."
+  },
+  {
+   "id": "panelharga-105",
+   "commodity": "Ikan Tongkol",
+   "price": 32500,
+   "unit": "kg",
+   "previous_price": 31667,
+   "status": "naik",
+   "change_note": "Naik Rp 833 (2,6%) dari Rp 31.667 kemarin."
+  },
+  {
+   "id": "panelharga-107",
+   "commodity": "Garam Konsumsi",
+   "price": 10000,
+   "unit": "kg",
+   "previous_price": 10000,
+   "status": "—",
+   "change_note": "Sama dengan kemarin (Rp 10.000)."
+  }
+ ]
+}

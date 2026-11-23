@@ -1,6 +1,46 @@
 import type { NextConfig } from "next";
 
+// Security headers (port dari PR #28, 23 Nov 2026).
+// CSP baseline: skrip/style inline masih diizinkan karena Next.js
+// menyisipkan skrip inline saat hydration (pengetatan ke nonce = tindak
+// lanjut). Yang diblokir: framing (clickjacking), object/embed, base-uri
+// injection, fetch ke host di luar 'self' + Supabase. Semua fetch ke API
+// luar (BMKG, myQuran, Yahoo, RSS) berjalan di server, bukan di browser.
+// 'unsafe-eval' hanya di development (webpack HMR).
+const isDev = process.env.NODE_ENV !== "production";
+const csp = [
+  "default-src 'self'",
+  isDev ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'" : "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline'",
+  "img-src 'self' data: blob: https://*.supabase.co",
+  "font-src 'self' data:",
+  "media-src 'self' blob:",
+  "connect-src 'self' https://*.supabase.co wss://*.supabase.co",
+  "worker-src 'self' blob:",
+  "manifest-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+].join("; ");
+
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "Content-Security-Policy", value: csp },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          // geolocation=(self): /jual-beli/pasang memakai lokasi untuk titik listing.
+          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(self), payment=(), usb=()" },
+        ],
+      },
+    ];
+  },
   images: {
     // Foto artikel/produk/budaya AI di Supabase Storage (bucket
     // article-images, publik). next/image butuh pola ini untuk URL jauh.

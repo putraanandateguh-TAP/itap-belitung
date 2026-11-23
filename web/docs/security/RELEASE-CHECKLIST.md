@@ -7,7 +7,7 @@ Dibuat setelah audit 23 Nov 2026 (kasus CVE-2025-48757: tabel tanpa RLS + anon k
 2. **Policy minimal** — anon hanya SELECT untuk data yang memang publik (artikel terbit, loker, harga, menu).
    Tulis/ubah/hapus hanya lewat route server (Drizzle/service role) atau pemilik (`auth.uid()`).
 3. **Grant eksplisit** — tabel baru tidak otomatis bisa dibaca anon; beri `grant select ... to anon` hanya bila perlu.
-4. **View** — selalu `with (security_invoker = true)`.
+4. **View** — default `with (security_invoker = true)`. Pengecualian yang disengaja: `listings_public` (SEC-09, hanya kolom aman listing aktif).
 5. **Fungsi SECURITY DEFINER** — `set search_path`, `revoke execute ... from public, anon` kecuali memang publik.
 6. **Kunci** — hanya `NEXT_PUBLIC_SUPABASE_URL` / `NEXT_PUBLIC_SUPABASE_ANON_KEY` / `NEXT_PUBLIC_SITE_URL` yang boleh `NEXT_PUBLIC_`.
    Service role, DATABASE_URL, CRON_SECRET, RESEND, Gemini, ElevenLabs, VAPID private → server saja.

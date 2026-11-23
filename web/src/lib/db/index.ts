@@ -16,6 +16,22 @@ import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 import * as schema from "./schema";
 
+/** Paksa pooler Supavisor mode TRANSACTION (6543). Audit 23 Nov 2026:
+ *  produksi masih mengembalikan EMAXCONNSESSION (mode session, pool 15)
+ *  saat ~12 halaman dibuka bersamaan — jadi URL session (:5432 di host
+ *  *.pooler.supabase.com) ditulis ulang ke :6543 di sini, apa pun isi env. */
+export function poolerUrl(url: string): string {
+  try {
+    const u = new URL(url);
+    if (u.hostname.endsWith(".pooler.supabase.com") && (u.port === "5432" || u.port === "")) u.port = "6543";
+    return u.toString();
+  } catch {
+    return url;
+  }
+}
+
+const PG_OPTS = { max: 1, prepare: false, idle_timeout: 20, connect_timeout: 10 } as const;
+
 export function isDbConfigured(): boolean {
   return Boolean(process.env.DATABASE_URL);
 }
@@ -27,11 +43,11 @@ let dbInstance: ReturnType<typeof drizzle> | null = null;
 export function getDb() {
   if (!process.env.DATABASE_URL) {
     throw new Error(
-      "DATABASE_URL belum diisi — proyek Supabase (P1) belum dibuat. Lihat replica/backend.md § P1.",
+      "DATABASE_URL belum diisi. Lihat replica/backend.md.",
     );
   }
   if (!dbInstance) {
-    client = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
+    client = postgres(poolerUrl(process.env.DATABASE_URL), PG_OPTS);
     dbInstance = drizzle(client, { schema });
   }
   return dbInstance;
@@ -42,7 +58,7 @@ export function getSql() {
   if (!process.env.DATABASE_URL) {
     throw new Error("DATABASE_URL belum diisi — lihat replica/backend.md § P1.");
   }
-  if (!client) client = postgres(process.env.DATABASE_URL, { max: 1, prepare: false });
+  if (!client) client = postgres(poolerUrl(process.env.DATABASE_URL), PG_OPTS);
   return client;
 }
 

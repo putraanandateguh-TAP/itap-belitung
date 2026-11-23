@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { listCategories } from "@/lib/data";
 import { TRANSLATOR_LANGUAGES } from "@/lib/ai";
+import { checkRateLimit } from "@/lib/api";
 
 // POST /api/translate — penerjemah 9 bahasa (F13).
 //
@@ -32,6 +33,8 @@ async function localDictionary(): Promise<Map<string, string>> {
 }
 
 export async function POST(req: Request) {
+  const limited = checkRateLimit(req, "translate", 60);
+  if (limited) return limited;
   let body: unknown;
   try {
     body = await req.json();
@@ -42,6 +45,9 @@ export async function POST(req: Request) {
     (body as { text?: unknown; from?: unknown; to?: unknown }) ?? {};
   if (typeof text !== "string" || !text.trim()) {
     return NextResponse.json({ error: "Tulis dulu teks yang mau diterjemahkan." }, { status: 400 });
+  }
+  if (text.length > 2000) {
+    return NextResponse.json({ error: "Teks terlalu panjang (maks. 2.000 karakter)." }, { status: 400 });
   }
   if (typeof from !== "string" || !LANG_CODES.has(from) || typeof to !== "string" || !LANG_CODES.has(to)) {
     return NextResponse.json({ error: "Bahasa sumber/tujuan tidak dikenal." }, { status: 400 });

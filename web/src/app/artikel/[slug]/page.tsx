@@ -15,11 +15,13 @@ import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { CommentSection } from "./comments";
 import { ArticleContent } from "./article-content";
+import { JsonLd } from "@/components/json-ld";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const article = await getArticle(slug);
-  if (!article) return { title: "Artikel tidak ditemukan" };
+  if (!article || article.status !== "published") return { title: "Artikel tidak ditemukan" };
+  const ogImage = article.gallery.find((g) => g.url)?.url ?? "/og.png";
   return {
     title: article.title_id,
     description: article.body_id[0]?.slice(0, 160) ?? article.title_id,
@@ -29,7 +31,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: article.title_id,
       description: article.body_id[0]?.slice(0, 160) ?? article.title_id,
       publishedTime: article.published_at,
+      images: [{ url: ogImage }],
     },
+    twitter: { card: "summary_large_image", title: article.title_id, images: [ogImage] },
   };
 }
 
@@ -45,8 +49,24 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const lang = await getServerLang();
   const [related, comments, categoryNameValue] = await Promise.all([getRelated(slug), listComments(slug), categoryName(article.category_id, lang)]);
 
+  const base = siteUrl();
+  const heroUrl = article.gallery.find((g) => g.url)?.url;
   return (
     <article className="mx-auto max-w-3xl py-8">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": article.external ? "NewsArticle" : "Article",
+          headline: article.title_id.slice(0, 110),
+          description: article.body_id[0]?.slice(0, 160) ?? article.title_id,
+          datePublished: article.published_at,
+          inLanguage: "id-ID",
+          mainEntityOfPage: `${base}/artikel/${article.slug}`,
+          ...(heroUrl ? { image: [heroUrl] } : {}),
+          publisher: { "@type": "Organization", name: "iTAP Belitung", logo: { "@type": "ImageObject", url: `${base}/icon.png` } },
+          ...(article.external && article.source_url ? { isBasedOn: article.source_url } : {}),
+        }}
+      />
       <nav aria-label={t(lang, "article.breadcrumb")} className="text-sm text-muted">
         <Link href="/" className="hover:underline focus-visible:outline-2 focus-visible:outline-accent">{t(lang, "nav.home")}</Link>
         {" / "}

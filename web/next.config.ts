@@ -60,6 +60,16 @@ const nextConfig: NextConfig = {
       { source: "/wisata", destination: "/kanal/wisata", permanent: true },
       { source: "/kuliner", destination: "/kanal/kuliner", permanent: true },
       { source: "/daftar", destination: "/masuk", permanent: true },
+      // Rute situs statis lama yang 404 sejak cutover (audit 23 Nov 2026).
+      // Sementara (307), bukan permanen: rute ini mungkin dipakai lagi.
+      { source: "/akun", destination: "/pengaturan", permanent: false },
+      { source: "/kasir", destination: "/kedai", permanent: false },
+      { source: "/kasir/:path*", destination: "/kedai", permanent: false },
+      { source: "/u", destination: "/undangan", permanent: false },
+      { source: "/u/:path*", destination: "/undangan", permanent: false },
+      { source: "/undangan/:path+", destination: "/undangan", permanent: false },
+      // Browser & crawler meminta /favicon.ico; ikon asli ada di /icon.png.
+      { source: "/favicon.ico", destination: "/icon.png", permanent: true },
     ];
   },
 };

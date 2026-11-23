@@ -19,6 +19,11 @@ import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 import { HeroStory, ListItem, RowCard } from "@/components/home-ui";
 import { CHANNEL_STYLE, hasPhoto } from "@/lib/channel-style";
+import type { Metadata } from "next";
+import { siteUrl } from "@/lib/site-url";
+import { JsonLd } from "@/components/json-ld";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
 
 const CHANNEL_ORDER: Channel[] = ["berita", "kuliner", "wisata", "sejarah", "budaya", "legenda"];
 const CHANNEL_KICKER: Record<Channel, string> = {
@@ -127,8 +132,32 @@ export default async function HomePage() {
   const usd = rates.currencies.find((c) => c.code === "USD")?.sell_erate ?? 0;
   const firstPrice = prices.items[0];
 
+  const base = siteUrl();
   return (
     <div className="flex flex-col gap-10 pb-6 pt-6 md:gap-12">
+      <JsonLd
+        data={[
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "iTAP Belitung",
+            url: base,
+            inLanguage: "id-ID",
+            potentialAction: {
+              "@type": "SearchAction",
+              target: `${base}/cari?q={search_term_string}`,
+              "query-input": "required name=search_term_string",
+            },
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "iTAP Belitung",
+            url: base,
+            logo: `${base}/icon.png`,
+          },
+        ]}
+      />
       {/* Judul ringkas + chip cuaca */}
       <section aria-labelledby="hero-title" className="flex flex-col gap-4">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">

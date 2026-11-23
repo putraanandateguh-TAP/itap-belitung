@@ -10,6 +10,7 @@ import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/harga-pangan" },
   title: "Harga Pangan Harian Belitung",
   description: "Harga pangan harian di Pasar Tanjung Pandan, Belitung — dari ADAT Belitung dan Diskominfo Kab. Belitung.",
 };

@@ -11,6 +11,7 @@ import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/info-harian/bbm" },
   title: "Harga BBM Belitung",
   description: "Harga BBM Pertamina yang berlaku di Belitung.",
 };

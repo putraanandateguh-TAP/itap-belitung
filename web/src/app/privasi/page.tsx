@@ -3,6 +3,7 @@ import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/privasi" },
   title: "Privasi & Data Akun",
   description: "Kebijakan privasi iTAP Belitung: data apa yang kami simpan, untuk apa, dan hakmu atas datamu.",
 };

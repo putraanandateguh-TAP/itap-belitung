@@ -11,6 +11,7 @@ import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/info-harian/transport" },
   title: "Jadwal Pesawat & Kapal Belitung",
   description: "Jadwal penerbangan dan kapal dari dan ke Belitung.",
 };

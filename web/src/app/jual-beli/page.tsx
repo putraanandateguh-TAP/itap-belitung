@@ -13,6 +13,7 @@ import { getServerLang } from "@/lib/i18n-server";
 import { t, LISTING_CATEGORY_NAMES_EN } from "@/lib/i18n";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/jual-beli" },
   title: "Jual Beli Belitung",
   description: "Penawaran jual beli warga Belitung di iTAP: kendaraan, elektronik, rumah tangga, dan lainnya. Transaksi langsung antar pihak.",
 };

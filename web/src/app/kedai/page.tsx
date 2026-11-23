@@ -9,8 +9,11 @@ import { formatRupiah } from "@/lib/format";
 import { Badge } from "@/components/ui";
 import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
+import { siteUrl } from "@/lib/site-url";
+import { JsonLd } from "@/components/json-ld";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/kedai" },
   title: "Kedai Bakso Aci iTAP",
   description: "Kedai Bakso Aci iTAP di Puri Kirana 3, Tanjung Pandan — buka setiap hari 11.00–22.00 WIB. Pesan via GrabFood atau GoFood.",
 };
@@ -30,8 +33,34 @@ export default async function KedaiPage() {
   const kedai = await getKedai();
   const lang = await getServerLang();
 
+  const base = siteUrl();
   return (
     <div className="flex flex-col gap-6 py-8">
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@type": "Restaurant",
+          name: kedai.name,
+          url: `${base}/kedai`,
+          image: `${base}/images/kedai.webp`,
+          servesCuisine: "Bakso Aci",
+          priceRange: "Rp15.000–Rp18.000",
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "Jl. Permata VI Blok H25, Puri Kirana 3, Air Merbau",
+            addressLocality: "Tanjung Pandan",
+            addressRegion: "Kepulauan Bangka Belitung",
+            postalCode: "33414",
+            addressCountry: "ID",
+          },
+          openingHoursSpecification: [{
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            opens: "11:00",
+            closes: "22:00",
+          }],
+        }}
+      />
       <header className="grid gap-6 md:grid-cols-2">
         <div className="overflow-hidden rounded-lg border border-line bg-surface">
           <Image
@@ -39,6 +68,7 @@ export default async function KedaiPage() {
             alt="Kedai Bakso Aci iTAP"
             width={800}
             height={450}
+            sizes="(max-width: 768px) 100vw, 600px"
             className="aspect-video w-full object-cover"
             priority
           />
@@ -49,6 +79,7 @@ export default async function KedaiPage() {
             alt="Logo Kedai I&T"
             width={1024}
             height={1536}
+            sizes="80px"
             className="h-28 w-auto"
           />
           <p className="mt-3 text-xs font-medium uppercase tracking-widest text-accent">{t(lang, "kedai.fromKitchen")}</p>
@@ -81,6 +112,7 @@ export default async function KedaiPage() {
             alt="Papan menu Kedai I&T: Seblak Original, Baso Aci Daging Mercon, Baso Aci Keju Lumer, Baso Aci Tulang Rangu Rp18.000 dan Lumpia Basah Rp15.000"
             width={892}
             height={1338}
+            sizes="(max-width: 640px) 100vw, 576px"
             className="mx-auto w-full max-w-xl object-cover"
           />
           <figcaption className="border-t border-line bg-canvas px-4 py-2 text-center text-xs text-muted">
@@ -113,6 +145,7 @@ export default async function KedaiPage() {
                   alt={t(lang, "kedai.photoAlt", { name: m.name })}
                   width={photo.width}
                   height={photo.height}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px"
                   className="aspect-[4/5] w-full object-cover"
                 />
               )}

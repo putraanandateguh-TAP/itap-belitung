@@ -72,7 +72,7 @@ export async function POST(req: Request) {
   return NextResponse.json(
     {
       error:
-        "Penerjemah belum tersedia untuk teks ini — kamus lokal hanya berisi padanan istilah kategori Indonesia–English dari konten iTAP, dan kunci Gemini (Fase 3, P3) belum ada.",
+        "Penerjemah belum tersedia untuk teks ini — kamus lokal hanya berisi padanan istilah kategori Indonesia–English dari konten iTAP.",
     },
     { status: 501 },
   );

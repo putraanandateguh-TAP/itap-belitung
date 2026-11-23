@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/penerjemah" },
   title: "Penerjemah",
   description:
-    "Terjemah 9 bahasa: Belitung, Indonesia, English, Melayu, Mandarin, Jepang, Korea, Belanda, Jerman. Kamus lokal dari konten iTAP; terjemahan umum butuh kunci Gemini (Fase 3).",
+    "Terjemah 9 bahasa: Belitung, Indonesia, English, Melayu, Mandarin, Jepang, Korea, Belanda, Jerman. Kamus lokal dari konten iTAP.",
 };
 
 export default async function PenerjemahPage() {

@@ -793,8 +793,8 @@ export async function reviewInfoSubmission(id: string, decision: "approved" | "r
 const IDR = (cents: number | null | undefined): number => Math.round((cents ?? 0) / 100);
 
 /** Harga pangan dari web/src/data/harga-pangan.json (ditulis GitHub Actions
- * update-data.yml -> scripts/update_harga.py, sumber Panel Harga Pangan Bapanas
- * Kab. Belitung, harian + harga kemarin). Null bila file tidak valid. */
+ * update-data.yml -> scripts/update_harga.py, sumber PIHPS Bank Indonesia
+ * pasar Tanjung Pandan, hari kerja + harga sebelumnya). Null bila tidak valid. */
 function dailyPricesFromJson(): DailyPrices | null {
   const j = pricesJson as unknown as DailyPrices;
   if (!j || !Array.isArray(j.items) || j.items.length < 3 || !j.source_date) return null;

@@ -29,7 +29,7 @@ jobs:
         id: gate
         env: {EVENT: "${{ github.event_name }}", TARGET: "${{ inputs.target }}"}
         run: python3 scripts/gate_update.py
-      - name: Harga pangan (Panel Harga Bapanas, Kab. Belitung)
+      - name: Harga pangan (PIHPS BI Tanjung Pandan; cadangan Bapanas)
         if: steps.gate.outputs.pangan == 'true'
         run: python3 scripts/update_harga.py || (echo "::warning::Harga pangan gagal, data lama dipertahankan"; git checkout -- data/harga-pangan.json web/src/data/harga-pangan.json)
       - name: Kurs BCA, IHSG & emas

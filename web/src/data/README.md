@@ -20,7 +20,7 @@ disembunyikan saat halaman diminta, jadi tidak perlu dihapus dulu dari JSON.
 `.github/workflows/update-data.yml` memperbarui file di folder ini tanpa asisten:
 
 - `loker.json`: `scripts/update_loker_web.py` (JobStreet API, NyamanKerje Beltim, Glints, Loker.id). Entri kurasi lama tetap dipertahankan, entri kedaluwarsa dibuang.
-- `harga-pangan.json`: `scripts/update_harga.py` (Panel Harga Pangan Bapanas, Kab. Belitung, dengan harga kemarin).
+- `harga-pangan.json`: `scripts/update_harga.py` (PIHPS Bank Indonesia, pasar Tanjung Pandan, dengan harga hari data sebelumnya; cadangan Panel Harga Bapanas).
 - `keuangan.json`: salinan `data/keuangan.json` (kurs BCA, IHSG, emas Antam), Senin–Jumat 3x sehari.
 
 Commit ke `main` otomatis memicu deploy Vercel.

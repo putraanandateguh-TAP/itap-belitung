@@ -1,170 +1,162 @@
 {
  "tanggal_sumber": "23-11-2026",
- "tanggal_kemarin": "22-11-2026",
- "lokasi": "Kab. Belitung (pasar pantauan Badan Pangan Nasional)",
- "diambil": "2026-11-23 12:38 WIB",
- "sumber": "Panel Harga Pangan Badan Pangan Nasional (harga eceran Kab. Belitung)",
- "url": "https://panelharga.badanpangan.go.id/",
+ "tanggal_sebelumnya": "20/11/2026",
+ "lokasi": "Pasar tradisional Tanjung Pandan (pantauan PIHPS Bank Indonesia)",
+ "diambil": "2026-11-23 12:51 WIB",
+ "sumber": "PIHPS Nasional Bank Indonesia (pasar tradisional Tanjung Pandan)",
+ "url": "https://www.bi.go.id/hargapangan",
  "items": [
   {
-   "komoditas": "Beras Premium",
-   "harga": 16600,
-   "satuan": "kg",
-   "status": "turun",
-   "perubahan": "Turun Rp 17 (0,1%) dari Rp 16.617 kemarin.",
-   "harga_kemarin": 16617
-  },
-  {
-   "komoditas": "Beras Medium",
-   "harga": 13133,
-   "satuan": "kg",
-   "status": "naik",
-   "perubahan": "Naik Rp 33 (0,3%) dari Rp 13.100 kemarin.",
-   "harga_kemarin": 13100
-  },
-  {
-   "komoditas": "Beras SPHP",
+   "komoditas": "Beras Kualitas Bawah I",
    "harga": 12200,
    "satuan": "kg",
    "status": "tetap",
-   "perubahan": "Sama dengan kemarin (Rp 12.200).",
-   "harga_kemarin": 12200
+   "perubahan": "Sama dengan 20/11/2026 (Rp 12.200).",
+   "harga_sebelumnya": 12200
   },
   {
-   "komoditas": "Beras Medium Non SPHP",
-   "harga": 14067,
+   "komoditas": "Beras Kualitas Bawah II",
+   "harga": 14400,
+   "satuan": "kg",
+   "status": "tetap",
+   "perubahan": "Sama dengan 20/11/2026 (Rp 14.400).",
+   "harga_sebelumnya": 14400
+  },
+  {
+   "komoditas": "Beras Kualitas Medium I",
+   "harga": 17100,
+   "satuan": "kg",
+   "status": "tetap",
+   "perubahan": "Sama dengan 20/11/2026 (Rp 17.100).",
+   "harga_sebelumnya": 17100
+  },
+  {
+   "komoditas": "Beras Kualitas Medium II",
+   "harga": 16150,
+   "satuan": "kg",
+   "status": "tetap",
+   "perubahan": "Sama dengan 20/11/2026 (Rp 16.150).",
+   "harga_sebelumnya": 16150
+  },
+  {
+   "komoditas": "Beras Kualitas Super I",
+   "harga": 17550,
+   "satuan": "kg",
+   "status": "tetap",
+   "perubahan": "Sama dengan 20/11/2026 (Rp 17.550).",
+   "harga_sebelumnya": 17550
+  },
+  {
+   "komoditas": "Beras Kualitas Super II",
+   "harga": 17350,
+   "satuan": "kg",
+   "status": "tetap",
+   "perubahan": "Sama dengan 20/11/2026 (Rp 17.350).",
+   "harga_sebelumnya": 17350
+  },
+  {
+   "komoditas": "Daging Ayam Ras Segar",
+   "harga": 48750,
    "satuan": "kg",
    "status": "naik",
-   "perubahan": "Naik Rp 67 (0,5%) dari Rp 14.000 kemarin.",
-   "harga_kemarin": 14000
+   "perubahan": "Naik Rp 4.500 (10,2%) dari Rp 44.250 (20/11/2026).",
+   "harga_sebelumnya": 44250
   },
   {
-   "komoditas": "Kedelai Biji Kering (Impor)",
-   "harga": 12383,
-   "satuan": "kg",
-   "status": "naik",
-   "perubahan": "Naik Rp 80 (0,7%) dari Rp 12.303 kemarin.",
-   "harga_kemarin": 12303
-  },
-  {
-   "komoditas": "Bawang Merah",
-   "harga": 44833,
-   "satuan": "kg",
-   "status": "naik",
-   "perubahan": "Naik Rp 833 (1,9%) dari Rp 44.000 kemarin.",
-   "harga_kemarin": 44000
-  },
-  {
-   "komoditas": "Bawang Putih Bonggol",
-   "harga": 36167,
-   "satuan": "kg",
-   "status": "naik",
-   "perubahan": "Naik Rp 834 (2,4%) dari Rp 35.333 kemarin.",
-   "harga_kemarin": 35333
-  },
-  {
-   "komoditas": "Cabai Merah Keriting",
-   "harga": 94167,
-   "satuan": "kg",
-   "status": "naik",
-   "perubahan": "Naik Rp 834 (0,9%) dari Rp 93.333 kemarin.",
-   "harga_kemarin": 93333
-  },
-  {
-   "komoditas": "Daging Sapi Murni",
+   "komoditas": "Daging Sapi Kualitas 1",
    "harga": 170000,
    "satuan": "kg",
    "status": "tetap",
-   "perubahan": "Sama dengan kemarin (Rp 170.000).",
-   "harga_kemarin": 170000
+   "perubahan": "Sama dengan 20/11/2026 (Rp 170.000).",
+   "harga_sebelumnya": 170000
+  },
+  {
+   "komoditas": "Daging Sapi Kualitas 2",
+   "harga": 150000,
+   "satuan": "kg",
+   "status": "tetap",
+   "perubahan": "Sama dengan 20/11/2026 (Rp 150.000).",
+   "harga_sebelumnya": 150000
+  },
+  {
+   "komoditas": "Telur Ayam Ras Segar",
+   "harga": 30600,
+   "satuan": "kg",
+   "status": "tetap",
+   "perubahan": "Sama dengan 20/11/2026 (Rp 30.600).",
+   "harga_sebelumnya": 30600
+  },
+  {
+   "komoditas": "Bawang Merah Ukuran Sedang",
+   "harga": 46250,
+   "satuan": "kg",
+   "status": "tetap",
+   "perubahan": "Sama dengan 20/11/2026 (Rp 46.250).",
+   "harga_sebelumnya": 46250
+  },
+  {
+   "komoditas": "Bawang Putih Ukuran Sedang",
+   "harga": 36750,
+   "satuan": "kg",
+   "status": "turun",
+   "perubahan": "Turun Rp 1.000 (2,6%) dari Rp 37.750 (20/11/2026).",
+   "harga_sebelumnya": 37750
+  },
+  {
+   "komoditas": "Cabai Merah Keriting",
+   "harga": 91250,
+   "satuan": "kg",
+   "status": "naik",
+   "perubahan": "Naik Rp 3.750 (4,3%) dari Rp 87.500 (20/11/2026).",
+   "harga_sebelumnya": 87500
+  },
+  {
+   "komoditas": "Cabai Rawit Hijau",
+   "harga": 75000,
+   "satuan": "kg",
+   "status": "tetap",
+   "perubahan": "Sama dengan 20/11/2026 (Rp 75.000).",
+   "harga_sebelumnya": 75000
   },
   {
    "komoditas": "Cabai Rawit Merah",
-   "harga": 95000,
-   "satuan": "kg",
-   "status": "tetap",
-   "perubahan": "Sama dengan kemarin (Rp 95.000).",
-   "harga_kemarin": 95000
-  },
-  {
-   "komoditas": "Daging Ayam Ras",
-   "harga": 50000,
-   "satuan": "kg",
-   "status": "naik",
-   "perubahan": "Naik Rp 6.333 (14,5%) dari Rp 43.667 kemarin.",
-   "harga_kemarin": 43667
-  },
-  {
-   "komoditas": "Telur Ayam Ras",
-   "harga": 30933,
-   "satuan": "kg",
-   "status": "naik",
-   "perubahan": "Naik Rp 533 (1,8%) dari Rp 30.400 kemarin.",
-   "harga_kemarin": 30400
-  },
-  {
-   "komoditas": "Gula Konsumsi",
-   "harga": 19000,
-   "satuan": "kg",
-   "status": "tetap",
-   "perubahan": "Sama dengan kemarin (Rp 19.000).",
-   "harga_kemarin": 19000
-  },
-  {
-   "komoditas": "Minyak Goreng Kemasan",
-   "harga": 22000,
-   "satuan": "liter",
-   "status": "tetap",
-   "perubahan": "Sama dengan kemarin (Rp 22.000).",
-   "harga_kemarin": 22000
-  },
-  {
-   "komoditas": "Tepung Terigu (Curah)",
-   "harga": 10000,
-   "satuan": "kg",
-   "status": "tetap",
-   "perubahan": "Sama dengan kemarin (Rp 10.000).",
-   "harga_kemarin": 10000
-  },
-  {
-   "komoditas": "Minyakita",
-   "harga": 15667,
-   "satuan": "liter",
-   "status": "tetap",
-   "perubahan": "Sama dengan kemarin (Rp 15.667).",
-   "harga_kemarin": 15667
-  },
-  {
-   "komoditas": "Tepung Terigu Kemasan",
-   "harga": 12250,
+   "harga": 92500,
    "satuan": "kg",
    "status": "turun",
-   "perubahan": "Turun Rp 2 (0,0%) dari Rp 12.252 kemarin.",
-   "harga_kemarin": 12252
+   "perubahan": "Turun Rp 2.500 (2,6%) dari Rp 95.000 (20/11/2026).",
+   "harga_sebelumnya": 95000
   },
   {
-   "komoditas": "Ikan Kembung",
-   "harga": 50000,
-   "satuan": "kg",
-   "status": "turun",
-   "perubahan": "Turun Rp 1.667 (3,2%) dari Rp 51.667 kemarin.",
-   "harga_kemarin": 51667
+   "komoditas": "Minyak Goreng Kemasan Bermerk 1",
+   "harga": 21750,
+   "satuan": "liter",
+   "status": "tetap",
+   "perubahan": "Sama dengan 20/11/2026 (Rp 21.750).",
+   "harga_sebelumnya": 21750
   },
   {
-   "komoditas": "Ikan Tongkol",
-   "harga": 32500,
-   "satuan": "kg",
-   "status": "naik",
-   "perubahan": "Naik Rp 833 (2,6%) dari Rp 31.667 kemarin.",
-   "harga_kemarin": 31667
+   "komoditas": "Minyak Goreng Kemasan Bermerk 2",
+   "harga": 16500,
+   "satuan": "liter",
+   "status": "tetap",
+   "perubahan": "Sama dengan 20/11/2026 (Rp 16.500).",
+   "harga_sebelumnya": 16500
   },
   {
-   "komoditas": "Garam Konsumsi",
-   "harga": 10000,
+   "komoditas": "Gula Pasir Kualitas Premium",
+   "harga": 19750,
    "satuan": "kg",
    "status": "tetap",
-   "perubahan": "Sama dengan kemarin (Rp 10.000).",
-   "harga_kemarin": 10000
+   "perubahan": "Sama dengan 20/11/2026 (Rp 19.750).",
+   "harga_sebelumnya": 19750
+  },
+  {
+   "komoditas": "Gula Pasir Lokal",
+   "harga": 19250,
+   "satuan": "kg",
+   "status": "tetap",
+   "perubahan": "Sama dengan 20/11/2026 (Rp 19.250).",
+   "harga_sebelumnya": 19250
   }
  ]
 }

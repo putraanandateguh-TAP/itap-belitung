@@ -1,5 +1,4 @@
--- Rollback (hanya bila ada fitur rusak). Mengembalikan keadaan sebelum 2026-11-23.
-alter view public.listings_public set (security_invoker = false);
+-- Rollback drizzle/0012 (hanya bila ada fitur rusak). Mengembalikan keadaan sebelum 2026-11-23.
 -- fungsi: kembalikan search_path default
 alter function public.set_updated_at() reset search_path;
 alter function public.listing_status_guard() reset search_path;

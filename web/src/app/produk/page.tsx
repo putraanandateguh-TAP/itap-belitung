@@ -17,6 +17,7 @@ import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/produk" },
   title: "Produk Digital iTAP",
   description: "Produk digital iTAP Belitung: Epic Video Generator, iTAP Kasir, ebook, dan paket prompt — katalog harga, pembelian via WhatsApp.",
 };

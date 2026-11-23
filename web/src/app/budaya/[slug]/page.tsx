@@ -21,6 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${story.title} — Budaya Belitung`,
     description: story.body.split("\n\n")[0]?.slice(0, 160),
+    alternates: { canonical: `/budaya/${slug}` },
   };
 }
 

@@ -95,6 +95,8 @@ export function ArticleGallery({ article }: { article: Article }) {
           alt={first.alt}
           width={1280}
           height={720}
+          sizes="(max-width: 768px) 100vw, 768px"
+          priority
           className="aspect-video w-full object-cover"
         />
       ) : (

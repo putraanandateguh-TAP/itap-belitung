@@ -11,6 +11,7 @@ import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/info-harian" },
   title: "Info Harian Belitung",
   description: "Cuaca BMKG, jadwal salat, jadwal pesawat & kapal, harga BBM, info gempa, dan nomor darurat Belitung — dari sumber publik resmi.",
 };

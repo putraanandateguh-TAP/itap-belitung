@@ -2718,7 +2718,7 @@ export const SERVICES: Service[] = [
 
 export const KEDAI: Kedai = {
   "name": "Kedai Bakso Aci iTAP",
-  "address": "Jl. Permata VI, Puri Kirana 3, Blok H No. 25, Air Merbau, Tanjung Pandan 33414",
+  "address": "Jl. Permata VI Blok H25, Puri Kirana 3, Air Merbau, Tanjung Pandan 33414",
   "hours": "Buka setiap hari 11.00-22.00 WIB",
   "maps_url": "https://www.google.com/maps/dir/?api=1&destination=-2.719012,107.677769",
   "grabfood_url": "https://r.grab.com/g/6-20260510_162421_4039400cbca040d580dd39269511dcc8_MEXMPS-6-C7JCKE3BUGAEUA",

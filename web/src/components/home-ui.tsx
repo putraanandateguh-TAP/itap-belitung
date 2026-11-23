@@ -14,14 +14,14 @@ import { formatDateWIB, formatViews } from "@/lib/format";
 import { channelLabel } from "@/lib/labels";
 import { useLanguage } from "@/components/language-provider";
 
-function Photo({ article, sizes }: { article: Article; sizes: string; size?: "sm" | "md"; dark?: boolean }) {
+function Photo({ article, sizes, priority }: { article: Article; sizes: string; size?: "sm" | "md"; dark?: boolean; priority?: boolean }) {
   const g = article.gallery[0];
   if (g?.url) {
-    return <Image src={g.url} alt={g.alt} fill sizes={sizes} className="object-cover transition-transform duration-300 group-hover:scale-[1.03]" />;
+    return <Image src={g.url} alt={g.alt} fill sizes={sizes} priority={priority} className="object-cover transition-transform duration-300 group-hover:scale-[1.03]" />;
   }
   // Belum ada foto asli -> ilustrasi kanal (bukan foto peristiwa; alt jujur).
   const ill = articleIllustration(article);
-  return <Image src={ill.src} alt={ill.alt} fill sizes={sizes} className="object-cover transition-transform duration-300 group-hover:scale-[1.03]" data-illustration="true" />;
+  return <Image src={ill.src} alt={ill.alt} fill sizes={sizes} priority={priority} className="object-cover transition-transform duration-300 group-hover:scale-[1.03]" data-illustration="true" />;
 }
 
 
@@ -33,7 +33,7 @@ export function HeroStory({ article }: { article: Article }) {
     <article className="relative overflow-hidden rounded-[28px] bg-surface-dark shadow-pop">
       <Link href={`/artikel/${article.slug}`} className="group block focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent">
         <div className="relative aspect-[6/5] sm:aspect-[16/10] lg:aspect-auto lg:h-[460px]">
-          <Photo article={article} sizes="(max-width: 1024px) 100vw, 760px" dark />
+          <Photo article={article} sizes="(max-width: 1024px) 100vw, 760px" dark priority />
           <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-surface-dark-deep via-surface-dark/40 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 p-5 md:p-8">
             <span className="inline-flex rounded-full border border-white/30 bg-white/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-ink-on-dark backdrop-blur">

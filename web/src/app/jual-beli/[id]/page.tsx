@@ -22,6 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   return {
     title: listing.title,
     description: `${listing.title} — ${formatListingPrice(listing.price_cents)} di Jual Beli Belitung (iTAP).`,
+    alternates: { canonical: `/jual-beli/${id}` },
   };
 }
 

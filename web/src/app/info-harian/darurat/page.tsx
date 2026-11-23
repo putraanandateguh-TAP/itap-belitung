@@ -6,6 +6,7 @@ import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/info-harian/darurat" },
   title: "Nomor Darurat Belitung",
   description: "Nomor darurat Belitung: polisi, damkar, ambulans, SAR, PLN, dan rumah sakit.",
 };

@@ -3,6 +3,7 @@ import { getServerLang } from "@/lib/i18n-server";
 import { t } from "@/lib/i18n";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/ketentuan" },
   title: "Ketentuan Penggunaan",
   description: "Ketentuan penggunaan portal iTAP Belitung: akun, jual beli, kontribusi, dan poin.",
 };

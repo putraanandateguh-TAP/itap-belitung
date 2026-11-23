@@ -5,6 +5,7 @@ import { SearchClient } from "./search-client";
 import { ArticleCardSkeleton } from "@/components/ui";
 
 export const metadata: Metadata = {
+  alternates: { canonical: "/cari" },
   title: "Cari di iTAP Belitung",
   description: "Cari kabar, kuliner, tempat, dan cerita Belitung — dengan filter kanal, kategori, urutan, dan tanggal.",
 };

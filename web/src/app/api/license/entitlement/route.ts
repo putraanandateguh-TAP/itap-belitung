@@ -4,10 +4,16 @@
 // Fail-closed: error apa pun -> { entitled: false } (bukan 500 yang
 // bisa disalahartikan client sebagai "coba lagi sebagai FULL").
 import { NextResponse } from "next/server";
+import { getAuthUser } from "@/lib/supabase/server";
 import { requireSession } from "@/lib/api";
 import { callLicenseFunction } from "@/lib/license/server";
 
 export async function GET() {
+  // Pengunjung anonim: jawab entitled:false (200) alih-alih 401 supaya
+  // halaman /produk tidak memunculkan error di konsol untuk setiap tamu.
+  if (!(await getAuthUser())) {
+    return NextResponse.json({ entitled: false, products: [], plan: null, expires_at: null });
+  }
   const s = await requireSession();
   if ("error" in s) return s.error;
   const r = await callLicenseFunction("validate-license", { method: "GET" });

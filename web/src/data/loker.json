@@ -3,9 +3,9 @@
     "diperbarui": "2026-11-23",
     "catatan": "Lowongan dari sumber publik; lamar langsung lewat link resmi. iTAP tidak memungut biaya apa pun.",
     "jumlah": {
-      "belitung": 69,
-      "babel_lainnya": 126,
-      "total": 195
+      "belitung": 70,
+      "babel_lainnya": 127,
+      "total": 197
     },
     "cakupan_babel_lainnya": "Lowongan JobStreet dan sumber lain dengan lokasi Bangka/Pangkal Pinang/Sungailiat/sejenis yang tayang sejak 2026-10-23. Lowongan lebih lama masih bisa ada di sumber aslinya.",
     "otomatis": "GitHub Actions update-data.yml (scripts/update_loker_web.py): JobStreet, NyamanKerje, Glints, Loker.id"
@@ -192,6 +192,20 @@
       "ringkasan": "Menangani administrasi di Mr Jhon Pool & Cafe, Manggar, Belitung Timur (batas lamaran 30 Nov 2026).",
       "bagian": "Belitung",
       "batas_lamaran": "2026-11-30"
+    },
+    {
+      "judul": "Project Officer",
+      "perusahaan": "Omah Tumbuh Potensi",
+      "lokasi": "Sijuk, Belitung, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-23",
+      "dicek": "2026-11-23",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/project-officer/5b655b2b-f0ed-4b4c-8d4f-7ebd39f01b97",
+      "ringkasan": null,
+      "bagian": "Belitung",
+      "batas_lamaran": null
     },
     {
       "judul": "TEAM LEADER KAB. BELITUNG",
@@ -970,6 +984,20 @@
       "dicek": "2026-11-23",
       "sumber": "Glints",
       "link": "https://glints.com/id/opportunities/jobs/headstore-pangkal-pinang/cdff49ac-0732-4a76-9553-083e6ffe904c",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Head Store",
+      "perusahaan": "CV RABBANI ASYSA",
+      "lokasi": "Pangkal Pinang",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-23",
+      "dicek": "2026-11-23",
+      "sumber": "Loker.id",
+      "link": "https://www.loker.id/ritel/manajemen-ritel/head-store-cv-rabbani-asysa-pangkal-pinang.html",
       "ringkasan": null,
       "bagian": "Babel lainnya",
       "batas_lamaran": null

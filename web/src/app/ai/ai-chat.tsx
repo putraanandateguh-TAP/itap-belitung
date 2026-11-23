@@ -1,18 +1,32 @@
 // AI iTAP (S41, F12) — chat berbasis konten iTAP terkurasi + info harian.
-// API menjawab 501 sampai P3 (kunci Gemini): halaman menampilkan pesan
-// jujur "belum tersedia" dan TIDAK mengarang jawaban. Semua kontrol yang
+// API memakai Gemini di server (GEMINI_API_KEY); tanpa kunci → 501 dan
+// halaman menampilkan pesan jujur "belum tersedia", TIDAK mengarang jawaban. Semua kontrol yang
 // butuh jawaban nyata (sumber, feedback, laporkan jawaban salah, simpan
 // rencana) sudah ditulis dan hanya muncul saat jawaban nyata tiba.
 "use client";
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { BookmarkPlus, Flag, Mic, Send, ThumbsDown, ThumbsUp } from "lucide-react";
+import { BookmarkPlus, Flag, Mic, MicOff, Send, ThumbsDown, ThumbsUp, Volume2 } from "lucide-react";
 import { Banner, Button, EmptyState, TextArea } from "@/components/ui";
 import type { AiItinerary, AiMessage } from "@/lib/ai";
 import { useLanguage } from "@/components/language-provider";
 
 // UNAVAILABLE_TEXT now comes from the i18n dictionary (ai.unavailable).
+
+// Web Speech API (gratis, di browser): pengenalan suara untuk input dan
+// speechSynthesis untuk membacakan jawaban. Tidak ada audio dikirim ke iTAP.
+type SpeechRec = {
+  lang: string; interimResults: boolean; continuous: boolean;
+  onresult: ((e: { results: ArrayLike<ArrayLike<{ transcript: string }>> }) => void) | null;
+  onend: (() => void) | null; onerror: ((e: { error?: string }) => void) | null;
+  start: () => void; stop: () => void;
+};
+function getSpeechRecognition(): (new () => SpeechRec) | null {
+  if (typeof window === "undefined") return null;
+  const w = window as unknown as { SpeechRecognition?: new () => SpeechRec; webkitSpeechRecognition?: new () => SpeechRec };
+  return w.SpeechRecognition ?? w.webkitSpeechRecognition ?? null;
+}
 
 function newId(): string {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
@@ -32,6 +46,45 @@ export function AiChat() {
   const [reportReason, setReportReason] = useState("");
   const [saveNote, setSaveNote] = useState<string | null>(null);
   const endRef = useRef<HTMLDivElement>(null);
+  const recRef = useRef<SpeechRec | null>(null);
+  const [voiceSupported, setVoiceSupported] = useState(false);
+  const [listening, setListening] = useState(false);
+  const [voiceNote, setVoiceNote] = useState<string | null>(null);
+
+  useEffect(() => {
+    setVoiceSupported(getSpeechRecognition() !== null);
+    return () => recRef.current?.stop();
+  }, []);
+
+  const toggleVoice = () => {
+    if (listening) { recRef.current?.stop(); return; }
+    const Rec = getSpeechRecognition();
+    if (!Rec) { setVoiceNote(t("ai.voiceUnsupported")); return; }
+    const rec = new Rec();
+    rec.lang = lang === "en" ? "en-US" : "id-ID";
+    rec.interimResults = true;
+    rec.continuous = false;
+    rec.onresult = (e) => {
+      let txt = "";
+      for (let i = 0; i < e.results.length; i++) txt += e.results[i][0]?.transcript ?? "";
+      setInput(txt.slice(0, 500));
+    };
+    rec.onerror = (e) => {
+      setVoiceNote(e.error === "not-allowed" || e.error === "service-not-allowed" ? t("ai.voiceDenied") : t("ai.voiceError"));
+    };
+    rec.onend = () => setListening(false);
+    recRef.current = rec;
+    setVoiceNote(null);
+    try { rec.start(); setListening(true); } catch { setVoiceNote(t("ai.voiceError")); }
+  };
+
+  const speak = (text: string) => {
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = lang === "en" ? "en-US" : "id-ID";
+    window.speechSynthesis.speak(u);
+  };
 
   useEffect(() => {
     fetch("/api/ai/itineraries")
@@ -62,7 +115,7 @@ export function AiChat() {
       const res = await fetch("/api/ai/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text }),
+        body: JSON.stringify({ text, lang }),
       });
       const data: unknown = await res.json().catch(() => ({}));
       if (res.ok) {
@@ -212,6 +265,14 @@ export function AiChat() {
 
                 {m.role === "assistant" && (
                   <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-line pt-2">
+                    <button
+                      type="button"
+                      onClick={() => speak(m.text)}
+                      aria-label={t("ai.listen")}
+                      className="inline-flex h-8 items-center gap-1 rounded-md border border-line bg-canvas px-2 text-sm font-semibold text-ink hover:bg-surface focus-visible:outline-2 focus-visible:outline-accent"
+                    >
+                      <Volume2 className="size-4" aria-hidden="true" /> {t("ai.listen")}
+                    </button>
                     <span className="text-xs text-muted">{t("ai.helpfulQ")}</span>
                     <button
                       type="button"
@@ -306,16 +367,19 @@ export function AiChat() {
             </Button>
             <button
               type="button"
-              disabled
-              title={t("ai.voiceNote")}
-              aria-label={t("ai.voiceUnavailable")}
-              className="inline-flex h-10 items-center gap-2 rounded-md border border-line bg-canvas px-3 text-sm font-semibold text-muted opacity-60"
+              onClick={toggleVoice}
+              disabled={!voiceSupported || busy}
+              aria-pressed={listening}
+              aria-label={listening ? t("ai.voiceStop") : t("ai.voice")}
+              title={voiceSupported ? t("ai.voiceNote") : t("ai.voiceUnsupported")}
+              className={`inline-flex h-10 items-center gap-2 rounded-md border px-3 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent disabled:opacity-60 ${listening ? "border-danger bg-surface text-danger" : "border-line bg-canvas text-ink hover:bg-surface"}`}
             >
-              <Mic className="size-4" aria-hidden="true" /> {t("ai.voiceUnavailable")}
+              {listening ? <MicOff className="size-4" aria-hidden="true" /> : <Mic className="size-4" aria-hidden="true" />}
+              {listening ? t("ai.voiceStop") : voiceSupported ? t("ai.voice") : t("ai.voiceUnsupportedShort")}
             </button>
           </div>
-          <p className="text-xs text-muted">
-            {t("ai.voiceNote")}
+          <p className="text-xs text-muted" role={voiceNote ? "status" : undefined}>
+            {voiceNote ?? (listening ? t("ai.voiceListening") : t("ai.voiceNote"))}
           </p>
         </form>
       </section>

@@ -33,11 +33,21 @@ test.describe("F14 info harian", () => {
   });
 
   test("F14-H6/H7 cuaca/salat/transport/BBM/gempa cache kosong -> 503 jujur", async ({ request }) => {
-    for (const p of ["/api/daily/weather", "/api/daily/prayer", "/api/daily/transport", "/api/daily/fuel", "/api/daily/earthquake"]) {
+    for (const p of ["/api/daily/weather", "/api/daily/prayer", "/api/daily/transport", "/api/daily/earthquake"]) {
       const res = await request.get(p);
       expect(res.status(), p).toBe(503);
       expect(await res.text(), p).toContain("belum");
+      expect(await res.text(), p).not.toMatch(/\bP[1-4]\b|Fase \d/);
     }
+  });
+
+  test("F14-BBM harga BBM Babel tampil dengan tanggal berlaku + sumber", async ({ request, page }) => {
+    const fuel = await (await request.get("/api/daily/fuel")).json();
+    expect(fuel.items.find((i: { name: string }) => i.name === "Pertalite")?.price).toBeGreaterThan(0);
+    await page.goto("/info-harian/bbm");
+    await expect(page.getByRole("rowheader", { name: /Pertalite/ })).toBeVisible();
+    await expect(page.getByText(/Berlaku sejak/)).toBeVisible();
+    await expect(page.getByRole("link", { name: /Pertamina/ })).toHaveAttribute("href", /pertamina\.com/);
   });
 
   test("F14-E4 mobile + axe di halaman info harian", async ({ page }) => {
@@ -101,7 +111,7 @@ test.describe("F14 hub info harian (M5)", () => {
       ["/info-harian/cuaca", "Cuaca Tanjung Pandan", "Cuaca belum tersedia"],
       ["/info-harian/salat", "Jadwal Salat", "Jadwal salat belum tersedia"],
       ["/info-harian/transport", "Pesawat & Kapal", "Jadwal pesawat & kapal belum tersedia"],
-      ["/info-harian/bbm", "Harga BBM", "Harga BBM belum tersedia"],
+      ["/info-harian/bbm", "Harga BBM", "Pertalite"],
       ["/info-harian/gempa", "Gempa", "Info gempa belum tersedia"],
       ["/info-harian/darurat", "Nomor Darurat", null],
     ] as const) {

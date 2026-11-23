@@ -31,7 +31,7 @@ import { NextResponse } from "next/server";
 import { cronAuth } from "@/lib/cron-auth";
 import { getDb, isDbConfigured } from "@/lib/db";
 import * as t from "@/lib/db/schema";
-import { parsePrayerPayload, parseQuakePayload, parseWeatherPayload } from "@/lib/daily-parse";
+import { DAILY_SOURCES as SOURCES, fetchJson, todayWIB } from "@/lib/daily-sources";
 
 export const dynamic = "force-dynamic";
 // Batas durasi 60 dtk (maks Hobby): default Vercel 15 dtk terlalu pendek
@@ -39,46 +39,6 @@ export const dynamic = "force-dynamic";
 // region cron — fungsi bisa terbunuh sebelum insert pertama (dugaan kuat
 // invokasi 00:20 UTC 19 Nov 2026 yang tidak menulis apa pun).
 export const maxDuration = 60;
-
-type SourceDef = {
-  source: string;
-  url: () => string;
-  validate: (payload: unknown) => boolean;
-};
-
-function todayWIB(): string {
-  return new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
-}
-
-const SOURCES: SourceDef[] = [
-  {
-    source: "weather",
-    url: () => "https://api.bmkg.go.id/publik/prakiraan-cuaca?adm4=19.02.01.1001",
-    validate: (p) => parseWeatherPayload(p) !== null,
-  },
-  {
-    source: "prayer",
-    url: () => `https://api.myquran.com/v2/sholat/jadwal/0905/${todayWIB()}`,
-    validate: (p) => parsePrayerPayload(p) !== null,
-  },
-  {
-    source: "earthquake",
-    url: () => "https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json",
-    validate: (p) => parseQuakePayload(p) !== null,
-  },
-];
-
-async function fetchJson(url: string, timeoutMs = 8000): Promise<unknown> {
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, { signal: ctrl.signal, headers: { "User-Agent": "iTAP-Belitung/1.0" } });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
-  } finally {
-    clearTimeout(t);
-  }
-}
 
 export async function GET(req: Request) {
   const denied = cronAuth(req);
@@ -100,7 +60,10 @@ export async function GET(req: Request) {
       await db.insert(t.dailyInfoSnapshots).values({
         source: s.source, scopeKey: "belitung", asOfDate: today,
         payload: payload as object,
-      }).onConflictDoNothing();
+      }).onConflictDoUpdate({
+        target: [t.dailyInfoSnapshots.source, t.dailyInfoSnapshots.scopeKey, t.dailyInfoSnapshots.asOfDate],
+        set: { payload: payload as object, fetchedAt: new Date() },
+      });
       return s.source;
     }),
   );

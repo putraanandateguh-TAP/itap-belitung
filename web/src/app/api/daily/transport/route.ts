@@ -7,7 +7,7 @@ export async function GET() {
   const snap = await getDailySnapshot("transport");
   if (!snap) {
     return NextResponse.json(
-      { error: "Data belum tersedia — cron daily-info-fetch belum pernah mengisi cache (P1)." },
+      { error: "Data belum tersedia saat ini. Coba lagi nanti." },
       { status: 503 },
     );
   }

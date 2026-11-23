@@ -135,3 +135,17 @@ test.describe("F99 sapuan bug 19 Nov", () => {
     expect(cuaca).not.toContain("(P1)");
   });
 });
+
+test.describe("F99 audit pengunjung 23 Nov", () => {
+  for (const path of ["/ketentuan", "/penerjemah", "/info-harian", "/ai", "/pengaturan", "/verifikasi"]) {
+    test(`F99-A ${path}: tanpa kode internal (P1–P4 / Fase N)`, async ({ page }) => {
+      await page.goto(path);
+      const text = await page.locator("main").innerText();
+      expect(text).not.toMatch(/\bP[1-4]\b|\bFase \d|\bPhase \d|kunci Gemini/);
+    });
+  }
+  test("F99-B penerjemah: tombol suara tidak lagi 'belum tersedia'", async ({ page }) => {
+    await page.goto("/penerjemah");
+    await expect(page.getByText("Suara / Foto (belum tersedia)")).toHaveCount(0);
+  });
+});

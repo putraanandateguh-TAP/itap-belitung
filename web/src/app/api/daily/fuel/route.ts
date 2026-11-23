@@ -1,15 +1,8 @@
 import { NextResponse } from "next/server";
-import { getDailySnapshot } from "@/lib/daily";
+import bbm from "@/data/bbm.json";
 
-// GET /api/daily/fuel — dari cache daily_info_snapshots (diisi cron).
-// Tanpa cache: 503 + pesan jujur "belum tersedia", BUKAN fetch per request.
+// GET /api/daily/fuel — harga BBM Pertamina Babel dari data kurasi
+// src/data/bbm.json (lihat halaman /info-harian/bbm).
 export async function GET() {
-  const snap = await getDailySnapshot("fuel");
-  if (!snap) {
-    return NextResponse.json(
-      { error: "Data belum tersedia — cron daily-info-fetch belum pernah mengisi cache (P1)." },
-      { status: 503 },
-    );
-  }
-  return NextResponse.json({ ...snap, note: snap.stale ? "Data terakhir diperbarui " + snap.as_of + " (mungkin sudah usang)." : undefined });
+  return NextResponse.json({ scope_key: "belitung", ...bbm });
 }

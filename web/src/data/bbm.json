@@ -1,0 +1,16 @@
+{
+  "region": "Provinsi Kepulauan Bangka Belitung",
+  "effective_since": "2026-09-02",
+  "checked_at": "2026-11-23",
+  "source": "Pertamina Patra Niaga (daftar harga BBM per provinsi)",
+  "source_url": "https://www.pertamina.com/id/harga-bbm",
+  "cross_checked": ["detik.com 2 Nov 2026", "IDN Times 1 Nov 2026", "Kompas.com 16 Nov 2026", "Bangka Pos 18 Nov 2026"],
+  "items": [
+    { "name": "Pertalite", "type": "subsidi", "price": 10000 },
+    { "name": "Biosolar", "type": "subsidi", "price": 6800 },
+    { "name": "Pertamax", "type": "nonsubsidi", "price": 16300 },
+    { "name": "Pertamax Turbo", "type": "nonsubsidi", "price": 20000 },
+    { "name": "Dexlite", "type": "nonsubsidi", "price": 24200 },
+    { "name": "Pertamina Dex", "type": "nonsubsidi", "price": 25750 }
+  ]
+}

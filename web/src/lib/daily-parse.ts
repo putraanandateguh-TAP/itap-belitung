@@ -152,7 +152,7 @@ export function cacheAgeHours(fetchedAt: string): number | null {
 
 /** A5: data >6 jam dianggap mungkin basi. */
 export function isCacheStale(fetchedAt: string, asOfDate: string): boolean {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = new Date().toLocaleDateString("en-CA", { timeZone: "Asia/Jakarta" });
   if (asOfDate < today) return true;
   const age = cacheAgeHours(fetchedAt);
   return age !== null && age > 6;

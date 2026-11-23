@@ -1,6 +1,6 @@
 // Penerjemah (S37, F13) — klien interaktif.
-// Kamus lokal server HANYA berisi padanan istilah kategori ID–EN dari
-// konten iTAP; teks lain dijawab 501 jujur sampai Gemini (P3) ada.
+// Kamus lokal server untuk istilah kategori iTAP; teks lain diterjemahkan
+// AI (Gemini, di server). Input suara via Web Speech API browser.
 // Riwayat + favorit tersimpan di perangkat ini (localStorage, maks 20).
 "use client";
 
@@ -8,10 +8,10 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeftRight,
-  Camera,
   Copy,
   Expand,
   Mic,
+  MicOff,
   Star,
   Trash2,
   X,
@@ -29,6 +29,11 @@ import {
 } from "@/lib/ai";
 import { channelLabel } from "@/lib/labels";
 import { useLanguage } from "@/components/language-provider";
+import { useSpeechInput } from "@/components/use-speech-input";
+
+const SPEECH_LANG: Record<string, string> = {
+  belitung: "id-ID", id: "id-ID", en: "en-US", ms: "ms-MY", zh: "zh-CN", ja: "ja-JP", ko: "ko-KR", nl: "nl-NL", de: "de-DE",
+};
 
 import type { Channel } from "@/lib/types";
 
@@ -85,6 +90,7 @@ export function TranslatorClient({ queue }: { queue: TranslationQueueItem[] }) {
   const [history, setHistory] = useState<TranslationEntry[]>([]);
   const [fullscreen, setFullscreen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const speech = useSpeechInput((txt) => setText(txt.slice(0, 2000)));
 
   useEffect(() => {
     setHistory(loadTranslationHistory());
@@ -109,7 +115,9 @@ export function TranslatorClient({ queue }: { queue: TranslationQueueItem[] }) {
       if (res.ok) {
         const d = data as { translation: string; source?: string };
         setResult(d.translation);
-        setResultSource(d.source === "kamus-lokal" ? t("translator.localDict") : t("translator.sameLang"));
+        setResultSource(
+          d.source === "kamus-lokal" ? t("translator.localDict") : d.source === "ai" ? t("translator.aiSource") : t("translator.sameLang"),
+        );
         setHistory(
           addTranslationHistory({
             sourceText: text.trim(),
@@ -216,18 +224,17 @@ export function TranslatorClient({ queue }: { queue: TranslationQueueItem[] }) {
           </Button>
           <button
             type="button"
-            disabled
-            title={t("translator.voicePhotoNote")}
-            aria-label={t("translator.voicePhoto")}
-            className="inline-flex h-10 items-center gap-2 rounded-md border border-line bg-canvas px-3 text-sm font-semibold text-muted opacity-60"
+            onClick={() => speech.toggle(SPEECH_LANG[from] ?? "id-ID")}
+            disabled={!speech.supported || busy}
+            aria-pressed={speech.listening}
+            className={`inline-flex h-10 items-center gap-2 rounded-md border px-3 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-accent disabled:opacity-60 ${speech.listening ? "border-danger bg-surface text-danger" : "border-line bg-canvas text-ink hover:bg-surface"}`}
           >
-            <Mic className="size-4" aria-hidden="true" />
-            <Camera className="size-4" aria-hidden="true" />
-            {t("translator.voicePhoto")}
+            {speech.listening ? <MicOff className="size-4" aria-hidden="true" /> : <Mic className="size-4" aria-hidden="true" />}
+            {speech.listening ? t("ai.voiceStop") : speech.supported ? t("translator.voice") : t("ai.voiceUnsupportedShort")}
           </button>
         </div>
-        <p className="text-xs text-muted">
-          {t("translator.voicePhotoNote")}
+        <p className="text-xs text-muted" role={speech.error ? "status" : undefined}>
+          {speech.error === "denied" ? t("ai.voiceDenied") : speech.error === "unsupported" ? t("ai.voiceUnsupported") : speech.error ? t("ai.voiceError") : speech.listening ? t("translator.voiceListening") : t("translator.voiceNote")}
         </p>
 
         {message && <Banner tone="warning">{message}</Banner>}

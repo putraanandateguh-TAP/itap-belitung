@@ -5,7 +5,7 @@
 (function () {
   const U = window.ITAP_UNDANGAN || { packages: [] };
   const T = window.ITAP_TEMA || {};
-  const esc = T.esc || ((s) => String(s ?? ''));
+  const esc = T.esc || ((s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])));
   const rp = T.rp || ((n) => 'Rp' + Number(n || 0).toLocaleString('id-ID'));
   const wa = T.wa || ((t) => 'https://wa.me/6287749476651?text=' + encodeURIComponent(t || ''));
   const $ = (id) => document.getElementById(id);

@@ -3,8 +3,8 @@
 (function () {
   const U = window.ITAP_UNDANGAN; if (!U) return;
   const C = window.ITAP_CONFIG || {};
-  const URL_ = C.SUPABASE_URL || 'https://mmtxxztkezbuissxembl.supabase.co';
-  const KEY = C.SUPABASE_ANON_KEY || 'sb_publishable__1FyoGH0-q564WInyZZBQg_YP0SIYt4';
+  const URL_ = C.SUPABASE_URL || '';
+  const KEY = C.SUPABASE_ANON_KEY || '';
   const rp = (n) => 'Rp' + Number(n || 0).toLocaleString('id-ID');
   U.defaults = U.defaults || { days: Object.fromEntries(U.packages.map((p) => [p.id, p.days || 0])), packages: Object.fromEntries(U.packages.map((p) => [p.id, p.price])), plans: Object.fromEntries((U.plans || []).map((p) => [p.id, p.price])) };
   function apply(v) {
@@ -33,7 +33,8 @@
   try { apply(JSON.parse(localStorage.getItem('itap_prices') || 'null')); } catch (e) { /* abaikan */ }
   const ready = (fn) => document.readyState === 'loading' ? document.addEventListener('DOMContentLoaded', fn) : fn();
   ready(paintStatic);
-  fetch(URL_ + '/rest/v1/undangan_settings?key=eq.prices&select=value', { headers: { apikey: KEY } })
+  // Tanpa config.js root, harga bawaan dipakai (sama seperti bila fetch gagal).
+  if (URL_ && KEY) fetch(URL_ + '/rest/v1/undangan_settings?key=eq.prices&select=value', { headers: { apikey: KEY } })
     .then((r) => r.ok ? r.json() : null)
     .then((rows) => {
       if (!Array.isArray(rows)) return;

@@ -9,7 +9,7 @@ import { t } from "@/lib/i18n";
 export const metadata: Metadata = {
   title: "AI iTAP",
   description:
-    "Tanya AI iTAP tentang Belitung — pantai, kuliner, sejarah, dan rencana perjalanan per hari. Jawaban hanya dari konten iTAP yang dikurasi, disertai sumber.",
+    "Tanya AI iTAP tentang Belitung — pantai, kuliner, sejarah, dan rencana perjalanan per hari. Jawaban mengutamakan konten iTAP yang dikurasi, disertai sumber.",
 };
 
 export default async function AiPage() {

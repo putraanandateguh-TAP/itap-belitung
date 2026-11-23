@@ -7,7 +7,7 @@ import { cronAuth } from "@/lib/cron-auth";
 import { getDb, isDbConfigured } from "@/lib/db";
 import * as t from "@/lib/db/schema";
 import { and, eq, lt } from "drizzle-orm";
-import { createSupabaseAdmin } from "@/lib/supabase/client";
+import { createSupabaseAdmin } from "@/lib/supabase/admin";
 
 export const dynamic = "force-dynamic";
 

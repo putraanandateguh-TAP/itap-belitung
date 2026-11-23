@@ -1,6 +1,7 @@
 // Cron guard bersama: Vercel Cron mengirim header Authorization:
 // Bearer <CRON_SECRET>. Tanpa secret yang cocok -> 401. Jangan pernah
 // memanggil job ini dari client.
+import "server-only";
 import { NextResponse } from "next/server";
 
 export function cronAuth(req: Request): NextResponse | null {

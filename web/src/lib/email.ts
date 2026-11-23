@@ -9,6 +9,7 @@
 // Resend HTTP API — dan tetap butuh RESEND_API_KEY + domain terverifikasi.
 // Selama P5 belum selesai, semua pemanggilan mengembalikan {sent:false,
 // reason:'resend-not-configured'} — JANGAN pura-pura terkirim.
+import "server-only";
 export interface SendEmailInput {
   to: string;
   subject: string;

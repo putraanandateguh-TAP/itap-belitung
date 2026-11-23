@@ -97,7 +97,7 @@ function systemPrompt(lang: "id" | "en", ctx: Ctx[]): string {
 export async function POST(req: Request) {
   if (!isGeminiConfigured()) {
     return NextResponse.json(
-      { error: "AI iTAP belum tersedia — Fase 3 (M7), butuh kunci Gemini milik Teguh (P3)." },
+      { error: "AI iTAP sedang tidak tersedia. Coba lagi nanti." },
       { status: 501 },
     );
   }

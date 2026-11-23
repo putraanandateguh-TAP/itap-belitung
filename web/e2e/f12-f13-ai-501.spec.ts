@@ -7,7 +7,7 @@ test.describe("F12 AI Satam -> 501 jujur", () => {
     const res = await request.post("/api/ai/chat", { data: { message: "Rencana 2 hari di Belitung" } });
     expect(res.status()).toBe(501);
     const text = await res.text();
-    expect(text).toContain("Fase 3");
+    expect(text).toContain("tidak tersedia");
     expect(text).not.toMatch(/hari 1|itinerary|Pantai Tanjung/i);
   });
 
@@ -35,7 +35,7 @@ test.describe("F13 Penerjemah -> 501 jujur", () => {
   test("F13-H1 POST /api/translate -> 501, tanpa terjemahan palsu", async ({ request }) => {
     const res = await request.post("/api/translate", { data: { text: "Selamat pagi", from: "id", to: "en" } });
     expect(res.status()).toBe(501);
-    expect(await res.text()).toContain("Fase 3");
+    expect(await res.text()).toContain("belum tersedia");
   });
 
   test("F13-E1 teks kosong / sangat panjang -> 400 atau 501", async ({ request }) => {

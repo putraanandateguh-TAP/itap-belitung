@@ -4,8 +4,8 @@
     "catatan": "Lowongan dari sumber publik; lamar langsung lewat link resmi. iTAP tidak memungut biaya apa pun.",
     "jumlah": {
       "belitung": 71,
-      "babel_lainnya": 133,
-      "total": 204
+      "babel_lainnya": 135,
+      "total": 206
     },
     "cakupan_babel_lainnya": "Lowongan JobStreet dan sumber lain dengan lokasi Bangka/Pangkal Pinang/Sungailiat/sejenis yang tayang sejak 2026-10-23. Lowongan lebih lama masih bisa ada di sumber aslinya.",
     "otomatis": "GitHub Actions update-data.yml (scripts/update_loker_web.py): JobStreet, NyamanKerje, Glints, Loker.id"
@@ -1003,6 +1003,20 @@
       "batas_lamaran": null
     },
     {
+      "judul": "Social Media Specialist Intern",
+      "perusahaan": "Mutiara Harapan Islamic School",
+      "lokasi": "Pangkal Pinang, Bangka Belitung",
+      "kategori": "Pemasaran & Komunikasi",
+      "gaji": null,
+      "tanggal_posting": "2026-11-24",
+      "dicek": "2026-11-24",
+      "sumber": "JobStreet",
+      "link": "https://id.jobstreet.com/id/job/96088951",
+      "ringkasan": "Create engaging digital content that brings school activities and educational stories to life.",
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
       "judul": "Crowd Surveyor",
       "perusahaan": "Pictopia",
       "lokasi": "Gerunggang, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
@@ -1552,6 +1566,20 @@
       "sumber": "Glints",
       "link": "https://glints.com/id/opportunities/jobs/customer-service-bangka-belitung/d0724c0b-9a2e-482e-a697-0fbf69c1101d",
       "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Key Account Executive Area Bangka Belitung",
+      "perusahaan": "Mersifarma Tirmaku Mercusana",
+      "lokasi": "Bangka Belitung",
+      "kategori": "Penjualan",
+      "gaji": null,
+      "tanggal_posting": "2026-11-13",
+      "dicek": "2026-11-24",
+      "sumber": "JobStreet",
+      "link": "https://id.jobstreet.com/id/job/96093258",
+      "ringkasan": "Memiliki pengetahuan yang baik mengenai wilayah penempatan dan area cakupan pelanggan menjadi nilai tambah. Menguasai Microsoft Office, terutama...",
       "bagian": "Babel lainnya",
       "batas_lamaran": null
     },

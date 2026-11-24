@@ -3,14 +3,28 @@
     "diperbarui": "2026-11-24",
     "catatan": "Lowongan dari sumber publik; lamar langsung lewat link resmi. iTAP tidak memungut biaya apa pun.",
     "jumlah": {
-      "belitung": 70,
-      "babel_lainnya": 131,
-      "total": 201
+      "belitung": 71,
+      "babel_lainnya": 133,
+      "total": 204
     },
     "cakupan_babel_lainnya": "Lowongan JobStreet dan sumber lain dengan lokasi Bangka/Pangkal Pinang/Sungailiat/sejenis yang tayang sejak 2026-10-23. Lowongan lebih lama masih bisa ada di sumber aslinya.",
     "otomatis": "GitHub Actions update-data.yml (scripts/update_loker_web.py): JobStreet, NyamanKerje, Glints, Loker.id"
   },
   "lowongan": [
+    {
+      "judul": "Mitra Kurir Motor - Tanjungpandan, Kabupaten Belitung",
+      "perusahaan": "Anteraja",
+      "lokasi": "Tanjung Pandan, Belitung, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-24",
+      "dicek": "2026-11-24",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/mitra-kurir-motor-tanjungpandan-kabupaten-belitung/ef96dec5-cd77-4d28-9034-0c765ca83f7c",
+      "ringkasan": null,
+      "bagian": "Belitung",
+      "batas_lamaran": null
+    },
     {
       "judul": "OPEN RECRUITMENT TENAGA GURU DAN TENAGA KEPENDIDIKAN SMA UNGGUL GARUDA BELITUNG TIMUR",
       "perusahaan": "SMA UNGGUL GARUDA BELITUNG TIMUR",
@@ -959,6 +973,34 @@
       "link": "https://id.jobstreet.com/id/job/95493131",
       "ringkasan": "Menyusun dan menjalankan kegiatan pemasaran untuk PT Graha Amarta Perkasa di Belitung.",
       "bagian": "Belitung"
+    },
+    {
+      "judul": "admi",
+      "perusahaan": "PT PATRIA",
+      "lokasi": "Pangkal Pinang, Bangka Belitung",
+      "kategori": "Administrasi & Dukungan Perkantoran",
+      "gaji": "Rp 3.000.000 – Rp 3.500.000 per month",
+      "tanggal_posting": "2026-11-24",
+      "dicek": "2026-11-24",
+      "sumber": "JobStreet",
+      "link": "https://id.jobstreet.com/id/job/96086633",
+      "ringkasan": "Frontdesk AHASS bertanggung jawab menjadi garda terdepan dalam memberikan pelayanan kepada pelanggan, mulai dari menyambut kedatangan",
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Ahli Gizi MBG",
+      "perusahaan": "YAYASAN YAYASAN POTENSI INSAN BERDAYA",
+      "lokasi": "Bangka Barat, Bangka Belitung",
+      "kategori": "Kesehatan & Medis",
+      "gaji": "Rp 5.000.000 – Rp 6.000.000 per month",
+      "tanggal_posting": "2026-11-24",
+      "dicek": "2026-11-24",
+      "sumber": "JobStreet",
+      "link": "https://id.jobstreet.com/id/job/96080222",
+      "ringkasan": "Bertanggung jawab memastikan kualitas gizi, keamanan pangan, dan kesesuaian menu makanan yang diberikan kepada penerima manfaat sesuai standar gizi.",
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
     },
     {
       "judul": "Crowd Surveyor",

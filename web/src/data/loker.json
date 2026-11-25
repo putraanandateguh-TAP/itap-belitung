@@ -3,9 +3,9 @@
     "diperbarui": "2026-11-25",
     "catatan": "Lowongan dari sumber publik; lamar langsung lewat link resmi. iTAP tidak memungut biaya apa pun.",
     "jumlah": {
-      "belitung": 72,
-      "babel_lainnya": 137,
-      "total": 209
+      "belitung": 73,
+      "babel_lainnya": 141,
+      "total": 214
     },
     "cakupan_babel_lainnya": "Lowongan JobStreet dan sumber lain dengan lokasi Bangka/Pangkal Pinang/Sungailiat/sejenis yang tayang sejak 2026-10-23. Lowongan lebih lama masih bisa ada di sumber aslinya.",
     "otomatis": "GitHub Actions update-data.yml (scripts/update_loker_web.py): JobStreet, NyamanKerje, Glints, Loker.id"
@@ -22,6 +22,20 @@
       "sumber": "Loker.id",
       "link": "https://www.loker.id/restaurant/baker/baker-roti-second-product-pt-intinusa-mitra-sukses-belitung.html",
       "ringkasan": null,
+      "bagian": "Belitung",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Sales Assistant DIGIMAP/DIGIPLUS (Pandan Belitung Area)",
+      "perusahaan": "PT Map Zona Adiperkasa",
+      "lokasi": "Belitung",
+      "kategori": "Ritel & Produk Konsumen",
+      "gaji": null,
+      "tanggal_posting": "2026-11-25",
+      "dicek": "2026-11-25",
+      "sumber": "JobStreet",
+      "link": "https://id.jobstreet.com/id/job/96116442",
+      "ringkasan": "Membantu koordinator dan supervisor dalam mengelola merchandise / barang dagangan di toko (area penjualan).",
       "bagian": "Belitung",
       "batas_lamaran": null
     },
@@ -1013,6 +1027,62 @@
       "sumber": "JobStreet",
       "link": "https://id.jobstreet.com/id/job/96107459",
       "ringkasan": "Membantu koordinator dan supervisor dalam mengelola merchandise / barang dagangan di toko (area penjualan).",
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Sales Assistant DIGIMAP/DIGIPLUS (Pangkal Pinang Area)",
+      "perusahaan": "PT Map Zona Adiperkasa",
+      "lokasi": "Pangkal Pinang, Bangka Belitung",
+      "kategori": "Ritel & Produk Konsumen",
+      "gaji": null,
+      "tanggal_posting": "2026-11-25",
+      "dicek": "2026-11-25",
+      "sumber": "JobStreet",
+      "link": "https://id.jobstreet.com/id/job/96116392",
+      "ringkasan": "Membantu koordinator dan supervisor dalam mengelola merchandise / barang dagangan di toko (area penjualan).",
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Sales Assistant DIGIMAP/DIGIPLUS (Sungailiat Area)",
+      "perusahaan": "PT Map Zona Adiperkasa",
+      "lokasi": "Sungailiat, Bangka Belitung",
+      "kategori": "Ritel & Produk Konsumen",
+      "gaji": null,
+      "tanggal_posting": "2026-11-25",
+      "dicek": "2026-11-25",
+      "sumber": "JobStreet",
+      "link": "https://id.jobstreet.com/id/job/96116114",
+      "ringkasan": "Membantu koordinator dan supervisor dalam mengelola merchandise / barang dagangan di toko (area penjualan).",
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "ASS - Pangkal Pinang",
+      "perusahaan": "PT COTG Sukses Makmur",
+      "lokasi": "Bukitintan, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-25",
+      "dicek": "2026-11-25",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/ass-pangkal-pinang/2c97effb-8c7b-4ee3-8a85-e6695686dfde",
+      "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Staf Pengajaran dan Kesiswaan",
+      "perusahaan": "PT Ganesha Operation Pangkal Pinang",
+      "lokasi": "Bukitintan, Pangkal Pinang, Kepulauan Bangka Belitung, Indonesia",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-25",
+      "dicek": "2026-11-25",
+      "sumber": "Glints",
+      "link": "https://glints.com/id/opportunities/jobs/staf-pengajaran-dan-kesiswaan/ac94972f-57aa-4ab0-8107-c343be7ef046",
+      "ringkasan": null,
       "bagian": "Babel lainnya",
       "batas_lamaran": null
     },

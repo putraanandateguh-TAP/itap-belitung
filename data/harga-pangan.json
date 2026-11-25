@@ -1,8 +1,8 @@
 {
- "tanggal_sumber": "24-11-2026",
- "tanggal_sebelumnya": "23/11/2026",
+ "tanggal_sumber": "25-11-2026",
+ "tanggal_sebelumnya": "24/11/2026",
  "lokasi": "Pasar tradisional Tanjung Pandan (pantauan PIHPS Bank Indonesia)",
- "diambil": "2026-11-24 13:58 WIB",
+ "diambil": "2026-11-25 12:29 WIB",
  "sumber": "PIHPS Nasional Bank Indonesia (pasar tradisional Tanjung Pandan)",
  "url": "https://www.bi.go.id/hargapangan",
  "items": [
@@ -11,7 +11,7 @@
    "harga": 12200,
    "satuan": "kg",
    "status": "tetap",
-   "perubahan": "Sama dengan 23/11/2026 (Rp 12.200).",
+   "perubahan": "Sama dengan 24/11/2026 (Rp 12.200).",
    "harga_sebelumnya": 12200
   },
   {
@@ -19,7 +19,7 @@
    "harga": 14400,
    "satuan": "kg",
    "status": "tetap",
-   "perubahan": "Sama dengan 23/11/2026 (Rp 14.400).",
+   "perubahan": "Sama dengan 24/11/2026 (Rp 14.400).",
    "harga_sebelumnya": 14400
   },
   {
@@ -27,7 +27,7 @@
    "harga": 17100,
    "satuan": "kg",
    "status": "tetap",
-   "perubahan": "Sama dengan 23/11/2026 (Rp 17.100).",
+   "perubahan": "Sama dengan 24/11/2026 (Rp 17.100).",
    "harga_sebelumnya": 17100
   },
   {
@@ -35,7 +35,7 @@
    "harga": 16150,
    "satuan": "kg",
    "status": "tetap",
-   "perubahan": "Sama dengan 23/11/2026 (Rp 16.150).",
+   "perubahan": "Sama dengan 24/11/2026 (Rp 16.150).",
    "harga_sebelumnya": 16150
   },
   {
@@ -43,7 +43,7 @@
    "harga": 17550,
    "satuan": "kg",
    "status": "tetap",
-   "perubahan": "Sama dengan 23/11/2026 (Rp 17.550).",
+   "perubahan": "Sama dengan 24/11/2026 (Rp 17.550).",
    "harga_sebelumnya": 17550
   },
   {
@@ -51,23 +51,23 @@
    "harga": 17350,
    "satuan": "kg",
    "status": "tetap",
-   "perubahan": "Sama dengan 23/11/2026 (Rp 17.350).",
+   "perubahan": "Sama dengan 24/11/2026 (Rp 17.350).",
    "harga_sebelumnya": 17350
   },
   {
    "komoditas": "Daging Ayam Ras Segar",
    "harga": 48250,
    "satuan": "kg",
-   "status": "turun",
-   "perubahan": "Turun Rp 500 (1,0%) dari Rp 48.750 (23/11/2026).",
-   "harga_sebelumnya": 48750
+   "status": "tetap",
+   "perubahan": "Sama dengan 24/11/2026 (Rp 48.250).",
+   "harga_sebelumnya": 48250
   },
   {
    "komoditas": "Daging Sapi Kualitas 1",
    "harga": 170000,
    "satuan": "kg",
    "status": "tetap",
-   "perubahan": "Sama dengan 23/11/2026 (Rp 170.000).",
+   "perubahan": "Sama dengan 24/11/2026 (Rp 170.000).",
    "harga_sebelumnya": 170000
   },
   {
@@ -75,7 +75,7 @@
    "harga": 150000,
    "satuan": "kg",
    "status": "tetap",
-   "perubahan": "Sama dengan 23/11/2026 (Rp 150.000).",
+   "perubahan": "Sama dengan 24/11/2026 (Rp 150.000).",
    "harga_sebelumnya": 150000
   },
   {
@@ -83,7 +83,7 @@
    "harga": 30600,
    "satuan": "kg",
    "status": "tetap",
-   "perubahan": "Sama dengan 23/11/2026 (Rp 30.600).",
+   "perubahan": "Sama dengan 24/11/2026 (Rp 30.600).",
    "harga_sebelumnya": 30600
   },
   {
@@ -91,7 +91,7 @@
    "harga": 46250,
    "satuan": "kg",
    "status": "tetap",
-   "perubahan": "Sama dengan 23/11/2026 (Rp 46.250).",
+   "perubahan": "Sama dengan 24/11/2026 (Rp 46.250).",
    "harga_sebelumnya": 46250
   },
   {
@@ -99,15 +99,15 @@
    "harga": 36750,
    "satuan": "kg",
    "status": "tetap",
-   "perubahan": "Sama dengan 23/11/2026 (Rp 36.750).",
+   "perubahan": "Sama dengan 24/11/2026 (Rp 36.750).",
    "harga_sebelumnya": 36750
   },
   {
    "komoditas": "Cabai Merah Keriting",
-   "harga": 91250,
+   "harga": 90000,
    "satuan": "kg",
-   "status": "tetap",
-   "perubahan": "Sama dengan 23/11/2026 (Rp 91.250).",
+   "status": "turun",
+   "perubahan": "Turun Rp 1.250 (1,4%) dari Rp 91.250 (24/11/2026).",
    "harga_sebelumnya": 91250
   },
   {
@@ -115,7 +115,7 @@
    "harga": 75000,
    "satuan": "kg",
    "status": "tetap",
-   "perubahan": "Sama dengan 23/11/2026 (Rp 75.000).",
+   "perubahan": "Sama dengan 24/11/2026 (Rp 75.000).",
    "harga_sebelumnya": 75000
   },
   {
@@ -123,7 +123,7 @@
    "harga": 92500,
    "satuan": "kg",
    "status": "tetap",
-   "perubahan": "Sama dengan 23/11/2026 (Rp 92.500).",
+   "perubahan": "Sama dengan 24/11/2026 (Rp 92.500).",
    "harga_sebelumnya": 92500
   },
   {
@@ -131,7 +131,7 @@
    "harga": 21750,
    "satuan": "liter",
    "status": "tetap",
-   "perubahan": "Sama dengan 23/11/2026 (Rp 21.750).",
+   "perubahan": "Sama dengan 24/11/2026 (Rp 21.750).",
    "harga_sebelumnya": 21750
   },
   {
@@ -139,7 +139,7 @@
    "harga": 16500,
    "satuan": "liter",
    "status": "tetap",
-   "perubahan": "Sama dengan 23/11/2026 (Rp 16.500).",
+   "perubahan": "Sama dengan 24/11/2026 (Rp 16.500).",
    "harga_sebelumnya": 16500
   },
   {
@@ -147,7 +147,7 @@
    "harga": 19750,
    "satuan": "kg",
    "status": "tetap",
-   "perubahan": "Sama dengan 23/11/2026 (Rp 19.750).",
+   "perubahan": "Sama dengan 24/11/2026 (Rp 19.750).",
    "harga_sebelumnya": 19750
   },
   {
@@ -155,7 +155,7 @@
    "harga": 19250,
    "satuan": "kg",
    "status": "tetap",
-   "perubahan": "Sama dengan 23/11/2026 (Rp 19.250).",
+   "perubahan": "Sama dengan 24/11/2026 (Rp 19.250).",
    "harga_sebelumnya": 19250
   }
  ]

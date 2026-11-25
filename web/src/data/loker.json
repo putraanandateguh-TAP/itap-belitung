@@ -3,14 +3,28 @@
     "diperbarui": "2026-11-25",
     "catatan": "Lowongan dari sumber publik; lamar langsung lewat link resmi. iTAP tidak memungut biaya apa pun.",
     "jumlah": {
-      "belitung": 71,
-      "babel_lainnya": 136,
-      "total": 207
+      "belitung": 72,
+      "babel_lainnya": 137,
+      "total": 209
     },
     "cakupan_babel_lainnya": "Lowongan JobStreet dan sumber lain dengan lokasi Bangka/Pangkal Pinang/Sungailiat/sejenis yang tayang sejak 2026-10-23. Lowongan lebih lama masih bisa ada di sumber aslinya.",
     "otomatis": "GitHub Actions update-data.yml (scripts/update_loker_web.py): JobStreet, NyamanKerje, Glints, Loker.id"
   },
   "lowongan": [
+    {
+      "judul": "Baker Roti & Second Product",
+      "perusahaan": "PT INTINUSA MITRA SUKSES",
+      "lokasi": "Belitung",
+      "kategori": null,
+      "gaji": null,
+      "tanggal_posting": "2026-11-25",
+      "dicek": "2026-11-25",
+      "sumber": "Loker.id",
+      "link": "https://www.loker.id/restaurant/baker/baker-roti-second-product-pt-intinusa-mitra-sukses-belitung.html",
+      "ringkasan": null,
+      "bagian": "Belitung",
+      "batas_lamaran": null
+    },
     {
       "judul": "Mitra Kurir Motor - Tanjungpandan, Kabupaten Belitung",
       "perusahaan": "Anteraja",
@@ -985,6 +999,20 @@
       "sumber": "JobStreet",
       "link": "https://id.jobstreet.com/id/job/96099116",
       "ringkasan": "We urgently need an Marketing insurance at BNI Life Insurance. Please send your application.",
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "Sales Assistant (DIGIMAP/DIGIPLUS)",
+      "perusahaan": "PT Map Zona Adiperkasa",
+      "lokasi": "Bangka Belitung",
+      "kategori": "Keterampilan & Jasa",
+      "gaji": "Rp 4.000.000 – Rp 4.100.000 per month",
+      "tanggal_posting": "2026-11-25",
+      "dicek": "2026-11-25",
+      "sumber": "JobStreet",
+      "link": "https://id.jobstreet.com/id/job/96107459",
+      "ringkasan": "Membantu koordinator dan supervisor dalam mengelola merchandise / barang dagangan di toko (area penjualan).",
       "bagian": "Babel lainnya",
       "batas_lamaran": null
     },

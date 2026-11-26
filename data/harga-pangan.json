@@ -1,65 +1,65 @@
 {
- "tanggal_sumber": "25-11-2026",
- "tanggal_sebelumnya": "24/11/2026",
+ "tanggal_sumber": "26-11-2026",
+ "tanggal_sebelumnya": "25/11/2026",
  "lokasi": "Pasar tradisional Tanjung Pandan (pantauan PIHPS Bank Indonesia)",
- "diambil": "2026-11-25 12:29 WIB",
+ "diambil": "2026-11-26 12:09 WIB",
  "sumber": "PIHPS Nasional Bank Indonesia (pasar tradisional Tanjung Pandan)",
  "url": "https://www.bi.go.id/hargapangan",
  "items": [
   {
    "komoditas": "Beras Kualitas Bawah I",
-   "harga": 12200,
+   "harga": 12400,
    "satuan": "kg",
-   "status": "tetap",
-   "perubahan": "Sama dengan 24/11/2026 (Rp 12.200).",
+   "status": "naik",
+   "perubahan": "Naik Rp 200 (1,6%) dari Rp 12.200 (25/11/2026).",
    "harga_sebelumnya": 12200
   },
   {
    "komoditas": "Beras Kualitas Bawah II",
-   "harga": 14400,
+   "harga": 15000,
    "satuan": "kg",
-   "status": "tetap",
-   "perubahan": "Sama dengan 24/11/2026 (Rp 14.400).",
+   "status": "naik",
+   "perubahan": "Naik Rp 600 (4,2%) dari Rp 14.400 (25/11/2026).",
    "harga_sebelumnya": 14400
   },
   {
    "komoditas": "Beras Kualitas Medium I",
-   "harga": 17100,
+   "harga": 17300,
    "satuan": "kg",
-   "status": "tetap",
-   "perubahan": "Sama dengan 24/11/2026 (Rp 17.100).",
+   "status": "naik",
+   "perubahan": "Naik Rp 200 (1,2%) dari Rp 17.100 (25/11/2026).",
    "harga_sebelumnya": 17100
   },
   {
    "komoditas": "Beras Kualitas Medium II",
-   "harga": 16150,
+   "harga": 15700,
    "satuan": "kg",
-   "status": "tetap",
-   "perubahan": "Sama dengan 24/11/2026 (Rp 16.150).",
+   "status": "turun",
+   "perubahan": "Turun Rp 450 (2,8%) dari Rp 16.150 (25/11/2026).",
    "harga_sebelumnya": 16150
   },
   {
    "komoditas": "Beras Kualitas Super I",
-   "harga": 17550,
+   "harga": 18000,
    "satuan": "kg",
-   "status": "tetap",
-   "perubahan": "Sama dengan 24/11/2026 (Rp 17.550).",
+   "status": "naik",
+   "perubahan": "Naik Rp 450 (2,6%) dari Rp 17.550 (25/11/2026).",
    "harga_sebelumnya": 17550
   },
   {
    "komoditas": "Beras Kualitas Super II",
-   "harga": 17350,
+   "harga": 17600,
    "satuan": "kg",
-   "status": "tetap",
-   "perubahan": "Sama dengan 24/11/2026 (Rp 17.350).",
+   "status": "naik",
+   "perubahan": "Naik Rp 250 (1,4%) dari Rp 17.350 (25/11/2026).",
    "harga_sebelumnya": 17350
   },
   {
    "komoditas": "Daging Ayam Ras Segar",
-   "harga": 48250,
+   "harga": 47500,
    "satuan": "kg",
-   "status": "tetap",
-   "perubahan": "Sama dengan 24/11/2026 (Rp 48.250).",
+   "status": "turun",
+   "perubahan": "Turun Rp 750 (1,6%) dari Rp 48.250 (25/11/2026).",
    "harga_sebelumnya": 48250
   },
   {
@@ -80,82 +80,82 @@
   },
   {
    "komoditas": "Telur Ayam Ras Segar",
-   "harga": 30600,
+   "harga": 33200,
    "satuan": "kg",
-   "status": "tetap",
-   "perubahan": "Sama dengan 24/11/2026 (Rp 30.600).",
+   "status": "naik",
+   "perubahan": "Naik Rp 2.600 (8,5%) dari Rp 30.600 (25/11/2026).",
    "harga_sebelumnya": 30600
   },
   {
    "komoditas": "Bawang Merah Ukuran Sedang",
-   "harga": 46250,
+   "harga": 45000,
    "satuan": "kg",
-   "status": "tetap",
-   "perubahan": "Sama dengan 24/11/2026 (Rp 46.250).",
+   "status": "turun",
+   "perubahan": "Turun Rp 1.250 (2,7%) dari Rp 46.250 (25/11/2026).",
    "harga_sebelumnya": 46250
   },
   {
    "komoditas": "Bawang Putih Ukuran Sedang",
-   "harga": 36750,
+   "harga": 35500,
    "satuan": "kg",
-   "status": "tetap",
-   "perubahan": "Sama dengan 24/11/2026 (Rp 36.750).",
+   "status": "turun",
+   "perubahan": "Turun Rp 1.250 (3,4%) dari Rp 36.750 (25/11/2026).",
    "harga_sebelumnya": 36750
   },
   {
    "komoditas": "Cabai Merah Keriting",
-   "harga": 90000,
+   "harga": 87500,
    "satuan": "kg",
    "status": "turun",
-   "perubahan": "Turun Rp 1.250 (1,4%) dari Rp 91.250 (24/11/2026).",
-   "harga_sebelumnya": 91250
+   "perubahan": "Turun Rp 2.500 (2,8%) dari Rp 90.000 (25/11/2026).",
+   "harga_sebelumnya": 90000
   },
   {
    "komoditas": "Cabai Rawit Hijau",
-   "harga": 75000,
+   "harga": 72500,
    "satuan": "kg",
-   "status": "tetap",
-   "perubahan": "Sama dengan 24/11/2026 (Rp 75.000).",
+   "status": "turun",
+   "perubahan": "Turun Rp 2.500 (3,3%) dari Rp 75.000 (25/11/2026).",
    "harga_sebelumnya": 75000
   },
   {
    "komoditas": "Cabai Rawit Merah",
-   "harga": 92500,
+   "harga": 95000,
    "satuan": "kg",
-   "status": "tetap",
-   "perubahan": "Sama dengan 24/11/2026 (Rp 92.500).",
+   "status": "naik",
+   "perubahan": "Naik Rp 2.500 (2,7%) dari Rp 92.500 (25/11/2026).",
    "harga_sebelumnya": 92500
   },
   {
    "komoditas": "Minyak Goreng Kemasan Bermerk 1",
-   "harga": 21750,
+   "harga": 22000,
    "satuan": "liter",
-   "status": "tetap",
-   "perubahan": "Sama dengan 24/11/2026 (Rp 21.750).",
+   "status": "naik",
+   "perubahan": "Naik Rp 250 (1,1%) dari Rp 21.750 (25/11/2026).",
    "harga_sebelumnya": 21750
   },
   {
    "komoditas": "Minyak Goreng Kemasan Bermerk 2",
-   "harga": 16500,
+   "harga": 17000,
    "satuan": "liter",
-   "status": "tetap",
-   "perubahan": "Sama dengan 24/11/2026 (Rp 16.500).",
+   "status": "naik",
+   "perubahan": "Naik Rp 500 (3,0%) dari Rp 16.500 (25/11/2026).",
    "harga_sebelumnya": 16500
   },
   {
    "komoditas": "Gula Pasir Kualitas Premium",
-   "harga": 19750,
+   "harga": 20500,
    "satuan": "kg",
-   "status": "tetap",
-   "perubahan": "Sama dengan 24/11/2026 (Rp 19.750).",
+   "status": "naik",
+   "perubahan": "Naik Rp 750 (3,8%) dari Rp 19.750 (25/11/2026).",
    "harga_sebelumnya": 19750
   },
   {
    "komoditas": "Gula Pasir Lokal",
-   "harga": 19250,
+   "harga": 19500,
    "satuan": "kg",
-   "status": "tetap",
-   "perubahan": "Sama dengan 24/11/2026 (Rp 19.250).",
+   "status": "naik",
+   "perubahan": "Naik Rp 250 (1,3%) dari Rp 19.250 (25/11/2026).",
    "harga_sebelumnya": 19250
   }
  ]

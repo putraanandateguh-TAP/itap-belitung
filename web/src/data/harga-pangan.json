@@ -2,71 +2,71 @@
  "source": "PIHPS Nasional Bank Indonesia (pasar tradisional Tanjung Pandan)",
  "source_url": "https://www.bi.go.id/hargapangan",
  "market": "Pasar tradisional Tanjung Pandan (pantauan PIHPS Bank Indonesia)",
- "source_date": "2026-11-25",
- "fetched_at": "2026-11-25T12:29:49+07:00",
+ "source_date": "2026-11-26",
+ "fetched_at": "2026-11-26T12:09:49+07:00",
  "items": [
   {
    "id": "pihps-beras-kualitas-bawah-i",
    "commodity": "Beras Kualitas Bawah I",
-   "price": 12200,
+   "price": 12400,
    "unit": "kg",
    "previous_price": 12200,
-   "status": "—",
-   "change_note": "Sama dengan 24/11/2026 (Rp 12.200)."
+   "status": "naik",
+   "change_note": "Naik Rp 200 (1,6%) dari Rp 12.200 (25/11/2026)."
   },
   {
    "id": "pihps-beras-kualitas-bawah-ii",
    "commodity": "Beras Kualitas Bawah II",
-   "price": 14400,
+   "price": 15000,
    "unit": "kg",
    "previous_price": 14400,
-   "status": "—",
-   "change_note": "Sama dengan 24/11/2026 (Rp 14.400)."
+   "status": "naik",
+   "change_note": "Naik Rp 600 (4,2%) dari Rp 14.400 (25/11/2026)."
   },
   {
    "id": "pihps-beras-kualitas-medium-i",
    "commodity": "Beras Kualitas Medium I",
-   "price": 17100,
+   "price": 17300,
    "unit": "kg",
    "previous_price": 17100,
-   "status": "—",
-   "change_note": "Sama dengan 24/11/2026 (Rp 17.100)."
+   "status": "naik",
+   "change_note": "Naik Rp 200 (1,2%) dari Rp 17.100 (25/11/2026)."
   },
   {
    "id": "pihps-beras-kualitas-medium-ii",
    "commodity": "Beras Kualitas Medium II",
-   "price": 16150,
+   "price": 15700,
    "unit": "kg",
    "previous_price": 16150,
-   "status": "—",
-   "change_note": "Sama dengan 24/11/2026 (Rp 16.150)."
+   "status": "turun",
+   "change_note": "Turun Rp 450 (2,8%) dari Rp 16.150 (25/11/2026)."
   },
   {
    "id": "pihps-beras-kualitas-super-i",
    "commodity": "Beras Kualitas Super I",
-   "price": 17550,
+   "price": 18000,
    "unit": "kg",
    "previous_price": 17550,
-   "status": "—",
-   "change_note": "Sama dengan 24/11/2026 (Rp 17.550)."
+   "status": "naik",
+   "change_note": "Naik Rp 450 (2,6%) dari Rp 17.550 (25/11/2026)."
   },
   {
    "id": "pihps-beras-kualitas-super-ii",
    "commodity": "Beras Kualitas Super II",
-   "price": 17350,
+   "price": 17600,
    "unit": "kg",
    "previous_price": 17350,
-   "status": "—",
-   "change_note": "Sama dengan 24/11/2026 (Rp 17.350)."
+   "status": "naik",
+   "change_note": "Naik Rp 250 (1,4%) dari Rp 17.350 (25/11/2026)."
   },
   {
    "id": "pihps-daging-ayam-ras-segar",
    "commodity": "Daging Ayam Ras Segar",
-   "price": 48250,
+   "price": 47500,
    "unit": "kg",
    "previous_price": 48250,
-   "status": "—",
-   "change_note": "Sama dengan 24/11/2026 (Rp 48.250)."
+   "status": "turun",
+   "change_note": "Turun Rp 750 (1,6%) dari Rp 48.250 (25/11/2026)."
   },
   {
    "id": "pihps-daging-sapi-kualitas-1",
@@ -89,92 +89,92 @@
   {
    "id": "pihps-telur-ayam-ras-segar",
    "commodity": "Telur Ayam Ras Segar",
-   "price": 30600,
+   "price": 33200,
    "unit": "kg",
    "previous_price": 30600,
-   "status": "—",
-   "change_note": "Sama dengan 24/11/2026 (Rp 30.600)."
+   "status": "naik",
+   "change_note": "Naik Rp 2.600 (8,5%) dari Rp 30.600 (25/11/2026)."
   },
   {
    "id": "pihps-bawang-merah-ukuran-sedang",
    "commodity": "Bawang Merah Ukuran Sedang",
-   "price": 46250,
+   "price": 45000,
    "unit": "kg",
    "previous_price": 46250,
-   "status": "—",
-   "change_note": "Sama dengan 24/11/2026 (Rp 46.250)."
+   "status": "turun",
+   "change_note": "Turun Rp 1.250 (2,7%) dari Rp 46.250 (25/11/2026)."
   },
   {
    "id": "pihps-bawang-putih-ukuran-sedang",
    "commodity": "Bawang Putih Ukuran Sedang",
-   "price": 36750,
+   "price": 35500,
    "unit": "kg",
    "previous_price": 36750,
-   "status": "—",
-   "change_note": "Sama dengan 24/11/2026 (Rp 36.750)."
+   "status": "turun",
+   "change_note": "Turun Rp 1.250 (3,4%) dari Rp 36.750 (25/11/2026)."
   },
   {
    "id": "pihps-cabai-merah-keriting",
    "commodity": "Cabai Merah Keriting",
-   "price": 90000,
+   "price": 87500,
    "unit": "kg",
-   "previous_price": 91250,
+   "previous_price": 90000,
    "status": "turun",
-   "change_note": "Turun Rp 1.250 (1,4%) dari Rp 91.250 (24/11/2026)."
+   "change_note": "Turun Rp 2.500 (2,8%) dari Rp 90.000 (25/11/2026)."
   },
   {
    "id": "pihps-cabai-rawit-hijau",
    "commodity": "Cabai Rawit Hijau",
-   "price": 75000,
+   "price": 72500,
    "unit": "kg",
    "previous_price": 75000,
-   "status": "—",
-   "change_note": "Sama dengan 24/11/2026 (Rp 75.000)."
+   "status": "turun",
+   "change_note": "Turun Rp 2.500 (3,3%) dari Rp 75.000 (25/11/2026)."
   },
   {
    "id": "pihps-cabai-rawit-merah",
    "commodity": "Cabai Rawit Merah",
-   "price": 92500,
+   "price": 95000,
    "unit": "kg",
    "previous_price": 92500,
-   "status": "—",
-   "change_note": "Sama dengan 24/11/2026 (Rp 92.500)."
+   "status": "naik",
+   "change_note": "Naik Rp 2.500 (2,7%) dari Rp 92.500 (25/11/2026)."
   },
   {
    "id": "pihps-minyak-goreng-kemasan-bermerk-1",
    "commodity": "Minyak Goreng Kemasan Bermerk 1",
-   "price": 21750,
+   "price": 22000,
    "unit": "liter",
    "previous_price": 21750,
-   "status": "—",
-   "change_note": "Sama dengan 24/11/2026 (Rp 21.750)."
+   "status": "naik",
+   "change_note": "Naik Rp 250 (1,1%) dari Rp 21.750 (25/11/2026)."
   },
   {
    "id": "pihps-minyak-goreng-kemasan-bermerk-2",
    "commodity": "Minyak Goreng Kemasan Bermerk 2",
-   "price": 16500,
+   "price": 17000,
    "unit": "liter",
    "previous_price": 16500,
-   "status": "—",
-   "change_note": "Sama dengan 24/11/2026 (Rp 16.500)."
+   "status": "naik",
+   "change_note": "Naik Rp 500 (3,0%) dari Rp 16.500 (25/11/2026)."
   },
   {
    "id": "pihps-gula-pasir-kualitas-premium",
    "commodity": "Gula Pasir Kualitas Premium",
-   "price": 19750,
+   "price": 20500,
    "unit": "kg",
    "previous_price": 19750,
-   "status": "—",
-   "change_note": "Sama dengan 24/11/2026 (Rp 19.750)."
+   "status": "naik",
+   "change_note": "Naik Rp 750 (3,8%) dari Rp 19.750 (25/11/2026)."
   },
   {
    "id": "pihps-gula-pasir-lokal",
    "commodity": "Gula Pasir Lokal",
-   "price": 19250,
+   "price": 19500,
    "unit": "kg",
    "previous_price": 19250,
-   "status": "—",
-   "change_note": "Sama dengan 24/11/2026 (Rp 19.250)."
+   "status": "naik",
+   "change_note": "Naik Rp 250 (1,3%) dari Rp 19.250 (25/11/2026)."
   }
  ]
 }

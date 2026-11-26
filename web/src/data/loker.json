@@ -4,8 +4,8 @@
     "catatan": "Lowongan dari sumber publik; lamar langsung lewat link resmi. iTAP tidak memungut biaya apa pun.",
     "jumlah": {
       "belitung": 75,
-      "babel_lainnya": 163,
-      "total": 238
+      "babel_lainnya": 164,
+      "total": 239
     },
     "cakupan_babel_lainnya": "Lowongan JobStreet dan sumber lain dengan lokasi Bangka/Pangkal Pinang/Sungailiat/sejenis yang tayang sejak 2026-10-23. Lowongan lebih lama masih bisa ada di sumber aslinya.",
     "otomatis": "GitHub Actions update-data.yml (scripts/update_loker_web.py): JobStreet, NyamanKerje, Glints, Loker.id"
@@ -1223,6 +1223,20 @@
       "sumber": "Glints",
       "link": "https://glints.com/id/opportunities/jobs/secondary-teacher-academic-year-2027-2028/650e209c-4c20-4285-8bf5-35129e3d2b32",
       "ringkasan": null,
+      "bagian": "Babel lainnya",
+      "batas_lamaran": null
+    },
+    {
+      "judul": "HR Manager and Humas",
+      "perusahaan": "PT.Pratama Unggul Sejahtera",
+      "lokasi": "Bangka Belitung",
+      "kategori": "Pertanian, Hewan & Konservasi",
+      "gaji": null,
+      "tanggal_posting": "2026-11-26",
+      "dicek": "2026-11-26",
+      "sumber": "JobStreet",
+      "link": "https://id.jobstreet.com/id/job/96146035",
+      "ringkasan": "Lead end-to-end HR strategy, workforce planning, and people operations across plantation estates and palm oil mills.",
       "bagian": "Babel lainnya",
       "batas_lamaran": null
     },
